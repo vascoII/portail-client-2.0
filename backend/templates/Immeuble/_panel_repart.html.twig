@@ -1,0 +1,290 @@
+<div class="panel">
+
+    <div class="panel-bar">
+        <div class="row">
+            <div class="col-sm-6 panel panel-primary panel-left">
+                {% if panel.Chantier.PkDevis <= 0 %}
+                    <div class="block-title">{{ "Aucun chantier en cours"|trans|upper }}</div>
+                    <br><br><br><br><br><br>
+                    <br><br><br><br><br><br>
+                {% else %}
+                    <div class="block-title">{{ "Chantiers en cours"|trans|upper }}</div>
+                    <br>
+                    <br>
+
+                    <div class="row">
+
+                        <div class="col-sm-6 block-left">
+                            <div class="number"><i class="icon-compteur"></i> {{ panel.Chantier.NbCompteursCommandes }}
+                            </div>
+                            <div class="text"> {{ 'Appareils commandés'|trans }}</div>
+                            <br/><br/><br/>
+                            <div class="date">{{ "date de l'entrée en commande"|trans }} : <br/><strong>{{ panel
+                                    .Chantier.DateEntreeChantier|date
+                                    ('d-m-Y') }}</strong></div>
+                        </div>
+
+                        <div class="col-sm-6 block-right">
+                            <div class="chart clearfix">
+                                <div class="number dark"
+                                     style="height:{{ (panel.Chantier.NbCompteursCommandes - panel.Chantier.NbCompteursPoses) * 200 / panel.Chantier.NbCompteursCommandes }}px">{{ panel.Chantier.NbCompteursCommandes - panel.Chantier.NbCompteursPoses }}</div>
+                                <div class="text">{{ "Appareils à poser"|trans }}</div>
+                            </div>
+
+                            <div class="chart clearfix">
+                                <div class="number {{ colorclass }}"
+                                     style="height:{{ panel.Chantier.NbCompteursPoses * 200 / panel.Chantier.NbCompteursCommandes }}px">{{ panel.Chantier.NbCompteursPoses }}</div>
+                                <div class="text">{{ 'Appareils posés'|trans }}</div>
+                            </div>
+                        </div>
+
+                    </div>
+                {% endif %}
+            </div>
+
+
+            <div class="col-sm-6 panel panel-primary panel-right performance-gauge">
+                {% set perf_percent = panel.NbCompteursARelever > 0 ? (panel.NbCompteursReleves / panel.NbCompteursARelever * 100)|round  %}
+                <div class="block-title">{{ 'Vos relevés'|trans }}</div>
+
+				
+				{% if immeuble.NbCompteursRepart != -1 and immeuble.Immeuble.HasTelereleve and immeuble.Immeuble.HasNoteOccupant%}
+					<div>
+						<br /><form class=""
+								  action="{{ path('TechemCoreBundle_Immeuble_report', {'pkImmeuble': immeuble.Immeuble.PkImmeuble, 'type': 'NOTE', 'energie': 'CHAUFFAGE'}) }}"
+								  method="POST" target="_blank">
+								   
+								 
+								<a href="#" target="_blank">
+									<button type="submit" class="btn-primary btn">
+										<i class="icon-download"></i><b>Note mensuelle</b>
+									</button>
+								</a>
+						</form>
+					</div>
+				{% endif %}
+				
+                {% if panel.ListeReleves.releve is defined and panel.ListeReleves.releve %}
+                    <form class="actions selects"
+                          action="{{ path('TechemCoreBundle_Immeuble_report', {'pkImmeuble': immeuble.Immeuble.PkImmeuble, 'type': 'RELEVE', 'energie': fluide|upper}) }}"
+                          method="POST" target="_blank">
+                        <input type="hidden" name="type" value="repart"/>
+                        <div>
+                            <label for="123456" class="label-releve">
+                                {{ 'Sélectionnez votre relevé'|trans }} :
+                            </label>
+
+                            <div class="icons-relative">
+                                <div class="icon-down"><i class="icon-down-open-1"></i></div>
+                                <div class="icon-up"><i class="icon-down-open-1"></i></div>
+                                <select id="123456" name="date" class="charts-select">
+                                    {% if panel.ListeReleves.releve is iterable %}
+                                        {% for releve in panel.ListeReleves.releve %}
+                                            <option value="{{ releve.DateReleve|date('d-m-Y') }}">
+                                                {{ releve.DateReleve|date('d/m/Y') }}
+                                            </option>
+                                        {% endfor %}
+                                    {% elseif panel.ListeReleves.releve.DateReleve is defined %}
+                                        <option value="{{ panel.ListeReleves.releve.DateReleve|date('d-m-Y') }}">
+                                            {{ panel.ListeReleves.releve.DateReleve|date('d/m/Y') }}
+                                        </option>
+                                    {% endif %}
+                                </select>
+
+                            </div>
+                        </div>
+
+                        <a href="#" target="_blank">
+                            <button type="submit" class="btn-primary btn">
+                                <i class="icon-print"></i>{{ "Imprimer"|trans }}
+                            </button>
+                        </a>
+                    </form>
+                {% endif %}
+
+                <div class="canvas">
+                    <canvas width="200" height="150"
+                            data-options="{{ { fillGaugeStyle: "#FF6702", value: immeuble.PcCompteursTelereveleOK }|json_encode() }}"></canvas>
+                </div>
+
+                <div class="text">
+                    <strong>{{ perf_percent }}</strong><sup>%</sup> {{ 'des appareils relevés'|trans }}
+                    {#<strong>{{ immeuble.PcCompteursTelereveleOK }}</strong><sup>%</sup> {{ 'des appareils relevés'|trans }}#}
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+
+    {% if panel.Tot_URepart >= 0 %}
+        <div class="panel-text">
+            <div class="panel">
+
+                <div class="inner">
+                    <div class="block-title">
+                        <span>{{ 'Données De la dernière répartition'|trans }}</span>
+                        <a target="_blank"
+                           href="{{ path('TechemCoreBundle_Immeuble_report', {'pkImmeuble': immeuble.Immeuble.PkImmeuble, 'type': 'repartition', 'energie': fluide|upper}) }}"
+                           class="pull-right print">
+                            <button type="submit" class="btn-primary btn">
+                                <i class="icon-print"></i> {{ "Imprimer"|trans }}
+                            </button>
+                        </a>
+                    </div>
+                    <br>
+                    <br>
+
+                    <div class="row">
+                        <div class="col-md-6 panel-left">
+                            <div class="item">{{ "Total des unités de répartition de l’immeuble"|trans }} :
+                                <strong>{{ panel.Tot_URepart >= 0 ? panel.Tot_URepart : 'NC' }}</strong></div>
+
+                            <div class="item">{{ "Total tantièmes chauffage"|trans }} :
+                                <strong>{{ panel.Tot_TantChauff >= 0 ? panel.Tot_TantChauff : 'NC' }}</strong></div>
+
+                            <div class="item">{{ "Prix unitaire du tantième"|trans }} :
+                                <strong>{{ panel.PU_Tant >= 0 ? panel.PU_Tant : 'NC' }} €</strong></div>
+
+                            <div class="item">{{ "Prix de l'unité de répartition"|trans }} :
+                                <strong>{{ panel.Prix_URepart >= 0 ? panel.Prix_URepart : 'NC' }} €</strong></div>
+                        </div>
+
+                        <div class="col-md-6 panel-right">
+                            <div class="item">{{ "Prix de l’abonnement"|trans }} :
+                                <strong>{{ panel.Prix_Abonn >= 0 ? panel.Prix_Abonn : 'NC' }} €</strong></div>
+
+                            <div class="item">{{ "Montant à répartir aux tantièmes"|trans }} :
+                                <strong>{{ panel.Mont_ARepartTant >= 0 ? panel.Mont_ARepartTant : 'NC' }} €</strong>
+                            </div>
+
+                            <div class="item">{{ "Part répartie en fonction des consommations"|trans }} :
+                                <strong>{{ panel.Part_RepartConsos >= 0 ? panel.Part_RepartConsos : 'NC' }} €</strong>
+                            </div>
+
+                            <div class="item">{{ "Coût total hors combustible"|trans }} :
+                                <strong>{{ panel.CT_Combust >= 0 ? panel.CT_Combust : 'NC' }} €</strong></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="panel-chart">
+        <div class="panel">
+            <div class="block-title">{{ "Points de vigilance"|trans }}</div>
+            <br>
+            <br>
+
+            <div class="tables">
+                {% include 'Immeuble/_conso_tab.html.twig' with { TopConsos : panel.TopConsos } %}
+            </div>
+            <br>
+
+            <div class="block-title">{{ "Evolution des consommations"|trans|upper }}</div>
+
+            <br>
+            <div id="graph_repart" style="width: 100%; height: 300px;"></div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        charts['graph_repart'] = {
+            type : 'line',
+            loaded : false,
+            options : {
+                title : '',
+                hAxis : {
+                    title : '',
+                    textStyle : {
+                        fontSize : 11,
+                        bold : true,
+                        italic : true
+                    },
+                    minValue : 0
+                },
+                series : [
+                    {% if panel.SerieConsosTotale2.ValeursXYL|length > 0 %}
+                    {
+                        color : "#323232",
+                        targetAxisIndex : 0,
+                        pointShape : "cirlce"
+                    },
+                    {% endif %}
+                    {% if panel.SerieConsosTotale1.ValeursXYL|length > 0 %}
+                    {
+                        color : "#FF6702",
+                        targetAxisIndex : 0,
+                        pointShape : "cirlce"
+                    }
+                    {% endif %}
+                ],
+                focusTarget : 'category',
+                pointSize : 7,
+                legend : {
+                    position : "bottom",
+                    alignment : "end"
+                },
+                vAxes : [
+                    {
+                        {#title : {% if fluide == 'Repart' %}"'" {{ "en Unités de répartition"|trans }}#}
+                        {#"'"{% else %}"en kWh"{% endif %},#}
+                        title : {% if fluide == 'Repart' %}'{{ "en Unités de répartition"|trans }}'{% else %}'en kWh'{% endif %},
+                        baselinecolor : "#000000",
+                        minValue : 0
+                    }
+                ],
+                width : '100%'
+            },
+            datatable : [
+                [
+                    'Date',
+                    {% if panel.SerieConsosTotale2.ValeursXYL|length > 0 %}
+                    '{{ panel.SerieConsosTotale2.Annee }}',
+                    { role : 'style' },
+                    { role : 'tooltip' },
+                    {% endif %}
+                    {% if panel.SerieConsosTotale1.ValeursXYL|length > 0 %}
+                    '{{ panel.SerieConsosTotale1.Annee }}',
+                    { role : 'style' },
+                    { role : 'tooltip' },
+                    {% endif %}
+                ],
+                {% set serie1 = panel.SerieConsosTotale1.ValeursXYL|split(';') %}
+                {% set serie2 = panel.SerieConsosTotale2.ValeursXYL|split(';') %}
+                {% for i in range(0, serie1|length > serie2|length ? serie1|length -1 : serie2|length - 1) %}
+                {% set data1 = i < serie1|length ? serie1[i]|split('|') : [null, null, null] %}
+                {% set data1 = data1|length == 4 ? data1 : [null, null, null, null] %}
+                {% set data2 = i < serie2|length ? serie2[i]|split('|') : [null, null, null] %}
+                {% set data2 = data2|length == 4 ? data2 : [null, null, null, null] %}
+                {% if data1[0] != null %}
+                {% set axe = data1[0]|slice(0,5) %}
+                {% elseif data2[0] != null %}
+                {% set axe = data2[0]|slice(0,5) %}
+                {% else %}
+                {% set axe = null %}
+                {% endif %}
+                {% if axe != null %}
+                [
+                    '{{ axe }}',
+                    {% if panel.SerieConsosTotale2.ValeursXYL|length > 0 %}
+                    {{ data2[1] != null and data2[3] != 'VISIBLE=N' ? data2[1]|number_format(2, '.', '') : 'null' }},
+                    'point { stroke-width: 2; stroke-color: #323232; fill-color: {{ data2[3] == 'VIRTUAL=O' ? '#FFFFFF' :'#323232' }} }',
+                    '{{ data2[2]|number_format(0, '.', '') }}',
+                    {% endif %}
+                    {% if panel.SerieConsosTotale1.ValeursXYL|length > 0 %}
+                    {{ data1[1] != null and data1[3] != 'VISIBLE=N' ? data1[1]|number_format(2, '.', '') : 'null' }},
+                    'point { stroke-width: 2; stroke-color: #FF6702; fill-color: {{ data1[3] == 'VIRTUAL=O' ? '#FFFFFF' : '#FF6702' }} }',
+                    '{{ data1[2]|number_format(0, '.', '') }}',
+                    {% endif %}
+                ],
+                {% endif %}
+                {% endfor %}
+            ]
+        };
+
+    </script>
+</div>

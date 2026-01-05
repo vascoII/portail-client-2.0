@@ -1,0 +1,40 @@
+{% extends "Security/base.html.twig" %}
+
+{% block main_content %}
+
+    <div class="main-content">
+        <a href="{{ path('TechemCoreBundle_TableauBordClient_index') }}" class="logo">
+            <img src="{{ asset('bundles/techemcore/images/fidesio/logo.svg') }}"/>
+        </a>
+
+        <form action="{{ path('app_login') }}" method="post" class="form">
+            {% if (error is defined or app.session.get('error')) %}
+                <div class="alert alert-danger" role="alert">
+                    <span>{{ "Nom ou mot de passe incorrect"|trans }}</span>
+                </div>
+            {% endif %}
+
+            <div class="form-group">
+                <input type="text" class="user" name="_username" placeholder='{{ "Email ou Login" |trans }}' />
+            </div>
+
+            <div class="form-group">
+                <input type="password" class="lock" name="_password" placeholder='{{ "Mot de passe" |trans }}' />
+            </div>
+
+            <div class="hint">
+                <a href="{{ path('reset_password') }}" class="forgot">{{ "Mot de passe oublié ?"|trans }}</a>
+
+                {#<label class="remember">#}
+                    {#Se souvenir de moi#}
+                    {#<span class="checkbox-replace"><input name="_remember_me" type="checkbox"></span>#}
+                {#</label>#}
+            </div>
+
+            <input type="submit" name="login" value='{{ "SE CONNECTER"|trans }}' class="submit" />
+						<br /><br />
+			{{message|raw}}
+        </form>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends '_list_dysfunctions.html.twig' %}
+
+{% block export %}
+    <div class="action form btn pull-right" style="padding: 0px;margin: 0px;">
+        <a class="submit" href="{{ path('TechemCoreBundle_Immeuble_export_dysfunctions', {'pkImmeuble': immeuble
+            .Immeuble.PkImmeuble}) }}" target="_blank">
+            <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+            {{ "Export Excel"|trans }}
+        </a>
+    </div>
+{% endblock %}
+
+{% block dysfonctionnements %}
+        {% for dysfunction in dysfonctionnements %}
+            {% include '_dysfunction.html.twig' with {
+                'dysfunction': dysfunction,
+                'link': path('TechemCoreBundle_Logement_show', {'pkLogement': dysfunction.Logement.PkLogement})
+            }
+            %}
+        {% endfor %}
+{% endblock %}

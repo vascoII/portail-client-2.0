@@ -1,0 +1,320 @@
+{% extends "base_occupant.html.twig" %}
+
+{% block body__main_menu %}
+    {% include 'Occupant/_menu.html.twig' %}
+{% endblock %}
+
+{% block breadcrumb_mobile %}
+
+    <div class="btn btn-primary btn-lg dropdown-toggle hidden-lg hidden-md" id="dropdownMenu3" data-toggle="dropdown">
+        <i class="pull-right icon-arrow"></i>
+        <h3>{{ "Logement"|trans }} {{ logement.Occupant.Ref }}</h3>
+    </div>
+	
+	
+	
+{% endblock %}
+
+{% block header %}
+    {% if occupant_no_header() != 'true' %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block main_content %}
+<style>
+
+    .container { max-width: 700px; margin: auto; padding: 20px; }
+    label { display: block; margin-top: 10px; }
+    input, select {  padding: 8px; margin-top: 5px; }
+    .section { margin-top: 15px; padding: 10px; border: 1px solid #ccc; display: none; }
+    .toggle-container { display: flex; align-items: center; margin-top: 20px; }
+    .toggle-container label { margin-left: 10px; }
+    canvas { margin-top: 30px; }
+
+.radio-inline-group {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  border: 1px solid #d3d7db;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+.radio-inline-group h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #303030;
+  min-width: 150px;
+}
+.radio-inline-group .form-check {
+  margin-right: 15px;
+}
+	
+</style>
+
+    <ul class="breadcrumb hidden-xs">
+        <li><a href="#">{{ "Logement"|trans }} {{ logement.Occupant.Ref }}</a></li>
+    </ul>
+    <span class="clearfix"></span>
+    <h2>Simulateur de consommation</h2>
+
+    <div class="row panel-area building-detail-area">
+
+        <div class="col-md-8 col-sm-6 block block-1">
+            <div class="panel panel-primary parc_summary panel-info">
+
+
+
+		<div class="container">
+
+
+
+		<!-- Occupants -->
+		<div class="radio-inline-group">
+		  <h3>Nombre d'occupants:</h3>
+		  <div class="form-check form-check-inline">
+		  <input id="occupants" required="" type="number"/>
+		  </div>
+		</div>
+
+		<!-- Lave-vaisselle -->
+		<div class="radio-inline-group">
+		  <h3>Lave-vaisselle</h3>
+		  <div class="form-check form-check-inline">
+			<input class="form-check-input" type="radio" name="dishwasher" id="dishwasherNo" value="none" checked onclick="toggleSection('dishwasherSection', false)">
+			<label class="form-check-label" for="dishwasherNo">Non</label>
+		  </div>
+		  <div class="form-check form-check-inline">
+			<input class="form-check-input" type="radio" name="dishwasher" id="dishwasherYes" value="yes" onclick="toggleSection('dishwasherSection', true)">
+			<label class="form-check-label" for="dishwasherYes">Oui</label>
+		  </div>
+
+		<br />
+		<div class="section" id="dishwasherSection">
+			<label>Performance:</label>
+			<select id="dishwasherPerf">
+			<option value="low">Faible consommation</option>
+			<option value="standard">Standard</option>
+			</select>
+			<label>Nombre de cycles par semaine:</label>
+			<input id="dishwasherCycles" type="number">
+			</input>
+		</div>
+		</div>
+
+
+
+		<!-- Lave-linge -->
+			
+		<div class="radio-inline-group">
+		  <h3>Lave-linge</h3>
+		  <div class="form-check form-check-inline">
+			<input class="form-check-input" type="radio" name="washingMachine" id="washingMachineNo" value="none" checked onclick="toggleSection('washingSection', false)">
+			<label class="form-check-label" for="dishwasherNo">Non</label>
+		  </div>
+		  <div class="form-check form-check-inline">
+			<input class="form-check-input" type="radio" name="washingMachine" id="washingMachineYes" value="yes" onclick="toggleSection('washingSection', true)">
+			<label class="form-check-label" for="dishwasherYes">Oui</label>
+		  </div>
+			<div class="section" id="washingSection">
+				<label>Performance:</label>
+				<select id="washingPerf">
+				<option value="low">Faible consommation</option>
+				<option value="standard">Standard</option>
+				</select>
+				<label>Nombre de cycles par semaine:</label>
+				<input id="washingCycles" type="number">
+				</input>
+			</div>
+		</div>
+
+
+
+
+
+		<!-- Douches et bains -->
+		<div class="radio-inline-group">
+		  <h3>Nombre de douches hebdomadaires par occupant:</h3>
+		  <div class="form-check form-check-inline">
+		  <input id="showers" required="" type="number"/>
+		  </div>
+		</div>
+		<div class="radio-inline-group">
+		  <h3>Nombre de bains hebdomadaires par occupant:</h3>
+		  <div class="form-check form-check-inline">
+		  <input id="baths" required="" type="number"/>
+		  </div>
+		</div>
+
+
+		<!-- Chasse d'eau -->
+
+		<div class="radio-inline-group">
+		  <h3>WC:</h3>
+		  <div class="form-check form-check-inline">
+			<input class="form-check-input" checked="" name="toilet" type="radio" value="standard">
+			<label class="form-check-label" for="toilet">Standard</label>
+		  </div>
+		  <div class="form-check form-check-inline">
+			<input class="form-check-input" checked="" name="toilet" type="radio" value="eco">
+			<label class="form-check-label" for="toilet">Économique</label>
+		  </div>
+		  <br />
+		  <label>Utilisation par occupant et par semaine:</label>
+			<input id="flushes" type="number">
+		</div>
+
+
+
+
+		<!-- Jardin -->
+
+
+		<div class="radio-inline-group">
+		  <h3>Jardin</h3>
+		  <div class="form-check form-check-inline">
+			<input class="form-check-input" type="radio" name="garden" id="gardenNo" value="none" checked onclick="toggleSection('gardenSection', false)">
+			<label class="form-check-label" for="dishwasherNo">Non</label>
+		  </div>
+		  <div class="form-check form-check-inline">
+			<input class="form-check-input" type="radio" name="garden" id="gardenYes" value="yes" onclick="toggleSection('gardenSection', true)">
+			<label class="form-check-label" for="dishwasherYes">Oui</label>
+		  </div>
+			<div class="section" id="gardenSection">
+				<label>Surface du jardin (m²):</label>
+				<input id="gardenSize" type="number">
+				</input>
+			</div>
+		</div>
+
+
+
+
+		<button onclick="calculate()">Calculer</button>
+		<br/><br/><br/>
+
+
+		<!-- Résultat et graphique -->
+		<div class="section" id="chartSection">
+		<div class="toggle-container">
+			<input id="periodToggle" onchange="calculate()" type="checkbox">
+			<label for="periodToggle">Afficher les résultats en valeurs mensuelles</label>
+			</input>
+		</div>
+		<h2><div id="result"></div></h2>
+		<canvas id="waterChart"></canvas>
+		</div>
+		</input></input></input></div>
+
+
+</div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+{% block javascripts_foot %}
+    {{ parent() }}
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	
+<script>
+    let chart;
+
+    function toggleSection(id, show) {
+      document.getElementById(id).style.display = show ? 'block' : 'none';
+    }
+
+    function calculate() {
+      const occupants = parseInt(document.getElementById('occupants').value);
+      const showers = parseInt(document.getElementById('showers').value) || 0;
+      const baths = parseInt(document.getElementById('baths').value) || 0;
+      const flushes = parseInt(document.getElementById('flushes').value) || 0;
+      const toiletType = document.querySelector('input[name="toilet"]:checked').value;
+      const isMonthly = document.getElementById('periodToggle').checked;
+
+      const dishwasherEnabled = document.querySelector('input[name="dishwasher"]:checked').value === 'yes';
+      const dishwasherPerf = dishwasherEnabled ? document.getElementById('dishwasherPerf').value : null;
+      const dishwasherCycles = dishwasherEnabled ? parseInt(document.getElementById('dishwasherCycles').value) || 0 : 0;
+
+      const washingEnabled = document.querySelector('input[name="washingMachine"]:checked').value === 'yes';
+      const washingPerf = washingEnabled ? document.getElementById('washingPerf').value : null;
+      const washingCycles = washingEnabled ? parseInt(document.getElementById('washingCycles').value) || 0 : 0;
+
+      const gardenEnabled = document.querySelector('input[name="garden"]:checked').value === 'yes';
+      const gardenSize = gardenEnabled ? parseInt(document.getElementById('gardenSize').value) || 0 : 0;
+
+      const showerUse = occupants * showers * 50;
+      const bathUse = occupants * baths * 150;
+      const toiletUse = occupants * flushes * (toiletType === 'eco' ? 5 : 10);
+      const dishwasherUse = dishwasherEnabled ? dishwasherCycles * (dishwasherPerf === 'low' ? 10 : 15) : 0;
+      const washingUse = washingEnabled ? washingCycles * (washingPerf === 'low' ? 50 : 70) : 0;
+      const gardenUse = gardenEnabled ? gardenSize * 6 : 0;
+
+      let data = {
+        "Douches": showerUse,
+        "Bains": bathUse,
+        "Chasses d'eau": toiletUse,
+        "Lave-vaisselle": dishwasherUse,
+        "Lave-linge": washingUse,
+        "Jardin": gardenUse
+      };
+
+      if (isMonthly) {
+        for (let key in data) {
+          data[key] *= 4;
+        }
+      }
+
+      const total = Object.values(data).reduce((a, b) => a + b, 0);
+      document.getElementById('result').innerText = `Consommation ${isMonthly ? 'mensuelle' : 'hebdomadaire'}: ${total} litres`;
+
+      // Afficher la section du graphique
+      document.getElementById('chartSection').style.display = 'block';
+
+      const ctx = document.getElementById('waterChart').getContext('2d');
+      if (chart) chart.destroy();
+      chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(data),
+          datasets: [{
+            label: `Consommation d'eau (${isMonthly ? 'mois' : 'semaine'})`,
+            data: Object.values(data),
+            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: { display: true, text: 'Litres' }
+            }
+          }
+        }
+      });
+    }
+  </script>
+
+	
+{% endblock %}

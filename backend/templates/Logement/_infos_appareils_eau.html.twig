@@ -1,0 +1,100 @@
+<table class="details hidden-xs">
+    <thead>
+        <tr>
+            <th>{{ "N°COMPTEUR"|trans }}</th>
+            <th>EMPL.</th>
+            <th>TYPE</th>
+            {% set R4 = 0 %}
+            {% for appareil in appareils %}
+                {% if R4 == 0 and appareil.R4 is defined and appareil.R4.Index is defined and appareil.R4.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                    <th>{{ appareil.R4.DateReleve|date('d/m/y') }}</th>
+                    {% set R4 = 1 %}
+                {% endif %}
+            {% endfor %}
+            {% set R3 = 0 %}
+            {% for appareil in appareils %}
+                {% if R3 == 0 and appareil.R3 is defined and appareil.R3.Index is defined and appareil.R3.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                    <th>{{ appareil.R3.DateReleve|date('d/m/y') }}</th>
+                    {% set R3 = 1 %}
+                {% endif %}
+            {% endfor %}
+            {% set R2 = 0 %}
+            {% for appareil in appareils %}
+                {% if R2 == 0 and appareil.R2 is defined and appareil.R2.Index is defined and appareil.R2.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                    <th>{{ appareil.R2.DateReleve|date('d/m/y') }}</th>
+                    {% set R2 = 1 %}
+                {% endif %}
+            {% endfor %}
+            <th>INDEX</th>
+            <th>CONSO.</th>
+            <th>{{ "ALERTE"|trans }}</th>
+        </tr>
+    </thead>
+        {% for appareil in appareils %}
+            <tr>
+                <td>
+                    <strong>
+                        {% if appareil.Appareil is defined and appareil.Appareil.Numero is defined %}
+                            {{ appareil.Appareil.Numero }}
+                        {% endif %}
+                    </strong>
+                </td>
+                <td>
+                    {% if appareil.Appareil is defined and appareil.Appareil.Emplacement is defined %}
+                        {{ appareil.Appareil.Emplacement }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if appareil.Appareil is defined and appareil.Appareil.TypeAppareil is defined %}
+                        {{ appareil.Appareil.TypeAppareil }}
+                    {% endif %}
+                </td>
+                {% if R4 == 1 %}
+                <td>
+                    {% if appareil.R4 is defined and appareil.R4.Index is defined and appareil.R4.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                        {{ appareil.R4.Index }}
+                    {% endif %}
+                </td>
+                {% endif %}
+                {% if R3 == 1 %}
+                <td>
+                    {% if appareil.R3 is defined and appareil.R3.Index is defined and appareil.R3.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                        {{ appareil.R3.Index }}
+                    {% endif %}
+                </td>
+                {% endif %}
+                {% if R2 == 1 %}
+                <td>
+                    {% if appareil.R2 is defined and appareil.R2.Index is defined and appareil.R2.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                        {{ appareil.R2.Index }}
+                    {% endif %}
+                </td>
+                {% endif %}
+                <td>
+                    <strong>
+                        {% if appareil.R1 is defined and appareil.R1.Index is defined and appareil.R1.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {{ appareil.R1.Index }}
+                        {% endif %}
+                    </strong>
+                </td>
+                <td>
+                    {% if appareil.R1 is defined and appareil.R1.Index is defined and appareil.R1.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                        {{ appareil.R1.Conso }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if appareil.NbAnomalies is defined and appareil.NbAnomalies > 0 %}
+                        <a href="{% if appareil.Appareil is defined %}{{ path('TechemCoreBundle_Logement_listanomalies', {'pkLogement': pkLogement, 'appareil': appareil.Appareil.PkAppareil}) }}{% else %}#{% endif %}">
+                            <img src="{{ asset('bundles/techemcore/images/fidesio/ano.png') }}"/>
+                        </a>
+                    {% endif %}
+                    {% if appareil.NbFuites is defined and appareil.NbFuites > 0 %}
+                        <a href="{% if appareil.Appareil is defined %}{{ path('TechemCoreBundle_Logement_listleaks', {'pkLogement': pkLogement, 'appareil': appareil.Appareil.PkAppareil}) }}{% else %}#{% endif %}">
+                            <img src="{{ asset('bundles/techemcore/images/fidesio/fui.png') }}"/>
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

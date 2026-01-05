@@ -1,0 +1,394 @@
+{% extends "base_occupant.html.twig" %}
+
+
+{% block body__main_menu %}
+    {% include 'Occupant/_menu.html.twig' %}
+{% endblock %}
+
+{% block breadcrumb_mobile %}
+    <div class="btn btn-primary btn-lg dropdown-toggle hidden-lg hidden-md" id="dropdownMenu3" data-toggle="dropdown">
+        <i class="pull-right icon-arrow"></i>
+        <h3>{{ "Logement"|trans }} {{ logement.Occupant.Ref }}</h3>
+    </div>
+	
+	
+	
+{% endblock %}
+
+{% block header %}
+    {% if occupant_no_header() != 'true' %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block main_content %}
+
+    <script type="text/javascript">
+        var charts = Array();
+    </script>
+    <ul class="breadcrumb hidden-xs">
+        <li><a href="#">{{ "Logement"|trans }} {{ logement.Occupant.Ref }}</a></li>
+    </ul>
+    <span class="clearfix"></span>
+    <h2>{{ "Aperçu du logement"|trans }}</h2>
+
+    <div class="row panel-area building-detail-area">
+
+        <div class="col-md-8 col-sm-6 block block-1">
+            <div class="panel panel-primary parc_summary panel-info">
+
+                <div class="meta clearfix">
+                    <div class="icons">
+                        <i class="icon-opened33"></i>
+                    </div>
+
+                    <div class="data">
+                        <p>
+                            {% if logement.Occupant is defined %}
+                                <strong>{{ 'Référence'|trans }} : <span>{{ logement.Occupant.Ref }}</span></strong>
+                            {% endif %}
+                        </p>
+                        <p>
+                            <strong>{{ "N° d'immeuble"|trans }} : <span>{{ logement.Immeuble.Numero }}</span></strong>
+                        </p>
+
+                        <div class="info clearfix">
+                            <div class="item">{{ "Batiment"|trans }} {{ logement.Logement.NumBatiment }}</div>
+                            <div class="item">{{ "Escalier"|trans }}{{ logement.Logement.NumEscalier }}</div>
+                            <div class="clearfix"></div>
+                            <div class="item">{{ "Etage"|trans }} {{ logement.Logement.NumEtage }}</div>
+                            <div class="item">{{ "Logement"|trans }} {{ logement.Logement.NumOrdre }}</div>
+                        </div>
+
+                        <p>{{ logement.Logement.AdrBatiment }}</p>
+                        <p>{{ logement.Immeuble.Cp }} {{ logement.Immeuble.Ville }}</p>
+                    </div>
+                </div>
+
+                <div class="meta user clearfix">
+                    <div class="icons">
+                        <i class="icon-user"></i>
+                    </div>
+
+                    <div class="data">
+                        <p>
+                            <strong>{{ "Occupant"|trans }} : <span>{{ logement.Occupant.Nom }}</span></strong>
+							<span style="float:right;"> 
+                                    {# <a href="{{ path('TechemCoreBundle_Logement_edit', {'pkLogement': logement.infosLogement.Logement.PkLogement}) }}" title="{{ "Modifier les coordonnées de l'occupant"|trans }}">
+                                        <div class="item dep">
+                                            <div class="wrapper {% if logement.infosLogement.NbDepannages > 0 %}yellow{% endif %}">
+                                                <i class="icons icon-pencil"></i>
+                                            </div>
+                                        </div>
+                                    </a> #}
+									{% if logement.Immeuble.HasTelereleve == true and logement.Immeuble.HasNoteOccupant == true %}
+										{% if logement.NbCompteursEC > 0 %}
+											
+											
+													<div>
+														<form class="" style="float:right;padding-left:10px;"
+																  action="{{ path('TechemCoreBundle_Occupant_note_releve', {'pkImmeuble': logement.Immeuble.PkImmeuble,'pkOccupant':logement.Occupant.PkOccupant , 'energie': 'EAU'}) }}"
+																  method="POST" target="_blank">
+																   
+																 
+																<a href="#" target="_blank">
+																	<button type="submit" class="btn-primary btn">
+																		<i class="icon-download"></i><b>Info Conso<br />Eau</b>
+																	</button>
+																</a>
+														</form>
+													</div>
+											
+											
+										{% endif %}
+
+										{% if logement.NbCompteursCET > 0 or logement.NbCompteursRepart > 0 %}
+											
+											
+													<div>
+														<form class="" style="float:right; padding-left:10px;"
+																  action="{{ path('TechemCoreBundle_Occupant_note_releve', {'pkImmeuble': logement.Immeuble.PkImmeuble,'pkOccupant':logement.Occupant.PkOccupant , 'energie': 'CHAUFFAGE'}) }}"
+																  method="POST" target="_blank">
+																   
+																 
+																<a href="#" target="_blank">
+																	<button type="submit" class="btn-primary btn">
+																		<i class="icon-download"></i><b>Info Conso<br />Chauffage</b>
+																	</button>
+																</a>
+														</form>
+													</div>
+											
+											
+										{% endif %}
+									{% endif %}
+							</span>
+                            
+                        </p>
+                        <p>
+                            <strong>{{ "Date d'arrivée"|trans }} :
+                                <span>{{ logement.Occupant.DateArrivee|date("d/m/Y") }}</span></strong>
+								
+                        </p>
+                    </div>
+                </div>
+
+                <div class="app">
+                    <div class="inner"><strong>{{ logement.NbAppareils }}</strong> {{ "Appareils"|trans }}</div>
+                </div>
+
+                <div class="stats clearfix">
+                    {% if logement.NbCompteursEF != -1 %}
+                        <div class="item">
+                            <div class="value">{{ logement.NbCompteursEF }}</div>
+
+                            <div class="title">{{ "Eau froide"|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if logement.NbCompteursEC != -1 %}
+                        <div class="item">
+                            <div class="value">{{ logement.NbCompteursEC }}</div>
+
+                            <div class="title">{{ 'Eau chaude'|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if logement.NbCompteursRepart != -1 %}
+                        <div class="item">
+                            <div class="value">{{ logement.NbCompteursRepart }}</div>
+
+                            <div class="title">{{ 'Répartiteurs'|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if logement.NbCompteursCET != -1 %}
+                        <div class="item">
+                            <div class="value">{{ logement.NbCompteursCET }}</div>
+
+                            <div class="title">{{ "Compteur d'énergie"|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if logement.NbCompteursElect != -1 %}
+                        <div class="item">
+                            <div class="value">{{ logement.NbCompteursElect }}</div>
+
+                            <div class="title">{{ "Electricité"|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if logement.NbCompteursGaz != -1 %}
+                        <div class="item">
+                            <div class="value">{{ logement.NbCompteursGaz }}</div>
+
+                            <div class="title">{{ "Gaz"|trans }}</div>
+                        </div>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6 block block-2 status-gauge">
+            <div class="panel-default">
+                {% if logement.NbDepannages > 0 %}
+                <a href="{{ path('TechemCoreBundle_Occupant_listinterventions', {statut: 'ouvert'}) }}" class="dep">
+                    {% else %}
+                    <a href="{{ path('TechemCoreBundle_Occupant_listinterventions') }}" class="dep">
+                        {% endif %}
+                        <div class="panel">
+                            <div class="canvas {% if logement.NbDepannages > 0 %}orange{% endif %}">
+                                {% set rationDepannage = logement.NbDepannagesTotal > 0 ? 0.5 : 0 %}
+                                {% set rationDepannage = logement.NbDepannages > 0 ? 1 : rationDepannage %}
+                                <canvas width="139" height="113"
+                                        data-options=" {{ {value: rationDepannage, fillGaugeStyle: '#8e98a2'}|json_encode() }}"></canvas>
+                                <div class="icons "><i class="icon icon-wrench44"></i></div>
+                            </div>
+                            {% set NbDepannages = logement.NbDepannagesTotal > 0 ? logement.NbDepannagesTotal : 0 %}
+                            {% set NbDepannages = logement.NbDepannages > 0 ? logement.NbDepannages : 0 %}
+                            <div class="number">{{ NbDepannages }}</div>
+                            <div class="text">
+                                <span>{{ "Dépannages"|trans }}{% if logement.NbDepannages > 0 %} {{ "en cours"|trans }}{% endif %}</span>
+                            </div>
+                        </div>
+                    </a>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6 block block-3 status-gauge">
+            <div class="panel-default">
+                <a href="{{ path('TechemCoreBundle_Occupant_listdysfunctions') }}" class="dep">
+                    <div class="panel">
+                        <div class="canvas {% if logement.NbDysfonctionnements > 0 %}yellow {% endif %}">
+                            <canvas width="139" height="113"
+                                    data-options=" {{ {value: logement.NbDysfonctionnements > 0, fillGaugeStyle: '#000000'}|json_encode() }}"></canvas>
+                            <div class="icons"><i class="icon icon-bell84"></i></div>
+                        </div>
+                        <div class="number">{% if logement.NbDysfonctionnements == -1 %}0{% else %}{{ logement.NbDysfonctionnements }}{% endif %}</div>
+                        <div class="text"><span>{{ 'Alarmes techniques'|trans }}</span></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        {% if logement.NbCompteursEF > 0 %}
+            {% set active = 'EF' %}
+        {% elseif logement.NbCompteursEC > 0 %}
+            {% set active = 'EC' %}
+        {% elseif logement.NbCompteursRepart > 0 %}
+            {% set active = 'Repart' %}
+        {% elseif logement.NbCompteursCET > 0 %}
+            {% set active = 'CET' %}
+        {% elseif 0 > 0 %}
+            {% set active = 'Temp' %}
+        {% elseif logement.NbCompteursElect > 0 %}
+            {% set active = 'Elect' %}
+        {% elseif logement.NbCompteursGaz > 0 %}
+            {% set active = 'Gaz' %}
+        {% endif %}
+
+        <div class="col-xs-12 tab-detail-area block block-4">
+            <ul class="nav nav-tabs" role="tablist">
+
+                <li role="presentation" {% if active == "EF" %}class="active"{% endif %}>
+                    <a href="#tab-1" {% if logement.NbCompteursEF > 0 %}aria-controls="home" role="tab"
+                       data-toggle="tab" {% else %}class="disabled"{% endif %}>
+                        <div class="inner"><span class="icon icon-water94"></span>{{ "Eau froide"|trans }}</div>
+                    </a>
+                </li>
+
+                <li role="presentation" {% if active == "EC" %}class="active"{% endif %}>
+                    <a href="#tab-2" {% if logement.NbCompteursEC > 0 %}aria-controls="home" role="tab"
+                       data-toggle="tab" {% else %}class="disabled"{% endif %}>
+                        <div class="inner"><span class="icon icon-water94"></span> {{ 'Eau chaude'|trans }}</div>
+                    </a>
+                </li>
+
+                <li role="presentation" {% if active == "Repart" %}class="active"{% endif %}>
+                    <a href="#tab-3" {% if logement.NbCompteursRepart > 0 %}aria-controls="home" role="tab"
+                       data-toggle="tab" {% else %}class="disabled"{% endif %}>
+                        <div class="inner"><span class="icon icon-squares36"></span> {{ 'Répartiteur'|trans }}</div>
+                    </a>
+                </li>
+
+                <li role="presentation" {% if active == "CET" %}class="active"{% endif %}>
+                    <a href="#tab-4" {% if logement.NbCompteursCET > 0 %}aria-controls="home" role="tab"
+                       data-toggle="tab" {% else %}class="disabled"{% endif %}>
+                        <div class="inner"><span
+                                    class="icon icon-speedometer10"></span> {{ "Compteur d'énergie"|trans }}</div>
+                    </a>
+                </li>
+
+                <li role="presentation" {% if active == "Temp" %}class="active"{% endif %}>
+                    <a href="#tab-5" {% if logement.NbCompteursCapteur > 0 %}aria-controls="home" role="tab" data-toggle="tab"
+                       {% else %}class="disabled"{% endif %}>
+                        <div class="inner"><span
+                                    class="icon icon-temperature"></span>{{ "Température/ humidité"|trans }}</div>
+                    </a>
+                </li>
+
+                <li role="presentation" {% if active == "Elect" %}class="active"{% endif %}>
+                    <a href="#tab-6" {% if logement.NbCompteursElect > 0 %}aria-controls="home" role="tab"
+                       data-toggle="tab" {% else %}class="disabled"{% endif %}>
+                        <div class="inner"><span class="icon icon-lightning46"></span> {{ "Electricité"|trans }}</div>
+                    </a>
+                </li>
+
+                <li role="presentation" {% if active == "Gaz" %}class="active"{% endif %}>
+                    <a href="#tab-7" {% if logement.NbCompteursGaz > 0 %}aria-controls="home" role="tab"
+                       data-toggle="tab" {% else %}class="disabled"{% endif %}>
+                        <div class="inner"><span class="icon icon-fire58"></span> {{ "Gaz"|trans }}</div>
+                    </a>
+                </li>
+
+            </ul>
+
+            <div class="tab-content">
+
+                {% if logement.NbCompteursEF > 0 %}
+                    <div role="tabpanel" class="tab-pane {% if active == "EF" %}active{% endif %}" id="tab-1"
+                         data-area="tab-1">
+                        {% include 'Occupant/_panel_eau.html.twig' with { panel: logement.LogementEF, label: 'Eau froide', NbCompteurs: logement.NbCompteursEF, color: '#46b5fb', colorclass: 'blue', consoTab: consoTabs.EF, fluide: 'EF'} %}
+                    </div>
+                {% endif %}
+
+                {% if logement.NbCompteursEC > 0 %}
+                    <div role="tabpanel" class="tab-pane {% if active == "EC" %}active{% endif %}" id="tab-2"
+                         data-area="tab-2">
+                        {% include 'Occupant/_panel_eau.html.twig' with { panel: logement.LogementEC, label: 'Eau chaude', NbCompteurs: logement.NbCompteursEC, color: '#f83703', colorclass: 'red', consoTab: consoTabs.EC, fluide: 'EC'} %}
+                    </div>
+                {% endif %}
+
+                {% if logement.NbCompteursRepart > 0 %}
+                    <div role="tabpanel" class="tab-pane {% if active == "Repart" %}active{% endif %}" id="tab-3"
+                         data-area="tab-3">
+                        {% include 'Occupant/_panel_repart.html.twig' with { panel: logement.LogementRepart, label: 'Repartiteur', NbCompteurs: logement.NbCompteursRepart, color: '#FF6702', colorclass: 'red', consoTab: consoTabs.Repart, unite: 'unités de répartition'} %}
+                    </div>
+                {% endif %}
+
+                {% if logement.NbCompteursCET > 0 %}
+                    <div role="tabpanel" class="tab-pane {% if active == "CET" %}active{% endif %}" id="tab-4"
+                         data-area="tab-4">
+                        {% include 'Occupant/_panel_cet.html.twig' with { panel: logement.LogementCET, label: 'CET', NbCompteurs: logement.NbCompteursCET, color: '#FF6702', colorclass: 'red', consoTab: consoTabs.CET, unite : 'kwh'} %}
+                    </div>
+                {% endif %}
+
+                {% if logement.NbCompteursCapteur > 0 %}
+                    <div role="tabpanel" class="tab-pane {% if active == "Temp" %}active{% endif %}" id="tab-5"
+                         data-area="tab-5">
+                        {% include 'Occupant/_panel_temp.html.twig' with { panel: logement.LogementCapteur, NbCompteurs: null, consoTab: consoTabs.Capteur } %}
+                    </div>
+                {% endif %}
+
+                {% if logement.NbCompteursElect > 0 %}
+                    <div role="tabpanel" class="tab-pane {% if active == "Elect" %}active{% endif %}" id="tab-6"
+                         data-area="tab-6">
+                        {% include 'Occupant/_panel_elect.html.twig' with { panel: logement.LogementElect, NbCompteurs: logement.NbCompteursElect} %}
+                    </div>
+                {% endif %}
+
+                {% if logement.NbCompteursGaz > 0 %}
+                    <div role="tabpanel" class="tab-pane {% if active == "Gaz" %}active{% endif %}" id="tab-7"
+                         data-area="tab-7">
+                        {% include 'Occupant/_panel_gaz.html.twig' with { panel: logement.LogementGaz, NbCompteurs: logement.NbCompteursGaz} %}
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block body_classes %}{{ parent() }} logement{% endblock %}
+
+{% block javascripts_foot %}
+    {{ parent() }}
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="http://www.chartjs.org/assets/Chart.min.js"></script>
+    <script type="text/javascript" src="{{ asset('bundles/techemcore/js/custom/status-gauge.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/techemcore/js/custom/performance-gauge.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/techemcore/js/custom/charts.js') }}"></script>
+
+    <script type="text/javascript">
+        (function () {
+
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                var $me = $(e.target);
+                var $area = $($me.attr('href'));
+
+                drawGauge($area.attr('data-area'));
+                drawCharts($area.attr('data-area'));
+            })
+
+            var defaultArea = $('.tab-detail-area > .tab-content > .tab-pane.active').attr('data-area');
+            drawGauge(defaultArea);
+            drawCharts(defaultArea);
+
+        })();
+    </script>
+{% endblock %}

@@ -1,0 +1,35 @@
+$(function () {
+  if (!$('.youtubeVideo').length) {
+    return;
+  }
+  if (!window._etracker || !window._etracker.sendEvent) {
+    return;
+  }
+  window.onYouTubeIframeAPIReady = function () {
+    $('.youtubeVideo iframe').each(function (index, ytiframe) {
+      new YT.Player(this, {
+        events: {
+          'onStateChange': function (event) {
+            var etInstanceNames = {
+              //'n1': 'unstarted',
+              '0': 'et_VideoStopEvent', // ended
+              '1': 'et_VideoStartEvent', // playing
+              '2': 'et_VideoPauseEvent' // pause
+            };
+            var selInstanceName = etInstanceNames[(event.data < 0 ? 'n' : '') + Math.abs(event.data)] || null;
+            var etEvent = selInstanceName ? new window[selInstanceName](event.target.getVideoData().video_id, event.target.getVideoData().title) : null;
+            if (!etEvent) {
+              return;
+            }
+            _etracker.sendEvent(etEvent);
+          }
+        }
+      });
+    });
+  };
+  var tag = document.createElement('script');
+  tag.id = 'ytpe-iframe';
+  tag.src = 'https://www.youtube.com/iframe_api';
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});

@@ -1,0 +1,1 @@
+selectBoxIt.setOption=function(t,n,e){var o=this;return"string"===$.type(t)&&(o.options[t]=n),o.refresh((function(){o._callbackSupport(e)}),!0),o};

@@ -1,0 +1,82 @@
+{% extends "base.html.twig" %}
+
+
+    {% block body__main_menu %}
+        {#{% if view == "base_occupant.html.twig" %}#}
+        {#{% endif %}#}
+        <li class="{% if active is not defined %}active{% else %}active2{% endif %} with-icon">
+            <a href="{{ path("front") }}" class="wheel">
+                <i class="icon-cog"></i><span style="" class="title ">Accueil</span>
+            </a>
+        </li>
+    {% endblock %}
+
+    {% block main_content %}
+        {% if view == "layout.html.twig" %}
+                <div class="main-content">
+                    <a href="{{ path("front") }}" class="logo">
+                        <img src="{{ asset('bundles/techemcore/images/fidesio/logo.svg') }}"/>
+                    </a>
+
+                    <div class="form">
+                        <h2>Mentions légales</h2>
+                        <br/>
+                        <div class="cgu-page">
+                            {% include 'Front/legal_notices_content.html.twig' %}
+                        </div>
+                    </div>
+                </div>
+        {% else %}
+            {% include 'Front/legal_notices_connected.html.twig' %}
+        {% endif %}
+    {% endblock %}
+
+
+
+
+
+
+
+
+{#{% if connected == "occupant" %}#}
+    {#{% extends "base_occupant.html.twig" %}#}
+
+    {#{% block main_content %}#}
+
+        {#&#123;&#35;<div class="main-content">&#35;&#125;#}
+            {#{% include 'Front:legal_notices_content.html.twig' %}#}
+        {#&#123;&#35;</div>&#35;&#125;#}
+
+    {#{% endblock %}#}
+
+{#{% elseif connected == "gestionnaire" %}#}
+
+    {#{% extends "base.html.twig" %}#}
+
+    {#{% block main_content %}#}
+
+        {#{% include 'Front:legal_notices_content.html.twig' %}#}
+
+    {#{% endblock %}#}
+
+{#{% else %}#}
+    {#{% extends "layout.html.twig" %}#}
+
+    {#{% block main_content %}#}
+
+        {#<div class="main-content">#}
+            {#<a href="{{ path('TechemCoreBundle_TableauBordClient_index') }}" class="logo">#}
+                {#<img src="{{ asset('bundles/techemcore/images/fidesio/logo.svg') }}"/>#}
+            {#</a>#}
+
+            {#<div class="form">#}
+                {#<h2>Mentions légales</h2>#}
+                {#<br/>#}
+                {#<div class="cgu-page">#}
+                    {#{% include 'Front:legal_notices_content.html.twig' %}#}
+                {#</div>#}
+            {#</div>#}
+        {#</div>#}
+
+    {#{% endblock %}#}
+{#{% endif %}#}

@@ -1,0 +1,70 @@
+{% if link is not defined %}
+    {% set link = "#" %}
+{% endif %}
+<li class="tbody"
+    data-numero="{% if depannage.Depannage is defined and depannage.Depannage.Numero is defined %}{{ depannage.Depannage.Numero }}{% endif %}"
+    data-nom="{% if depannage.Occupant is defined and depannage.Occupant.Nom is defined %}{{ depannage.Occupant.Nom }}{% endif %}"
+    data-date="{% if depannage.Depannage is defined %}{{ depannage.Depannage.Date|date('d/m/Y') }}{% endif %}"
+    data-motif-abrege="{% if depannage.Depannage is defined and depannage.Depannage.MotifAbrege is defined %}{{ depannage.Depannage.MotifAbrege }}"{% endif %}
+    data-batiment="{% if depannage.Logement is defined and depannage.Logement.NumBatiment is defined %}{{ depannage.Logement.NumBatiment }}{% endif %}"
+    data-escalier="{% if depannage.Logement is defined and depannage.Logement.NumEscalier is defined %}{{ depannage.Logement.NumEscalier }}{% endif %}"
+    data-etage="{% if depannage.Logement is defined and depannage.Logement.NumEtage is defined %}{{ depannage.Logement.NumEtage }}{% endif %}"
+    data-statut="{% if depannage.Depannage is defined and depannage.Depannage.Statut is defined %}{{ depannage.Depannage.Statut }}{% endif %}"
+    >
+    <a href="{{ link }}" class="image"><img src="{{ asset('bundles/techemcore/images/fidesio/dep.png') }}"/></a>
+    <a href="{{ link }}" class="info">
+        <div class="name">{{ "N° intervention" }} :</div>
+        <div class="value">
+            {% if depannage.Depannage is defined and depannage.Depannage.Numero is defined %}
+                {{ depannage.Depannage.Numero }}
+            {% endif %}
+        </div>
+        <div class="name">{{ 'Référence client'|trans }}  :</div>
+        <div class="value">
+            {% if depannage.Occupant is defined and depannage.Occupant.Ref is defined %}
+                {{ depannage.Occupant.Ref }}
+            {% endif %}
+        </div>
+        <div class="name">{{ "Étage"|trans }} :</div>
+        <div class="value">
+            {% if depannage.Logement is defined and depannage.Logement.NumEtage is defined %}
+                {{ depannage.Logement.NumEtage }}
+            {% endif %}
+        </div>
+        <div class="name">{{ "N° logement"|trans }} :</div>
+        <div class="value">
+            {% if depannage.Logement is defined and depannage.Logement.NumOrdre is defined %}
+                {{ depannage.Logement.NumOrdre }}
+            {% endif %}
+        </div>
+        <div class="description">
+            {% if depannage.Occupant is defined and depannage.Occupant.Nom is defined %}
+                {{ depannage.Occupant.Nom }}
+            {% endif %}
+        </div>
+    </a>
+    <a href="{{ link }}" class="date">
+        <div class="name visible-xs">Date</div>
+        <div class="value">
+            {% if depannage.Depannage is defined and depannage.Depannage.Date|date('d/m/Y') != '01/01/0001' %}
+                {{ depannage.Depannage.Date|date('d/m/Y') }}
+            {% endif %}
+        </div>
+    </a>
+    <a href="{{ link }}" class="motif mobile-footer-first">
+        <div class="name visible-xs">{{ "Motif"|trans|upper }}</div>
+        <div class="value">
+            {% if depannage.Depannage is defined and depannage.Depannage.MotifAbrege is defined %}
+                {{ depannage.Depannage.MotifAbrege }}
+            {% endif %}
+        </div>
+    </a>
+    <a href="{{ link }}" class="observation mobile-footer-last">
+        <div class="name visible-xs">{{ "Observation"|trans }}</div>
+        <div class="value">
+            {% if depannage.Depannage is defined and depannage.Depannage.Statut is defined %}
+                {{ depannage.Depannage.Statut }}
+            {% endif %}
+        </div>
+    </a>
+</li>

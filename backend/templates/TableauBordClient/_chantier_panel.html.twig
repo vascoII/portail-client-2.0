@@ -1,0 +1,44 @@
+<div class="panel panel-primary chantier {{ classes }}">
+    {% if board.NbChantiers < 1 %}
+        <h3>{{ "Aucun chantier en cours"|trans }}</h3>
+        <div class="panel-body no-construction">
+            <table>
+                <tr>
+                    <td class="description">
+                        <i class="icon-speedometer10"></i>
+                        <div class="txlab">{{ "Aucune commande en cours"|trans }}</div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    {% else %}
+        <h3><span class="chiffre">{{ board.NbChantiers }}</span> {{ "Chantiers en cours"|trans|upper }}</h3>
+        <div class="panel-body">
+            <table>
+                <tr>
+                    <td>
+                        <i class="icon-speedometer10"></i>
+                        <span class="taux">{{ chantier.total}}</span>
+                        <div class="txlab">{{ 'Appareils commandés'|trans }}</div>
+                        {% if chantier.date is not empty %}
+                            <div class="date">{{ "date de l'entrée"|trans }}<br /> {{ "en commande"|trans }} : </div>
+                            <span class="date chiffre">{{ chantier.date }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <table class="graph bordered">
+                            <tr>
+                                <td class="not" style="height:{{ chantier.remaining_percent }}%;">{{ chantier.remaining }}</td>
+                                <td class="glabel">{{ "restant"|trans }}<br />{{ "à poser"|trans }}</td>
+                            </tr>
+                            <tr>
+                                <td class="ok" style="height:{{ chantier.installed_percent }}%;">{{ chantier.installed }}</td>
+                                <td class="glabel">{{ "appareils" |trans}}<br />{{ "posés"|trans }}</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    {% endif %}
+</div>

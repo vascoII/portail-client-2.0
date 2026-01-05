@@ -1,0 +1,60 @@
+{% extends "layout.html.twig" %}
+
+{% block main_content %}
+
+    <div class="main-content">
+        <a class="logo">
+
+            <img src="{{ asset('bundles/techemcore/images/fidesio/logo.svg') }}" width="180"/>
+        </a>
+
+        <div class="form">
+            <h2>Première connexion</h2>
+            <p>
+                Vous devez valider les CGU pour pouvoir accéder à l'espace client.
+            </p>
+
+            <br/>
+            <div class="cgu-page">
+                {% if type_user == "gestionnaire" %}
+                    {% include 'Front/cgu_client_content.html.twig' %}
+                {% elseif type_user == "occupant" %}
+                    {% include 'Front/cgu_gestionnaire_content.html.twig' %}
+                {% endif %}
+            </div>
+            <br/>
+
+            <form action="{{ path("TechemCoreBundle_Front_cgu_validate") }}" method="post">
+                <div class="form-group">
+                    {% for flashMessage in app.session.flashbag.get('cgu_message') %}
+                        {% if loop.index == 1 %}
+                            <div class="col-xs-12">
+                                <div class="alert alert-danger col-xs-12" role="alert">
+                                    <span>{{ flashMessage }}</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    <div class="form-group col-xs-12">
+                        <input type="email" class="user" name="_email" placeholder={{ "Email"|trans }} required="true"/>
+                    </div>
+                    <div class="form-group col-xs-12">
+                        <input type="email" class="user" name="_email_confirm"
+                               placeholder={{ "Confirmation de l'email" |trans }} required="true"/>
+                    </div>
+                    <div class="form-group col-xs-12">
+                        <div class="checkbox-replace">
+                            <input type="checkbox" id="valid_cgu" name="valid_cgu">
+                            <label>J'accepte les Conditions Générales d'Utilisation</label>
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="form-group col-xs-12">
+                        <input type="submit" name="valid" value="Continuer" class="submit">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

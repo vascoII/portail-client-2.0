@@ -1,0 +1,193 @@
+<div class="panel-chart">
+    <div class="panel">
+        <div class="block-title">Température moyenne de l’immeuble en °C sur une année</div>
+        <br>
+        <div class="canvas">
+            <div id="graph_temp_temp" style="width: 100%; height: 300px;"></div>
+        </div>
+        {% if panel.IndexRecapTemperature.Date|date('dmY') != '01010001' %}
+        <div class="stats">
+            <div class="block-title">Temperature du {{ panel.IndexRecapTemperature.Date|date('d/m/Y') }}</div>
+            <br>
+            <i class="icon icon-temperature"></i><span class="number">{{ panel.IndexRecapTemperature.Moy }} °C </span>
+            <span class="text">T max : <strong>{{ panel.IndexRecapTemperature.Max }}°C</strong> / T min : <strong>{{ panel.IndexRecapTemperature.Min }}°C</strong></span>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="panel-chart">
+    <div class="panel">
+        <div class="block-title">Humidité moyenne de l’immeuble en % sur une année</div>
+        <br>
+        <div class="canvas">
+            <div id="graph_temp_hum" style="width: 100%; height: 300px;"></div>
+        </div>
+        {% if panel.IndexRecapHumidite.Date|date('dmY') != '01010001' %}
+        <div class="stats blue">
+            <div class="block-title">Humidité du {{ panel.IndexRecapHumidite.Date|date('d/m/Y') }}</div>
+            <br>
+
+            <i class="icon icon-beach16"></i><span class="number">{{ panel.IndexRecapHumidite.Moy }} %</span>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script type="text/javascript">
+    charts['graph_temp_temp'] = {
+        type : 'line',
+        loaded : false,
+        options : {
+            title : '',
+            hAxis : {
+                title : '',
+                textStyle : {
+                    fontSize : 11,
+                    bold : true,
+                    italic : true
+                },
+                minValue : 0
+            },
+            series : [
+                {% if panel.SerieConsosTemperature.ValeursXYL|length > 0 %}
+                {
+                    color : "#323232",
+                    targetAxisIndex : 0,
+                    pointShape : "cirlce"
+                }
+                {% endif %}
+            ],
+            focusTarget : 'category',
+            pointSize : 7,
+            legend : {
+                position : "bottom",
+                alignment : "end"
+            },
+            vAxes : [
+                {
+                    {#title : {% if fluide == 'Repart' %}"'" {{ "en Unités de répartition"|trans }}#}
+                    {#"'"{% else %}"en kWh"{% endif %},#}
+                    title : 'en °C',
+                    baselinecolor : "#000000",
+                    minValue : 0
+                }
+            ],
+            width : '100%'
+        },
+        datatable : [
+            [
+                'Date',
+                {% if panel.SerieConsosTemperature.ValeursXYL|length > 0 %}
+                '{{ panel.SerieConsosTemperature.Annee }}',
+                { role : 'style' },
+                { role : 'tooltip' },
+                {% endif %}
+            ],
+            {% set serie1 = panel.SerieConsosTemperature.ValeursXYL|split(';') %}
+            {% set serie2 = panel.SerieConsosTemperature.ValeursXYL|split(';') %}
+            {% for i in range(0, serie1|length > serie2|length ? serie1|length -1 : serie2|length - 1) %}
+            {% set data1 = i < serie1|length ? serie1[i]|split('|') : [null, null, null] %}
+            {% set data1 = data1|length == 4 ? data1 : [null, null, null, null] %}
+            {% set data2 = i < serie2|length ? serie2[i]|split('|') : [null, null, null] %}
+            {% set data2 = data2|length == 4 ? data2 : [null, null, null, null] %}
+            {% if data1[0] != null %}
+            {% set axe = data1[0]|slice(0,5) %}
+            {% elseif data2[0] != null %}
+            {% set axe = data2[0]|slice(0,5) %}
+            {% else %}
+            {% set axe = null %}
+            {% endif %}
+            {% if axe != null %}
+            [
+                '{{ axe }}',
+                {% if panel.SerieConsosTemperature.ValeursXYL|length > 0 %}
+                {{ data1[1] != null and data1[3] != 'VISIBLE=N' ? data1[1] : 'null' }},
+                'point { stroke-width: 2; stroke-color: #df250c; fill-color: {{ data1[3] == 'VIRTUAL=O' ? '#FFFFFF' : '#df250c' }} }',
+                '{{ data1[2] }}',
+                {% endif %}
+            ],
+            {% endif %}
+            {% endfor %}
+        ]
+    };
+
+
+    charts['graph_temp_hum'] = {
+        type : 'line',
+        loaded : false,
+        options : {
+            title : '',
+            hAxis : {
+                title : '',
+                textStyle : {
+                    fontSize : 11,
+                    bold : true,
+                    italic : true
+                },
+                minValue : 0
+            },
+            series : [
+                {% if panel.SerieConsosHumidite.ValeursXYL|length > 0 %}
+                {
+                    color : "#323232",
+                    targetAxisIndex : 0,
+                    pointShape : "cirlce"
+                }
+                {% endif %}
+            ],
+            focusTarget : 'category',
+            pointSize : 7,
+            legend : {
+                position : "bottom",
+                alignment : "end"
+            },
+            vAxes : [
+                {
+                    {#title : {% if fluide == 'Repart' %}"'" {{ "en Unités de répartition"|trans }}#}
+                    {#"'"{% else %}"en kWh"{% endif %},#}
+                    title : 'en %',
+                    baselinecolor : "#000000",
+                    minValue : 0
+                }
+            ],
+            width : '100%'
+        },
+        datatable : [
+            [
+                'Date',
+                {% if panel.SerieConsosHumidite.ValeursXYL|length > 0 %}
+                '{{ panel.SerieConsosHumidite.Annee }}',
+                { role : 'style' },
+                { role : 'tooltip' },
+                {% endif %}
+            ],
+            {% set serie1 = panel.SerieConsosHumidite.ValeursXYL|split(';') %}
+            {% set serie2 = panel.SerieConsosHumidite.ValeursXYL|split(';') %}
+            {% for i in range(0, serie1|length > serie2|length ? serie1|length -1 : serie2|length - 1) %}
+            {% set data1 = i < serie1|length ? serie1[i]|split('|') : [null, null, null] %}
+            {% set data1 = data1|length == 4 ? data1 : [null, null, null, null] %}
+            {% set data2 = i < serie2|length ? serie2[i]|split('|') : [null, null, null] %}
+            {% set data2 = data2|length == 4 ? data2 : [null, null, null, null] %}
+            {% if data1[0] != null %}
+            {% set axe = data1[0]|slice(0,5) %}
+            {% elseif data2[0] != null %}
+            {% set axe = data2[0]|slice(0,5) %}
+            {% else %}
+            {% set axe = null %}
+            {% endif %}
+            {% if axe != null %}
+            [
+                '{{ axe }}',
+                {% if panel.SerieConsosHumidite.ValeursXYL|length > 0 %}
+                {{ data1[1] != null and data1[3] != 'VISIBLE=N' ? data1[1] : 'null' }},
+                'point { stroke-width: 2; stroke-color: #46b5fb; fill-color: {{ data1[3] == 'VIRTUAL=O' ? '#FFFFFF' : '#46b5fb' }} }',
+                '{{ data1[2] }}',
+                {% endif %}
+            ],
+            {% endif %}
+            {% endfor %}
+        ]
+    };
+
+</script>

@@ -1,0 +1,20 @@
+{% extends "base.html.twig" %}
+
+
+{% block body__main_menu %}
+    {% include 'TableauBordClient/_menu.html.twig' %}
+{% endblock %}
+
+{% block main_content %}
+    <ul class="breadcrumb hidden-xs">
+        <li><a href="{{ path('TechemCoreBundle_TableauBordClient_index') }}">{{ 'Le parc'|trans }}</a></li>
+        <li><a href="#">{{ "Liste des factures"|trans }}</a></li>
+    </ul>
+
+    {% include 'Facture/_list_factures.html.twig' %}
+{% endblock %} 
+
+
+
+{% block body_classes %}{{ parent() }} listhousing{% endblock %}
+

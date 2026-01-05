@@ -1,0 +1,1 @@
+!function(e,t,n){"use strict";e(document).ready((function(){var n=e("body").data("url").replace("http://","").replace("/neon","").replace("themes.","");e(".theme-skins").on("click","li a",(function(r){r.preventDefault();var a=e(this);Cookies.set("current-skin",a.data("skin"),{domain:n,expires:3600}),t.location.href=a.attr("href")}))}))}(jQuery,window);

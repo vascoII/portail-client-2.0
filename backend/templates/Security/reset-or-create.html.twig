@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block body_classes %}
+    {{ parent() }}
+    reset-page
+{% endblock %}
+
+{% block main_content %}
+
+    <div class="main-content">
+        <a href="{{ path('TechemCoreBundle_TableauBordClient_index') }}" class="logo">
+            <img src="{{ asset('bundles/techemcore/images/fidesio/logo.svg') }}"/>
+        </a>
+
+        <div class="form-wrapper">
+            <form action="{{ path('reset_password') }}" method="post" class="form form-left">
+                <div class="form-content">
+                    <h2 class="title">RÉINITIALISER SON MOT DE PASSE</h2>
+
+                    <div class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eu dolor lacinia lorem elementum ornare. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</div>
+
+                    <div class="form-group">
+                        <input type="text" class="lock" name="_email" placeholder="Email"/>
+                    </div>
+                </div>
+
+                <input type="submit" name="login" value="ENVOYER" class="submit" />
+            </form>
+
+            <form action="{{ path('create') }}" method="post" class="form form-right">
+                <div class="form-content">
+                    <h2 class="title">ENVOYER UN NOUVEAU MOT DE PASSE PAR COURRIER</h2>
+
+                    <div class="description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi eu dolor lacinia lorem elementum ornare..</div>
+                </div>
+
+                <input type="submit" name="login" value="VALIDER" class="submit" />
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

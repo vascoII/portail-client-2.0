@@ -1,0 +1,107 @@
+{% extends "base.html.twig" %}
+
+{% block body__main_menu %}
+    <li class="category">
+        <a class="operateurCreate" href="{{ path('TechemCoreBundle_Operator_index') }}">
+            <i class="icon-list2"></i><span class="title ">{{ "Liste des gestionnaires"|trans }}</span>
+        </a>
+    </li>
+    <li class="category">
+        <a class="operateurCreateIcon" href="{{ path('TechemCoreBundle_Operator_create') }}">
+            <i class="icon-user"></i><span class="title">{{ "Création de compte"|trans }}</span>
+        </a>
+    </li>
+    <li class="category">
+        <a  class="operateurCreateIcon" href="#">
+            <i class="icon-pencil-1"></i><span class="title">{{ "Mon Compte"|trans }}</span>
+        </a>
+    </li>
+    <li class="active category">
+        <a  class="operateurCreateIcon" href="#">
+            <i class="icon-lightning46"></i><span class="title">{{ "Statistiques de connexion"|trans }}</span>
+        </a>
+    </li>
+{% endblock %}
+
+{% block breadcrumb_mobile %}
+    <div class="btn btn-primary btn-lg dropdown-toggle hidden-lg hidden-md" id="dropdownMenu3" data-toggle="dropdown">
+        <i class="pull-right icon-arrow"></i>
+        <h3>{{ "Modifier mot de passe"|trans }}</h3>
+    </div>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu3">
+        <li role="presentation">
+            <h3><a role="menuitem" tabindex="-1" href="{{ path('TechemCoreBundle_Operator_index') }}">
+                    {{ "Liste des gestionnaires"|trans }}</a></h3>
+        </li>
+    </ul>
+{% endblock %}
+
+
+
+{% block main_content %}
+    <ul class="breadcrumb hidden-xs">
+        <li><a href="{{ path('TechemCoreBundle_Operator_index') }}">{{ "Gestionnaire"|trans }}</a></li>
+        <li><a href="#">{{ "Statistiques de connexion"|trans }}</a></li>
+    </ul>
+    <span class="clearfix"></span>
+	
+	
+	
+	<h2>{{ "Connexions uniques mensuelles"|trans }}</h2>
+	<div class="row panel-area building-detail-area">
+		<div class="graph">
+			
+			<h3>Un peu d'explication</h3>
+			<p></p><p>
+			<br />La statistique de connexion unique des utilisateurs ci-dessous mesure combien de visiteurs distincts accèdent à leur page logement par mois. Contrairement aux simples "vues de page", qui comptent chaque visite même si un utilisateur revient plusieurs fois, cette statistique essaie de ne compter chaque individu qu’une seule fois par période (1 mois).
+			</p><br />
+			<h3>Statistiques de connexions mensuelles</h3>
+
+			<div id="chart_div" style="width: 100%; height: 400px;">
+			</div>
+		</div>
+	</div>
+
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {packages: ['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        var StatistiqueOccupant = {{Stats.GraphPoint|json_encode |raw}};
+
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Mois');
+            data.addColumn('number', 'Connexions uniques');
+
+            // Conversion des dates et formatage des données
+			StatistiqueOccupant.sort((a, b) => new Date(a.date) - new Date(b.date));
+	
+
+
+            var formattedData = StatistiqueOccupant.map(item => [new Date(item.date).toLocaleDateString("fr-FR"), parseInt(item.value)]);
+            data.addRows(formattedData);
+
+            var options = {
+                //title: 'Statistiques de connexion par mois',
+                curveType: 'function',
+                legend: { position: 'bottom' },
+				colors: ['#E30713'],
+				annotations: { alwaysOutside: true } // Étiquettes en dehors
+            };
+
+            //var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
+    </script>	
+	
+	
+	
+	
+	
+	
+	
+   
+{% endblock %}

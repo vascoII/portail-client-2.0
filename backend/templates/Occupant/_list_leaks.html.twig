@@ -1,0 +1,17 @@
+{% extends '_list_leaks.html.twig' %}
+
+{% block export %}
+    <div class="action form btn pull-right" style="padding: 0px;margin: 0px;">
+        <a class="submit" href="{{ path('TechemCoreBundle_Occupant_export_leaks') }}" target="_blank"><i class="fa fa-file-excel-o" aria-hidden="true"></i>  {{ " Export Excel"|trans }}</a>
+
+    </div>
+{% endblock %}
+
+{% block fuites %}
+    {% for fuite in fuites %}
+        {% include '_leak.html.twig' with {
+            'fuite': fuite,
+            'link': path('TechemCoreBundle_Occupant_show')
+        } %}
+    {% endfor %}
+{% endblock %}

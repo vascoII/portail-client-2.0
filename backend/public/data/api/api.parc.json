@@ -1,0 +1,45 @@
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "board": {
+      "Erreur": "",
+      "Info": "",
+      "NbImmeubles": 207,
+      "NbImmeublesTelereleve": 207,
+      "NbImmeublesTransfertFichiers": 200,
+      "NbCompteursARelever": 20865,
+      "NbCompteursReleves": 19923,
+      "NbLogements": 13164,
+      "NbCompteurs": 20963,
+      "NbCompteursEC": 6087,
+      "NbCompteursEF": 14876,
+      "NbCompteursRepart": 0,
+      "NbCompteursCET": 0,
+      "NbCompteursCapteur": 0,
+      "NbCompteursElect": -1,
+      "NbCompteursGaz": -1,
+      "NbFuites": 29,
+      "DegresFuites": -1,
+      "NbDepannages": 60,
+      "DegresDepannages": -1,
+      "NbDysfonctionnements": 4,
+      "DegresDysfonctionnements": -1,
+      "NbAnomalies": 655,
+      "DegresAnomalies": -1,
+      "NbChantiers": 0,
+      "NbCompteursPoses": 0,
+      "NbCompteursCommandes": 0,
+      "PcImmeublesTelereleve": "95",
+      "PcImmeublesTransfertFichiers": "97"
+    },
+    "chantier": {
+      "installed": 0,
+      "installed_percent": 100,
+      "remaining": 0,
+      "remaining_percent": 0,
+      "total": 0,
+      "date": null
+    }
+  }
+}

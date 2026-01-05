@@ -1,0 +1,1332 @@
+// select fields after choose from anliegen-1
+var fields = [
+  "allgemein[anliegen-auswahl-2-abrechnung]",
+  "allgemein[anliegen-auswahl-2-montage]",
+  "allgemein[anliegen-auswahl-2-ablesung]",
+  "allgemein[anliegen-auswahl-2-rechnung]",
+  "allgemein[anliegen-auswahl-2-vertrag]",
+  "allgemein[anliegen-auswahl-2-angebotswunsch]",
+  "allgemein[anliegen-auswahl-2-geraete]"
+];
+
+this.optionalFields = [ "42", "43", "44", "45", "46", "47" ];
+
+// select fields to validate on submit
+var checkSelectFields = [
+  "#anliegen-auswahl-1",
+  "#position",
+  "#salutation"
+];
+
+// input fields to validate on customer status
+var checkSuccessFieldsCustomer = [
+  "allgemein[my-message]",
+  "allgemein[kundennummer]",
+  "allgemein[real-estate-number]",
+  "allgemein[real-estate-number2]",
+  "allgemein[firstname]",
+  "allgemein[lastname]",
+  "allgemein[telephone]",
+  "allgemein[email]"
+];
+
+// input fields to validate on non customer status
+var checkSuccessFieldsNonCustomer = [
+  "allgemein[my-message]",
+  "allgemein[street]",
+  "allgemein[zipcode]",
+  "allgemein[city]",
+  "allgemein[firstname]",
+  "allgemein[lastname]",
+  "allgemein[telephone]",
+  "allgemein[email]"
+];
+
+// input fields based on customer status
+var nonCustomerFields = [
+  "allgemein[street]",
+  "allgemein[zipcode]",
+  "allgemein[city]"
+];
+
+var optionalCustomerFields = [
+  "allgemein[kundennummer]",
+  "allgemein[real-estate-number]"
+  //"allgemein[real-estate-number2]"
+];
+
+this.fieldsInstallAssignmentWithCustomer = [
+  "allgemein[my-message]",
+  "allgemein[position]",
+  "allgemein[customer]",
+  "allgemein[kundennummer]",
+  "allgemein[real-estate-number]",
+  "allgemein[real-estate-number2]",
+  "allgemein[salutation]",
+  "allgemein[title]",
+  "allgemein[firstname]",
+  "allgemein[lastname]",
+  "allgemein[telephone]",
+  "allgemein[fax]",
+  "allgemein[email]"
+];
+
+this.fieldsInstallAssignmentWithoutCustomer = [
+  "allgemein[my-message]",
+  "allgemein[position]",
+  "allgemein[customer]",
+  "allgemein[real-estate-number]",
+  "allgemein[real-estate-number2]",
+  "allgemein[street]",
+  "allgemein[zipcode]",
+  "allgemein[city]",
+  "allgemein[salutation]",
+  "allgemein[title]",
+  "allgemein[firstname]",
+  "allgemein[lastname]",
+  "allgemein[telephone]",
+  "allgemein[fax]",
+  "allgemein[email]"
+];
+
+var freitext = {
+  11: 'Als Hausverwalter können Sie den Status Ihrer Abrechnung - nach Ablauf des Abrechnungsstichtages - auch im Kundenportal unter <a href="https://portal.techem.de/cms/de/login/login.html" target="_blank">Archiv Online</a> einsehen.<br/><br/>Ihr Passwort finden Sie auf dem Anschreiben Ihrer Kundendienstunterlagen. Sollte Ihnen dieses nicht mehr vorliegen, nutzen Sie die Funktion <a target="_blank" href="https://portal.techem.de/cms/de/login/login/passwortvergessen.html">Passwort vergessen</a>.<br/><br/>Als Wohnungseigentümer oder Mieter bitten wir Sie um Verständnis, dass wir Ihnen aus vertragsrechtlichen Gründen keine Informationen geben können.<br/><br/>Unser Vertragspartner ist Ihre Hausverwaltung. Daher bitten wir Sie, sich mit Ihrem Anliegen dorthin zu wenden.',
+  13: 'Ihre Abrechnung können Sie auch jederzeit im Kundenportal unter <a href="https://portal.techem.de/cms/de/customer/ArchiveOnline/archives.html" target="_blank">Archiv Online</a> einsehen und herunterladen.',
+  21: 'Sobald Ihr Auftrag erfasst und disponiert ist, erhalten Sie mit einer Vorlaufzeit von etwa 10 Tagen einen Terminbrief mit Angabe von Datum und Uhrzeit.',
+  22: 'Eine Beauftragung über dieses Kontaktformular können wir leider nicht berücksichtigen.<br /><br />Montageaufträge können Sie schnell und unkompliziert online über das <a target="_blank" href="https://portal.techem.de/">Techem Kundenportal</a> platzieren.<br /><br />Ihr Passwort finden Sie auf dem Anschreiben Ihrer Kundendienstunterlagen. Sollte Ihnen dieses nicht mehr vorliegen, nutzen Sie die Funktion <a target="_blank" href="https://portal.techem.de/cms/de/login/login/passwortvergessen.html">Passwort vergessen</a>.<br /><br />Gerne unterstützen wir Sie bei Ihrer Online-Beauftragung, Sie erreichen uns unter 0800 / 2 11 33 22.<br /><br />Als Wohnungseigentümer oder Mieter finden Sie unser Auftragsformular zur Montage unter <a target="_blank" href="http://www.techem.de/formulare">www.techem.de/formulare</a>.<br /><br />Hierüber werden alle relevanten Informationen erfragt, so dass wir eine umgehende Auftragsanlage gewährleisten können.<br /><br />Wir bitten um Verständnis, dass wir die Beauftragung eines Montageauftrags nicht per E-Mail entgegennehmen können.<br /><br />Die Information über den genauen Montagetermin erhält der Mieter bzw. Wohnungseigentümer mit einer Vorlaufzeit von ca. 10 Tagen durch einen Terminbrief mit Angabe von Datum und Uhrzeit.',
+  23: 'Sobald Ihr Auftrag erfasst und disponiert ist, erhalten Sie mit einer Vorlaufzeit von etwa 10 Tagen einen Terminbrief mit Angabe von Datum und Uhrzeit.',
+  31: 'Unser Ableser hat sich über einen Hausaushang für die jährliche Ablesung angekündigt und Sie können diesen Termin nicht wahrnehmen? Sie erhalten am Tag der geplanten Ablesung automatisch einen kostenfreien Zweittermin per Karte in Ihrem Briefkasten.',
+  32: 'Für die einfache <a href="https://portal.techem.de/cms/de/customer/Orders/intermediateunitreading.html" target="_blank">Beauftragung einer Zwischenablesung</a> können Sie auch unser Kundenportal nutzen.',
+  33: 'Unser Ableser hat sich über einen Hausaushang für die jährliche Ablesung angekündigt und Sie können diesen Termin nicht wahrnehmen? Sie erhalten am Tag der geplanten Ablesung automatisch einen kostenfreien Zweittermin per Karte in Ihrem Briefkasten.',
+  41: 'Ihre Gerätemiet- und Wartungsrechnung können Sie auch jederzeit im Kundenportal unter <a href="https://portal.techem.de/cms/de/customer/ArchiveOnline/archives.html" target="_blank">Archiv Online</a> einsehen und herunterladen.',
+  42: 'Ihre Gerätemiet- und wartungsrechnung können Sie auch jederzeit im Kundenportal unter <a href="https://portal.techem.de/cms/de/customer/ArchiveOnline/archives.html" target="_blank">Archiv Online</a> einsehen und herunterladen.',
+  68: 'Sie können Ihren Energieausweis einfach, bequem und schnell online im <a href="https://portal.techem.de/cms/de/customer/Orders/energieausweis.html" target="_blank">Kundenportal</a> bestellen. Alternativ können Sie über das Techem Energieausweisteam auch Auftragsformulare anfordern. Das Techem Energieausweisteam erreichen Sie Mo.-Fr. von 08:00-18:00 Uhr telefonisch unter 0800 8 333 666 (kostenlos) oder per E-Mail unter <a href="mailto:energieausweis@techem.de">energieausweis@techem.de</a>',
+  71: 'Hier finden Sie <a href="https://www.techem.de/private_vermieter/erfassung_und_abrechnung/unsere_geraete.html" target="_blank">allgemeine Informationen zu unseren Messgeräten</a>',
+  72: 'Hier finden Sie <a href="https://www.techem.de/private_vermieter/sicherheit_und_gesundheit/legionellenpruefung.html" target="_blank">allgemeine Informationen zur Legionellenprüfung</a>',
+  73: 'Hier finden Sie <a href="https://www.techem.de/private_vermieter/sicherheit_und_gesundheit/rauchwarnmelder.html" target="_blank">allgemeine Informationen zur Einbaupflicht und zur Funktion unserer Rauchwarnmelder</a>',
+  74: 'Hier finden Sie <a href="https://www.techem.de/ueber_techem/haeufig_gestellte_fragen/messeg.html" target="_blank">allgemeine Informationen zum Eichgesetz</a>',
+  75: 'Hier finden Sie <a href="https://www.techem.de/private_vermieter/smartheating.html" target="_blank">allgemeine Informationen zu SmartHeating</a>',
+  81: 'Sie haben Fragen zu unserem Energieausweis für Wohngebäude? Dann rufen Sie uns unter 0800 8 333 666 (kostenlos) an.',
+  91: 'Gerne helfen wir Ihnen weiter, falls Sie Ihr persönliches Passwort für unser <a target="_blank" href="https://portal.techem.de/">Kundenportal</a> vergessen haben sollten. Nutzen Sie hierzu bitte die Funktion "<a href="https://portal.techem.de/cms/de/login/login/passwortvergessen.html" target="_blank">Passwort vergessen</a>".',
+  92: 'Sie haben noch keine Zugangsdaten? Dann fordern Sie bitte <a href="https://portal.techem.de/cms/de/login/zugangbeantragen.html" target="_blank">hier</a> Ihr Passwort an.'
+};
+
+jQuery( document ).ready( function() {
+  /*
+   * master_script_callback
+   */
+  if ( jQuery( '#call_back' ).length ) {
+    var $form = jQuery( '#call_back' ).parents( 'form' );
+    var field = 'sskontakt[telephone]';
+
+    jQuery( '#input-telephone, #calling_time' ).css( 'display', 'none' );
+
+    jQuery( '#call_back' ).click( function() {
+      if ( jQuery( this ).is( ':checked' ) ) {
+        jQuery( '#input-telephone' ).prop( 'required', true ).find( '.mandatory' ).text( '*' );
+
+        if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+          $form.bootstrapValidator( 'addField', field, {
+            validators: {
+              notEmpty: {
+                message: jQuery( '#telephone' ).data( 'bv-notempty-message' )
+              },
+
+            }
+          } );
+        }
+
+        jQuery( '#input-telephone, #calling_time' ).css( 'display', 'block' );
+      } else {
+        jQuery( '#input-telephone' ).prop( 'required', false );
+        if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+          $form.bootstrapValidator( 'removeField', field );
+        }
+        jQuery( '#input-telephone, #calling_time' ).css( 'display', 'none' );
+      }
+    } );
+
+  }
+
+  /*
+   * master_script_liegenschaft
+   */
+  jQuery( '.controls label.radio:first-child > input[name="liegenschaft[heizkoerper_erfassungsgeraete]"]:first-child' ).click( function() {
+    if ( jQuery( this ).is( ':checked' ) ) {
+      jQuery( '#bestellung2 #geraete_sind-radio, #bestellung2 #geraete_sind-radio + div' ).css( 'display', 'block' );
+    }
+  } );
+  jQuery( '.controls label.radio:last-child > input[name="liegenschaft[heizkoerper_erfassungsgeraete]"]:first-child' ).click( function() {
+    if ( jQuery( this ).is( ':checked' ) ) {
+      jQuery( '#bestellung2 #geraete_sind-radio, #bestellung2 #geraete_sind-radio + div' ).css( 'display', 'none' );
+    }
+  } );
+
+  /*
+   * master_script_rauchmelder
+   */
+  if ( jQuery( '#rauchmelder-interesse-radio' ).length ) {
+    jQuery( '#rauchmelder-interesse-radio input' ).click( function() {
+      if ( jQuery( '#rauchmelder-interesse_2' ).is( ':checked' ) ) {
+        jQuery( '#object_offer' ).css( 'display', 'block' );
+      } else {
+        jQuery( '#object_offer, #object_offer_2, #object_offer_3' ).css( 'display', 'none' );
+      }
+    } );
+
+    jQuery( '#object_offer, #object_offer_2, #object_offer_3' ).hide();
+    jQuery( '#add-section' ).click( function() {
+      jQuery( '#object_offer_2, #object_offer_3' ).fadeIn();
+      return false;
+    } );
+  }
+
+  /*
+   * master_script_contactform-it
+   *
+   */
+
+  if ( jQuery( '#topic-it' ).length ) {
+
+    jQuery( ":submit" ).on( 'click', function() {
+      jQuery( ".selectpicker" ).each( function() {
+        $el = jQuery( this );
+        checkSelect( $el );
+      } );
+    } );
+
+    jQuery( ".selectpicker" ).each( function() {
+      jQuery( this ).on( 'change', function() {
+        checkSelect( jQuery( this ) );
+      } );
+    } );
+
+    function checkSelect( $el ) {
+      var fg = $el.parents( 'div.form-group' );
+      if ( $el[ 0 ].hasAttribute( 'required' ) || $el.is( '[required]' ) ) {
+        if ( $el[ 0 ].checkValidity() === false ) {
+          fg.find( '.selectpicker' ).css( 'border', '2px solid #e0001a' );
+          fg.addClass( 'has-errors' ).find( '.help-block' ).show().css( 'color', '#e0001a' );
+        } else {
+          fg.removeClass( 'has-errors' ).find( '.help-block' ).hide();
+          fg.find( '.selectpicker' ).css( 'border', '1px solid #ccc' );
+        }
+      }
+    }
+  }
+
+
+  /*
+   * master_script_contactform-de_allgemein
+   *
+   */
+
+  if ( jQuery( '#select_anliegen-auswahl-1' ).length ) {
+
+    var $form = jQuery( '#select_anliegen-auswahl-1' ).parents( 'form' );
+
+    $( '#email' ).on( 'input.bs.validator', function( e ) {
+      var $form = jQuery( '#select_anliegen-auswahl-1' ).parents( 'form' );
+      if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+        $form.bootstrapValidator( 'resetField', 'allgemein[email]', false );
+      }
+    } );
+    $( '#email' ).on( 'blur', function() {
+      var $form = jQuery( '#select_anliegen-auswahl-1' ).parents( 'form' );
+      if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+        $form.bootstrapValidator( 'revalidateField', 'allgemein[email]' );
+      }
+
+    } );
+
+    jQuery( '#input-street, #zip_city' ).hide();
+
+    if ( jQuery( '#select_anliegen-auswahl-1' ).val() !== "" ) {
+      changeSecondSelect( jQuery( '#select_anliegen-auswahl-1' ) );
+    }
+
+    if ( getParams( 'etcc_cmp' ) === 'Legionellenpruefung' ) {
+      if ( typeof jQuery.fn.selectpicker  == 'function' ) {
+        jQuery( '#select_anliegen-auswahl-1' ).val( 'Angebotswunsch' );
+        jQuery( '#select_anliegen-auswahl-1' ).selectpicker( 'render' );
+      }
+      changeSecondSelect( jQuery( '#select_anliegen-auswahl-1' ), fields );
+
+      if ( typeof jQuery.fn.selectpicker == 'function' ) {
+        jQuery( '#select_anliegen-auswahl-2-angebotswunsch' ).val( 'Trinkwasseranalyse/Legionellenprüfung' );
+        jQuery( '#select_anliegen-auswahl-2-angebotswunsch' ).selectpicker( 'render' );
+      }
+
+    }
+
+    // set second select based on first
+    jQuery( '#anliegen-auswahl-1 .selectpicker' ).each( function() {
+      jQuery( this ).on( 'change', function() {
+        var $form = jQuery( '#select_anliegen-auswahl-1' ).parents( 'form' );
+        if ( jQuery( this ).prop( 'selectedIndex' ) == "0" ) {
+          $( '#anliegen-auswahl-1' ).find( '.selectpicker' ).css( 'border', '2px solid #e0001a' );
+          $( '#select_anliegen-auswahl-1' ).parents( '.form-group' ).addClass( 'has-errors' ).find( '.help-block:eq(1)' ).show().css( 'color', '#e0001a' );
+        } else {
+          $( '#anliegen-auswahl-1' ).find( '.selectpicker' ).css( 'border', '1px solid #ccc' );
+          $( '#select_anliegen-auswahl-1' ).parents( '.form-group' ).addClass( 'has-errors' ).find( '.help-block' ).hide();
+          $form.find( ':input[type="submit"]' ).prop( 'disabled', false );
+        }
+        jQuery( '#textarea-freitext' ).hide();
+        changeSecondSelect( jQuery( this ) );
+      } );
+    } );
+
+    jQuery( '#position .selectpicker' ).on( 'change', function() {
+      var $form = jQuery( '#select_anliegen-auswahl-1' ).parents( 'form' );
+      if ( jQuery( this ).prop( 'selectedIndex' ) == "0" ) {
+        $( '#position' ).find( '.selectpicker' ).css( 'border', '2px solid #e0001a' );
+        $( '#position' ).addClass( 'has-errors' ).find( '.help-block:eq(1)' ).show().css( 'color', '#e0001a' );
+      } else {
+        $( '#position' ).find( '.selectpicker' ).css( 'border', '1px solid #ccc' );
+        $( '#position' ).addClass( 'has-errors' ).find( '.help-block:eq(1)' ).hide();
+        $form.find( ':input[type="submit"]' ).prop( 'disabled', false );
+      }
+    } );
+
+    jQuery( '#salutation .selectpicker' ).on( 'change', function() {
+      var $form = jQuery( '#select_anliegen-auswahl-1' ).parents( 'form' );
+      if ( jQuery( this ).prop( 'selectedIndex' ) == "0" ) {
+        $( '#salutation' ).find( '.selectpicker' ).css( 'border', '2px solid #e0001a' );
+        $( '#salutation' ).addClass( 'has-errors' ).find( '.help-block:eq(1)' ).show().css( 'color', '#e0001a' );
+      } else {
+        $( '#salutation' ).find( '.selectpicker' ).css( 'border', '1px solid #ccc' );
+        $( '#salutation' ).addClass( 'has-errors' ).find( '.help-block:eq(1)' ).hide();
+        $form.find( ':input[type="submit"]' ).prop( 'disabled', false );
+      }
+    } );
+
+    //$(':input[type="submit"]').on('click', function(event) {
+    $form.find( ':input[type="submit"]' ).on( 'click', function( event ) {
+      var $form = jQuery( '#select_anliegen-auswahl-1' ).parents( 'form' );
+      if ( jQuery( "#customer_1" ).is( ":checked" ) ) {
+        for ( checkindex = 0; checkindex < checkSuccessFieldsCustomer.length; ++checkindex ) {
+          if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+            $form.bootstrapValidator( 'revalidateField', checkSuccessFieldsCustomer[ checkindex ] );
+          }
+        }
+      } else {
+        for ( checkindex = 0; checkindex < checkSuccessFieldsNonCustomer.length; ++checkindex ) {
+          if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+            $form.bootstrapValidator( 'revalidateField', checkSuccessFieldsNonCustomer[ checkindex ] );
+          }
+        }
+      }
+
+      if ( jQuery( "input[name='allgemein[kundennummer]']" ).val() == "" && jQuery( "input[name='allgemein[real-estate-number]']" ).val() != "" ) {
+        if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+          $form.bootstrapValidator( 'enableFieldValidators', 'allgemein[kundennummer]', false, 'notEmpty' );
+          $form.bootstrapValidator( 'revalidateField', 'allgemein[kundennummer]' );
+        }
+      }
+
+      if ( jQuery( "input[name='allgemein[kundennummer]']" ).val() == "" && jQuery( "input[name='allgemein[real-estate-number2]']" ).val() != "" ) {
+        if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+          $form.bootstrapValidator( 'enableFieldValidators', 'allgemein[kundennummer]', false, 'notEmpty' );
+          $form.bootstrapValidator( 'revalidateField', 'allgemein[kundennummer]' );
+
+        }
+
+      }
+
+      if ( jQuery( "input[name='allgemein[kundennummer]']" ).val() == "" ) {
+        if ( jQuery( "input[name='allgemein[real-estate-number]']" ).val() != "" || jQuery( "input[name='allgemein[real-estate-number2]']" ).val() != "" ) {
+          if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+            $form.bootstrapValidator( 'enableFieldValidators', 'allgemein[kundennummer]', false, 'notEmpty' );
+            $form.bootstrapValidator( 'revalidateField', 'allgemein[kundennummer]' );
+          }
+
+        }
+
+        if ( jQuery( "input[name='allgemein[real-estate-number]']" ).val() != "" && jQuery( "input[name='allgemein[real-estate-number2]']" ).val() == "" ) {
+          if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+            $form.bootstrapValidator( 'enableFieldValidators', 'allgemein[kundennummer]', false, 'notEmpty' );
+            $form.bootstrapValidator( 'revalidateField', 'allgemein[kundennummer]' );
+
+            $form.bootstrapValidator( 'enableFieldValidators', 'allgemein[real-estate-number2]', true, 'notEmpty' );
+            $form.bootstrapValidator( 'revalidateField', 'allgemein[real-estate-number2]' );
+          }
+          highlightSelect( 'allgemein[real-estate-number2]' );
+
+
+        }
+        if ( jQuery( "input[name='allgemein[real-estate-number]']" ).val() == "" && jQuery( "input[name='allgemein[real-estate-number2]']" ).val() != "" ) {
+
+          if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+            $form.bootstrapValidator( 'enableFieldValidators', 'allgemein[kundennummer]', false, 'notEmpty' );
+            $form.bootstrapValidator( 'revalidateField', 'allgemein[kundennummer]' );
+
+            $form.bootstrapValidator( 'enableFieldValidators', 'allgemein[real-estate-number]', true, 'notEmpty' );
+            $form.bootstrapValidator( 'revalidateField', 'allgemein[real-estate-number]' );
+          }
+          highlightSelect( 'allgemein[real-estate-number]' );
+        }
+
+      }
+
+      if ( jQuery( "input[name='allgemein[kundennummer]']" ).val() != "" ) {
+        if ( jQuery( "input[name='allgemein[real-estate-number]']" ).val() == "" || jQuery( "input[name='allgemein[real-estate-number2]']" ).val() == "" ) {
+
+          if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+            $form.bootstrapValidator( 'enableFieldValidators', 'allgemein[real-estate-number]', false, 'notEmpty' );
+            $form.bootstrapValidator( 'enableFieldValidators', 'allgemein[real-estate-number2]', false, 'notEmpty' );
+            $form.bootstrapValidator( 'revalidateField', 'allgemein[real-estate-number]' );
+            $form.bootstrapValidator( 'revalidateField', 'allgemein[real-estate-number2]' );
+          }
+        }
+      }
+
+      if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+        $form.bootstrapValidator( 'revalidateField', 'allgemein[auftragsnummer]' );
+      }
+
+
+
+      if ( jQuery( "input[name='allgemein[real-estate-number]']" ).val() == "" && jQuery( "input[name='allgemein[real-estate-number2]']" ).val() == "" ) {
+        jQuery( '#allgemein_real-estate-number' ).find( '.help-block' ).each( function() {
+          if ( jQuery( this ).attr( 'data-bv-for' ) == 'allgemein[real-estate-number2]' ) {
+            jQuery( this ).remove();
+          }
+        } );
+      }
+
+      var valid = true;
+
+      jQuery( '#anliegen-auswahl-1 select.selectpicker' ).each( function() {
+        var index = jQuery( this ).prop( 'selectedIndex' );
+        var $secSelector = '#anliegen-auswahl-2 > div:nth-child(' + index + ')';
+        var $secSel = jQuery( $secSelector ).find( 'select' );
+        if ( $secSel.length ) {
+          if ( !checkSelects( $secSel ) ) {
+            valid = false;
+            return false;
+          }
+        }
+      } );
+
+      for ( checkindex = 0; checkindex < checkSelectFields.length; ++checkindex ) {
+        var selector = checkSelectFields[ checkindex ];
+        var checkSelector = jQuery( selector ).find( 'select' );
+        if ( checkSelector.length ) {
+          var tempValid = checkSelects( checkSelector )
+          if ( valid && !tempValid ) {
+            valid = false;
+          }
+        }
+      }
+
+      if ( !valid ) {
+        return false;
+      }
+
+    } );
+
+    // show / hide based on customer type
+    jQuery( 'input[name="allgemein[customer]"]' ).on( 'change', function( event, doNotValidate ) {
+      var doNotValidate = doNotValidate;
+      var $form = jQuery( '#select_anliegen-auswahl-1' ).parents( 'form' );
+      if ( jQuery( "#customer_1" ).is( ":checked" ) ) {
+        jQuery( '#customer_0' ).removeAttr( 'checked' );
+        jQuery( '#input-street, #zip_city' ).hide();
+        jQuery( '#kundennummer' ).show();
+
+        for ( index = 0; index < nonCustomerFields.length; ++index ) {
+          $form.find( 'input[name="' + nonCustomerFields[ index ] + '"]' ).parents( '.form-group' ).find( '.mandatory' ).text( '' );
+          $form.find( 'input[name="' + nonCustomerFields[ index ] + '"]' ).removeAttr( 'required' );
+          if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+            $form.bootstrapValidator( 'removeField', nonCustomerFields[ index ] );
+          }
+        }
+
+        for ( index = 0; index < optionalCustomerFields.length; ++index ) {
+          $form.find( 'input[name="' + optionalCustomerFields[ index ] + '"]' ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+          $form.find( 'input[name="' + optionalCustomerFields[ index ] + '"]' ).attr( 'required', 'required' );
+          if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+            $form.bootstrapValidator( 'addField', optionalCustomerFields[ index ], {
+              validators: {
+                notEmpty: {
+                  message: $form.find( 'input[name="' + optionalCustomerFields[ index ] + '"]' ).data( 'bv-notempty-message' )
+                }
+              }
+            } );
+
+            if ( !doNotValidate ) {
+              $form.bootstrapValidator( 'validateField', optionalCustomerFields[ index ] );
+            }
+
+          }
+
+        }
+
+      } else {
+        jQuery( '#input-street, #zip_city' ).show();
+        jQuery( '#kundennummer' ).hide();
+        jQuery( '#customer_1' ).removeAttr( 'checked' );
+
+        var index;
+
+        for ( index = 0; index < optionalCustomerFields.length; ++index ) {
+
+          $form.find( 'input[name="' + optionalCustomerFields[ index ] + '"]' ).parents( '.form-group' ).find( '.mandatory' ).text( '' );
+          $form.find( 'input[name="' + optionalCustomerFields[ index ] + '"]' ).removeAttr( 'required' );
+          if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+            $form.bootstrapValidator( 'resetField', optionalCustomerFields[ index ] );
+            $form.bootstrapValidator( 'removeField', optionalCustomerFields[ index ] );
+          }
+        }
+
+        for ( index = 0; index < nonCustomerFields.length; ++index ) {
+
+          $form.find( 'input[name="' + nonCustomerFields[ index ] + '"]' ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+          $form.find( 'input[name="' + nonCustomerFields[ index ] + '"]' ).attr( 'required', 'required' );
+          if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+            $form.bootstrapValidator( 'addField', nonCustomerFields[ index ], {
+              validators: {
+                notEmpty: {
+                  message: $form.find( 'input[name="' + nonCustomerFields[ index ] + '"]' ).data( 'bv-notempty-message' )
+                }
+              }
+            } );
+          }
+
+        }
+
+      }
+
+    } );
+
+
+    // hide some fields initially
+    jQuery( '#customer_1' ).attr( 'checked', 'checked' );
+    jQuery( 'input[name="allgemein[customer]"]' ).trigger( 'change', [ true ] );
+
+    jQuery( 'input[name="allgemein[kundennummer]"]' ).on( 'change', function() {
+      var $form = jQuery( '#select_anliegen-auswahl-1' ).parents( 'form' );
+      if ( jQuery( "#customer_1" ).is( ":checked" ) ) {
+        var selectField = 'allgemein[real-estate-number]';
+        var selectField2 = 'allgemein[real-estate-number2]';
+        var thisField = 'allgemein[kundennummer]';
+        if ( jQuery( this ).val() != "" ) {
+          if ( jQuery.isNumeric( jQuery( this ).val() ) ) {
+
+            if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+              $form.bootstrapValidator( 'resetField', selectField, false );
+              $form.bootstrapValidator( 'resetField', selectField2, false );
+              $form.bootstrapValidator( 'resetField', thisField, false );
+            }
+
+            removeHighlightSelect( thisField );
+            removeHighlightSelect( selectField );
+            removeHighlightSelect( selectField2 );
+            if ( !jQuery.isNumeric( jQuery( "input[name='" + selectField + "']" ).val() ) ) {
+              if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+                $form.bootstrapValidator( 'resetField', selectField, true );
+              }
+            }
+            if ( !jQuery.isNumeric( jQuery( "input[name='" + selectField2 + "']" ).val() ) ) {
+              if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+                $form.bootstrapValidator( 'resetField', selectField2, true );
+              }
+            }
+            if ( jQuery( "input[name='" + selectField + "']" ).val() == "" ) {
+              if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+                $form.bootstrapValidator( 'resetField', selectField, true );
+              }
+            }
+            if ( jQuery( "input[name='" + selectField2 + "']" ).val() == "" ) {
+              if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+                $form.bootstrapValidator( 'resetField', selectField2, true );
+              }
+            }
+            if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+              $form.bootstrapValidator( 'revalidateField', thisField );
+            }
+
+            //                            $(':input[type="submit"]').prop('disabled', false);
+            $form.find( ':input[type="submit"]' ).prop( 'disabled', false );
+            $form.find( "input[name='" + thisField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+          } else if ( !jQuery.isNumeric( jQuery( this ).val() ) ) {
+            highlightSelect( thisField );
+            if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+              $form.bootstrapValidator( 'enableFieldValidators', thisField, 'digits' );
+              $form.bootstrapValidator( 'revalidateField', thisField );
+            }
+
+            if ( !jQuery.isNumeric( jQuery( "input[name='" + selectField + "']" ).val() ) ) {
+              highlightSelect( selectField );
+
+              if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+                $form.bootstrapValidator( 'enableFieldValidators', selectField, 'digits' );
+              }
+
+              changeErrorMessage( selectField, 'validationText' );
+              if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+                $form.bootstrapValidator( 'revalidateField', selectField );
+              }
+
+              hideErrorMessage( selectField );
+            }
+            if ( !jQuery.isNumeric( jQuery( "input[name='" + selectField2 + "']" ).val() ) ) {
+              highlightSelect( selectField2 );
+              if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+                $form.bootstrapValidator( 'enableFieldValidators', selectField2, 'digits' );
+              }
+
+              changeErrorMessage( selectField, 'validationText' );
+
+              if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+                $form.bootstrapValidator( 'revalidateField', selectField2 );
+              }
+
+              showErrorMessage( selectField2 );
+              //hideErrorMessage(selectField2);
+            }
+
+
+            $form.find( "input[name='" + thisField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+          }
+          if ( jQuery( "input[name='" + selectField + "']" ).val() != "" ) {
+            $form.find( "input[name='" + selectField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+          }
+          if ( jQuery( "input[name='" + selectField2 + "']" ).val() != "" ) {
+            $form.find( "input[name='" + selectField2 + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+          }
+
+        } else {
+          highlightSelect( thisField );
+          if ( jQuery( "input[name='" + selectField + "']" ).val() == "" ) {
+            if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+              $form.bootstrapValidator( 'enableFieldValidators', selectField, 'notEmpty' );
+              $form.bootstrapValidator( 'enableFieldValidators', thisField, 'notEmpty' );
+              $form.bootstrapValidator( 'revalidateField', selectField );
+              $form.bootstrapValidator( 'revalidateField', thisField );
+            }
+            highlightSelect( selectField );
+            $form.find( "input[name='" + thisField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+            $form.find( "input[name='" + selectField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+          }
+          if ( jQuery( "input[name='" + selectField2 + "']" ).val() == "" ) {
+            if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+              $form.bootstrapValidator( 'enableFieldValidators', selectField2, 'notEmpty' );
+              $form.bootstrapValidator( 'enableFieldValidators', thisField, 'notEmpty' );
+              $form.bootstrapValidator( 'revalidateField', selectField2 );
+              $form.bootstrapValidator( 'revalidateField', thisField );
+            }
+            highlightSelect( selectField2 );
+
+            $form.find( "input[name='" + thisField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+            $form.find( "input[name='" + selectField2 + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+          }
+          if ( jQuery( "input[name='" + selectField + "']" ).val() != "" ) {
+            if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+              $form.bootstrapValidator( 'resetField', thisField, false );
+              $form.bootstrapValidator( 'enableFieldValidators', thisField, false, 'notEmpty' );
+            }
+            changeErrorMessage( selectField, 'validationText' );
+            hideErrorMessage( selectField2 );
+            if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+              $form.bootstrapValidator( 'revalidateField', thisField );
+            }
+            removeHighlightSelect( thisField );
+            $form.find( "input[name='" + thisField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '' );
+            $form.find( "input[name='" + selectField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+          }
+          if ( jQuery( "input[name='" + selectField2 + "']" ).val() != "" ) {
+
+            if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+              $form.bootstrapValidator( 'resetField', thisField, false );
+              $form.bootstrapValidator( 'enableFieldValidators', thisField, false, 'notEmpty' );
+            }
+
+            changeErrorMessage( selectField2, 'validationText' );
+            hideErrorMessage( selectField2 );
+
+            if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+              $form.bootstrapValidator( 'revalidateField', thisField );
+            }
+
+            removeHighlightSelect( thisField );
+            $form.find( "input[name='" + thisField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '' );
+            $form.find( "input[name='" + selectField2 + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+          }
+        }
+      }
+    } );
+
+    jQuery( 'input[name="allgemein[real-estate-number]"]' ).on( 'change', function() {
+      var $form = jQuery( '#select_anliegen-auswahl-1' ).parents( 'form' );
+      if ( jQuery( "#customer_1" ).is( ":checked" ) ) {
+        var selectField = 'allgemein[kundennummer]';
+        var thisField = 'allgemein[real-estate-number]';
+        var r2Field = 'allgemein[real-estate-number2]';
+        if ( jQuery( this ).val() != "" ) {
+          if ( jQuery.isNumeric( jQuery( this ).val() ) ) {
+            var count = jQuery( this ).val().length;
+            if ( count < 4 ) {
+              var auffuellen = 4 - count;
+              var newValue = "";
+              for ( var i = 0; i < auffuellen; i++ ) {
+                newValue += "0";
+              }
+              newValue += jQuery( this ).val();
+              jQuery( this ).val( newValue );
+            }
+
+            if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+              $form.bootstrapValidator( 'resetField', selectField, false );
+              $form.bootstrapValidator( 'resetField', thisField, false );
+            }
+
+
+            removeHighlightSelect( selectField );
+            removeHighlightSelect( thisField );
+
+            if ( !jQuery.isNumeric( jQuery( "input[name='" + selectField + "']" ).val() ) ) {
+              if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+                $form.bootstrapValidator( 'resetField', selectField, true );
+              }
+
+            }
+
+            if ( jQuery( "input[name='" + r2Field + "']" ).val() == "" ) {
+              r2Value = "";
+              for ( var i = 0; i < 5; i++ ) {
+                r2Value += "0";
+              }
+              jQuery( "input[name='" + r2Field + "']" ).val( r2Value );
+
+              if ( jQuery( "input[name='" + selectField + "']" ).val() == "" ) {
+                if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+                  $form.bootstrapValidator( 'resetField', selectField, true );
+                }
+
+              }
+            }
+            if ( jQuery( "input[name='" + r2Field + "']" ).val() != "" ) {
+              if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+                $form.bootstrapValidator( 'resetField', r2Field, false );
+              }
+
+              removeHighlightSelect( r2Field );
+              if ( !jQuery.isNumeric( jQuery( "input[name='" + r2Field + "']" ).val() ) ) {
+
+                if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+                  $form.bootstrapValidator( 'enableFieldValidators', r2Field, 'digits' );
+                  $form.bootstrapValidator( 'revalidateField', r2Field );
+                }
+
+                highlightSelect( r2Field );
+              }
+              if ( jQuery( "input[name='" + selectField + "']" ).val() == "" ) {
+                if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+                  $form.bootstrapValidator( 'resetField', selectField, true );
+                }
+
+              }
+            }
+            $form.find( "input[name='" + thisField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+            //                        $(':input[type="submit"]').prop('disabled', false);
+            $form.find( ':input[type="submit"]' ).prop( 'disabled', false );
+          } else if ( !jQuery.isNumeric( jQuery( this ).val() ) ) {
+            if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+              $form.bootstrapValidator( 'enableFieldValidators', thisField, 'digits' );
+              $form.bootstrapValidator( 'revalidateField', thisField );
+            }
+            highlightSelect( thisField );
+
+            if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+              $form.bootstrapValidator( 'enableFieldValidators', r2Field, 'digits' );
+              $form.bootstrapValidator( 'revalidateField', r2Field );
+            }
+            highlightSelect( r2Field );
+
+            changeErrorMessage( thisField, 'wrongValidationText' );
+            hideErrorMessage( r2Field );
+            if ( !jQuery.isNumeric( jQuery( "input[name='" + selectField + "']" ).val() ) ) {
+              highlightSelect( selectField );
+              if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+                $form.bootstrapValidator( 'enableFieldValidators', selectField, 'digits' );
+                $form.bootstrapValidator( 'revalidateField', selectField );
+              }
+
+              if ( jQuery( "input[name='" + selectField + "']" ).val() == "" ) {
+                if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+                  $form.bootstrapValidator( 'resetField', selectField, true );
+                }
+                removeHighlightSelect( selectField );
+              }
+            }
+            $form.find( "input[name='" + thisField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+          }
+          if ( jQuery( "input[name='" + selectField + "']" ).val() != "" ) {
+            $form.find( "input[name='" + selectField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+          }
+        } else {
+          highlightSelect( thisField );
+          highlightSelect( r2Field );
+          if ( jQuery( "input[name='" + selectField + "']" ).val() == "" ) {
+            if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+              $form.bootstrapValidator( 'enableFieldValidators', selectField, 'notEmpty' );
+              $form.bootstrapValidator( 'enableFieldValidators', thisField, 'notEmpty' );
+              $form.bootstrapValidator( 'enableFieldValidators', r2Field, 'notEmpty' );
+              $form.bootstrapValidator( 'revalidateField', selectField );
+              $form.bootstrapValidator( 'revalidateField', thisField );
+              $form.bootstrapValidator( 'revalidateField', r2Field );
+            }
+            highlightSelect( selectField );
+            $form.find( "input[name='" + thisField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+            $form.find( "input[name='" + selectField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+          }
+          if ( jQuery( "input[name='" + selectField + "']" ).val() != "" ) {
+            if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+              $form.bootstrapValidator( 'resetField', thisField, false );
+              $form.bootstrapValidator( 'resetField', r2Field, false );
+              $form.bootstrapValidator( 'enableFieldValidators', thisField, false, 'notEmpty' );
+              $form.bootstrapValidator( 'enableFieldValidators', r2Field, false, 'notEmpty' );
+              $form.bootstrapValidator( 'revalidateField', thisField );
+              $form.bootstrapValidator( 'revalidateField', r2Field );
+            }
+            removeHighlightSelect( thisField );
+            removeHighlightSelect( r2Field );
+            $form.find( "input[name='" + thisField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '' );
+            $form.find( "input[name='" + selectField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+          }
+          changeErrorMessage( thisField, 'emptyText' );
+          hideErrorMessage( r2Field );
+        }
+      } else {
+        var thisField = 'allgemein[real-estate-number]';
+        var r2Field = 'allgemein[real-estate-number2]';
+        var lnFields = [ thisField, r2Field ];
+
+        for ( index = 0; index < lnFields.length; ++index ) {
+
+          if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+            $form.bootstrapValidator( 'addField', lnFields[ index ], {
+              validators: {
+                digits: {
+                  message: $form.find( 'input[name="' + lnFields[ index ] + '"]' ).data( 'data-digits-message' )
+                }
+              }
+            } );
+            $form.bootstrapValidator( 'enableFieldValidators', lnFields[ index ], 'digits' );
+            $form.bootstrapValidator( 'revalidateField', lnFields[ index ] );
+          }
+        }
+
+        if ( jQuery( this ).val() != "" ) {
+          if ( jQuery.isNumeric( jQuery( this ).val() ) ) {
+            var count = jQuery( this ).val().length;
+            if ( count < 4 ) {
+              var auffuellen = 4 - count;
+              var newValue = "";
+              for ( var i = 0; i < auffuellen; i++ ) {
+                newValue += "0";
+              }
+              newValue += jQuery( this ).val();
+              jQuery( this ).val( newValue );
+            }
+            removeHighlightSelect( thisField );
+
+            if ( jQuery( "input[name='" + r2Field + "']" ).val() == "" ) {
+              r2Value = "";
+              for ( var i = 0; i < 5; i++ ) {
+                r2Value += "0";
+              }
+              jQuery( "input[name='" + r2Field + "']" ).val( r2Value );
+            }
+
+          } else {
+            highlightSelect( thisField );
+            $form.find( "input[name='" + thisField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '' );
+            if ( !jQuery.isNumeric( jQuery( "input[name='" + r2Field + "']" ).val() ) ) {
+              hideErrorMessage( r2Field );
+            }
+          }
+        } else {
+          if ( jQuery( "input[name='" + r2Field + "']" ).val() == "" ) {
+            removeHighlightSelect( thisField );
+            removeHighlightSelect( r2Field );
+          } else {
+            thisValue = "";
+            for ( var i = 0; i < 4; i++ ) {
+              thisValue += "0";
+            }
+            jQuery( "input[name='" + thisField + "']" ).val( thisValue );
+          }
+        }
+      }
+    } );
+
+    jQuery( 'input[name="allgemein[real-estate-number2]"]' ).on( 'change', function() {
+      var $form = jQuery( '#select_anliegen-auswahl-1' ).parents( 'form' );
+      if ( jQuery( "#customer_1" ).is( ":checked" ) ) {
+        var selectField = 'allgemein[kundennummer]';
+        var thisField = 'allgemein[real-estate-number2]';
+        var r1Field = 'allgemein[real-estate-number]';
+        if ( jQuery( this ).val() != "" ) {
+          if ( jQuery.isNumeric( jQuery( this ).val() ) ) {
+            var count = jQuery( this ).val().length;
+            if ( count < 5 ) {
+              var auffuellen = 5 - count;
+              var newValue = "";
+              for ( var i = 0; i < auffuellen; i++ ) {
+                newValue += "0";
+              }
+              newValue += jQuery( this ).val();
+              jQuery( this ).val( newValue );
+            }
+            if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+              $form.bootstrapValidator( 'resetField', selectField, false );
+              $form.bootstrapValidator( 'resetField', thisField, false );
+            }
+
+            removeHighlightSelect( selectField );
+            removeHighlightSelect( thisField );
+            if ( !jQuery.isNumeric( jQuery( "input[name='" + selectField + "']" ).val() ) ) {
+              if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+                $form.bootstrapValidator( 'resetField', selectField, true );
+              }
+            }
+            if ( jQuery( "input[name='" + r1Field + "']" ).val() == "" ) {
+              r1Value = "";
+              for ( var i = 0; i < 4; i++ ) {
+                r1Value += "0";
+              }
+              jQuery( "input[name='" + r1Field + "']" ).val( r1Value );
+
+              if ( jQuery( "input[name='" + selectField + "']" ).val() == "" ) {
+                if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+                  $form.bootstrapValidator( 'resetField', selectField, true );
+                }
+              }
+            }
+            if ( jQuery( "input[name='" + r1Field + "']" ).val() != "" ) {
+              if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+                $form.bootstrapValidator( 'resetField', r1Field, false );
+              }
+              removeHighlightSelect( r1Field );
+              if ( !jQuery.isNumeric( jQuery( "input[name='" + r1Field + "']" ).val() ) ) {
+                if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+                  $form.bootstrapValidator( 'enableFieldValidators', r1Field, 'digits' );
+                  $form.bootstrapValidator( 'revalidateField', r1Field );
+                }
+
+                highlightSelect( r1Field );
+                if ( jQuery( "input[name='" + selectField + "']" ).val() == "" ) {
+                  if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+                    $form.bootstrapValidator( 'resetField', selectField, true );
+                  }
+                }
+              }
+            }
+            $form.find( "input[name='" + thisField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+            //                        $(':input[type="submit"]').prop('disabled', false);
+            $form.find( ':input[type="submit"]' ).prop( 'disabled', false );
+          } else if ( !jQuery.isNumeric( jQuery( this ).val() ) ) {
+            if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+              $form.bootstrapValidator( 'enableFieldValidators', thisField, 'digits' );
+              $form.bootstrapValidator( 'revalidateField', thisField );
+            }
+
+            highlightSelect( thisField );
+            if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+              $form.bootstrapValidator( 'enableFieldValidators', r1Field, 'digits' );
+              $form.bootstrapValidator( 'revalidateField', r1Field );
+            }
+
+            highlightSelect( r1Field );
+            changeErrorMessage( thisField, 'wrongValidationText' );
+            hideErrorMessage( r1Field );
+            if ( !jQuery.isNumeric( jQuery( "input[name='" + selectField + "']" ).val() ) ) {
+              highlightSelect( selectField );
+              if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+                $form.bootstrapValidator( 'enableFieldValidators', selectField, 'digits' );
+                $form.bootstrapValidator( 'revalidateField', selectField );
+              }
+
+              if ( jQuery( "input[name='" + selectField + "']" ).val() == "" ) {
+                if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+                  $form.bootstrapValidator( 'resetField', selectField, true );
+                }
+                removeHighlightSelect( selectField );
+              }
+            }
+            $form.find( "input[name='" + thisField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+          }
+          if ( jQuery( "input[name='" + selectField + "']" ).val() != "" ) {
+            $form.find( "input[name='" + selectField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+          }
+        } else {
+          highlightSelect( thisField );
+          highlightSelect( r1Field );
+          if ( jQuery( "input[name='" + selectField + "']" ).val() == "" ) {
+            if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+              $form.bootstrapValidator( 'enableFieldValidators', selectField, 'notEmpty' );
+              $form.bootstrapValidator( 'enableFieldValidators', thisField, 'notEmpty' );
+              $form.bootstrapValidator( 'enableFieldValidators', r1Field, 'notEmpty' );
+              $form.bootstrapValidator( 'revalidateField', selectField );
+              $form.bootstrapValidator( 'revalidateField', thisField );
+              $form.bootstrapValidator( 'revalidateField', r1Field );
+            }
+
+            highlightSelect( selectField );
+            $form.find( "input[name='" + thisField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+            $form.find( "input[name='" + selectField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+          }
+          if ( jQuery( "input[name='" + selectField + "']" ).val() != "" ) {
+            if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+              $form.bootstrapValidator( 'resetField', thisField, false );
+              $form.bootstrapValidator( 'resetField', r1Field, false );
+              $form.bootstrapValidator( 'enableFieldValidators', thisField, false, 'notEmpty' );
+              $form.bootstrapValidator( 'enableFieldValidators', r1Field, false, 'notEmpty' );
+              $form.bootstrapValidator( 'revalidateField', thisField );
+              $form.bootstrapValidator( 'revalidateField', r1Field );
+            }
+
+            removeHighlightSelect( thisField );
+            removeHighlightSelect( r1Field );
+            $form.find( "input[name='" + thisField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '' );
+            $form.find( "input[name='" + selectField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+          }
+
+          changeErrorMessage( thisField, 'emptyText' );
+          hideErrorMessage( r1Field );
+        }
+      } else {
+        var thisField = 'allgemein[real-estate-number2]';
+        var r1Field = 'allgemein[real-estate-number]';
+        var lnFields = [ thisField, r1Field ];
+
+        for ( index = 0; index < lnFields.length; ++index ) {
+          if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+            $form.bootstrapValidator( 'addField', lnFields[ index ], {
+              validators: {
+                digits: {
+                  message: $form.find( 'input[name="' + lnFields[ index ] + '"]' ).data( 'data-digits-message' )
+                }
+              }
+            } );
+            $form.bootstrapValidator( 'enableFieldValidators', lnFields[ index ], 'digits' );
+            $form.bootstrapValidator( 'revalidateField', lnFields[ index ] );
+          }
+        }
+
+        if ( jQuery( this ).val() != "" ) {
+          if ( jQuery.isNumeric( jQuery( this ).val() ) ) {
+            var count = jQuery( this ).val().length;
+            if ( count < 5 ) {
+              var auffuellen = 5 - count;
+              var newValue = "";
+              for ( var i = 0; i < auffuellen; i++ ) {
+                newValue += "0";
+              }
+              newValue += jQuery( this ).val();
+              jQuery( this ).val( newValue );
+            }
+            removeHighlightSelect( thisField );
+
+            if ( jQuery( "input[name='" + r1Field + "']" ).val() == "" ) {
+              r1Value = "";
+              for ( var i = 0; i < 4; i++ ) {
+                r1Value += "0";
+              }
+              jQuery( "input[name='" + r1Field + "']" ).val( r1Value );
+            }
+          } else {
+            highlightSelect( thisField );
+            $form.find( "input[name='" + thisField + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '' );
+            if ( !jQuery.isNumeric( jQuery( "input[name='" + r1Field + "']" ).val() ) ) {
+              hideErrorMessage( r1Field );
+            }
+          }
+        } else {
+          if ( jQuery( "input[name='" + r1Field + "']" ).val() == "" ) {
+            removeHighlightSelect( thisField );
+            removeHighlightSelect( r1Field );
+          } else {
+            thisValue = "";
+            for ( var i = 0; i < 5; i++ ) {
+              thisValue += "0";
+            }
+            jQuery( "input[name='" + thisField + "']" ).val( thisValue );
+          }
+        }
+      }
+    } );
+
+    function changeSecondSelect( $el, fields ) {
+
+      var self = this;
+
+      var $form = jQuery( '#select_anliegen-auswahl-1' ).parents( 'form' );
+      jQuery( '#textarea-freitext' ).hide();
+      //clear preselected values on second select box
+      jQuery( '#anliegen-auswahl-2 > div' ).each( function() {
+        clearSelect2( jQuery( this ) );
+      } );
+
+      if ( fields ) {
+        this.fields = fields;
+      }
+
+      //set index from first select box, init second select box
+      var index = $el.prop( 'selectedIndex' );
+
+
+      var $secSelector = '#anliegen-auswahl-2 > div:nth-child(' + index + ')';
+      var $secSel = jQuery( $secSelector ).find( 'select' );
+      if ( typeof( jQuery.fn.selectpicker ) == 'function' ) {
+        jQuery( $secSel ).prop( 'required', true ).selectpicker();
+      }
+
+      //show second select box
+      jQuery( $secSelector ).show();
+      jQuery( '#anliegen-auswahl-2' ).find( '.mandatory' ).text( '*' );
+      jQuery( '#anliegen-auswahl-2' ).show();
+
+      // override :last-child css
+      jQuery( '#anliegen-auswahl-2' ).find( '.form-group:last-child' ).css( 'margin-bottom', 15 );
+
+      //handle selections
+      $secSel.on( 'change', function() {
+        var $form = jQuery( '#select_anliegen-auswahl-1' ).parents( 'form' );
+        var indexFirstSecond = index + "" + jQuery( this ).prop( 'selectedIndex' );
+        if ( indexFirstSecond != "22" && typeof $form.bootstrapValidator === 'function' ) {
+
+          if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+            $form.bootstrapValidator( 'addField', self.fields[ index ], {
+              validators: {
+                notEmpty: {
+                  message: jQuery( this ).data( 'bv-notempty-message' )
+                }
+              }
+            } );
+          }
+          showFieldsInstallAssignment( index );
+          setFreitext( index, jQuery( this ).prop( 'selectedIndex' ) );
+          setOptionalField( index, jQuery( this ).prop( 'selectedIndex' ) );
+          checkSelects( jQuery( this ) );
+
+          if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+            $form.bootstrapValidator( 'revalidateField', 'allgemein[auftragsnummer]' );
+          }
+          if ( jQuery( this ).prop( 'name' ) == 'allgemein[anliegen-auswahl-2-geraete]' ) {
+            jQuery( this ).parents( 'div.form-group' ).find( '.help-block' ).text( 'Bitte wählen Sie Ihr Anliegen aus' );
+          }
+          if ( jQuery( this ).parents( 'div.form-group' ).find( '.help-block' ).length >= '2' ) {
+            jQuery( this ).parents( 'div.form-group' ).find( '.help-block:eq(1)' ).hide();
+          }
+        } else {
+          hideFieldsInstallAssignment();
+        }
+      } );
+
+      //            $(':input[type="submit"]').prop('disabled', true);
+      $form.find( ':input[type="submit"]' ).prop( 'disabled', true );
+    }
+
+    function clearSelect2( $el ) {
+      $el.hide();
+      var $selected = $el.find( 'option[selected]' );
+      if ( typeof( $el.find( '.selectpicker' ).prop( 'required', false ).selectpicker ) == 'function' ) {
+        $el.find( '.selectpicker' ).prop( 'required', false ).selectpicker( 'val', $selected.length ? $selected.prop( 'value' ) : '' );
+      }
+
+    }
+
+    function setFreitext( $indexElem, $valElem ) {
+      var text = $indexElem + "" + $valElem;
+      if ( freitext[ text ] ) {
+        jQuery( '#freitext' ).html( freitext[ text ] );
+        jQuery( '#freitext' ).css( 'height', 'auto' );
+        jQuery( '#textarea-freitext' ).show();
+      } else {
+        jQuery( '#textarea-freitext' ).hide();
+      }
+    }
+
+    function setOptionalField( $indexElem, $valElem ) {
+      var $form = jQuery( '#select_anliegen-auswahl-1' ).parents( 'form' );
+      var text = $indexElem + "" + $valElem;
+      var field = 'allgemein[auftragsnummer]';
+      if ( jQuery.inArray( text, this.optionalFields ) != -1 ) {
+        if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+          $form.bootstrapValidator( 'resetField', 'allgemein[auftragsnummer]', true );
+        }
+
+        jQuery( '#allgemein_auftragsnummer' ).find( '.mandatory' ).text( '*' );
+
+        if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+          $form.bootstrapValidator( 'addField', field, {
+            validators: {
+              notEmpty: {
+                message: "Bitte geben Sie Ihre Rechnungsnummer ein."
+              },
+              digits: {
+                message: "Die Rechnungsnummer darf nur aus ganzen Zahlen bestehen."
+              }
+            }
+          } );
+        }
+
+        jQuery( '#allgemein_auftragsnummer' ).show();
+      } else {
+        if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+          $form.bootstrapValidator( 'resetField', 'allgemein[auftragsnummer]', true );
+        }
+        jQuery( '#allgemein_auftragsnummer' ).hide();
+      }
+    }
+
+    function checkSelects( $el ) {
+      var $fg = $el.parents( 'div.form-group' );
+      if ( $el[ 0 ].hasAttribute( 'required' ) || $el.is( '[required]' ) ) {
+        if ( $el[ 0 ].checkValidity() === false ) {
+          $fg.find( '.selectpicker' ).css( 'border', '2px solid #e0001a' );
+          $fg.addClass( 'has-errors' ).find( '.help-block' ).show().css( 'color', '#e0001a' );
+          if ( $el.selector == "#anliegen-auswahl-1 select" ) {
+            $fg.find( '.help-block:eq(1)' ).hide();
+          }
+          //                    $(':input[type="submit"]').prop('disabled', true);
+          $form.find( ':input[type="submit"]' ).prop( 'disabled', true );
+          return false;
+        } else {
+          $fg.removeClass( 'has-errors' ).find( '.help-block' ).hide();
+          //$fg.find('.selectpicker').css('border', '1px solid #ccc');
+          //$(':input[type="submit"]').prop('disabled', false);
+          $form.find( ':input[type="submit"]' ).prop( 'disabled', false );
+          return true;
+        }
+      }
+    }
+
+    function removeHighlightSelect( $field ) {
+      $form.find( "input[name='" + $field + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '' );
+      $form.find( "input[name='" + $field + "']" ).css( 'border', '1px solid #ccc' );
+    }
+
+    function highlightSelect( $field ) {
+      $form.find( "input[name='" + $field + "']" ).parents( '.form-group' ).find( '.mandatory' ).text( '*' );
+      $form.find( "input[name='" + $field + "']" ).css( 'border', '2px solid #e0001a' );
+    }
+
+    function hideFieldsInstallAssignment() {
+      jQuery( '#anliegen-auswahl-2' ).find( '.mandatory' ).text( '' );
+      setFreitext( "2", "2" );
+      setOptionalField( "2", "2" );
+      jQuery( '#anliegen-montage' ).removeClass( 'has-errors' );
+      jQuery( '#anliegen-montage' ).find( '.help-block' ).hide();
+      //jQuery('#anliegen-auswahl-2').find('.selectpicker').css('border', '1px solid #ccc');
+
+      if ( jQuery( "#customer_1" ).is( ":checked" ) ) {
+        for ( index = 0; index < this.fieldsInstallAssignmentWithCustomer.length; ++index ) {
+          $form.find( "[name='" + this.fieldsInstallAssignmentWithCustomer[ index ] + "']" ).parents( '.form-group' ).hide();
+        }
+      } else {
+        for ( index = 0; index < this.fieldsInstallAssignmentWithoutCustomer.length; ++index ) {
+          $form.find( "[name='" + this.fieldsInstallAssignmentWithoutCustomer[ index ] + "']" ).parents( '.form-group' ).hide();
+        }
+      }
+      jQuery( '.bv-hidden-submit' ).hide();
+      //            $(':input[type="submit"]').hide();
+      $form.find( ':input[type="submit"]' ).hide();
+      $form.find( 'h4' ).hide();
+    }
+
+    function showFieldsInstallAssignment( index ) {
+      jQuery( '#anliegen-auswahl-2' ).find( '.mandatory' ).text( '*' );
+
+      if ( jQuery( "#customer_1" ).is( ":checked" ) ) {
+        for ( index = 0; index < this.fieldsInstallAssignmentWithCustomer.length; ++index ) {
+          $form.find( "[name='" + this.fieldsInstallAssignmentWithCustomer[ index ] + "']" ).parents( '.form-group' ).show();
+        }
+      } else {
+        for ( index = 0; index < this.fieldsInstallAssignmentWithoutCustomer.length; ++index ) {
+          $form.find( "[name='" + this.fieldsInstallAssignmentWithoutCustomer[ index ] + "']" ).parents( '.form-group' ).show();
+        }
+      }
+
+      //            $(':input[type="submit"]').show();
+      $form.find( ':input[type="submit"]' ).show();
+      jQuery( '.bv-hidden-submit' ).hide();
+      $form.find( 'h4' ).show();
+    }
+
+    function changeErrorMessage( $field, $errorFieldType ) {
+      if ( $errorFieldType == 'wrongValidationText' ) {
+        jQuery( '.help-block' ).filter( "[data-bv-for='" + $field + "']" ).text( 'Die Liegenschaftsnummer darf nur aus ganzen Zahlen bestehen.' );
+      }
+      if ( $errorFieldType == 'validationText' ) {
+        jQuery( '.help-block' ).filter( "[data-bv-for='" + $field + "']" ).text( 'Bitte geben Sie eine gültige Liegenschaftsnummer ein.' );
+      }
+      if ( $errorFieldType == 'emptyText' ) {
+        jQuery( '.help-block' ).filter( "[data-bv-for='" + $field + "']" ).text( 'Bitte geben Sie eine Kundennummer oder Liegenschaftsnummer ein.' );
+      }
+    }
+
+    function hideErrorMessage( $field ) {
+      jQuery( '.help-block' ).filter( "[data-bv-for='" + $field + "']" ).hide();
+    }
+
+    function showErrorMessage( $field ) {
+      jQuery( '.help-block' ).filter( "[data-bv-for='" + $field + "']" ).first().show();
+    }
+
+    function getParams( param ) {
+      var pageUrl = window.location.search.substring( 1 );
+      var paramVar = pageUrl.split( '&' );
+      for ( var i = 0; i < paramVar.length; i++ ) {
+        var paramName = paramVar[ i ].split( '=' );
+        if ( paramName[ 0 ] == param ) {
+          return paramName[ 1 ];
+        }
+      }
+    }
+  }
+
+} );
+
+/*
+ * master_script_contactform-gewerbeausweis
+ */
+
+if ( jQuery( '#input-street-liegenschaft' ).length ) {
+
+  var $form = jQuery( '#input-street-liegenschaft' ).parents( 'form' );
+  if ( typeof jQuery.fn.bootstrapValidator == 'function' ) {
+    $form.bootstrapValidator( 'removeField', "kontakt[zipcode-2]" );
+    $form.bootstrapValidator( 'removeField', "kontakt[city-2]" );
+  }
+
+  jQuery( ":submit" ).on( 'click', function() {
+    jQuery( ".selectpicker" ).each( function() {
+      $el = jQuery( this );
+      checkSelect( $el );
+    } );
+  } );
+
+
+  jQuery( ".selectpicker" ).each( function() {
+    jQuery( this ).on( 'change', function() {
+      checkSelect( jQuery( this ) );
+    } );
+  } );
+
+  function checkSelect( $el ) {
+    var fg = $el.parents( 'div.form-group' );
+    if ( $el[ 0 ].hasAttribute( 'required' ) || $el.is( '[required]' ) ) {
+      if ( $el[ 0 ].checkValidity() === false ) {
+        fg.find( '.selectpicker' ).css( 'border', '2px solid #e0001a' );
+        fg.addClass( 'has-errors' ).find( '.help-block' ).show().css( 'color', '#e0001a' );
+      } else {
+        fg.removeClass( 'has-errors' ).find( '.help-block' ).hide();
+        //fg.find('.selectpicker').css('border', '1px solid #ccc');
+      }
+    }
+  }
+}

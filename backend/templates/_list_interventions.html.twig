@@ -1,0 +1,196 @@
+{% if modeoccupant is not defined %}
+<div class="row filters">
+    <h4>{{ "Filtrer par"|trans }} : </h4>
+    <form role="form" id="filters" class="">
+        <div class="form-group">
+            <input type="text" name="numero" class="col-sm-2 col-xs-5" placeholder='{{ "N° intervention"|trans }}' >
+            <input type="text" name="nom" class="col-sm-2 col-xs-5" placeholder='{{ "Nom occupant"|trans }}' >
+            <input type="text" name="date" class="col-sm-2 col-xs-5" placeholder={{ "Date" }} >
+            <select name="motif-abrege" class="col-sm-2 col-xs-5 ">
+                <option selected="selected" value="">{{ "Motif"|trans }}</option>
+                {% for motif in motifs %}
+                    {% if motif != '' %}
+                        <option value="{{ motif }}">{{ motif }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            <select name="statut" class="col-sm-2 col-xs-5 whitevalue">
+                <option value="">{{ "Statut"|trans }}</option>
+                <option value="!Clôturé;!Annulé;!Facturée" {% if app.request.get('statut') == 'ouvert' %}selected{%
+                endif %}>{{ "Ouvert"|trans }}</option>
+                {% for statut in statuts %}
+                    <option value="{{ statut }}">{{ statut }}</option>
+                {% endfor %}
+            </select>
+            {% block export %}{% endblock %}
+            <div class="clearfix"></div>
+        </div>
+    </form>
+</div>
+
+<div class="row filters buttons">
+    <div class="dropdown button-wrapper col-xs-4" data-filter-name="batiment">
+        <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+            <span class="caret"></span>
+            <span class="hidden-xs">{{ "Batiment"|trans }}</span>
+            <span class="value"></span>
+            <i class="icon-immeuble-small"></i>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-value="">{{ "Aucun"|trans }}</a></li>
+            {% for batiment in batiments %}
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-value="{{ batiment }}">{{ "Batiment"|trans }} {{ batiment }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="dropdown button-wrapper col-xs-4" data-filter-name="escalier">
+        <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown">
+            <span class="caret"></span>
+            <span class="hidden-xs">{{ "Escalier"|trans }}</span>
+            <span class="value"></span>
+            <i class="icon-stairs"></i>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-value="">{{ "Aucun"|trans }}</a></li>
+            {% for escalier in escaliers %}
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-value="{{ escalier }}">{{ "Escalier"|trans }} {{ escalier }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="dropdown button-wrapper col-xs-4" data-filter-name="etage">
+        <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown">
+            <span class="caret"></span>
+            <span class="hidden-xs">{{ "Etage"|trans }}</span>
+            <span class="value"></span>
+            <i class="icon-floor"></i>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu3">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-value="">{{ "Aucun"|trans }}</a></li>
+            {% for etage in etages %}
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-value="{{ etage }}">{{ "Etage"|trans }} {{ etage }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}
+
+<div class="list-intervention-area list-anomaly-area">
+    <div class="number visible-xs"><strong class="result-length">{{ depannages|length }}</strong>
+        {{ "dépannages"|trans}}</div>
+
+    <ul class="items">
+        <li class="thead hidden-xs">
+            <div class="image">&nbsp;</div>
+            <div class="info number"><strong class="result-length">{{ depannages|length }}</strong>
+                {{ "dépannages"|trans }}</div>
+            <div class="date">DATE</div>
+            <div class="motif">{{ "Motif"|trans|upper }}</div>
+            <div class="observation">{{ "Observation"|trans|upper }}</div>
+        </li>
+
+        {% block depannages %}
+        {% endblock %}
+    </ul>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        var mapping_text = {
+                'numero': ['numero'],
+                'nom': ['nom'],
+                'date': ['date'],
+                'motif-abrege': ['motif-abrege'],
+                'statut': ['statut'],
+                'batiment': ['batiment'],
+                'escalier': ['escalier'],
+                'etage': ['etage']
+            };
+
+        $('.filters input[type=text]').on('keyup', function() {
+            $('#filters').trigger('data-change');
+        });
+
+        $('.filters select').on('change', function() {
+            $('#filters').trigger('data-change');
+        });
+
+        $('.filters .dropdown.button-wrapper a[role=menuitem]').click(function() {
+            $(this).closest('.dropdown.button-wrapper').find('.value').text($(this).attr('data-value'));
+            $('#filters').trigger('data-change');
+        });
+
+        $('#filters').on('data-change', function () {
+            $('.loader').trigger('start');
+            var $items = $('.list-anomaly-area li.tbody'),
+                $filtered_items = $items,
+                text_data = $('#filters').serializeArray(),
+                $button_filter = $('.filters .dropdown.button-wrapper[data-filter-name]'),
+                exact_text_data = [];
+
+            $button_filter.each(function() {
+                exact_text_data.push({
+                    'name': $(this).attr('data-filter-name'),
+                    'value': $(this).find('.value').text()
+                });
+            });
+
+            $.each(text_data, function (key, filter) {
+                $filtered_items = $filtered_items.filter(function(){
+                    var me = $(this),
+                        test;
+
+                    if(mapping_text.hasOwnProperty(filter.name) && filter.value != '') {
+                        test = false;
+                        $.each(mapping_text[filter.name], function(key, name){
+                            var list = filter.value.toLowerCase().split(';'),
+                                    itemtest = 0;
+
+                            list.forEach(function(entry) {
+
+                                if (entry[0] == '!') {
+                                    itemtest += me.attr('data-'+name).toLowerCase().indexOf(entry.substr(1)) !== 0;
+                                } else {
+                                    itemtest += me.attr('data-'+name).toLowerCase().indexOf(entry) === 0;
+                                }
+                            });
+                            test |= itemtest == list.length;
+
+                        });
+
+                    } else {
+                        test = true;
+                    }
+
+                    return test;
+                });
+            });
+
+            $.each(exact_text_data, function (key, filter) {
+                $filtered_items = $filtered_items.filter(function(){
+                    var me = $(this),
+                        test;
+
+                    if(mapping_text.hasOwnProperty(filter.name) && filter.value != '') {
+                        test = false;
+                        $.each(mapping_text[filter.name], function(key, name){
+                            test |= me.attr('data-'+name).toLowerCase() === filter.value.toLowerCase();
+                        });
+                    } else {
+                        test = true;
+                    }
+
+                    return test;
+                });
+            });
+
+            $items.addClass('hidden');
+            $filtered_items.toggleClass('hidden');
+            $('.result-length').text($filtered_items.length);
+            $('.loader').trigger('stop');
+        });
+
+        $('#filters').trigger('data-change');
+    });
+</script>

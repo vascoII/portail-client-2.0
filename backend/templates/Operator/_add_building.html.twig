@@ -1,0 +1,23 @@
+<ul class="items">
+    {% for immeuble in diffImmeubles %}
+        <li class="item" data-pkimmeuble="{{ immeuble.Immeuble.PkImmeuble }}" data-reference="{{ immeuble.Immeuble.Ref }}" data-numero="{{ immeuble.Immeuble.Numero }}" data-codepostal="{{ immeuble.Immeuble.Cp }}" data-ville="{{ immeuble.Immeuble.Ville }}">
+            <a href="{{ path('TechemCoreBundle_Immeuble_show', {'pkImmeuble': immeuble.Immeuble.PkImmeuble}) }}" class="info">
+                <div class="name">{{ 'Référence'|trans }} :</div>
+                <div class="value">{{ immeuble.Immeuble.Ref }}</div>
+                <span class="slash hidden-xs">/</span>
+
+                <div class="name">{{ "N° d'immeuble"|trans }} :</div>
+                <div class="value">{{ immeuble.Immeuble.Numero }}</div>
+
+                <div class="description">
+                    {{ immeuble.Immeuble.Adresse1 }} {{ immeuble.Immeuble.Adresse2 }} {{ immeuble.Immeuble.Adresse3 }}
+                    <br>
+                    {{ immeuble.Immeuble.Cp }} {{ immeuble.Immeuble.Ville }}
+                </div>
+            </a>
+            <a href="{{ path('TechemCoreBundle_Operator_add_building', {'id': user.PKUser}) }}" class="action" data-action="add">
+                <img src="{{ asset('bundles/techemcore/images/fidesio/icon-plus-red.png') }}"/>
+            </a>
+        </li>
+    {% endfor %}
+</ul>

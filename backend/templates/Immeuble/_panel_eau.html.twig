@@ -1,0 +1,361 @@
+<div class="panel">
+
+    <div class="panel-bar">
+        <div class="row">
+            <div class="col-sm-6 panel panel-primary panel-left">
+                {% if panel.Chantier.PkDevis <= 0 %}
+                    <div class="block-title">{{ "Aucun chantier en cours "|trans|upper }}</div>
+                    <br><br><br><br><br><br>
+                    <br><br><br><br><br><br>
+                {% else %}
+                    <div class="block-titlje">{{ "Chantiers en cours"|trans|upper }}</div>
+                    <br>
+                    <br>
+
+                    <div class="row">
+
+                        <div class="col-sm-6 block-left">
+                            <div class="number"><i class="icon-compteur"></i> {{ panel.Chantier.NbCompteursCommandes }}
+                            </div>
+                            <div class="text"> {{ 'Appareils commandés'|trans }}</div>
+                            <br/><br/><br/>
+                            <div class="date">{{ "date de l'entrée en commande"|trans }} : <br/><strong>{{ panel
+                                    .Chantier.DateEntreeChantier|date('d-m-Y') }}</strong></div>
+                        </div>
+
+                        <div class="col-sm-6 block-right">
+                            <div class="chart clearfix">
+                                <div class="number dark"
+                                     style="height:{{ (panel.Chantier.NbCompteursCommandes - panel.Chantier.NbCompteursPoses) * 200 / panel.Chantier.NbCompteursCommandes }}px">{{ panel.Chantier.NbCompteursCommandes - panel.Chantier.NbCompteursPoses }}</div>
+                                <div class="text">{{ "Appareils à poser" |trans }}</div>
+                            </div>
+
+                            <div class="chart clearfix">
+                                <div class="number {{ colorclass }}"
+                                     style="height:{{ panel.Chantier.NbCompteursPoses * 200 / panel.Chantier.NbCompteursCommandes }}px">{{ panel.Chantier.NbCompteursPoses }}</div>
+                                <div class="text">{{ 'Appareils posés'|trans }}</div>
+                            </div>
+                        </div>
+
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="col-sm-6 panel panel-primary panel-right performance-gauge">
+                <div class="block-title">{{ 'Vos relevés'|trans }}</div>
+					{% if immeuble.NbCompteursEC > 0 and immeuble.Immeuble.HasTelereleve and immeuble.Immeuble.HasNoteOccupant and colorclass == 'red' %}
+					<div>
+						<br /><form class=""
+								  action="{{ path('TechemCoreBundle_Immeuble_report', {'pkImmeuble': immeuble.Immeuble.PkImmeuble, 'type': 'NOTE', 'energie': 'EAU'}) }}"
+								  method="POST" target="_blank">
+
+
+								<a href="#" target="_blank">
+									<button type="submit" class="btn-primary btn">
+										<i class="icon-download"></i><b>Note mensuelle</b>
+									</button>
+								</a>
+						</form>
+					</div>
+					{% endif %}
+
+                {% set perf_percent = panel.NbCompteursARelever > 0 ? panel.NbCompteursReleves / panel.NbCompteursARelever * 100 : 0 %}
+
+                {% if panel.ListeReleves.releve is defined %}
+                    <form class="actions selects"
+                          action="{{ path('TechemCoreBundle_Immeuble_report', {'pkImmeuble': immeuble.Immeuble.PkImmeuble, 'type': 'RELEVE', 'energie': 'EAU'}) }}"
+                          method="POST" target="_blank">
+                        <div>
+
+                            <label for="123456" class="label-releve">
+                                {{ 'Sélectionnez votre relevé'|trans }} :
+                            </label>
+                            <div class="icons-relative">
+
+                                <div class="icon-down"><i class="icon-down-open-1"></i></div>
+                                <div class="icon-up"><i class="icon-down-open-1"></i></div>
+
+                                <select id="123456" name="date" class="charts-select">
+                                
+                                    {% if panel.ListeReleves.releve is iterable %}
+                                        {% for releve in panel.ListeReleves.releve %}
+                                            <option value="{{ releve.DateReleve|date('d-m-Y') }}">
+                                                {{ releve.DateReleve|date('d/m/Y') }}
+                                            </option>
+                                        {% endfor %}
+                                    {% elseif panel.ListeReleves.releve.DateReleve is defined %}
+                                        <option value="{{ panel.ListeReleves.releve.DateReleve|date('d-m-Y') }}">
+                                            {{ panel.ListeReleves.releve.DateReleve|date('d/m/Y') }}
+                                        </option>
+                                    {% endif %}
+								</select>
+                            </div>
+                        </div>
+
+                        <a href="#" target="_blank">
+                            <button type="submit" class="btn-primary btn">
+                                <i class="icon-print"></i>{{ "Imprimer"|trans }}
+                            </button>
+                        </a>
+                    </form>
+                {% endif %}
+
+                <div class="canvas">
+                    <canvas width="200" height="150"
+                            data-options="{{ { fillGaugeStyle: color, value: perf_percent / 100 }|json_encode() }}"></canvas>
+                </div>
+
+                <div class="text">
+                    <strong>{{ (perf_percent)|round }}</strong><sup>%</sup> {{ 'des appareils relevés'|trans }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-client">
+        <div class="panel">
+            <div class="block-title">{{ "Alarmes client"|trans }}</div>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <a href="{{ path('TechemCoreBundle_Immeuble_listleaks', {'pkImmeuble': immeuble.Immeuble.PkImmeuble, 'fluide': fluide}) }}"
+                       class="fui">
+                        <div class="panel-default">
+                            <div class="icons blue">
+                                <span class="icon-water33"></span>
+                            </div>
+
+                            <div class="title">
+                                {{ 'Nombre de fuites'|trans }}
+                            </div>
+
+                            <div class="value {% if panel.NbFuites == 0 %}empty{% endif %}">
+                                {{ panel.NbFuites }}
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-sm-6">
+                    <a href="{{ path('TechemCoreBundle_Immeuble_listanomalies', {'pkImmeuble': immeuble.Immeuble.PkImmeuble}) }}">
+                        <div class="panel-default">
+                            <div class="icons red">
+                                <span class="icon-caution"></span>
+                            </div>
+
+                            <div class="title">
+                                {{ "Nombre d'anomalies de consommation"|trans }}
+                            </div>
+
+                            <div class="value {% if panel.NbAnomalies == 0 %}empty{% endif %}">
+                                {{ panel.NbAnomalies }}
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel-chart">
+        <div class="panel">
+            <div class="block-title">{{ "Points de vigilance"|trans }}</div>
+            <br>
+            <br>
+
+            <div class="tables">
+                {% include 'Immeuble/_conso_tab.html.twig' with { TopConsos : panel.TopConsos, label: label } %}
+            </div>
+            <br>
+
+            <div class="block-title">{{ "Evolution des consommations"|trans }}</div>
+
+            <br>
+            <div id="graph_{{ label|replace({' ': ''}) }}" style="width: 100%; height: 300px;"></div>
+
+            <br>
+
+            <div class="block-title">{{ "Consommation totale des compteurs divisionnaires de l'immeuble"|trans|upper }}</div>
+
+            <br>
+            <div id="graph_tot_{{ label|replace({' ': ''}) }}" style="width: 100%; height: 300px;"></div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        charts['graph_{{ label|replace({' ': ''}) }}'] = {
+            type : 'line',
+            loaded : false,
+            options : {
+                hAxis : {
+                    textStyle : {
+                        fontSize : 11,
+                        bold : true,
+                        italic : true,
+                    },
+                    minValue : 0,
+
+                },
+                series : [
+                    {% if panel.SerieConsos2.ValeursXYL|length > 0 %}
+                    {
+                        color : "#323232",
+                        targetAxisIndex : 0,
+                        pointShape : "circle",
+                    },
+                    {% endif %}
+                    {% if panel.SerieConsos1.ValeursXYL|length > 0 %}
+                    {
+                        color : "{{ color }}",
+                        targetAxisIndex : 0,
+                        pointShape : "cirlce",
+                    }
+                    {% endif %}
+                ],
+                pointSize : 8,
+                legend : {
+                    position : "bottom",
+                    alignment : "end"
+                },
+                vAxes : [
+                    {
+                        title : '{{ "en m3"|trans }}',
+                        baselinecolor : "#000000",
+                        minValue : 0
+                    }
+                ],
+            },
+            datatable : [
+                [
+                    'Date',
+                    {% if panel.SerieConsos2.ValeursXYL|length > 0 %}
+                    '{{ panel.SerieConsos2.Annee }}',
+                    { role : 'style' },
+                    { role : 'tooltip' },
+                    {% endif %}
+                    {% if panel.SerieConsos1.ValeursXYL|length > 0 %}
+                    '{{ panel.SerieConsos1.Annee }}',
+                    { role : 'style' },
+                    { role : 'tooltip' }
+                    {% endif %}
+                ],
+                {% set serie1 = panel.SerieConsos1.ValeursXYL|split(';') %}
+                {% set serie2 = panel.SerieConsos2.ValeursXYL|split(';') %}
+                {% for i in range(0, serie1|length > serie2|length ? serie1|length -1 : serie2|length - 1) %}
+                {% set data1 = i < serie1|length ? serie1[i]|split('|') : [null, null, null] %}
+                {% set data1 = data1|length == 4 ? data1 : [null, null, null, null] %}
+                {% set data2 = i < serie2|length ? serie2[i]|split('|') : [null, null, null] %}
+                {% set data2 = data2|length == 4 ? data2 : [null, null, null, null] %}
+                {% if data1[0] != null %}
+                {% set axe = data1[0]|slice(0,5) %}
+                {% elseif data2[0] != null %}
+                {% set axe = data2[0]|slice(0,5) %}
+                {% else %}
+                {% set axe = null %}
+                {% endif %}
+                {% if axe != null %}
+
+                [
+                    '{{ axe }}',
+                    {% if panel.SerieConsos2.ValeursXYL|length > 0 %}
+                    {{ data2[1] != null and data2[3] != 'VISIBLE=N' ? data2[1]|number_format(2, '.', '') : 'null' }},
+                    'point { stroke-width: 2; stroke-color: #323232; fill-color: {{ data2[3] == 'VIRTUAL=O' ? '#FFFFFF' :'#323232' }} }',
+                    'Conso : {{ data2[1]|number_format(0, '.', '') }}',
+                    {% endif %}
+                    {% if panel.SerieConsos1.ValeursXYL|length > 0 %}
+                    {{ data1[1] != null and data1[3] != 'VISIBLE=N' ? data1[1]|number_format(2, '.', '') : 'null' }},
+                    'point { stroke-width: 2; stroke-color: {{ color }}; fill-color: {{ data1[3] == 'VIRTUAL=O' ? '#FFFFFF' : color }} }',
+                    'Conso : {{ data1[1]|number_format(0, '.', '') }}',
+                    {% endif %}
+                ],
+                {% endif %}
+                {% endfor %}
+            ]
+        };
+
+        charts['graph_tot_{{ label|replace({' ': ''}) }}'] = {
+            type : 'column',
+            loaded : false,
+            options : {
+                title : '',
+                hAxis : {
+                    title : '',
+                    textStyle : {
+                        fontSize : 11,
+                        bold : true,
+                        italic : true
+                    },
+                    slantedText : true,
+                    slantedTextAngle : 25
+                },
+                series : [
+                    {% if immeuble.SerieConsosEAU.ValeursXYL|length > 0 %}
+                    {
+                        color : "#5F6C7C",
+                        targetAxisIndex : 0
+                    },
+                    {% endif %}
+                    {% if immeuble.SerieConsosCompteurGeneral.ValeursXYL|length > 0 %}
+                    {
+                        color : "#8b959f",
+                        targetAxisIndex : 0
+                    }
+                    {% endif %}
+                ],
+                legend : {
+                    position : "bottom",
+                    alignment : "end"
+                },
+                vAxes : [
+                    {
+                        title : '{{ "en m3"|trans }}',
+                        baselinecolor : "#000000",
+                        minValue : 0
+                    }
+                ],
+                tooltip : { isHtml : true }
+            },
+            datatable : [
+                [
+                    'Date',
+                    {% if immeuble.SerieConsosEAU.ValeursXYL|length > 0 %}
+                    '{{ "Consommations compteurs EC + EF"|trans }}',
+                    { role : 'tooltip' },
+                    {% endif %}
+                    {% if immeuble.SerieConsosCompteurGeneral.ValeursXYL|length > 0 %}
+                    '{{ "Consommations compteur général"|trans }}',
+                    { role : 'tooltip' }
+                    {% endif %}
+                ],
+                {% set serie1 = immeuble.SerieConsosEAU.ValeursXYL|split(';') %}
+                {% set serie2 = immeuble.SerieConsosCompteurGeneral.ValeursXYL|split(';') %}
+                {% for i in range(0, serie1|length > serie2|length ? serie1|length -1 : serie2|length - 1) %}
+                {% set data1 = i < serie1|length ? serie1[i]|split('|') : [null, null, null] %}
+                {% set data1 = data1|length == 3 ? data1 : [null, null, null] %}
+                {% set data2 = i < serie2|length ? serie2[i]|split('|') : [null, null, null] %}
+                {% set data2 = data2|length == 3 ? data2 : [null, null, null] %}
+                {% if data1[0] != null %}
+                {% set axe = data1[0]|slice(0,6)~data1[0]|slice(8,2) %}
+                {% elseif data2[0] != null %}
+                {% set axe = data2[0]|slice(0,6)~data1[0]|slice(8,2) %}
+                {% else %}
+                {% set axe = null %}
+                {% endif %}
+                {% if axe != null %}
+                [
+                    '{{ axe }}',
+                    {% if immeuble.SerieConsosEAU.ValeursXYL|length > 0 %}
+                    {{ data1[1] != null ? data1[1]|number_format(2, '.', '') : 'null' }},
+                    'Conso : {{ data1[1]|number_format(0, '.', '') }}',
+                    {% endif %}
+                    {% if immeuble.SerieConsosCompteurGeneral.ValeursXYL|length > 0 %}
+                    {{ data2[1] != null  ? data2[1]|number_format(2, '.', '') : 'null' }},
+                    'Conso : {{ data2[1]|number_format(0, '.', '') }} - Index : {{ data2[2]|number_format(0, '.', '') }}',
+                    {% endif %}
+                ],
+                {% endif %}
+                {% endfor %}
+            ]
+        };
+    </script>
+</div>

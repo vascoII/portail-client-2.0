@@ -1,0 +1,47 @@
+<li class="category with-icon">
+    <a href="{{ path('TechemCoreBundle_TableauBordClient_index') }}" class="building">
+        <i class="icon icon-cog"></i><span style="" class="title ">{{ 'Le parc'|trans }}</span>
+    </a>
+</li>
+<li class="{% if active is not defined %}active{% else %}active2{% endif %} with-icon">
+    <a href="{{ path('TechemCoreBundle_Immeuble_show', {'pkImmeuble': immeuble.Immeuble.PkImmeuble}) }}" class="building">
+        <i class="icon icon-immeuble"></i><span style="" class="title ">{{ "Immeuble"|trans }} {{ immeuble.Immeuble.Ref
+            }}</span>
+    </a>
+</li>
+<li class="{% if active is defined and active == 'fui' %}active{% endif %} with-icon">
+    <a href="{{ path('TechemCoreBundle_Immeuble_listleaks', {'pkImmeuble': immeuble.Immeuble.PkImmeuble}) }}" class="fui">
+        {% set NbFuites = immeuble.ImmeubleEC.NbFuites > 0 ? immeuble.ImmeubleEC.NbFuites : 0 %}
+        {% set NbFuites = immeuble.ImmeubleEF.NbFuites > 0 ? NbFuites + immeuble.ImmeubleEF.NbFuites : NbFuites %}
+        <span class="badge badge-grey show" style="">{{ NbFuites }}</span>
+        <i class="icon icon-water33"></i><span style="" class="title fuites">{{ 'Fuites'|trans }}</span>
+    </a>
+</li>
+<li class="{% if active is defined and active == 'dys' %}active{% endif %} with-icon">
+    <a href="{{ path('TechemCoreBundle_Immeuble_listdysfunctions', {'pkImmeuble': immeuble.Immeuble.PkImmeuble}) }}" class="dys">
+        <span class="badge badge-grey show" style="">{% if immeuble.NbDysfonctionnements == -1 %}0{% else %}{{ immeuble.NbDysfonctionnements }}{% endif %}</span>
+        <i class="icon icon-bell84"></i><span style="" class="title">{{ 'Alarmes techniques'|trans }}</span>
+    </a>
+</li>
+<li class="{% if active is defined and active == 'ano' %}active{% endif %} with-icon">
+    <a href="{{ path('TechemCoreBundle_Immeuble_listanomalies', {'pkImmeuble': immeuble.Immeuble.PkImmeuble}) }}" class="ano">
+        {% set NbAnomalies = immeuble.ImmeubleEC.NbAnomalies > 0 ? immeuble.ImmeubleEC.NbAnomalies : 0 %}
+        {% set NbAnomalies = immeuble.ImmeubleEF.NbAnomalies > 0 ? NbAnomalies + immeuble.ImmeubleEF.NbAnomalies : NbAnomalies %}
+        <span class="badge badge-grey show" style="">{{ NbAnomalies }}</span>
+        <i class="icon icon-caution"></i><span style="" class="title">{{ "Anomalies de"|trans }}<br/>{{ "consommation"|trans }}</span>
+    </a>
+</li>
+<li class="{% if active is defined and active == 'dep' %}active{% endif %} with-icon">
+    {% if immeuble.NbDepannages > 0 %}
+        <a href="{{ path('TechemCoreBundle_Immeuble_listinterventions', {'pkImmeuble': immeuble.Immeuble.PkImmeuble, statut: 'ouvert'}) }}" class="dep">
+            <span class="badge badge-grey show" style="">{{ immeuble.NbDepannages }}</span>
+            <i class="icon icon-wrench44"></i><span style="" class="title">{{ "Dépannages"|trans }}<br />{{ "en cours"|trans }}</span>
+        </a>
+    {% else %}
+        <a href="{{ path('TechemCoreBundle_Immeuble_listinterventions', {'pkImmeuble': immeuble.Immeuble.PkImmeuble}) }}" class="dep">
+            <span class="badge badge-grey show" style="">{{ immeuble.NbDepannagesTotal > 0 ? immeuble.NbDepannagesTotal : 0 }}</span>
+            <i class="icon icon-wrench44"></i><span style="" class="title">{{ "Dépannages"|trans }}</span>
+        </a>
+    {% endif %}
+</li>
+{{ render(controller('App\\Controller\\TicketingController::menuTicketAction')) }}

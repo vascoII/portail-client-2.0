@@ -1,0 +1,75 @@
+parameters:
+  mailer_transport: smtp
+  mailer_host: 127.0.0.1
+  mailer_user: null
+  mailer_password: null
+  locale: fr
+  secret: m1EyDxag33VVcHWq26ZP
+  debug_toolbar: true
+  debug_redirects: false
+  use_assetic_controller: true
+  # PREVIEW
+  sopa_url: "http://techn5292.eu.techem.corp:8083/Main.asmx?wsdl"
+  # DEMO
+  #sopa_url: "http://techn5292.eu.techem.corp:8081/Main.asmx?wsdl"
+  # PROD
+  #sopa_url: "http://techn5292.eu.techem.corp/Main.asmx?wsdl"
+  adminSessionId: 0v728jqy-2cc0-4724-abc5-dbm1zwab9a3d
+  superLoginID: "JOHN DOE"
+  superPassword: DF93RN9F-SLJ528F
+  service_client: App\Service\Client
+  security.authentication.provider.soap.class: App\Security\AppCustomAuthenticator
+  header.request_listener: App\Listener\HeaderListener
+  cache_namespace: techemsoap
+  cache_dir: "%kernel.project_dir%/cache"
+
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  App\:
+    resource: "../src/"
+    exclude:
+      - "../src/DependencyInjection/"
+      - "../src/Entity/"
+      - "../src/Kernel.php"
+
+  App\Service\FakeDataService:
+    arguments:
+      $projectDir: '%kernel.project_dir%'
+
+  App\Service\Client:
+    arguments:
+      $kernel: "@kernel"
+      $wsdlUrl: "%sopa_url%"
+      $adminSessionId: "%adminSessionId%"
+      $cache: "@cache.app"
+      $cacheNamespace: "%cache_namespace%"
+      $superLoginID: "%superLoginID%"
+      $superPassword: "%superPassword%"
+
+  security.authentication.provider.soap.class:
+    class: App\Security\AppCustomAuthenticator
+    abstract: true
+    public: false
+    arguments:
+      - "@security.user_checker"
+      - "~" # Provider-shared Key
+      - '@App\Service\Client'
+      - "%security.authentication.hide_user_not_found%"
+
+  header.request_listener:
+    class: App\Listener\HeaderListener
+    tags:
+      - {
+          name: kernel.event_listener,
+          event: kernel.request,
+          method: onKernelRequest,
+          priority: 7,
+        }
+
+  App\Listener\CorsListener:
+    tags:
+      - { name: kernel.event_subscriber }
+

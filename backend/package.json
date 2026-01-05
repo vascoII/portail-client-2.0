@@ -1,0 +1,31 @@
+{
+  "name": "techem-refont",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev-server": "encore dev-server",
+    "dev": "encore dev",
+    "watch": "encore dev --watch",
+    "build": "encore production --progress"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://yosrra2016:sarra%40123@gitlab.com/vietnamTeam/techem-refonte.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/vietnamTeam/techem-refonte/issues"
+  },
+  "homepage": "https://gitlab.com/vietnamTeam/techem-refonte#readme",
+  "devDependencies": {
+    "@symfony/webpack-encore": "^4.5.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "webpack-notifier": "^1.15.0"
+  }
+}

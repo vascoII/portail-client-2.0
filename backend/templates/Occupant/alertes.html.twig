@@ -1,0 +1,102 @@
+{% extends "base.html.twig" %}
+
+{% block body__main_menu %}
+    {% include 'Occupant/_menu.html.twig' %}
+{% endblock %}
+
+{% block breadcrumb_mobile %}
+    <div class="btn btn-primary btn-lg dropdown-toggle hidden-lg hidden-md" id="dropdownMenu3" data-toggle="dropdown">
+        <i class="pull-right icon-arrow"></i>
+        <h3>{{ "Logement"|trans }} {{ logement.Occupant.Ref }}</h3>
+    </div>
+{% endblock %}
+
+{% block header %}
+    {% if occupant_no_header() != 'true' %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block main_content %}
+    <script type="text/javascript">
+        var charts = Array();
+    </script>
+    <ul class="breadcrumb hidden-xs">
+        <li></li>
+    </ul>
+    <span class="clearfix"></span>
+
+    <div class="row panel-area building-detail-area">
+        <h2>Paramètre de l’alerte</h2>
+
+        <div class="col-md-9 col-sm-9 block block-1">
+            <div class="panel panel-primary parc_summary panel-info">
+
+                <form method="post" action="{{ path('TechemCoreBundle_Occupant_alertes') }}">
+                    <div class="meta clearfix" style="margin-top: 5%;">
+                        <div class="data">
+                            <div class="form-group">
+                                <input type="checkbox" id="SEUIL_CONSO_ACTIF" name="SEUIL_CONSO_ACTIF" value="{{user.Seuil_Conso_Actif}}">
+                                <strong style="margin-left: 2%;"><span>Activer l'alerte</strong></span>
+                            </div>
+                            <div class="form-group">
+                                <div style="width: 80%;">
+                                    <input style="height: 50px;" type="email" class="form-control" id="SEUIL_CONSO_EMAIL" name="SEUIL_CONSO_EMAIL" value="{{user.Seuil_Conso_Email}}" placeholder="E-mail de réception" style="font-size: 16px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="meta user clearfix" style="margin-left: 5%;">
+                        <div class="info meta clearfix" style="width: 80%;">
+                            <div class="icons" style="margin-left: 15px;">
+                                <i class="icon icon-water94"></i>
+                            </div>
+
+                            <div class="clearfix data" style="margin-left: 80px;">
+                                <input style="height: 50px;" type="text" class="form-control" id="SEUIL_CONSO_EF" name="SEUIL_CONSO_EF" value="{{user.Seuil_Conso_EF}}" placeholder="Seuil d’alerte en m3" style="font-size: 16px;">
+                            </div>
+                            <div class="col-md-3 col-sm-3">
+                                <div class="item">Eau</div>
+                                <div class="item">froide</div>
+                            </div>
+                        </div>
+                        <div class="info meta clearfix" style="width: 80%;">
+
+                            <div class="icons" style="margin-left: 15px;">
+                                <i class="icon icon-water94"></i>
+                            </div>
+
+                            <div class="clearfix data" style="margin-left: 80px;">
+                                <input style="height: 50px;" type="text" class="form-control" id="SEUIL_CONSO_EC" name="SEUIL_CONSO_EC" value="{{user.Seuil_Conso_EC}}" placeholder="Seuil d’alerte en m3" style="font-size: 16px;">
+                            </div>
+                            <div class="col-md-3 col-sm-3">
+                                <div class="item">Eau</div>
+                                <div class="item">chaude</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group text-center">
+                        <div class="col-md-9 col-sm-9 block block-1">
+                            <button class="btn btn-primary btn-lg" type="submit">
+                                <span>{{ "Enregistrer"|trans }}</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-3 block block-1">
+            <span style="float:right;">
+                <div>
+                    <form class="" style="float:right;" method="POST" target="_blank">
+                        <a href="#" target="_blank">
+                            <button type="submit" class="btn-primary btn">
+                                <i class="icon-download"></i><b>Info Conso</b>
+                            </button>
+                        </a>
+                    </form>
+                </div>
+            </span>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,67 @@
+<li class="{% if active is not defined %}active{% else %}active2{% endif %} with-icon">
+    <a href="{{ path('TechemCoreBundle_Occupant_show') }}">
+        <i class="icon icon-opened33"></i><span style="" class="title ">{{ "Logement"|trans }} {{ logement.Occupant.Ref
+            }}</span>
+    </a>
+</li>
+
+
+<li class="with-icon">
+    <a href="{{ path('TechemCoreBundle_Occupant_Simulateur') }}">
+        
+        <i class="icon icon-beach16"></i><span style="" class="title">Simulateur de consommation</span>
+    </a>
+</li>
+
+
+{# <li class="{% if compte is defined %}active{% endif %} with-icon">
+    <a href="{{ path('TechemCoreBundle_Occupant_myAccount') }}">
+        <span style="" class="title compte">{{ "Mon compte"|trans }}</span>
+    </a>
+</li>
+<li class="{% if consommations is defined %}active{% endif %} with-icon">
+    <a href="{{ path('TechemCoreBundle_Occupant_show') }}">
+        <span style="" class="title consommations">{{ "Mes consommations"|trans }}</span>
+    </a>
+</li>
+
+<li class="{% if alertes is defined%}active{% endif %} with-icon">
+    <a href="{{ path('TechemCoreBundle_Occupant_alertes') }}">
+        <span style="" class="title alertes">{{ "Mes alertes"|trans }}</span>
+    </a>
+</li> #}
+{#<li class="{% if depannages is defined and active == 'depannages' %}active{% endif %} with-icon">#}
+{#    {% if logement.NbDepannages > 0 %}#}
+{#        <a href="{{ path('TechemCoreBundle_Occupant_listinterventions', {statut: 'ouvert'}) }}">#}
+{#            <span style="" class="title">{{ "Mes dépannages"|trans }}<br/>{{ "en cours"|trans }}</span>#}
+{#        </a>#}
+{#    {% else %}#}
+{#        <a href="{{ path('TechemCoreBundle_Occupant_listinterventions') }}">#}
+{#            <span style="" class="title">{{ "Mes dépannages"|trans }}</span>#}
+{#        </a>#}
+{#    {% endif %}#}
+{#</li>#}
+
+{# <li class="{% if active is defined and active == 'fui' %}active{% endif %} with-icon">
+    {% set NbFuites = logement.LogementEF.NbFuites != -1 ? logement.LogementEF.NbFuites : 0 %}
+    {% set NbFuites = logement.LogementEC.NbFuites != -1 ? NbFuites + logement.LogementEC.NbFuites : NbFuites %}
+    <a href="{{ path('TechemCoreBundle_Occupant_listleaks') }}" class="fui">
+        <span class="badge badge-grey show" style="">{{ NbFuites }}</span>
+        <i class="icon icon-water33"></i><span style="" class="title fuites">{{ "Fuites"|trans }}</span>
+    </a>
+</li>
+<li class="{% if active is defined and active == 'dys' %}active{% endif %} with-icon">
+    <a href="{{ path('TechemCoreBundle_Occupant_listdysfunctions') }}" class="dys">
+        <span class="badge badge-grey show" style="">{% if logement.NbDysfonctionnements == -1 %}0{% else %}{{ logement.NbDysfonctionnements }}{% endif %}</span>
+        <i class="icon icon-bell84"></i><span style="" class="title">{{ 'Alarmes techniques'|trans }}</span>
+    </a>
+</li>
+<li class="{% if active is defined and active == 'ano' %}active{% endif %} with-icon">
+    {% set NbAnomalies = logement.LogementEF.NbAnomalies != -1 ? logement.LogementEF.NbAnomalies : 0 %}
+    {% set NbAnomalies = logement.LogementEC.NbAnomalies != -1 ? NbFuites + logement.LogementEC.NbFuites : NbAnomalies %}
+    <a href="{{ path('TechemCoreBundle_Occupant_listanomalies') }}" class="ano">
+        <span class="badge badge-grey show" style="">{{ NbAnomalies }}</span>
+        <i class="icon icon-caution"></i><span style="" class="title">{{ "Anomalies de"|trans }}<br/>{{ "consommation"|trans }}</span>
+    </a>
+</li>#}
+

@@ -1,0 +1,2 @@
+/*! For license information please see ie8-responsive-file-warning.js.LICENSE.txt */
+"file:"==window.location.protocol&&alert("ERROR: Bootstrap's responsive CSS is disabled!\nSee getbootstrap.com/getting-started/#respond-file-proto for details.");

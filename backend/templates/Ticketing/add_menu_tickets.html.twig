@@ -1,0 +1,11 @@
+{% if isTicketInterEnabled %}
+
+<li class="with-icon ticket">
+    {% set showAll = 'N' %}
+    <a href="{{ path('TechemCoreBundle_Ticket_List', { 'showAll': showAll }) }}" class="tick">
+        <span class="badge badge-grey show" style="">{{ getNbTicketsInterUser }}</span>
+        <img src="{{ asset('bundles/techemcore/images/message.svg') }}" alt="message" width="20px" class="icon-mesg"/>
+        <span style="" class="title">{{ "Tickets"|trans }}</span>
+    </a>
+</li>
+{% endif %}

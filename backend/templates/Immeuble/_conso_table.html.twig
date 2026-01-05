@@ -1,0 +1,14 @@
+<div class="table">
+    <div class="head">
+        <div>{{ "réf.client"|trans }}</div>
+        <div>{{ 'Occupant'|trans }}</div>
+        <div>{{ "conso"|trans }}</div>
+    </div>
+    {% for conso in consos %}
+        <a class="body" href="{{ path('TechemCoreBundle_Logement_show', {'pkLogement': conso.PkLogement}) }}">
+            <div>{{ conso.RefOcc }}</div>
+            <div>{{ conso.NomOcc }}</div>
+            <div>{{ conso.Conso }} </div>
+        </a>
+    {% endfor %}
+</div>

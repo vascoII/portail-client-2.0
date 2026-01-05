@@ -1,0 +1,502 @@
+{% extends "base.html.twig" %}
+
+{% block body__main_menu %}
+    {% include 'Immeuble/_menu.html.twig' %}
+{% endblock %}
+
+{% block breadcrumb_mobile %}
+    <div class="btn btn-primary btn-lg dropdown-toggle hidden-lg hidden-md" id="dropdownMenu3" data-toggle="dropdown">
+        <i class="pull-right icon-arrow"></i>
+        <h3>{{ "Immeuble"|trans }} {{ immeuble.Immeuble.Ref }}</h3>
+    </div>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu3">
+        <li role="presentation">
+            <h3><a role="menuitem" tabindex="-1"
+                   href="{{ path('TechemCoreBundle_Immeuble_index') }}">{{ 'Liste des immeubles'|trans }}</a></h3>
+        </li>
+        <li role="presentation">
+            <h3><a role="menuitem" tabindex="-1"
+                   href="{{ path('TechemCoreBundle_TableauBordClient_index') }}">{{ 'Le parc'|trans }}</a></h3>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block modal %}
+    <div class="form-new-intervention" style="display: none;">
+        <div class="content-form">
+            <div class="cross-close">
+                <img src="{{ asset('bundles/techemcore/images/fidesio/cross.svg') }}"/>
+            </div>
+            <h4>Livret d'intervention</h4>
+            <form class="livret-intervention"
+                  action="{{ path('TechemCoreBundle_Immeuble_intervention', {
+                      'pkImmeuble' : immeuble.Immeuble.PkImmeuble
+                  }) }}" target="_blank">
+                <div class="content-date">
+                    <div class="begin">
+                        Du
+                        <div class="input-group date" data-provide="datepicker">
+                            <input class="datepicker" type="text" class="form-control" name="date-begin">
+                            <div class="input-group-addon"></div>
+                        </div>
+                    </div>
+                    <div class="end">
+                        Au
+                        <div class="input-group date" data-provide="datepicker">
+                            <input  class="datepicker" type="text" class="form-control" name="date-end">
+                            <div class="input-group-addon"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-warning warning" style="display: none">
+                    Vous devez remplir les deux champs dates
+                </div>
+                <input type="hidden" name="doc-type" id="doc-type">
+                <input type="submit" value="Synthèse des interventions" name="synthese-inte" id="synthese-inte">
+                <input type="submit" value="Détail des interventions" name="detail-inte" id="detail-inte">
+                <input type="submit" value="Détail des interventions" name="detail-excel-inte" id="detail-excel-inte">
+            </form>
+        </div>
+        <div class="back-close"></div>
+    </div>
+{% endblock %}
+
+{% block main_content %}
+
+    <script type="text/javascript">
+        var charts = Array();
+    </script>
+    <ul class="breadcrumb hidden-xs">
+        <li><a href="{{ path('TechemCoreBundle_TableauBordClient_index') }}">{{ 'Le parc'|trans }}</a></li>
+        <li><a href="{{ path('TechemCoreBundle_Immeuble_index') }}">{{ 'Liste des immeubles'|trans }}</a></li>
+        <li><a href="#">{{ "Immeuble"|trans }} {{ immeuble.Immeuble.Ref }}</a></li>
+    </ul>
+    <span class="clearfix"></span>
+    <h2>{{ "Aperçu de l'immeuble"|trans }} {{ immeuble.Immeuble.Ref }}</h2>
+
+    <div class="row panel-area building-detail-area">
+
+        <div class="col-md-8 col-sm-6 block block-1">
+            <div class="panel panel-primary parc_summary panel-info">
+
+                <div class="meta clearfix">
+                    
+					<div class="icons">
+                        <i class="icon-immeuble"></i>
+                    </div>
+
+
+					<div class="col-md-5 ">
+						<div class="data">
+							{% if immeuble.Immeuble.Nom %}
+								<p><strong>{{ "Nom" |trans }} : <span>{{ immeuble.Immeuble.Nom }}</span></strong></p>
+							{% endif %}
+							<p><strong>{{ 'Référence'|trans }} : <span>{{ immeuble.Immeuble.Ref }}</span></strong></p>
+							<p><strong>{{ "N° d'immeuble"|trans }} : <span>{{ immeuble.Immeuble.Numero }} </span></strong>
+							</p>
+							<br/>
+							<p class="address">{{ immeuble.Immeuble.Adresse1 }} {{ immeuble.Immeuble.Adresse2 }} {{ immeuble.Immeuble.Adresse3 }}</p>
+							<p class="address">{{ immeuble.Immeuble.Cp }} {{ immeuble.Immeuble.Ville }}</p>
+
+							<a href="{{ path('TechemCoreBundle_Logement_index', { pkImmeuble: immeuble.Immeuble.PkImmeuble }) }}"
+							   class="button">
+								<strong>{{ immeuble.NbLogements }}</strong> {{ "Logements"|trans }} <i
+										class="icon icon-opened33"></i> <i class="fa fa-chevron-right"></i>
+							</a>
+						</div>
+					{% if demo is defined %}
+						<div class="col-md-6 ">
+							<div id="map"></div>
+						</div>
+						
+						<div class="clearfix">
+					{% endif %}
+				</div>
+					
+					
+{% if demo is defined %}
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+ <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+
+<style>
+#map { height:250px;width:100%; }
+</style>
+
+  <!-- Script Leaflet -->
+
+  <script>
+ 
+  
+  
+    // Initialisation de la carte centrée sur Paris
+    const map = L.map('map',{ zoomControl: false }).setView( [{{GPS.y}}, {{GPS.x}}] , 16);
+
+
+
+	const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		maxZoom: 19,
+		attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+	}).addTo(map);
+
+	const marker = L.marker([{{GPS.y}}, {{GPS.x}}]).addTo(map)
+		.bindPopup('<b>{{ immeuble.Immeuble.Nom }}</b><br />{{ immeuble.Immeuble.Adresse1 }}<br />{{ immeuble.Immeuble.Cp }} {{ immeuble.Immeuble.Ville }}').openPopup();
+
+	<!-- const circle = L.circle([51.508, -0.11], { -->
+		<!-- color: 'red', -->
+		<!-- fillColor: '#f03', -->
+		<!-- fillOpacity: 0.5, -->
+		<!-- radius: 500 -->
+	<!-- }).addTo(map).bindPopup('I am a circle.'); -->
+
+	<!-- const polygon = L.polygon([ -->
+		<!-- [51.509, -0.08], -->
+		<!-- [51.503, -0.06], -->
+		<!-- [51.51, -0.047] -->
+	<!-- ]).addTo(map).bindPopup('I am a polygon.'); -->
+
+
+//	const popup = L.popup()
+//		.setLatLng([48.765683, 2.256336])
+//		.setContent('{{ immeuble.Immeuble.Nom }}')
+//		.openOn(map);
+
+	function onMapClick(e) {
+		popup
+			.setLatLng(e.latlng)
+			.setContent(`You clicked the map at ${e.latlng.toString()}`)
+			.openOn(map);
+	}
+
+	map.on('click', onMapClick);
+
+
+    
+  </script>
+
+	
+{% endif %}
+	
+	
+	
+                </div>
+
+                <div class="app">
+                    <div class="inner"><strong>{{ immeuble.NbAppareils }}</strong> {{ "Appareils"|trans }}</div>
+                </div>
+
+                <div class="stats clearfix">
+                    {% if immeuble.NbCompteursEF != -1 %}
+                        <div class="item">
+                            <div class="value">{{ immeuble.NbCompteursEF }}</div>
+
+                            <div class="title">{{ "Eau froide"|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if immeuble.NbCompteursEC != -1 %}
+                        <div class="item">
+                            <div class="value">{{ immeuble.NbCompteursEC }}</div>
+
+                            <div class="title">{{ 'Eau chaude'|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if immeuble.NbCompteursRepart != -1 %}
+                        <div class="item">
+                            <div class="value">{{ immeuble.NbCompteursRepart }}</div>
+
+                            <div class="title">{{ 'Répartiteurs'|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if immeuble.NbCompteursCET != -1 %}
+                        <div class="item">
+                            <div class="value">{{ immeuble.NbCompteursCET }}</div>
+
+                            <div class="title">{{ "Compteur d'énergie"|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if immeuble.NbCompteursElect != -1 %}
+                        <div class="item">
+                            <div class="value">{{ immeuble.NbCompteursElect }}</div>
+
+                            <div class="title">{{ "Electricité"|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if immeuble.NbCompteursGaz != -1 %}
+                        <div class="item">
+                            <div class="value">{{ immeuble.NbCompteursGaz }}</div>
+
+                            <div class="title">{{ "Gaz"|trans }}</div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="status">
+                    <div class="icons">
+                        <i class="icon-transfert"></i>
+                    </div>
+
+                    <div class="data">
+                        {% if immeuble.Immeuble.HasTelereleve == true %}
+                            {{ "Mode de relève"|trans }}: <strong>{{ "Réseau fixe TSS"|trans }}</strong>
+                        {% else %}
+                            {{ "Mode de relève"|trans }}: <strong>{{ "Relève planifiée (radio ou manuelle)"|trans }}</strong>
+                        {% endif %}
+						<br />
+                        {% if immeuble.HasTransfertFichiers == true %}
+                            {{ "Transfert électronique de relevés"|trans }}: <strong>{{ "Actif"|trans }}</strong>
+                        {% else %}
+                            {{ "Transfert électronique de relevés"|trans }}: <strong>{{ "Inactif"|trans }}</strong>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6 block block-2 status-gauge">
+            <div class="panel-default">
+                {% if immeuble.NbDepannages > 0 %}
+                <a href="{{ path('TechemCoreBundle_Immeuble_listinterventions', {'pkImmeuble': immeuble.Immeuble.PkImmeuble, statut: 'ouvert'}) }}"
+                   class="dep">
+                    {% else %}
+                    <a href="{{ path('TechemCoreBundle_Immeuble_listinterventions', {'pkImmeuble': immeuble.Immeuble.PkImmeuble}) }}"
+                       class="dep">
+                        {% endif %}
+                        <div class="panel">
+                            <div class="text"><span>{{ "Dépannages"|trans }} {% if immeuble.NbDepannages > 0 %}
+                                        {{ "en cours"|trans }} {% endif %}</span></div>
+                            <div class="canvas {% if immeuble.NbDepannages > 0 %} brown{% endif %}">
+                                {% set rationDepannage = immeuble.NbDepannagesTotal > 0 ? 0.5 : 0 %}
+                                {% set rationDepannage = immeuble.NbDepannages > 0 ? 1 : rationDepannage %}
+                                <canvas width="139" height="113"
+                                        data-options=" {{ {value: rationDepannage, fillGaugeStyle: '#ecca83'}|json_encode() }}"></canvas>
+                                <div class="icons "><i class="icon icon-wrench44"></i></div>
+                            </div>
+                            <div class="number">{{ immeuble.NbDepannages > 0 ? immeuble.NbDepannages : immeuble.NbDepannagesTotal }}</div>
+
+                        </div>
+                    </a>
+                    <div class="btn-livret-intervention">Livret d'intervention</div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6 block block-3 status-gauge">
+            <div class="panel-default">
+                <a href="{{ path('TechemCoreBundle_Immeuble_listdysfunctions', {'pkImmeuble': immeuble.Immeuble.PkImmeuble}) }}"
+                   class="dep">
+                    <div class="panel">
+                        <div class="text"><span>{{ 'Alarmes techniques' |trans }}</span></div>
+                        <div class="canvas {% if immeuble.NbDysfonctionnements > 0 %} orange{% endif %}">
+                            <canvas width="139" height="113" data-options=" {{ {value: immeuble.NbDysfonctionnements
+                                > 0 ? 1 : 0, fillGaugeStyle: 'orange'}|json_encode() }}"></canvas>
+                            <div class="icons"><i class="icon icon-bell84"></i></div>
+                        </div>
+                        <div class="number">{% if immeuble.NbDysfonctionnements == -1 %}0{% else %}{{ immeuble.NbDysfonctionnements }}{% endif %}</div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="col-xs-12 tab-detail-area block block-4">
+            <ul class="nav nav-tabs" role="tablist">
+                {% if immeuble.NbCompteursEF > 0 %}
+                    {% set active = 'EF' %}
+                {% elseif immeuble.NbCompteursEC > 0 %}
+                    {% set active = 'EC' %}
+                {% elseif immeuble.NbCompteursRepart > 0 %}
+                    {% set active = 'Repart' %}
+                {% elseif immeuble.NbCompteursCET > 0 %}
+                    {% set active = 'CET' %}
+                {% elseif immeuble.NbCompteursCapteur > 0 %}
+                    {% set active = 'Temp' %}
+                {% elseif immeuble.NbCompteursElect > 0 %}
+                    {% set active = 'Elect' %}
+                {% elseif immeuble.NbCompteursGaz > 0 %}
+                    {% set active = 'Gaz' %}
+                {% endif %}
+                <li role="presentation" {% if active == "EF" %}class="active"{% endif %}>
+                    <a href="#tab-1" {% if immeuble.NbCompteursEF > 0 %}aria-controls="home" role="tab"
+                       data-toggle="tab" {% else %}class="disabled"{% endif %}>
+                        <div class="inner"><span class="icon icon-water94"></span> {{ "Eau froide"|trans }}</div>
+                    </a>
+                </li>
+
+                <li role="presentation" {% if active == "EC" %}class="active"{% endif %}>
+                    <a href="#tab-2" {% if immeuble.NbCompteursEC > 0 %}aria-controls="home" role="tab"
+                       data-toggle="tab" {% else %}class="disabled"{% endif %}>
+                        <div class="inner"><span class="icon icon-water94"></span> {{ 'Eau chaude'|trans }}</div>
+                    </a>
+                </li>
+
+                <li role="presentation" {% if active == "Repart" %}class="active"{% endif %}>
+                    <a href="#tab-3" {% if immeuble.NbCompteursRepart > 0 %}aria-controls="home" role="tab"
+                       data-toggle="tab" {% else %}class="disabled"{% endif %}>
+                        <div class="inner"><span class="icon icon-squares36"></span> {{ 'Répartiteur'|trans }}</div>
+                    </a>
+                </li>
+
+                <li role="presentation" {% if active == "CET" %}class="active"{% endif %}>
+                    <a href="#tab-4" {% if immeuble.NbCompteursCET > 0 %}aria-controls="home" role="tab"
+                       data-toggle="tab" {% else %}class="disabled"{% endif %}>
+                        <div class="inner"><span
+                                    class="icon icon-speedometer10"></span> {{ "Compteur d'énergie"|trans }}</div>
+                    </a>
+                </li>
+
+                <li role="presentation" {% if active == "Temp" %}class="active"{% endif %}>
+                    <a href="#tab-5" {% if immeuble.NbCompteursCapteur > 0 %}aria-controls="home" role="tab" data-toggle="tab"
+                       {% else %}class="disabled"{% endif %}>
+                        <div class="inner"><span class="icon icon-temperature"></span> *
+                            {{ "Température/ humidité"|trans }}</div>
+                    </a>
+                </li>
+
+                <li role="presentation" {% if active == "Elect" %}class="active"{% endif %}>
+                    <a href="#tab-6" {% if immeuble.NbCompteursElect > 0 %}aria-controls="home" role="tab"
+                       data-toggle="tab" {% else %}class="disabled"{% endif %}>
+                        <div class="inner"><span class="icon icon-lightning46"></span> {{ "Electricité"|trans }}</div>
+                    </a>
+                </li>
+
+                <li role="presentation" {% if active == "Gaz" %}class="active"{% endif %}>
+                    <a href="#tab-7" {% if immeuble.NbCompteursGaz > 0 %}aria-controls="home" role="tab"
+                       data-toggle="tab" {% else %}class="disabled"{% endif %}>
+                        <div class="inner"><span class="icon icon-fire58"></span> Gaz</div>
+                    </a>
+                </li>
+
+            </ul>
+
+            <div class="tab-content">
+
+                {% if immeuble.NbCompteursEF > 0 %}
+                    <div role="tabpanel" class="tab-pane {% if active == "EF" %}active{% endif %}" id="tab-1"
+                         data-area="tab-1">
+                        {% include 'Immeuble/_panel_eau.html.twig' with { panel: immeuble.ImmeubleEF, area: 'tab-1', label: 'Eau froide', color: '#46b5fb', colorclass: 'blue', fluide: 'EF'} %}
+                    </div>
+                {% endif %}
+
+                {% if immeuble.NbCompteursEC > 0 %}
+                    <div role="tabpanel" class="tab-pane {% if active == "EC" %}active{% endif %}" id="tab-2"
+                         data-area="tab-2">
+                        {% include 'Immeuble/_panel_eau.html.twig' with { panel: immeuble.ImmeubleEC, area: 'tab-2', label: 'Eau chaude', color: '#f83703', colorclass: 'red', fluide: 'EC'} %}
+                    </div>
+                {% endif %}
+
+                {% if immeuble.NbCompteursRepart > 0 %}
+                    <div role="tabpanel" class="tab-pane {% if active == "Repart" %}active{% endif %}" id="tab-3"
+                         data-area="tab-3">
+                        {% include 'Immeuble/_panel_repart.html.twig' with { panel: immeuble.ImmeubleRepart, fluide: 'Repart' } %}
+                    </div>
+                {% endif %}
+
+                {% if immeuble.NbCompteursCET > 0 %}
+                    <div role="tabpanel" class="tab-pane {% if active == "CET" %}active{% endif %}" id="tab-4"
+                         data-area="tab-4">
+                        {% include 'Immeuble/_panel_repart.html.twig' with { panel: immeuble.ImmeubleCET, fluide: 'CET' } %}
+                    </div>
+                {% endif %}
+
+                {% if immeuble.NbCompteursCapteur > 0 %}
+                    <div role="tabpanel" class="tab-pane {% if active == "Temp" %}active{% endif %}" id="tab-5"
+                         data-area="tab-5">
+                        {% include 'Immeuble/_panel_temp.html.twig' with { panel: immeuble.ImmeubleCapteur } %}
+                    </div>
+                {% endif %}
+
+                {% if immeuble.NbCompteursElect > 0 %}
+                    <div role="tabpanel" class="tab-pane {% if active == "Elect" %}active{% endif %}" id="tab-6">
+                        {% include 'Immeuble/_panel_elect.html.twig' with { panel: immeuble.ImmeubleElect } %}
+                    </div>
+                {% endif %}
+
+                {% if immeuble.NbCompteursGaz > 0 %}
+                    <div role="tabpanel" class="tab-pane {% if active == "Gaz" %}active{% endif %}" id="tab-7">
+                        {% include 'Immeuble/_panel_gaz.html.twig' with { panel: immeuble.ImmeubleGaz } %}
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block body_classes %}{{ parent() }} building{% endblock %}
+
+{% block javascripts_foot %}
+    {{ parent() }}
+    <script type='text/javascript' src='https://www.gstatic.com/charts/loader.js'></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    {#<script type="text/javascript" src="http://www.chartjs.org/assets/Chart.min.js"></script>#}
+    {#<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>#}
+    <script type="text/javascript" src="{{ asset('bundles/techemcore/js/custom/status-gauge.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/techemcore/js/custom/performance-gauge.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/techemcore/js/custom/charts.js') }}"></script>
+
+    <script type="text/javascript">
+        (function () {
+
+            $('.datepicker').datepicker();
+            // Affichage popup demande d'intervention
+
+            $('.form-new-intervention .cross-close, .form-new-intervention .back-close').click(
+                function () {
+                    $('.form-new-intervention').fadeOut();
+                }
+            );
+            $('.btn-livret-intervention').click(
+                function () {
+                    $('.form-new-intervention').fadeIn();
+                }
+            );
+
+            $('.livret-intervention input[type=submit]').click(
+                function (e) {
+                    e.preventDefault();
+                    var docType = $(this).attr('name');
+                    var dateBegin = $('.livret-intervention input[name=date-begin]').val();
+                    var dateEnd = $('.livret-intervention input[name=date-end]').val();
+
+                    if (dateBegin.length == 0 || dateEnd.length == 0) {
+                        console.log('vous devez renseigner les deux dates')
+                        $('.livret-intervention .warning').css('display', 'block')
+                    } else {
+                        $('.livret-intervention .warning').css('display', 'none');
+                        $('.livret-intervention input[name=doc-type]').val(docType);
+                        $('.livret-intervention').submit();
+                    }
+                }
+            );
+
+
+            $('a[data-toggle="tab"]').on(
+                'shown.bs.tab', function (e) {
+                    var $me = $(e.target);
+                    var $area = $($me.attr('href'));
+
+                    drawGauge($area.attr('data-area'));
+                    drawCharts($area.attr('data-area'));
+                }
+            )
+
+            var defaultArea = $('.tab-detail-area > .tab-content > .tab-pane.active').attr('data-area');
+            drawGauge(defaultArea);
+            drawCharts(defaultArea);
+
+        })();
+    </script>
+
+{% endblock %}

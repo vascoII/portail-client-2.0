@@ -1,0 +1,324 @@
+{% extends 'base-global.html.twig' %}
+
+{% block javascripts_head %}
+	{{ parent() }}
+
+	<script type="text/javascript" src="{{ asset('bundles/techemcore/js/jquery-1.11.0.min.js') }}"></script>
+{% endblock %}
+
+{% block javascripts_foot %}
+	{{ parent() }}
+
+	<script type="text/javascript" src="{{ asset('bundles/techemcore/js/gsap/main-gsap.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/techemcore/js/jquery-ui/js/jquery-ui-1.10.3.minimal.min.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/techemcore/js/bootstrap.min.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/techemcore/js/joinable.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/techemcore/js/neon-api.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/techemcore/js/resizeable.custom.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/techemcore/js/custom.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/techemcore/js/neon-custom.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/techemcore/js/bootstrap-datepicker-release/js/bootstrap-datepicker.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/techemcore/js/bootstrap-datepicker-release/js/locales/bootstrap-datepicker.fr.js') }}"></script>
+
+	<link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/23.1.5/css/dx.light.css"/>
+	<script type="text/javascript" src="https://cdn3.devexpress.com/jslib/23.1.5/js/dx.all.js"></script>
+	<script type="text/javascript" src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Intl.~locale.en,Intl.~locale.de,Intl.~locale.ru"></script>
+	<script type="text/javascript" src="https://cdn3.devexpress.com/jslib/23.1.5/js/localization/dx.messages.de.js"></script>
+	<script type="text/javascript" src="https://cdn3.devexpress.com/jslib/23.1.5/js/localization/dx.messages.ru.js"></script>
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+
+	<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/23.1.4/css/dx.light.css">
+
+	<link rel="stylesheet" href="{{ asset('bundles/techemcore/js/jquery-ui/css/no-theme/jquery-ui-1.10.3.custom.min.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('bundles/techemcore/css/font-icons/entypo/css/entypo.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('bundles/techemcore/css/bootstrap.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('bundles/techemcore/css/neon-core.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('bundles/techemcore/css/neon-theme.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('bundles/techemcore/css/neon-forms.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('bundles/techemcore/css/skins/white.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('bundles/techemcore/css/font-icons/fontello/css/fontello.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('bundles/techemcore/css/custom.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('bundles/techemcore/css/main.css') }}"/>
+{% endblock %}
+
+{% block body %}
+	<div class="go-to-top">
+		{{ "HAUT"|trans }}<span class="hidden-xs">
+			{{ "DE PAGE"|trans }}</span>
+	</div>
+	<div class="page-container horizontal-menu with-sidebar {% if occupant_no_header() == 'true' %}occupant_no_header{% endif %}">
+		{% if occupant_no_header() != 'true' %}
+			{% block header %}
+				<header class="navbar navbar-static-top container-fluid">
+					<div class="row">
+						<div
+							class="hidden-sm hidden-xs pull-left" style="width:229px;">
+							<!-- Logo Desktop -->
+							{% if is_granted('ROLE_OCCUPANT') %}
+								<a href="{{ path('TechemCoreBundle_Occupant_show') }}">
+									<div class="logo"></div>
+								</a>
+							{% else %}
+								<a href="{{ path('TechemCoreBundle_TableauBordClient_index') }}">
+									<div class="logo"></div>
+								</a>
+							{% endif %}
+						</div>
+						<div class="logo-container">
+							<div class="row row-top">
+								<div class="col-md-8 col-sm-9 no-padding pull-left">
+									<div
+										class="hidden-lg hidden-md pull-left" style="width: 130px;">
+										<!-- Logo Tablet -->
+										{% if is_granted('ROLE_OCCUPANT') %}
+											<a href="{{ path('TechemCoreBundle_Occupant_show') }}">
+												<div class="logo-tablet"></div>
+											</a>
+										{% else %}
+											<a href="{{ path('TechemCoreBundle_TableauBordClient_index') }}">
+												<div class="logo-tablet"></div>
+											</a>
+										{% endif %}
+
+									</div>
+									<h3 class="hidden-xs">{{ "Bienvenue dans votre espace client"|trans }}</h3>
+								</div>
+								<div class="col-md-4 col-sm-3 pull-right">
+									<div class="dropdown user-menu input-group">
+										<button class="btn btn-primary btn-lg dropdown-toggle hidden-sm hidden-xs" type="button" id="dropdownMenu1" data-toggle="dropdown">
+											<span class="carett"></span>
+											<i class="icon-user"></i>
+											{% if app.token.attribute('soap.user').UserName is defined or app.token.attribute('soap.user').FirstName is defined %}
+												{{ app.token.attribute('soap.user').UserName is defined ? app.token.attribute('soap.user').UserName : '' }}
+												{{ app.token.attribute('soap.user').FirstName is defined ? app.token.attribute('soap.user').FirstName : '' }}
+											{% else %}
+												Utilisateur #{{ app.token.attribute('soap.user').PKUser }}
+												
+											{% endif %}
+					
+										</button>
+										<button class="btn btn-primary btn-lg dropdown-toggle hidden-lg hidden-md" type="button" id="dropdownMenu1" data-toggle="dropdown">
+											<i class="fa fa-user"></i>
+										</button>
+										<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+											<li role="presentation">
+												<a role="menuitem" tabindex="-1" href="{{ path("update_password") }}">
+													<i class="icon-pen"></i>
+													{{ "Mon Compte"|trans }}
+												</a>
+											</li>
+										
+											{% if is_granted('ROLE_ADMIN') %}
+
+												<li role="presentation">
+													<a role="menuitem" tabindex="-1" href="{{ path('TechemCoreBundle_Operator_create') }}">
+														{{ "Créer un compte"|trans }}
+													</a>
+												</li>
+												<li role="presentation">
+													<a role="menuitem" tabindex="-1" href="{{ path('TechemCoreBundle_Operator_index') }}">
+														{{ "Gérer les comptes"|trans }}
+													</a>
+												</li>
+												{% if app.token.attribute('soap.user').showFactures is defined and app.token.attribute('soap.user').showFactures == 1%}
+													<li role="presentation">
+														<a role="menuitem" tabindex="-1" href="{{ path("TechemCoreBundle_facture_index") }}">
+															<i class="icon-pen"></i>
+															{{ "Factures"|trans }}
+														</a>
+													</li>
+												{% endif %}
+													<li role="presentation">
+														<a role="menuitem" tabindex="-1" href="{{ path("TechemCoreBundle_Operator_statsoccupants") }}">
+															<i class="icon-pen"></i>
+															{{ "Stats Connexion Occupants"|trans }}
+														</a>
+													</li>
+												
+												
+											{% endif %}
+
+											<li role="presentation">
+												<a role="menuitem" tabindex="-1" href="{{ path("logout") }}">
+													<i class="icon-lock-open-alt"></i>
+													{{ "Déconnexion"|trans }}
+												</a>
+											</li>
+										</ul>
+									</div>
+
+
+									<div class="dropdown language-menu input-group">
+										<button class="btn btn-primary btn-lg dropdown-toggle hidden-sm hidden-xs" type="button" id="dropdownMenu2" data-toggle="dropdown">
+											{{ app.request.locale|upper }}
+											<span class="carett"></span>
+										</button>
+										<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
+											<li role="presentation">
+												<a role="menuitem" tabindex="-1" href="{{ path('TechemCoreBundle_Translation_set_locale', { 'language': 'fr' }) }}">FR</a>
+											</li>
+											<li role="presentation">
+												<a role="menuitem" tabindex="-1" href="{{ path('TechemCoreBundle_Translation_set_locale', { 'language': 'en' }) }}">EN</a>
+											</li>
+
+										</ul>
+									</div>
+								</div>
+							</div>
+							<div class="row row-bot">
+								<div class="hidden-lg hidden-md hidden-sm device-navbar">
+									<button class="sidebar-collapse-icon btn btn-primary hidden-lg hidden-md">
+										<img src="{{ asset('bundles/techemcore/images/fidesio/toggle.png') }}"/>
+									</button>
+									{% block breadcrumb_mobile %}{% endblock %}
+								</div>
+								<div class="col-md-8 col-sm-8 hidden-xs" style="padding-left: 0;">
+									<div class="visible-sm pull-left" style="text-align: center; width: 65px; padding: 0;">
+										<button class="btn hidden-lg hidden-md hidden-xs sidebar-collapse-icon" style="background: none; border: none;padding-left: 0;padding-right: 0;">
+											<i class="fa fa-bars" style="font-size: 30px;"></i>
+										</button>
+									</div>
+									<div class="input-group search_form hidden-xs">
+										<span
+											class="input-group-btn">
+											<!-- Dropdown advanced search -->
+											<div class="dropdown">
+												<button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown">
+													{{ "Recherche avancée"|trans }}
+													<span class="carett"></span>
+												</button>
+												<div class="dropdown-menu advanced_search col-md-8 col-sm-8 hidden-xs" role="menu" aria-labelledby="dropdownMenu1">
+													<form action="{{ path('TechemCoreBundle_Search_index') }}" method="get" role="form" class="form-horizontal form-groups-bordered" id="advanced-search-form">
+														<div class="form-group">
+															<div class="col-lg-12">
+																<div class="checkbox checkbox-replace" style="display:inline-block">
+																	<input type="radio" name="type" value="immeuble" {% if app.request.get('type') is null or app.request.get('type') == 'immeuble' %} checked {% endif %}>
+																	<label>{{ "Immeuble"|trans }}</label>
+																</div>
+																<div class="checkbox checkbox-replace" style="display:inline-block">
+																	<input type="radio" name="type" value="occupant" {% if app.request.get('type') == 'occupant' %} checked {% endif %}>
+																	<label>{{ 'Occupant'|trans }}</label>
+																</div>
+															</div>
+															<div class="col-lg-6 col-md-6 col-sm-6">
+																<input type="text" class="form-control" name="ref_numero" placeholder="{{ "Référence / Numéro"|trans }}" value="{{ app.request.get('ref_numero') }}">
+															</div>
+															<div class="col-lg-6 col-md-6 col-sm-6">
+																<input type="text" class="form-control" name="nom" placeholder={{ "Nom" |trans }} value="{{ app.request.get ('nom') }}">
+															</div>
+															<div class="col-lg-6 col-md-6 col-sm-6">
+																<input type="text" class="form-control" name="adresse" placeholder="{{ 'Adresse / CP / Ville'|trans }}" value="{{ app.request.get('adresse') }}">
+															</div>
+															<div class="col-lg-6 col-md-6 col-sm-6">
+																<button type="submit" class="btn btn-default submit">
+																	<i class="fa fa-search"></i>
+																</button>
+																<button type="reset" class="reset">
+																	{{ "Effacer"|trans }}
+																</button>
+															</div>
+														</div>
+													</form>
+												</div>
+											</div>
+											<!-- End dropdown advanced search -->
+										</span>
+
+										<form action="{{ path('TechemCoreBundle_Search_index') }}" method="get" role="form" id="search-form-all" class="form-horizontal form-groups-bordered">
+											<input type="text" name="tout" class="form-control" value="{{ app.request.get('tout') }}">
+											<span class="input-group-btn input-group-btn-b">
+												<button class="btn btn-primary" type="submit"></button>
+											</span>
+										</form>
+									</div>
+								</div>
+								<div class="col-md-4 col-sm-4 hidden-xs">
+									<form action="{{ path('TechemCoreBundle_Search_index') }}" method="get" role="form" class="code">
+										<div class="input-group code_form hidden-xs">
+											<input type="text" name="ref" class="form-control" placeholder="{{ "Saisir un code (immeuble/occupant)"|trans }}" value="{{ app.request.get('ref') }}">
+											<span class="input-group-btn">
+												<button class="btn btn-white" type="submit"></button>
+											</span>
+										</div>
+									</form>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</header>
+			{% endblock %}
+		{% endif %}
+		<div class="sidebar-menu offset {% if occupant_no_header() == 'true' %}occupant_no_header_sidebar{% endif %}">
+			<ul id="main-menu" class="" style="">
+				{% block body__main_menu %}{% endblock %}
+			</ul>
+		</div>
+		{% block modal %}{% endblock %}
+		<div class="main-content">
+			{% block main_content %}{% endblock %}
+		</div>
+	</div>
+	<nav id="footer" class="navbar footer">
+		{% include 'base_footer.html.twig' %}
+	</nav>
+	<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="false">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span>
+						<span class="sr-only">Close</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">{{ "Recherche avancée"|trans }}</h4>
+				</div>
+				<form action="{{ path('TechemCoreBundle_Search_index') }}" method="get" role="form" class="form-horizontal form-groups-bordered" id="modal-search-form-all">
+					<div class="form-group">
+						<div class="col-xs-12">
+							<input type="text" name="tout" value="{{ app.request.query.get('tout') }}" class="form-control" id="field-1">
+							<button class="xs-sub-search" type="submit"></button>
+						</div>
+					</div>
+					<div class="form-group"></div>
+				</form>
+				<form action="{{ path('TechemCoreBundle_Search_index') }}" method="get" role="form" class="form-horizontal form-groups-bordered" id="modal-advanced-search-form">
+					<div class="form-group">
+						<div class="col-xs-6">
+							<div class="checkbox checkbox-replace" style="display:inline-block">
+								<input type="radio" name="type" value="immeuble" {% if app.request.get('type') is null or app.request.get('type') == 'immeuble' %} checked {% endif %}>
+								<label>Immeuble</label>
+							</div>
+						</div>
+						<div class="col-xs-6">
+							<div class="checkbox checkbox-replace" style="display:inline-block">
+								<input type="radio" name="type" value="occupant" {% if app.request.get('type') == 'occupant' %} checked {% endif %}>
+								<label>{{ 'Occupant'|trans }}</label>
+							</div>
+						</div>
+						<span class="clearfix"></span>
+						<div class="col-lg-6 col-md-6 col-sm-6">
+							<input type="text" class="form-control" name="ref_numero" placeholder={{ "Référence / Numéro"|trans }} value="{{ app.request.query.get('ref_numero') }}">
+						</div>
+						<div class="col-lg-6 col-md-6 col-sm-6">
+							<input type="text" class="form-control" name="nom" placeholder={{ "Nom"|trans }} value="{{ app.request.query.get('nom') }}">
+						</div>
+						<div class="col-lg-6 col-md-6 col-sm-6">
+							<input type="text" class="form-control" name="adresse" placeholder="{{ 'Adresse / CP / Ville'|trans }}" value="{{ app.request.query.get('adresse') }}">
+						</div>
+						<div class="col-lg-6 col-md-6 col-sm-6">
+							<button type="submit" class="btn btn-default submit">
+								<i class="fa fa-search"></i>
+							</button>
+							<button type="reset" class="reset">{{ "Effacer"|trans }}</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'base-global.html.twig' %}
+
+{% block javascripts_head %}
+	{{ parent() }}
+
+	<script type="text/javascript" src="{{ asset('bundles/techemcore/js/jquery-1.11.0.min.js') }}"></script>
+{% endblock %}
+
+{% block javascripts_foot %}
+	{{ parent() }}
+
+	<script type="text/javascript" src="{{ asset('bundles/techemcore/js/gsap/main-gsap.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/techemcore/js/jquery-ui/js/jquery-ui-1.10.3.minimal.min.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/techemcore/js/bootstrap.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/techemcore/js/joinable.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/techemcore/js/neon-api.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/techemcore/js/resizeable.custom.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/techemcore/js/custom.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/techemcore/js/neon-custom.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/techemcore/js/bootstrap-datepicker-release/js/bootstrap-datepicker.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('bundles/techemcore/js/bootstrap-datepicker-release/js/locales/bootstrap-datepicker.fr.js') }}"></script>
+
+	<link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/23.1.5/css/dx.light.css"/>
+	<script type="text/javascript" src="https://cdn3.devexpress.com/jslib/23.1.5/js/dx.all.js"></script>
+	<script type="text/javascript" src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Intl.~locale.en,Intl.~locale.de,Intl.~locale.ru"></script>
+	<script type="text/javascript" src="https://cdn3.devexpress.com/jslib/23.1.5/js/localization/dx.messages.de.js"></script>
+	<script type="text/javascript" src="https://cdn3.devexpress.com/jslib/23.1.5/js/localization/dx.messages.ru.js"></script>
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+
+	<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="https://cdn3.devexpress.com/jslib/23.1.4/css/dx.light.css">
+
+	<link rel="stylesheet" href="{{ asset('bundles/techemcore/js/jquery-ui/css/no-theme/jquery-ui-1.10.3.custom.min.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('bundles/techemcore/css/font-icons/entypo/css/entypo.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('bundles/techemcore/css/bootstrap.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('bundles/techemcore/css/neon-core.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('bundles/techemcore/css/neon-theme.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('bundles/techemcore/css/neon-forms.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('bundles/techemcore/css/skins/white.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('bundles/techemcore/css/font-icons/fontello/css/fontello.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('bundles/techemcore/css/custom.css') }}"/>
+	<link rel="stylesheet" href="{{ asset('bundles/techemcore/css/main.css') }}"/>
+{% endblock %}
+
+{% block body_classes %}
+	{{ parent() }}
+	login-page
+{% endblock %}
+
+
+{% block body %}
+	<header></header>
+	{% block main_content %}{% endblock %}
+	<nav id="footer" class="navbar footer">
+		<ul>
+			<li>
+				<a href="https://www.techem.fr/mentions-legales.html" target="_blank">{{ "Mentions légales"|trans }}</a>
+				-
+				<a href="https://www.techem.fr/politique-de-confidentialite.html" target="_blank">Politique de confidentialité</a>
+			</li>
+		</ul>
+		<ul class="flags">
+			<li style="padding-top: 0">
+				<a style="" href="{{ path('app_login') }}">
+					<img style="   max-width: 40px;
+												    margin-left: 10px;" src="{{ asset('bundles/techemcore/images/flags/flag-fr.png') }}"/>
+				</a>
+				<a href="{{ path('app_login', { '_locale': 'en' }) }}">
+					<img style="max-width: 40px;
+												    margin-left: 10px;" src="{{ asset('bundles/techemcore/images/flags/flag-gb.png') }}"/>
+				</a>
+			</li>
+
+		</ul>
+	</nav>
+{% endblock %}

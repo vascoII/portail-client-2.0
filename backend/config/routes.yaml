@@ -1,0 +1,303 @@
+# login_check:
+#   path: /login_check
+#   controller: 'App\Controller\SecurityController::loginCheck'
+front:
+    path: /
+    controller: 'App\Controller\FrontController::indexAction'
+
+logout:
+    path: /logout
+    controller: 'App\Controller\SecurityController::logoutAction'
+
+app_login:
+    path: /login
+    controller: 'App\Controller\SecurityController::loginAction'
+
+app_login_param:
+    path: /login/{param}
+    controller: 'App\Controller\SecurityController::loginFromParamAction'
+    
+reset_password:
+    path: /reset-password
+    controller: 'App\Controller\SecurityController::resetPasswordAction'  
+    
+
+# TechemCoreBundle_Immeuble_export_anomalies:
+#   path: /immeuble/{pkImmeuble}/anomalies/export
+#   defaults: { _controller: TechemCoreBundle:Immeuble:exportAnomalies }
+
+# TechemCoreBundle_Immeuble_export_leaks:
+#   path: /immeuble/{pkImmeuble}/fuites/export
+#   defaults: { _controller: TechemCoreBundle:Immeuble:exportLeaks }
+
+# TechemCoreBundle_Immeuble_export_dysfunctions:
+#   path: /immeuble/{pkImmeuble}/dysfonctionnements/export
+#   defaults: { _controller: TechemCoreBundle:Immeuble:exportDysfunctions }
+
+# TechemCoreBundle_Immeuble_export_interventions:
+#   path: /immeuble/{pkImmeuble}/interventions/export
+#   defaults: { _controller: TechemCoreBundle:Immeuble:exportInterventions }
+
+# TechemCoreBundle_Logement_export_interventions:
+#   path: /logement/{pkLogement}/interventions/export
+#   defaults: { _controller: TechemCoreBundle:Logement:exportInterventions }
+
+# TechemCoreBundle_Occupant_export_anomalies:
+#   path: /occupant/anomalies/export
+#   defaults: { _controller: TechemCoreBundle:Occupant:exportAnomalies }
+
+# TechemCoreBundle_Occupant_export_leaks:
+#   path: /occupant/fuites/export
+#   defaults: { _controller: TechemCoreBundle:Occupant:exportLeaks }
+
+# TechemCoreBundle_Occupant_export_dysfunctions:
+#   path: /occupant/dysfonctionnements/export
+#   defaults: { _controller: TechemCoreBundle:Occupant:exportDysfunctions }
+
+# TechemCoreBundle_Occupant_export_interventions:
+#   path: /occupant/interventions/export
+#   defaults: { _controller: TechemCoreBundle:Occupant:exportInterventions }
+
+# TechemCoreBundle_Immeuble_index:
+#   path: /immeuble
+#   defaults: { _controller: TechemCoreBundle:Immeuble:index }
+
+# TechemCoreBundle_Immeuble_result:
+#   path: /immeuble/filtre
+#   defaults: { _controller: TechemCoreBundle:Immeuble:filterResult }
+
+# TechemCoreBundle_Immeuble_show:
+#   path: /immeuble/{pkImmeuble}
+#   defaults: { _controller: TechemCoreBundle:Immeuble:show }
+
+# TechemCoreBundle_Immeuble_releve:
+#   path: /immeuble/{pkImmeuble}/releve/{energie}
+#   defaults: { _controller: TechemCoreBundle:Immeuble:report, type: RELEVE }
+
+# TechemCoreBundle_Immeuble_releve_note:
+#   path: /immeuble/{pkImmeuble}/note/{energie}
+#   defaults: { _controller: TechemCoreBundle:Immeuble:report, type: NOTE }
+
+# TechemCoreBundle_Immeuble_repartition:
+#   path: /immeuble/{pkImmeuble}/repartition/{energie}
+#   defaults: { _controller: TechemCoreBundle:Immeuble:report, type: null }
+
+# TechemCoreBundle_Immeuble_listleaks:
+#   path: /immeuble/{pkImmeuble}/fuites
+#   defaults: { _controller: TechemCoreBundle:Immeuble:listLeaks }
+
+# TechemCoreBundle_TableauBordClient_index:
+#   path: /parc
+#   defaults: { _controller: TechemCoreBundle:TableauBordClient:index }
+
+# TechemCoreBundle_Logement_index:
+#   path: /immeuble/{pkImmeuble}/logements
+#   defaults: { _controller: TechemCoreBundle:Logement:index }
+
+# TechemCoreBundle_Logement_search:
+#   path: /logements/recherche
+#   defaults: { _controller: TechemCoreBundle:Logement:search }
+
+# TechemCoreBundle_Logement_infos_appareils:
+#   path: /infos-appareils
+#   defaults: { _controller: TechemCoreBundle:Logement:getInfosAppareil }
+
+# TechemCoreBundle_Logement_show:
+#   path: /logement/{pkLogement}
+#   defaults: { _controller: TechemCoreBundle:Logement:show }
+
+# TechemCoreBundle_Logement_edit:
+#   path: /gestionParc/{pkLogement}/edit
+#   defaults: { _controller: TechemCoreBundle:Logement:edit, gestion: true }
+
+# TechemCoreBundle_GestionParc_index:
+#   path: /gestionParc
+#   defaults: { _controller: TechemCoreBundle:Immeuble:index, gestion: true }
+
+# TechemCoreBundle_GestionParc_show:
+#   path: /gestionParc/{pkLogement}/show
+#   defaults: { _controller: TechemCoreBundle:Logement:show, gestion: true }
+
+# TechemCoreBundle_GestionParc_logement:
+#   path: /gestionParc/{pkImmeuble}
+#   defaults: { _controller: TechemCoreBundle:Logement:index, gestion: true }
+
+# TechemCoreBundle_Immeuble_listinterventions:
+#   path: /immeuble/{pkImmeuble}/interventions
+#   defaults: { _controller: TechemCoreBundle:Immeuble:listInterventions }
+
+# TechemCoreBundle_Immeuble_showintervention:
+#   path: /immeuble/{pkImmeuble}/interventions/{pkIntervention}
+#   defaults: { _controller: TechemCoreBundle:Immeuble:showIntervention }
+
+# TechemCoreBundle_Operator_index:
+#   path: /gestionnaire
+#   defaults: { _controller: TechemCoreBundle:Operator:index }
+
+# TechemCoreBundle_Operator_create:
+#   path: /gestionnaire/nouveau
+#   defaults: { _controller: TechemCoreBundle:Operator:create }
+
+# TechemCoreBundle_Operator_view:
+#   path: /gestionnaire/{id}
+#   defaults: { _controller: TechemCoreBundle:Operator:view }
+
+# TechemCoreBundle_Operator_edit:
+#   path: /gestionnaire/{id}/edit
+#   defaults: { _controller: TechemCoreBundle:Operator:edit }
+
+# TechemCoreBundle_Operator_password:
+#   path: /gestionnaire/{id}/password
+#   defaults: { _controller: TechemCoreBundle:Operator:editPassword }
+
+# TechemCoreBundle_Operator_add_building:
+#   path: /gestionnaire/{id}/immeuble/ajouter
+#   defaults: { _controller: TechemCoreBundle:Operator:addBuilding }
+#   requirements:
+#     _method: POST
+
+# TechemCoreBundle_Operator_remove_building:
+#   path: /gestionnaire/{id}/immeuble/supprimer
+#   defaults: { _controller: TechemCoreBundle:Operator:removeBuilding }
+#   requirements:
+#     _method: POST
+
+# TechemCoreBundle_Operator_delete:
+#   path: /gestionnaire/{id}/supprimer
+#   defaults: { _controller: TechemCoreBundle:Operator:delete }
+
+# TechemCoreBundle_Immeuble_listanomalies:
+#   path: /immeuble/{pkImmeuble}/anomalies
+#   defaults: { _controller: TechemCoreBundle:Immeuble:listAnomalies }
+
+# TechemCoreBundle_Immeuble_listdysfunctions:
+#   path: /immeuble/{pkImmeuble}/dysfonctionnements
+#   defaults: { _controller: TechemCoreBundle:Immeuble:listDysfunctions }
+
+# TechemCoreBundle_Search_index:
+#   path: /recherche
+#   defaults: { _controller: TechemCoreBundle:Search:index }
+
+# TechemCoreBundle_Logement_listdysfunctions:
+#   path: /logement/{pkLogement}/dysfonctionnements
+#   defaults: { _controller: TechemCoreBundle:Logement:listDysfunctions }
+
+# TechemCoreBundle_Logement_listanomalies:
+#   path: /logement/{pkLogement}/anomalies
+#   defaults: { _controller: TechemCoreBundle:Logement:listAnomalies }
+
+# TechemCoreBundle_Intervention_report:
+#   path: /depannage/{pkDepannage}
+#   defaults: { _controller: TechemCoreBundle:Intervention:report }
+
+# TechemCoreBundle_Occupant_show:
+#   path: /occupant
+#   defaults: { _controller: TechemCoreBundle:Occupant:show }
+
+# TechemCoreBundle_Occupant_myAccount:
+#   path: /occupant/myAccount
+#   defaults: { _controller: TechemCoreBundle:Occupant:myAccount }
+
+# TechemCoreBundle_Occupant_alertes:
+#   path: /occupant/alertes
+#   defaults: { _controller: TechemCoreBundle:Occupant:alertes }
+
+# TechemCoreBundle_Occupant_listinterventions:
+#   path: /occupant/interventions
+#   defaults: { _controller: TechemCoreBundle:Occupant:listInterventions }
+
+# TechemCoreBundle_Occupant_showintervention:
+#   path: /occupant/interventions/{pkIntervention}
+#   defaults: { _controller: TechemCoreBundle:Occupant:showIntervention }
+
+# TechemCoreBundle_Occupant_listdysfunctions:
+#   path: /occupant/dysfonctionnements
+#   defaults: { _controller: TechemCoreBundle:Occupant:listDysfunctions }
+
+# TechemCoreBundle_Occupant_listleaks:
+  # path: /occupant/fuites
+  # defaults: { _controller: TechemCoreBundle:Occupant:listLeaks }
+
+# TechemCoreBundle_Occupant_listanomalies:
+#   path: /occupant/anomalies
+#   defaults: { _controller: TechemCoreBundle:Occupant:listAnomalies }
+
+# TechemCoreBundle_Occupant_eau_releve:
+#   path: /occupant/{pkOccupant}/releve_eau
+#   defaults: { _controller: TechemCoreBundle:Occupant:showEauReleve }
+
+# TechemCoreBundle_Occupant_repart_releve:
+#   path: /occupant/{pkOccupant}/releve_repart/{pkImmeuble}
+#   defaults: { _controller: TechemCoreBundle:Occupant:showRepartReleve }
+
+# TechemCoreBundle_Occupant_note_releve:
+#   path: /occupant/{pkOccupant}/releve_note/{pkImmeuble}/{energie}
+#   defaults: { _controller: TechemCoreBundle:Occupant:showNoteReleve }
+
+# TechemCoreBundle_Logement_guide:
+#   path: /guide/{file}
+#   defaults: { _controller: TechemCoreBundle:Logement:guide }
+
+# TechemCoreBundle_Front_legal_notices:
+#   path: /legal-notices
+#   defaults: { _controller: TechemCoreBundle:Front:legalNotices }
+
+# TechemCoreBundle_Front_Personal_dadas:
+#   path: /personal-datas
+#   defaults: { _controller: TechemCoreBundle:Front:PersonalDatas }
+
+# TechemCoreBundle_Front_cgu_validate:
+#   path: /cgu
+#   defaults: { _controller: TechemCoreBundle:Front:cgu }
+
+# TechemCoreBundle_Translation_set_locale:
+#   path: /change/locale/{language}
+#   defaults: { _controller: TechemCoreBundle:Translation:changeLocale }
+
+# TechemCoreBundle_Ticket_Owner:
+#   path: /immeuble/{pkImmeuble}/logements/ticketowner
+#   defaults: { _controller: TechemCoreBundle:Logement:getTicketOnwer }
+#   requirements:
+#     _method: POST
+
+# TechemCoreBundle_Create_Ticket_Show:
+#   path: /logement/{pkLogement}/createticket
+#   defaults: { _controller: TechemCoreBundle:Logement:createTicket }
+#   requirements:
+#     _method: POST
+
+#TechemCoreBundle_Create_Ticket_Show:
+#    path: /logement/{pkLogement}/createticket
+#    defaults: { _controller: TechemCoreBundle:Logement:intervention }
+#    requirements:
+#        _method:  POST
+
+# TechemCoreBundle_TableauBordClient_intervention:
+#   path: /parc/intervention
+#   defaults: { _controller: TechemCoreBundle:TableauBordClient:intervention }
+
+# TechemCoreBundle_Immeuble_intervention:
+#   path: /immeuble/{pkImmeuble}/intervention
+#   defaults: { _controller: TechemCoreBundle:Immeuble:intervention }
+
+# TechemCoreBundle_Ticket_List:
+#   path: /tickets
+#   defaults: { _controller: TechemCoreBundle:Ticketing:ticketList }
+
+# TechemCoreBundle_Ticket_Close:
+#   path: /tickets/close/{pkTicket}
+#   defaults: { _controller: TechemCoreBundle:Ticketing:closeTicket }
+#   requirements:
+#     _method: POST
+
+# TechemCoreBundle:Ticketing:attachmentTicket:
+#   path: /tickets/attachment/{pkTicket}
+#   defaults: { _controller: TechemCoreBundle:Ticketing:attachmentTicket }
+
+# TechemCoreBundle_facture_index:
+#   path: /factures
+#   defaults: { _controller: TechemCoreBundle:Facture:index }
+
+# TechemCoreBundle_facture_report:
+#   path: /factures/download/{pkFacture}
+#   defaults: { _controller: TechemCoreBundle:Facture:report }

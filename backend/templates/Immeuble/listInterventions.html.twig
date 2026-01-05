@@ -1,0 +1,46 @@
+{% extends "base.html.twig" %}
+
+
+{% block body__main_menu %}
+    {% include 'Immeuble/_menu.html.twig' with {'active': 'dep'} %}
+{% endblock %}
+
+{% block breadcrumb_mobile %}
+    <div class="btn btn-primary btn-lg dropdown-toggle hidden-lg hidden-md" id="dropdownMenu3" data-toggle="dropdown">
+        <i class="pull-right icon-arrow"></i>
+        <h3>{{ "Dépannages en cours"|trans }}</h3>
+    </div>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu3">
+        <li role="presentation">
+            <h3><a role="menuitem" tabindex="-1" href="{{ path('TechemCoreBundle_Immeuble_show', { 'pkImmeuble': immeuble.Immeuble.PkImmeuble }) }}">{{ "Immeuble"|trans }} {{ immeuble.Immeuble.Ref }}</a></h3>
+        </li>
+        <li role="presentation">
+            <h3><a role="menuitem" tabindex="-1" href="{{ path('TechemCoreBundle_Immeuble_index') }}">{{ 'Liste des immeubles'|trans }}</a></h3>
+        </li>
+        <li role="presentation">
+            <h3><a role="menuitem" tabindex="-1" href="{{ path('TechemCoreBundle_TableauBordClient_index') }}">{{ 'Le parc'|trans }}</a></h3>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block main_content %}
+    <ul class="breadcrumb hidden-xs">
+        <li><a href="{{ path('TechemCoreBundle_TableauBordClient_index') }}">{{ 'Le parc'|trans }}</a></li>
+        <li><a href="{{ path('TechemCoreBundle_Immeuble_index') }}">{{ 'Liste des immeubles'|trans }}</a></li>
+        <li><a href="{{ path('TechemCoreBundle_Immeuble_show', { pkImmeuble: immeuble.Immeuble.PkImmeuble }) }}">{{ "Immeuble"|trans }} {{ immeuble.Immeuble.Ref }}</a></li>
+        <li><a href="#">{{ "Dépannages en cours"|trans }}</a></li>
+    </ul>
+    <span class="clearfix"></span>
+    <h2 class="hidden-xs">{{ "Immeuble"|trans }} {{ immeuble.Immeuble.Ref }}</h2><div class="addr hidden-xs"><span>{{ immeuble.Immeuble.Adresse1 }} </span> <span>{{ immeuble.Immeuble.Cp }} {{ immeuble.Immeuble.Ville }}</span></div>
+
+    {% include 'Immeuble/_list_interventions.html.twig' with {
+        'motifs': filters['motif-abrege'],
+        'statuts': filters['statut'],
+        'batiments': filters['batiment'],
+        'escaliers': filters['escalier'],
+        'etages': filters['etage'],
+    } %}
+
+{% endblock %}
+
+{% block body_classes %}{{ parent() }} listinterventions{% endblock %}

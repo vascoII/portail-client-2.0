@@ -1,0 +1,45 @@
+<div class="form-new-intervention" style="display: none;">
+    <div class="content-form">
+        <div class="cross-close">
+            <img src="{{ asset('bundles/techemcore/images/fidesio/cross.svg') }}"/>
+        </div>
+        <h4>Demande d'intervention</h4>
+        {{ form_start(interventionForm) }}
+        {{ form_widget(interventionForm.pkLogement) }}
+        <label for="intervention_name">
+            <span class="required">*</span>
+            {{ form_widget(interventionForm.name) }}
+        </label>
+		<label for="email">
+            <span class="required">*</span>
+        {{ form_widget(interventionForm.email) }}
+		</label>
+        {{ form_widget(interventionForm.phone) }}
+        {{ form_widget(interventionForm.mobile) }}
+        <span>* Remplir au moins un des deux champs téléphone</span>
+
+        <label for="intervention_objet">
+            <span class="required">*</span>
+            {{ form_widget(interventionForm.objet) }}
+        </label>
+
+        <label for="intervention_message">
+            <span class="required">*</span>
+            {{ form_widget(interventionForm.message) }}
+        </label>
+
+<!--         {{ form_widget(interventionForm.attachment) }}
+        <label id="attachment_error" class="error"></label>
+        <span>* Formats supportés : docx | xlsx | pdf | png | jpg | gif, taille maximale : 2 MB</span> -->
+
+        <input type="submit" value="Envoyer">
+        {{ form_end(interventionForm) }}
+    </div>
+    <div class="back-close"></div>
+</div>
+<div class="confirm-new-intervention" style="display: none;">
+    <div class="content-form">
+        <h4>Demande d'intervention envoyé</h4>
+    </div>
+    <div class="back-close"></div>
+</div>

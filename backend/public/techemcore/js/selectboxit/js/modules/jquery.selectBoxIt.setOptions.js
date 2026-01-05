@@ -1,0 +1,1 @@
+selectBoxIt.setOptions=function(t,n){var e=this;return $.isPlainObject(t)&&(e.options=$.extend({},e.options,t)),e.refresh((function(){e._callbackSupport(n)}),!0),e};

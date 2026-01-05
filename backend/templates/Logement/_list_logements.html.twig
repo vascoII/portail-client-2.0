@@ -1,0 +1,694 @@
+{% if immeuble is defined %}
+    <div class="title-area">
+        <strong>{{ "Immeuble"|trans }} {{ immeuble.Immeuble.Numero }}</strong> {{ immeuble.Immeuble.Adresse1 }} {{ immeuble.Immeuble.Cp }} {{ immeuble.Immeuble.Ville }}
+    </div>
+
+{% endif %}
+{% if not gestion %}
+    <div class="row filters">
+        <div class="clearfix"></div>
+        <h3>{{ "Filtré par"|trans }} : </h3>
+
+        <div class="clearfix"></div>
+
+        <form role="form" class="form-horizontal filters">
+            <div class="form-group">
+                <div class="col-md-3 col-sm-6 select-input">
+                    <div class="select-replace">
+                        <select id="EnergieSelect">
+                            <option value="">{{ "Toutes les énergies"|trans }}</option>
+                            <option value="energieef" {% if app.request.get('energieef') == 1 %} selected{% endif %}>{{ "Eau froide"|trans }}</option>
+                            <option value="energieec" {% if app.request.get('energieec') == 1 %} selected{% endif %}>{{ 'Eau chaude'|trans }}</option>
+                            <option value="energierepart" {% if app.request.get('energierepart') == 1 %} selected{% endif %}>{{ 'Répartiteur'|trans }}</option>
+                            <option value="energiecet" {% if app.request.get('energiecet') == 1 %} selected{% endif %}>{{ "Compteur d'énergie thermique"|trans }}</option>
+                            <option value="energieelect" {% if app.request.get('energieelect') == 1 %} selected{% endif %}>{{ "Electricité"|trans }}</option>
+                            <option value="energiegaz" {% if app.request.get('energiegaz') == 1 %} selected{% endif %}>{{ "Gaz"|trans }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="checkbox checkbox-replace" style="display:inline-block">
+                        <input name="fuites" type="checkbox" {% if app.request.get('fuites') == 1 %}checked{% endif %}>
+                        <label>{{ "Fuites"|trans }}</label>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="checkbox checkbox-replace" style="display:inline-block">
+                        <input name="anomalies" type="checkbox"
+                            {% if app.request.get('anomalies') == 1 %}checked{% endif %}>
+                        <label>{{ "Anomalies"|trans }}</label>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="checkbox checkbox-replace" style="display:inline-block">
+                        <input name="dysfonctionnements" type="checkbox"
+                            {% if app.request.get('dysfonctionnements') == 1 %}checked{% endif %}>
+                        <label>{{ "Alarmes techniques"|trans }}</label>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="checkbox checkbox-replace" style="display:inline-block">
+                        <input name="depannages" type="checkbox"
+                            {% if app.request.get('depannages') == 1 %}checked{% endif %}>
+                        <label>{{ "Dépannages en cours"|trans }}</label>
+                    </div>
+                </div>
+
+                <div class="clearfix visible-xs"></div>
+                <div class="col-md-6 text-input">
+                    <div class="form-group">
+                        <div class="col-sm-6">
+                            <input type="text" name="reference" class="form-control"
+                                placeholder={{ "Référence / Numéro"|trans }}>
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" name="location" class="form-control"
+                                placeholder="{{ "Code postal / Ville"|trans }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endif %}
+
+
+<div class="row filters buttons">
+    <div class="dropdown button-wrapper col-xs-4" data-filter-name="batiment">
+        <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+            <span class="caret"></span>
+            <span class="hidden-xs">{{ "Batiment"|trans }}</span>
+            <span class="value"></span>
+            <i class="icon-batiment"></i>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-value="">{{ "Aucun"|trans }}</a></li>
+            {% for batiment in filters.batiment %}
+                <li role="presentation">
+                    <a role="menuitem" tabindex="-1" href="#"
+                       data-value="{{ batiment }}">{{ "Batiment"|trans }} {{ batiment }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="dropdown button-wrapper col-xs-4" data-filter-name="escalier">
+        <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown">
+            <span class="caret"></span>
+            <span class="hidden-xs">{{ "Escalier"|trans }}</span>
+            <span class="value"></span>
+            <i class="icon-escalier"></i>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-value="">{{ "Aucun"|trans }}</a></li>
+            {% for escalier in filters.escalier %}
+                <li role="presentation">
+                    <a role="menuitem" tabindex="-1" href="#"
+                       data-value="{{ escalier }}">{{ "Escalier"|trans }} {{ escalier }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="dropdown button-wrapper col-xs-4" data-filter-name="etage">
+        <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown">
+            <span class="caret"></span>
+            <span class="hidden-xs">{{ "Etage"|trans }}</span>
+            <span class="value"></span>
+            <i class="icon-etage"></i>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu3">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-value="">{{ "Aucun"|trans }}</a></li>
+            {% for etage in filters.etage %}
+                <li role="presentation">
+                    <a role="menuitem" tabindex="-1" href="#"
+                       data-value="{{ etage }}">{{ "Etage"|trans }} {{ etage }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% if not gestion and immeuble is defined  %}
+        <div class="dropdown button-wrapper col-xs-4 pull-right action form">
+            <a class="submit"
+            href="{{ path('TechemCoreBundle_Logement_export', {'pkImmeuble': immeuble.Immeuble.PkImmeuble}) }}"
+            target="_blank"><i class="fa fa-file-excel-o" aria-hidden="true"></i> {{ "Export Excel"|trans }}
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<div class="housing-area">
+    <div class="number">
+        <strong class="result-length">{{ logements|length }}</strong> {{ "Logements"|trans }}
+    </div>
+
+    <ul>
+        {% for logement in logements %}
+            <li
+                    data-pklogement="{% if logement.infosLogement.Logement is defined %}{{ logement.infosLogement.Logement.PkLogement }}{% endif %}"
+                    data-fuites="{% if logement.infosLogement.NbFuites > 0 %}O{% else %}N{% endif %}"
+                    data-anomalies="{% if logement.infosLogement.NbAnomalies > 0 %}O{% else %}N{% endif %}"
+                    data-dysfonctionnements="{% if logement.infosLogement.NbDysfonctionnements > 0 %}O{% else %}N{% endif %}"
+                    data-depannages="{% if logement.infosLogement.NbDepannages > 0 %}O{% else %}N{% endif %}"
+                    data-numero="{% if logement.infosLogement.Logement is defined and logement.infosLogement.Logement.NumOrdre is defined %}{{ logement.infosLogement.Logement.NumOrdre }}{% endif %}"
+                    data-reference="{% if logement.infosLogement.Logement is defined and logement.infosLogement.Logement.Ref is defined %}{{ logement.infosLogement.Occupant.Ref }}{% endif %}"
+                    data-batiment="{% if logement.infosLogement.Logement is defined and logement.infosLogement.Logement.NumBatiment is defined %}{{ logement.infosLogement.Logement.NumBatiment }}{% endif %}"
+                    data-escalier="{% if logement.infosLogement.Logement is defined and logement.infosLogement.Logement.NumEscalier is defined %}{{ logement.infosLogement.Logement.NumEscalier }}{% endif %}"
+                    data-etage="{% if logement.infosLogement.Logement is defined and logement.infosLogement.Logement.NumEtage is defined %}{{ logement.infosLogement.Logement.NumEtage }}{% endif %}"
+                    data-energieec="{% if logement.infosLogement.NbCompteursEC > 0 %}O{% else %}N{% endif %}"
+                    data-energieef="{% if logement.infosLogement.NbCompteursEF > 0 %}O{% else %}N{% endif %}"
+                    data-energiecet="{% if logement.infosLogement.NbCompteursCET > 0 %}O{% else %}N{% endif %}"
+                    data-energierepart="{% if logement.infosLogement.NbCompteursRepart > 0 %}O{% else %}N{% endif %}"
+                    data-energieelect="{% if logement.infosLogement.NbCompteursElect > 0 %}O{% else %}N{% endif %}"
+                    data-energiegaz="{% if logement.infosLogement.NbCompteursGaz > 0 %}O{% else %}N{% endif %}"
+            >
+
+				{% if gestion == true %}
+					<a href="{{ path('TechemCoreBundle_GestionParc_show', {'pkLogement': logement.infosLogement.Logement.PkLogement, 'gestion': true}) }}" class="image">
+						<i class="icon-opened33"></i>
+					</a>
+
+					<a href="{{ path('TechemCoreBundle_GestionParc_show', {'pkLogement': logement.infosLogement.Logement.PkLogement, 'gestion': true}) }}"
+					   class="info">
+						<div class="name">{{ 'Référence client'|trans }} :</div>
+						<div class="value">{{ logement.infosLogement.Occupant.Ref }}</div>
+						<div class="name">{{ "Étage"|trans }} :</div>
+						<div class="value">{{ logement.infosLogement.Logement.NumEtage }}</div>
+						<div class="name loge">{{ "N° logement"|trans }} :</div>
+						<div class="value">{{ logement.infosLogement.Logement.NumOrdre }}</div>
+						<div class="description">{{ logement.infosLogement.Occupant.Nom }}</div>
+					</a>
+				{% else %}
+					<a href="{{ path('TechemCoreBundle_Logement_show', {'pkLogement': logement.infosLogement.Logement.PkLogement, 'gestion': false}) }}" class="image">
+						<i class="icon-opened33"></i>
+					</a>
+
+					<a href="{{ path('TechemCoreBundle_Logement_show', {'pkLogement': logement.infosLogement.Logement.PkLogement, 'gestion': false}) }}"
+					   class="info">
+						<div class="name">{{ 'Référence client'|trans }} :</div>
+						<div class="value">{{ logement.infosLogement.Occupant.Ref }}</div>
+						<div class="name">{{ "Étage"|trans }} :</div>
+						<div class="value">{{ logement.infosLogement.Logement.NumEtage }}</div>
+						<div class="name loge">{{ "N° logement"|trans }} :</div>
+						<div class="value">{{ logement.infosLogement.Logement.NumOrdre }}</div>
+						<div class="description">{{ logement.infosLogement.Occupant.Nom }}</div>
+					</a>
+				{%endif%}
+
+                <div class="assistance">
+
+					{% if gestion is defined and gestion ==false or gestion is not defined %}
+						{% if logement.infosLogement.TicketsInterEnabled %}
+							{#{% if  logement.infosLogement.NbTicketsInter > 0 %}#}
+								<div class="tickets-inprogress" {% if  logement.infosLogement.NbTicketsInter <= 0 %}style="display:none"{% endif %}>
+									<span class="tickets-number">
+									{{ logement.infosLogement.NbTicketsInter }}
+									</span>
+									Tickets en cours
+								</div>
+							{#{% endif %}#}
+						<div class="btn-new-intervention">Demande d'intervention</div>
+						{% endif %}
+					{% endif %}
+					
+                </div>
+                <div class="mobile-bottom">
+
+                    <div class="meta">
+					
+						
+						{% if gestion is defined and gestion ==false or gestion is not defined %}
+							{# Ligne 1 - Bouton des dysfonctionnements#}
+							{% if logement.infosLogement.NbDysfonctionnements > 0 %}
+							<a href="{{ path('TechemCoreBundle_Logement_listdysfunctions', {'pkLogement': logement.infosLogement.Logement.PkLogement}) }}">
+								{% endif %}
+								<div class="item dys">
+									<div class="wrapper {% if logement.infosLogement.NbDysfonctionnements > 0 %}orange{% endif %}">
+										<i class="icons icon-bell84"></i>
+									</div>
+								</div>
+								{% if logement.infosLogement.NbDysfonctionnements > 0 %}
+							</a>
+							{% endif %}
+							
+							
+							{# Ligne 1 - Bouton des dépannages#}
+							{% if logement.infosLogement.NbDepannages > 0 %}
+							<a href="{{ path('TechemCoreBundle_Logement_listinterventions', {'pkLogement': logement.infosLogement.Logement.PkLogement}) }}">
+								{% endif %}
+								<div class="item dep">
+									<div class="wrapper {% if logement.infosLogement.NbDepannages > 0 %}yellow{% endif %}">
+										<i class="icons icon-wrench44"></i>
+									</div>
+								</div>
+								{% if logement.infosLogement.NbDepannages > 0 %}
+							</a>
+							{% endif %}
+						{% endif %}
+						
+						
+						{# Ligne 1 - Bouton de modification des coordonnées de l'occupant#}
+                        {% if gestion is defined and gestion %}
+                                <a href="{{ path('TechemCoreBundle_Logement_edit', {'pkLogement': logement.infosLogement.Logement.PkLogement}) }}" title="{{ "Modifier les coordonnées de l'occupant"|trans }}">
+                                <div class="item dep">
+                                    <div class="wrapper yellow">
+                                        <i class="icons icon-pencil"></i>
+                                    </div>
+                                </div>
+                                </a>
+                        {% endif %}
+						
+						{% if gestion is defined and gestion ==false or gestion is not defined %}
+							{# Ligne 2 - Bouton des fuites#}
+							{% if logement.infosLogement.NbFuites > 0 %}
+								<a href="{{ path('TechemCoreBundle_Logement_listleaks', {'pkLogement': logement.infosLogement.Logement.PkLogement}) }}">
+							{% endif %}
+									<div class="item fui">
+										<div class="wrapper {% if logement.infosLogement.NbFuites > 0 %}blue{% endif %}">
+											<i class="icons icon-water33"></i>
+										</div>
+									</div>
+							{% if logement.infosLogement.NbFuites > 0 %}
+								</a>
+							{% endif %}
+						
+						
+							{# Ligne 2 - Bouton des anomalies #}
+						
+							{% if logement.infosLogement.NbAnomalies > 0 %}
+									<a href="{{ path('TechemCoreBundle_Logement_listanomalies', {'pkLogement': logement.infosLogement.Logement.PkLogement}) }}">
+							{% endif %}
+							
+								<div class="item ano">
+									<div class="wrapper {% if logement.infosLogement.NbAnomalies > 0 %}red{% endif %}">
+										<i class="icons icon-caution"></i>
+									</div>
+								</div>
+							{% if logement.infosLogement.NbAnomalies > 0 %}
+								</a>
+							{% endif %}
+						{% endif %}
+						
+						
+						{# Ligne 2 - Bouton du changement d'occupant #}
+                        {% if gestion is defined and gestion %}
+                            <a href="" title="">
+                                <div class="item fui">
+                                    <div class="wrapper ">
+                                        
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="" title="">
+                                <div class="item fui">
+                                    <div class="wrapper ">
+                                        <br />
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="{{ path('TechemCoreBundle_GestionParc_declareOccupant', {'pkLogement': logement.infosLogement.Logement.PkLogement}) }}" title="{{ "Déclarer un nouvel occupant"|trans }}">
+                                <div class="item fui">
+                                    <div class="wrapper ">
+                                        <i class="icons icon-user"></i>
+                                    </div>
+                                </div>
+                            </a>
+							<a href="" title="">
+                                <div class="item fui">
+                                    <div class="wrapper ">
+                                        
+                                    </div>
+                                </div>
+                            </a>
+                            <a href="" title="">
+                                <div class="item fui">
+                                    <div class="wrapper ">
+                                        <br />
+                                    </div>
+                                </div>
+                            </a>
+                        {% endif %}
+						
+						
+						
+						
+                    </div>
+
+                    <div class="tab-heading hidden-xs">
+                        {% set NbEau = logement.infosLogement.NbCompteursEC >= 0 ? logement.infosLogement.NbCompteursEC : 0 %}
+                        {% set NbEau = logement.infosLogement.NbCompteursEF >= 0 ? NbEau + logement.infosLogement.NbCompteursEF : NbEau %}
+                        <div class="{% if NbEau > 0 %}toggle-details{% endif %} tab" data-target=".tab-1"
+                             data-type="eau">
+                            <span class="icon icon-water94"></span>
+                            <span class="text">
+                                <strong>{{ NbEau }}</strong> {{ "Eau"|trans }}
+                            </span>
+                        </div>
+
+                        {% set NbChauffage = logement.infosLogement.NbCompteursRepart >= 0 ? logement.infosLogement.NbCompteursRepart : 0 %}
+                        {% set NbChauffage = logement.infosLogement.NbCompteursCET >= 0 ? NbChauffage + logement.infosLogement.NbCompteursCET : 0 %}
+                        <div class="{% if NbChauffage > 0 %}toggle-details{% endif %} tab" data-target=".tab-2"
+                             data-type="chauffage">
+                            <span class="icon icon-squares36"></span>
+                            <span class="text">
+                                <strong>{{ NbChauffage }}</strong> {{ "Chauffage"|trans }}
+                            </span>
+                        </div>
+
+                        {% set NbElect = logement.infosLogement.NbCompteursElect >= 0 ? logement.infosLogement.NbCompteursElect : 0 %}
+                        <div class="{% if NbElect > 0 %}toggle-details{% endif %} tab" data-target=".tab-3"
+                             data-type="elect">
+                            <span class="icon icon-lightning46"></span>
+                            <span class="text">
+                                <strong>{{ NbElect }}</strong> {{ "Electricité"|trans }}
+                            </span>
+                        </div>
+
+                        {% set NbGaz = logement.infosLogement.NbCompteursGaz >= 0 ? logement.infosLogement.NbCompteursGaz : 0 %}
+                        <div class="{% if NbGaz > 0 %}toggle-details{% endif %} tab" data-target=".tab-4"
+                             data-type="gaz">
+                            <span class="icon icon-fire58"></span>
+                            <span class="text">
+                                <strong>{{ NbGaz }}</strong> {{ "Gaz"|trans }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="infos-appareils hidden-xs tab-content tab-1"></div>
+
+                <div class="infos-appareils hidden-xs tab-content tab-2"></div>
+
+                <div class="infos-appareils hidden-xs tab-content tab-3"></div>
+
+                <div class="infos-appareils hidden-xs tab-content tab-4"></div>
+
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+<script type="text/javascript" src="{{ asset('bundles/techemcore/js/jquery.validate.min.js') }}"></script>
+<script>
+    // validate file extension and filesize
+    const fileInput = document.getElementById('intervention_attachment')
+
+    fileInput.addEventListener('change', (event) => {
+        const target = event.target
+        if (target.files && target.files[0]) {
+            var attachmentError = document.getElementById('attachment_error');
+            attachmentError.innerHTML = '';
+            /* maximum allowed size 2 MB  */
+            const maxAllowedSize = 2 * 1024 * 1024;
+            var allowedExtensions =  /(\.jpg|\.gif|\.png|\.docx|\.pdf|\.xlsx)$/i;
+            var filePath = fileInput.value;
+
+            if (target.files[0].size > maxAllowedSize || !allowedExtensions.exec(filePath)) {
+
+                target.value = ''
+                attachmentError.innerHTML = ' Format de fichier non valide ou le fichier dépasse la taille maximale';
+
+            }
+
+        }
+    })
+</script>
+<script type="text/javascript">
+    $(
+        function () {
+            var mapping_text = {
+                'reference' : ['reference', 'numero'],
+                'batiment' : ['batiment'],
+                'escalier' : ['escalier'],
+                'etage' : ['etage']
+            };
+
+            // Affichage popup demande d'intervention
+
+            $('.form-new-intervention .cross-close, .form-new-intervention .back-close').click(
+                function () {
+                    $('.form-new-intervention').fadeOut();
+                }
+            );
+
+            $('.btn-new-intervention').click(
+                function () {
+
+                    var pkLogement = $(this).closest('li').attr('data-pklogement');
+                    console.log(pkLogement);
+                    var data = 'pkLogement=' + pkLogement;
+
+                    $.ajax(
+                        {
+                            type : "POST",
+                            data : { pkLogement : pkLogement },
+                            url : window.location.pathname + '/ticketowner',
+                            success : function (data)
+                            {
+                                $('.form-new-intervention #intervention_pkLogement').val(pkLogement);
+                                $('.form-new-intervention #intervention_name').val(data.Nom);
+                                $('.form-new-intervention #intervention_email').val(data.Email);
+                                $('.form-new-intervention #intervention_phone').val(data.TelFixe);
+                                $('.form-new-intervention #intervention_mobile').val(data.TelMobile);
+                            },
+                            error : function (err) {
+                                console.log('err');
+                                console.log(err);
+                            }
+                        }
+                    );
+                }
+            );
+
+            $('.btn-new-intervention').click(
+                function () {
+                    $('.form-new-intervention').fadeIn();
+                }
+            );
+
+            // validation rules
+
+            $('.form-new-intervention form[name=intervention]').validate({
+                rules: {
+                    intervention_name: {
+                        required: true,
+                        minlength: 2
+                    },
+                    intervention_email: {
+                        required: false,
+                        minlength: 5,
+                        email: true
+                    },
+                    intervention_phone: {
+                        require_from_group: [1, ".phone-group"]
+                    },
+                    intervention_mobile: {
+                        require_from_group: [1, ".phone-group"]
+                    },
+                    intervention_objet: {
+                        required: true,
+                        minlength: 5
+                    },
+                    intervention_message: {
+                        required: true,
+                        minlength: 5
+                    },
+                    intervention_attachment: {
+                        required: false
+                    }
+                },
+                messages: {
+                    intervention_name: { required: "veuillez insérer votre nom"},
+                    intervention_email: { required: "veuillez insérer une adresse mail valide"},
+                    intervention_phone: { required: "veuillez insérer un numéro de téléphone"},
+                    intervention_mobile: { required: "veuillez insérer un numéro de portable"},
+                    intervention_objet: { required: "veuillez remplir ce champ"},
+                    intervention_message: { required: "veuillez remplir ce champ"},
+                    intervention_attachment: { extension: "extensions acceptés: docx|xlsx|pdf|png|jpg|gif"}
+                },
+
+            });
+
+            // Crée une demande d'intervention
+
+            $('.form-new-intervention form[name=intervention]').submit(
+                function (e) {
+                    e.preventDefault();
+                    if ($('#intervention_phone').val().length > 2 || $('#intervention_mobile').val().length > 2) {
+
+                        var form = document.getElementById("interventionForm");
+
+                        $.ajax(
+                            {
+                                type : "POST",
+                                data : new FormData(form),
+                                url : $(this).attr('action'),
+                                processData: false,
+                                contentType: false,
+                                cache: false,
+                                success : function (data)
+                                {
+                                    $('li[data-pkLogement=' + data.pkLogement + '] .tickets-inprogress').show();
+                                    $('li[data-pkLogement=' + data.pkLogement + '] .tickets-number').text(data.nbTickets);
+                                    $('.form-new-intervention').fadeOut();
+                                    $('.form-new-intervention form').find("input[type=text], textarea").val('');
+                                    $('.confirm-new-intervention').fadeIn().delay(800).fadeOut();
+                                },
+                                error : function (data) {
+                                    console.log(data);
+                                }
+                            }
+                        );
+                    }
+                }
+            );
+
+
+            $('.listhousing .filters input[type=checkbox]').on(
+                'change', function () {
+                    $('.listhousing form.filters').trigger('data-change');
+                }
+            );
+
+            $('.listhousing .filters select').on(
+                'change', function () {
+                    $('.listhousing .filters').trigger('data-change');
+                }
+            );
+
+            $('.listhousing .filters input[type=text]').on(
+                'keyup', function () {
+                    $('.listhousing form.filters').trigger('data-change');
+                }
+            );
+
+            $('.listhousing .filters .dropdown.button-wrapper a[role=menuitem]').click(
+                function (e) {
+                    e.preventDefault();
+                    $(this).closest('.dropdown.button-wrapper').find('.value').text($(this).attr('data-value'));
+                    $('.listhousing form.filters').trigger('data-change');
+                }
+            );
+
+            $('.listhousing form.filters').on(
+                'data-change', function () {
+                    $('.loader').trigger('start');
+                    var $items = $('.listhousing .housing-area li'),
+                        $filtered_items = $items,
+                        boolean_data = $('.listhousing .filters input[type=checkbox]').serializeArray(),
+                        text_data = $('.listhousing .filters input[type=text]').serializeArray(),
+                        $button_filter = $('.listhousing .filters .dropdown.button-wrapper[data-filter-name]'),
+                        exact_text_data = [];
+
+                    var select_var = $('.listhousing .filters select').val()
+                    if (select_var != undefined && select_var != "") {
+                        boolean_data.push(
+                            {
+                                name : select_var,
+                                value : 'on'
+                            }
+                        );
+                    }
+
+                    $button_filter.each(
+                        function () {
+                            exact_text_data.push(
+                                {
+                                    'name' : $(this).attr('data-filter-name'),
+                                    'value' : $(this).find('.value').text()
+                                }
+                            );
+                        }
+                    );
+
+                    $.each(
+                        boolean_data, function (key, filter) {
+                            $filtered_items = $filtered_items.filter(
+                                function () {
+                                    return $(this).data(filter.name) === 'O';
+                                }
+                            );
+                        }
+                    );
+
+                    $.each(
+                        text_data, function (key, filter) {
+                            $filtered_items = $filtered_items.filter(
+                                function () {
+                                    var me = $(this),
+                                        test;
+
+                                    if (mapping_text.hasOwnProperty(filter.name) && filter.value != '') {
+                                        test = false;
+                                        $.each(
+                                            mapping_text[filter.name], function (key, name) {
+                                                test |= me.attr('data-' + name).toLowerCase().indexOf(filter.value.toLowerCase()) === 0; // .data() try to convert values
+                                            }
+                                        );
+
+                                    } else {
+                                        test = true;
+                                    }
+
+                                    return test;
+                                }
+                            );
+                        }
+                    );
+
+                    $.each(
+                        exact_text_data, function (key, filter) {
+                            $filtered_items = $filtered_items.filter(
+                                function () {
+                                    var me = $(this),
+                                        test;
+
+                                    if (mapping_text.hasOwnProperty(filter.name) && filter.value != '') {
+                                        test = false;
+                                        $.each(
+                                            mapping_text[filter.name], function (key, name) {
+                                                test |= me.attr('data-' + name).toLowerCase() === filter.value.toLowerCase();
+                                            }
+                                        );
+                                    } else {
+                                        test = true;
+                                    }
+
+                                    return test;
+                                }
+                            );
+                        }
+                    );
+
+                    $items.addClass('hidden');
+                    $filtered_items.toggleClass('hidden');
+                    $('.listhousing .result-length').text($filtered_items.length);
+                    $('.loader').trigger('stop');
+                }
+            );
+
+            // Logement infos appareils
+            $('.listhousing .housing-area .toggle-details').click(
+                function () {
+                    var $me = $(this),
+                        $parent = $me.closest('li'),
+                        $infosAppareils = $($(this).data('target'), $parent);
+
+
+                    if (!$infosAppareils.hasClass('loaded')) {
+                        $.ajax(
+                            {
+                                url : '{{ path('TechemCoreBundle_Logement_infos_appareils') }}',
+                                data : {
+                                    'pklogement' : $parent.attr('data-pklogement'),
+                                    'type' : $me.attr('data-type')
+                                },
+                                method : 'get',
+                                dataType : 'html',
+                                success : function (html) {
+                                    $infosAppareils.addClass('loaded');
+                                    $infosAppareils.html(html);
+                                }
+                            }
+                        );
+                    }
+                }
+            );
+        }
+    );
+</script>

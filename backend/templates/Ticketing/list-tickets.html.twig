@@ -1,0 +1,197 @@
+<div class="title-tickets">
+    <h3>Gestion des Tickets</h3>
+</div>
+<div class="tickets-table"> 
+    {% set showAll = 'O' %}
+    <a href="{{ path('TechemCoreBundle_Ticket_List', {'showAll': showAll}) }}"><button class="btn btn-default btn-all-tickets">Voir tous les tickets</button></a>
+{# création de l'intervention avec pkLogement = -1 #}
+    {#    <div class="btn-new-intervention btn-ticket">Demande d'intervention</div>#}
+
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.24/b-1.7.0/b-html5-1.7.0/r-2.2.7/datatables.min.css"/>
+
+    <table id="tableTickets" class="table table-striped table-bordered table-tickets table-condensed" style="width:100%">
+        <thead>
+        <tr class="header-table">
+            <th class="header-item">Voir</th>
+            <th class="header-item">N° Demande</th>
+            <th class="header-item">Date demande</th>
+            <th class="header-item">Demandeur</th>
+            <th class="header-item">Objet</th>
+            <th class="header-item">Immeuble</th>
+            <th class="header-item">Nom occupant</th>
+            <th class="header-item">Ref Logement</th>
+            <th class="header-item">Statut</th>
+            <th class="header-item">Dernière modification</th>
+            <th class="header-item text-center">Dépannage</th>
+            <th class="header-item text-center">Clôture</th>
+        </tr>
+        </thead>
+        <tbody>
+		{% if tickets %}
+		{% for ticket in tickets %}
+            <tr>
+                <td>
+                    <button class="btn btn-default btn-details"
+                            data-record-title="détails du ticket"
+                            data-objet="{{ ticket.ObjetRetour }}"
+                            data-date="{{ ticket.TicketDate | date("d/m/Y") }}"
+                            data-demandeur="{{ ticket.WebUser_Nom  }} {{ ticket.WebUser_Prenom  }}"
+                            data-description="{{ ticket.MotifLibre }}"
+                            data-statut="{{ ticket.Statut }}"
+                            data-LastUpdateDate="{{ ticket.LastUpdateDate | date("d/m/Y")}}"
+                            data-ticketinter="{{ ticket.CaseId }}"
+
+                            data-toggle="modal" data-target="#ticket-details">
+                        <i class="icon icon-search"></i>
+                    </button>
+                </td>
+                <td>{{ ticket.CaseNumber }}</td>
+                <td data-sort='{{ ticket.TicketDate | date("Y/m/d") }}'>{{ ticket.TicketDate | date("d/m/Y") }}</td>
+                <td>{{ ticket.WebUser_Nom  }} {{ ticket.WebUser_Prenom  }}</td>
+                <td>{{ ticket.ObjetRetour }}<!--{{ ticket.ObjetRetour|length > 50 ? ticket.MotifLibre|slice(0, 50) ~ '...' : ticket.MotifLibre }}--></td>
+
+                <td><a href="{{ path('TechemCoreBundle_Immeuble_show', {'pkImmeuble': ticket.FkImmeuble }) }}">{{ ticket.Imm_Id }}</a></td>
+                <td>
+                    <a href="{{ path('TechemCoreBundle_Logement_show', {'pkLogement': ticket.FkLogement}) }}">
+                        {{ ticket.Nom }}
+                    </a> <br />
+                </td>
+                <td>Logement {{ ticket.RefLogement }}</td>
+                <td>{{ ticket.Statut }}</td>
+                <td>{{ ticket.LastUpdateDate | date("d/m/Y")}}</td>
+
+                <td class="text-center">
+				{% if ticket.NumIntervention is defined %}
+					<a href="{{ path('TechemCoreBundle_Immeuble_showintervention', {'pkImmeuble': ticket.FkImmeuble, 'pkIntervention' : ticket.NumIntervention }) }}">{{ ticket.NumIntervention }}</a>
+				{% endif %}
+                </td>
+                <td>
+
+                    {% if ticket.Statut matches '{(Clos)}'  %} 
+                        {% set urlCloseTicket = path('TechemCoreBundle_Ticket_Close', {'pkTicket': ticket.CaseId}) %}
+{#                        {{ urlCloseTicket }}#}
+                        <div id="closest">
+                        <button class="btn btn-default" data-record-id="{{ ticket.CaseId }}"
+                                data-urlclose = "{{ urlCloseTicket }}"
+                                data-record-title="cloture ticket"
+                                data-toggle="modal" data-target="#close-ticket">
+                            Clôture
+                        </button>
+                        </div>
+                    {% else %}
+
+                        {{ ticket.Statut_Client }}
+
+                    {% endif %}
+
+{#                    {% endif %}#}
+
+                </td>
+            </tr>
+        {% endfor %}
+		{% endif %}
+
+        </tbody>
+        <tfoot>
+        <tr>
+            <th>Voir</th>
+            <th>N° Demande</th>
+            <th>Date demande</th>
+            <th>Demandeur</th>
+            <th>Objet</th>
+            <th>Immeuble</th>
+            <th>Nom occupant</th>
+            <th>Ref Logement</th>
+            <th>Statut</th>
+            <th>Date</th>
+            <th class="text-center">Dépannage</th>
+            <th class="text-center">Clôture</th>
+        </tr>
+        </tfoot>
+    </table>
+
+
+
+    {# {% set currentPath = path(app.request.attributes.get('_route'), #}
+    {# app.request.attributes.get('_route_params')) %} #}
+
+
+    <!-- Modal Clôture -->
+    <div class="modal fade" id="close-ticket" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Clôture du ticket</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="text-cloture">
+                        Vous voulez fermer ce ticket ?
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Quitter</button>
+                    <button type="button" class="btn btn-primary btn-cloture">Clôturer le ticket</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!-- Modal Détails-->
+    <div class="modal fade" id="ticket-details" tabindex="-1" role="dialog" aria-labelledby="myModalTicketLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalTicketLabel">Détail du ticket</h4>
+                </div>
+                <div class="modal-body modal-ticket">
+                    <div class="form-group mb-3">
+                        <label class="label-ticket-details" for="date">Date</label>
+                        <input type="text" class="form-control" id="date" name="date" value="" readonly/>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label class="label-ticket-details" for="objet">Objet</label>
+                    <input type="text" class="form-control" id="objet" name="objet" value="" readonly/>
+                    </div>
+                        <div class="form-group mb-3">
+                            <label class="label-ticket-details" for="description">Description de la demande</label>
+                    <textarea class="form-control" id="description" name="description" rows="16"></textarea>
+                        </div>
+
+                                <div class="form-group mb-3">
+                                    <label class="label-ticket-details" for="statut">Statut</label>
+                    <input type="text" class="form-control" id="statut" name="statut" value="" readonly/>
+
+                                </div>
+
+                    <div class="text-center wrap-image">
+                        <img id="imageAttachment" src="">
+                        <a id="fileAttachment" href="" download=""></a>
+                    </div>
+
+
+                    <div class="text-center wrap-depann">
+
+                    <a id="depann" href="#"><button type="button" class="btn btn-default">Voir le dépannage</button></a>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+{#                    <button type="button" class="btn btn-default" data-dismiss="modal">Quitter</button>#}
+{#                    <button type="button" class="btn btn-primary btn-cloture">Clôturer le ticket</button>#}
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/v/bs/jszip-2.5.0/dt-1.10.24/b-1.7.0/b-html5-1.7.0/r-2.2.7/datatables.min.js"></script>
+
+
+</div>

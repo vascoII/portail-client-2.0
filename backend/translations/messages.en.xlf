@@ -1,0 +1,891 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" datatype="plaintext" original="file.ext">
+    <body>
+      <trans-unit id="a259eb0fdb66529f5401b48109714d18" resname="Aucun chantier en cours">
+        <source>Aucun chantier en cours</source>
+        <target>No work in progress</target>
+      </trans-unit>
+      <trans-unit id="50540828ef64f29555c5f10156f8a824" resname="Chantiers en cours">
+        <source>Chantiers en cours</source>
+        <target>Work in progress</target>
+      </trans-unit>
+      <trans-unit id="c66962ffc8899014df4bb99ade843b3f" resname="consommations">
+        <source>consommations</source>
+        <target>consumptions</target>
+      </trans-unit>
+      <trans-unit id="47de9a4d6cc9f079e08a0a418df85b63" resname="Occupant">
+        <source>Occupant</source>
+        <target>Resident</target>
+      </trans-unit>
+      <trans-unit id="d353b8720fcbebe4385ef7a23a43aa22" resname="Exporter">
+        <source>Exporter</source>
+        <target>Export</target>
+      </trans-unit>
+      <trans-unit id="e9bfd6b033ccdb8489cb4f6c4a1c877a" resname="Eau froide">
+        <source>Eau froide</source>
+        <target>Cold Water</target>
+      </trans-unit>
+      <trans-unit id="560c75fc4b414362513f4cce5c3a15d3" resname="Eau chaude">
+        <source>Eau chaude</source>
+        <target>Hot water</target>
+      </trans-unit>
+      <trans-unit id="48f893d58eda4ad6402b0668f286fa5d" resname="Compteur d'énergie thermique">
+        <source>Compteur d'énergie thermique</source>
+        <target>Thermal heat meter</target>
+      </trans-unit>
+      <trans-unit id="7e391078807fb627ff5b47d513394fd4" resname="Répartiteur">
+        <source>Répartiteur</source>
+        <target>Heat cost allocator</target>
+      </trans-unit>
+      <trans-unit id="9cb5eee671660e273c5b3aaee8899022" resname="Fuites">
+        <source>Fuites</source>
+        <target>Leakages</target>
+      </trans-unit>
+      <trans-unit id="b38bc27ba45fc6780d9833611879caec" resname="Dépannages en cours">
+        <source>Dépannages en cours</source>
+        <target>Ongoing maintenance</target>
+      </trans-unit>
+      <trans-unit id="37b8b45846526a2e489bb7ed07b9a0b6" resname="Code postal / Ville">
+        <source>Code postal / Ville</source>
+        <target>Postcode / City</target>
+      </trans-unit>
+      <trans-unit id="0754bad852a854e24becf995c5b99b34" resname="Immeubles">
+        <source>Immeubles</source>
+        <target>Object(s)</target>
+      </trans-unit>
+      <trans-unit id="bd760afa69ef285a5121096eb9375dc3" resname="Référence">
+        <source>Référence</source>
+        <target>Reference</target>
+      </trans-unit>
+      <trans-unit id="ca36299a005056548f24bffaebebc45b" resname="Répartiteurs">
+        <source>Répartiteurs</source>
+        <target>Heat cost allocator</target>
+      </trans-unit>
+      <trans-unit id="e5ed00c6c925c86c27fcd1cf4cc271c8" resname="Le parc">
+        <source>Le parc</source>
+        <target>Portfolio</target>
+      </trans-unit>
+      <trans-unit id="48d55f9db937850e1be7629e083c5502" resname="Alarmes techniques">
+        <source>Alarmes techniques</source>
+        <target>Device alarms</target>
+      </trans-unit>
+      <trans-unit id="b6fd530cebd4796d307ea6687c1c8f24" resname="Anomalies de">
+        <source>Anomalies de</source>
+        <target>Abnormal</target>
+      </trans-unit>
+      <trans-unit id="d4bca5daa159f844fcda1d2aee1e804e" resname="consommation">
+        <source>consommation</source>
+        <target>consumption</target>
+      </trans-unit>
+      <trans-unit id="5b7eb4f71a0c11b2965e1ba7cbb57224" resname="Appareils commandés">
+        <source>Appareils commandés</source>
+        <target>Ordered devices</target>
+      </trans-unit>
+      <trans-unit id="6828afbcc04f9d837cd5dee1f5cf88da" resname="Appareils posés">
+        <source>Appareils posés</source>
+        <target>Installed devices</target>
+      </trans-unit>
+      <trans-unit id="294490c1d629fcdb3315e3ce1dcd8574" resname="des appareils relevés">
+        <source>des appareils relevés</source>
+        <target>of devices read</target>
+      </trans-unit>
+      <trans-unit id="895bc5d41f5fa28540bc5c622affa7f6" resname="Nombre de fuites">
+        <source>Nombre de fuites</source>
+        <target>Number of leakages</target>
+      </trans-unit>
+      <trans-unit id="a12cdaf4b79957958962d3cd41a46096" resname="Nombre d'anomalies de consommation">
+        <source>Nombre d'anomalies de consommation</source>
+        <target>Number of unusual consumptions</target>
+      </trans-unit>
+      <trans-unit id="63a2806ca3feb437956ffabd61fe3dd2" resname="Evolution totale des consommations">
+        <source>Evolution totale des consommations</source>
+        <target>Consumption development</target>
+      </trans-unit>
+      <trans-unit id="09dea6c4f0581b5901f7bdfc55acbce0" resname="Consommation totale des compteurs divisionnaires de l'immeuble">
+        <source>Consommation totale des compteurs divisionnaires de l'immeuble</source>
+        <target>Total consumption of divisional counters from the object</target>
+      </trans-unit>
+      <trans-unit id="087b117cb99a2782c9b813dc87ee6e2a" resname="Consommations compteurs EC + EF">
+        <source>Consommations compteurs EC + EF</source>
+        <target>Consumptions counters HW + CW</target>
+      </trans-unit>
+      <trans-unit id="c9db26af212aeb45010d87f0e8579233" resname="Consommations compteur général">
+        <source>Consommations compteur général</source>
+        <target>General counter's consumption</target>
+      </trans-unit>
+      <trans-unit id="14702d67030fe3ac971bd2b1c7fb7e9b" resname="Part répartie en fonction des consommations">
+        <source>Part répartie en fonction des consommations</source>
+        <target>Total cost of measured consumption</target>
+      </trans-unit>
+      <trans-unit id="1e68b875d5506ea31ab647a01c2c8736" resname="Liste des immeubles">
+        <source>Liste des immeubles</source>
+        <target>List of objects</target>
+      </trans-unit>
+      <trans-unit id="27db835728010f3e273d5735ed56ed90" resname="Anomalies de consommation">
+        <source>Anomalies de consommation</source>
+        <target>Unusual consumption</target>
+      </trans-unit>
+      <trans-unit id="9acce79e9a41d222a4d66dc80f2c552e" resname="Logements">
+        <source>Logements</source>
+        <target>Apartments</target>
+      </trans-unit>
+      <trans-unit id="4ff01ca11bf174a1578a4a96098744e8" resname="Compteur d'énergie">
+        <source>Compteur d'énergie</source>
+        <target>Heat meter</target>
+      </trans-unit>
+      <trans-unit id="9249c86baeca6dba2210383374b66a45" resname="Consommation">
+        <source>Consommation</source>
+        <target>Consumption</target>
+      </trans-unit>
+      <trans-unit id="b9f2ed56f1657309990556be3d38854a" resname="Dernier index relevé">
+        <source>Dernier index relevé</source>
+        <target>Last reading value</target>
+      </trans-unit>
+      <trans-unit id="b0ac64a8c0cb8dd754597efe0a97d1ca" resname="Information consommation + variation entre deux relevés">
+        <source>Information consommation + variation entre deux relevés</source>
+        <target>Consumption information and trend</target>
+      </trans-unit>
+      <trans-unit id="86f12606f89ad445e3324b231c36f075" resname="Information consommation">
+        <source>Information consommation</source>
+        <target>Consumption information</target>
+      </trans-unit>
+      <trans-unit id="3dbd158e7d3fa3c02cae0d7fc89b1695" resname="+ variation entre deux relevés">
+        <source>+ variation entre deux relevés</source>
+        <target>and trend</target>
+      </trans-unit>
+      <trans-unit id="5611160ebdd7d69a74f90686b4b4a1f8" resname="Batiment">
+        <source>Batiment</source>
+        <target>Block</target>
+      </trans-unit>
+      <trans-unit id="a228eca57f9c0cf52cc35ced94d11f21" resname="Escalier">
+        <source>Escalier</source>
+        <target>Stairs</target>
+      </trans-unit>
+      <trans-unit id="1ac652a8aedc7d310cd2e4b190a674de" resname="Etage">
+        <source>Etage</source>
+        <target>Floor</target>
+      </trans-unit>
+      <trans-unit id="15c25b890fb703ce528d4f829d56e848" resname="Evolution des index">
+        <source>Evolution des index</source>
+        <target>Reading value development</target>
+      </trans-unit>
+      <trans-unit id="7567d17329845a967ac9dbb5b0a3a155" resname="Consommations">
+        <source>Consommations</source>
+        <target>Consumptions</target>
+      </trans-unit>
+      <trans-unit id="13a014cb9de9f7cad88d5dafb70ecb41" resname="du">
+        <source>du</source>
+        <target>from</target>
+      </trans-unit>
+      <trans-unit id="8bcc25c96aa5a71f7a76309077753e67" resname="au">
+        <source>au</source>
+        <target>to</target>
+      </trans-unit>
+      <trans-unit id="c7b46997ad42641b3728c42ce8d07087" resname="Comparé aux logements du même type de l'immeuble">
+        <source>Comparé aux logements du même type de l'immeuble</source>
+        <target>Compared with same type of apartments in the building</target>
+      </trans-unit>
+      <trans-unit id="a621be9f8e6759fedc4454c641e005ed" resname="Consommation du logement">
+        <source>Consommation du logement</source>
+        <target>Consumption of the apartment</target>
+      </trans-unit>
+      <trans-unit id="acc1ade0b503bc1aa920e25cb7541e37" resname="Consommation de référence">
+        <source>Consommation de référence</source>
+        <target>Consumption of reference</target>
+      </trans-unit>
+      <trans-unit id="08c450cb2ab5a1e0b2cdccfa1bec76ca" resname="Prix de l’abonnement">
+        <source>Prix de l’abonnement</source>
+        <target>Price of the service</target>
+      </trans-unit>
+      <trans-unit id="28c5e6b6d2b4bdd31c5affaed758d9db" resname="Montant à répartir aux tantièmes">
+        <source>Montant à répartir aux tantièmes</source>
+        <target>Total cost of shared heat</target>
+      </trans-unit>
+      <trans-unit id="bfe2feade13ecf0b56ba4682eb2d5d35" resname="Coût total hors combustible">
+        <source>Coût total hors combustible</source>
+        <target>Operating cost</target>
+      </trans-unit>
+      <trans-unit id="5203c0f32e5d1adc7190002892c31e9b" resname="Données du logement">
+        <source>Données du logement</source>
+        <target>Apartment data</target>
+      </trans-unit>
+      <trans-unit id="869ea57fd3c395487e4880037b485065" resname="Consommation par pièces comparée à la période précédente">
+        <source>Consommation par pièces comparée à la période précédente</source>
+        <target>Consumption per room compared to the previous period</target>
+      </trans-unit>
+      <trans-unit id="9fb9ed437fe9b9ac9e236978fdb750b2" resname="Période de consommation affichée">
+        <source>Période de consommation affichée</source>
+        <target>Consumption period displayed</target>
+      </trans-unit>
+      <trans-unit id="61449e601accdb914a54b5be4c0e2e32" resname="Liste des logements">
+        <source>Liste des logements</source>
+        <target>List of apartments</target>
+      </trans-unit>
+      <trans-unit id="0a27cca31e8c13f1c3614ebe84e5c726" resname="Fuites en cours">
+        <source>Fuites en cours</source>
+        <target>Leakages in progress</target>
+      </trans-unit>
+      <trans-unit id="a408f84e115351b4dacc990ceea3eec1" resname="Recherche de logements">
+        <source>Recherche de logements</source>
+        <target>Searching of apartments</target>
+      </trans-unit>
+      <trans-unit id="0f03e7d195bc75919170989ed6a9539b" resname="Immeuble">
+        <source>Immeuble</source>
+        <target>Object</target>
+      </trans-unit>
+      <trans-unit id="915d1bbd9c50bb6e8a3de9fad5feba96" resname="Aperçu du logement">
+        <source>Aperçu du logement</source>
+        <target>Overview of apartment</target>
+      </trans-unit>
+      <trans-unit id="dafcded5755446e7ea1a0ecab294a88c" resname="Date d'arrivée">
+        <source>Date d'arrivée</source>
+        <target>Date of arrival</target>
+      </trans-unit>
+      <trans-unit id="d0e05ffc8881de7d23a67bdecb36f560" resname="Données De la dernière répartition">
+        <source>Données De la dernière répartition</source>
+        <target>Last billing data</target>
+      </trans-unit>
+      <trans-unit id="fb11e1a796a95ec31dc1f52470344f11" resname="Total des unités de répartition de l’immeuble">
+        <source>Total des unités de répartition de l’immeuble</source>
+        <target>Total heat cost allocator units of the object</target>
+      </trans-unit>
+      <trans-unit id="b1c7b98c6370931176f4268701dd00c4" resname="Prix de l'unité de répartition">
+        <source>Prix de l'unité de répartition</source>
+        <target>Price of one heat cost allocator unit</target>
+      </trans-unit>
+      <trans-unit id="94615913045ad7c13ad792704f30cfe7" resname="Coût total du combustible">
+        <source>Coût total du combustible</source>
+        <target>Total cost of fuel</target>
+      </trans-unit>
+      <trans-unit id="81ffba04b5e7e0e9871c7b01a25bc94b" resname="Unités de répartitions pour le logement">
+        <source>Unités de répartitions pour le logement</source>
+        <target>Allocator units for the apartment</target>
+      </trans-unit>
+      <trans-unit id="b8dd4b9a0ceb936772c85a9b16c6190a" resname="Repartiteur">
+        <source>Repartiteur</source>
+        <target>Allocator</target>
+      </trans-unit>
+      <trans-unit id="31c332ad05e04238850c5f0ba664e7f9" resname="Le Parc">
+        <source>Le Parc</source>
+        <target>Portfolio</target>
+      </trans-unit>
+      <trans-unit id="18a14822f2969ecbe4dc014daa0245ed" resname="Aperçu de votre parc">
+        <source>Aperçu de votre parc</source>
+        <target>Overview of portfolio</target>
+      </trans-unit>
+      <trans-unit id="93ef8df550837cf2436d3a9a93efe9b4" resname="Appareils">
+        <source>Appareils</source>
+        <target>Devices</target>
+      </trans-unit>
+      <trans-unit id="bec178c109acd12456fef8c9c6a8744d" resname="Transfert électronique de fichiers">
+        <source>Transfert électronique de fichiers</source>
+        <target>Electronic transfer of files</target>
+      </trans-unit>
+      <trans-unit id="2d9db8a01d4b4389014d3a82d0e22309" resname="des immeubles">
+        <source>des immeubles</source>
+        <target>of objects</target>
+      </trans-unit>
+      <trans-unit id="71a35b1b0a2d31d72cf9f3307f75d183" resname="Appareils à poser">
+        <source>Appareils à poser</source>
+        <target>Devices to be installed</target>
+      </trans-unit>
+      <trans-unit id="c680d437163cc6bab4f9bdb35c3073d0" resname="Observation">
+        <source>Observation</source>
+        <target>Details</target>
+      </trans-unit>
+      <trans-unit id="58a4ec92a799d3a1e9b1582dca393a99" resname="Motif">
+        <source>Motif</source>
+        <target>Reason</target>
+      </trans-unit>
+      <trans-unit id="a655cebf4e1e00c20cecc17cc24e7b7a" resname="Emplaçement">
+        <source>Emplaçement</source>
+        <target>Location</target>
+      </trans-unit>
+      <trans-unit id="26d8d69083dc08616d9ec81c92212719" resname="Du même occupant">
+        <source>Du même occupant</source>
+        <target>From the same resident</target>
+      </trans-unit>
+      <trans-unit id="a19c1debfe0d8ba5fad590edef024ec4" resname="Adresse / CP / Ville">
+        <source>Adresse / CP / Ville</source>
+        <target>Address / Postcode / City</target>
+      </trans-unit>
+      <trans-unit id="5cf9b5aaab289aadded535c64a1f5451" resname="Saisir un code (immeuble/occupant)">
+        <source>Saisir un code (immeuble/occupant)</source>
+        <target>Enter a reference (Object/Resident)</target>
+      </trans-unit>
+      <trans-unit id="9987e3cdc5ae740a6895f3d5bb41fabd" resname="Les">
+        <source>Les</source>
+        <target>The</target>
+      </trans-unit>
+      <trans-unit id="2e6ae80b7a4796a1bcd21a933ca12460" resname="5 plus fortes">
+        <source>5 plus fortes</source>
+        <target>top</target>
+      </trans-unit>
+      <trans-unit id="15b0e814869600b4441df449c42fcb2d" resname="5 plus faibles">
+        <source>5 plus faibles</source>
+        <target>lowest</target>
+      </trans-unit>
+      <trans-unit id="943021b255648cd74363b22f848531af" resname="Imprimer">
+        <source>Imprimer</source>
+        <target>Print</target>
+      </trans-unit>
+      <trans-unit id="480df1a0ab8961cbbeee47e7fe6c174a" resname="Points de vigilance">
+        <source>Points de vigilance</source>
+        <target>Highest and lowest users</target>
+      </trans-unit>
+      <trans-unit id="631a94a219ccfc05f1274f3cc89d68fb" resname="Total tantièmes chauffage">
+        <source>Total tantièmes chauffage</source>
+        <target>Total of shared heat</target>
+      </trans-unit>
+      <trans-unit id="3fe210bfdd46500932ce5b8f9969316f" resname="Prix unitaire du tantième">
+        <source>Prix unitaire du tantième</source>
+        <target>Price of one unit of shared heat</target>
+      </trans-unit>
+      <trans-unit id="def81729d37855773ba689f0868fda04" resname="en Unités de répartition">
+        <source>en Unités de répartition</source>
+        <target>heat cost allocator unit</target>
+      </trans-unit>
+      <trans-unit id="37a86ecb9658041187915e52de470da7" resname="Données de l’immeuble">
+        <source>Données de l’immeuble</source>
+        <target>Object data</target>
+      </trans-unit>
+      <trans-unit id="b70c041386128136f0310d3a4547fe27" resname="Tantièmes logement">
+        <source>Tantièmes logement</source>
+        <target>Shared heat allocated to apartment</target>
+      </trans-unit>
+      <trans-unit id="71a9226cdcf3da567cf31142580adf43" resname="Bienvenue dans votre espace client">
+        <source>Bienvenue dans votre espace client</source>
+        <target>Welcome to your portal</target>
+      </trans-unit>
+      <trans-unit id="ccb7e1e5775df5810ec66127701d0965" resname="Recherche avancée">
+        <source>Recherche avancée</source>
+        <target>Advanced search</target>
+      </trans-unit>
+      <trans-unit id="9dfcb59e8a90cdc234647b1b96f7a567" resname="N° d’immeuble">
+        <source>N° d’immeuble</source>
+        <target>Object number</target>
+      </trans-unit>
+      <trans-unit id="e85091dc55bdfaa77d3672db78b4cd41" resname="Evolution des consommations">
+        <source>Evolution des consommations</source>
+        <target>Consumption development</target>
+      </trans-unit>
+      <trans-unit id="5bdc86baa3e68ba0cc5d6f18dd4575e1" resname="Alarmes techniques">
+        <source>Alarmes techniques</source>
+        <target>Other issues</target>
+      </trans-unit>
+      <trans-unit id="58e4729d5d1755dcfdab2dd85cbed8e1" resname="Anomalies en cours">
+        <source>Anomalies en cours</source>
+        <target>Abnormalities in progress</target>
+      </trans-unit>
+      <trans-unit id="ed8788dc229f5ddb641fcb896c639e9e" resname="N° d'immeuble">
+        <source>N° d'immeuble</source>
+        <target>Object number</target>
+      </trans-unit>
+      <trans-unit id="9d92c83ab491b4593fd6c9bce8878c47" resname="Étage">
+        <source>Étage</source>
+        <target>Floor</target>
+      </trans-unit>
+      <trans-unit id="cf3c55f27f695386a225a8a1b0421ca0" resname="N° logement">
+        <source>N° logement</source>
+        <target>No of apartments</target>
+      </trans-unit>
+      <trans-unit id="d189759763de464e95001c9230b20b67" resname="GJOSIGJIOJ">
+        <source>GJOSIGJIOJ</source>
+        <target>Translated in english</target>
+      </trans-unit>
+      <trans-unit id="fcdb9bc6fb0a1a9ae3293cbe7300ae08" resname="Aucune commande en cours">
+        <source>Aucune commande en cours</source>
+        <target>No orders currently placed</target>
+      </trans-unit>
+      <trans-unit id="86a186169e2cbeb0ca6ba65d9378179f" resname="Appareil(s) commandé(s)">
+        <source>Appareil(s) commandé(s)</source>
+        <target>Ordered device (s)</target>
+      </trans-unit>
+      <trans-unit id="bbc7a754e920beb750796841f3e8d531" resname="date de l'entrée">
+        <source>date de l'entrée</source>
+        <target>date of entry</target>
+      </trans-unit>
+      <trans-unit id="9b2e30f695c050c223d2b105f567135c" resname="en commande">
+        <source>en commande</source>
+        <target>command</target>
+      </trans-unit>
+      <trans-unit id="4f74a97b8d306840fc13e3f7f3b99b3e" resname="restant">
+        <source>restant</source>
+        <target>remaining</target>
+      </trans-unit>
+      <trans-unit id="92262d5a2fc8c8be79fe119936c0a3c4" resname="à poser">
+        <source>à poser</source>
+        <target>to put</target>
+      </trans-unit>
+      <trans-unit id="41a69fc8ae695639dfb1ee01852def8b" resname="appareils">
+        <source>appareils</source>
+        <target>devices</target>
+      </trans-unit>
+      <trans-unit id="eb906a1af6b4e4c108b38c67b87ea9fd" resname="posés">
+        <source>posés</source>
+        <target>put</target>
+      </trans-unit>
+      <trans-unit id="598bfc4232df4a5088ef3fe71fb1ed8f" resname="Anomalies">
+        <source>Anomalies</source>
+        <target>Issues</target>
+      </trans-unit>
+      <trans-unit id="dc791a47bf3cff83bffcf17c25c63a47" resname="Référence / Numéro">
+        <source>Référence / Numéro</source>
+        <target>Reference / Number</target>
+      </trans-unit>
+      <trans-unit id="6d488378dd288d6f30ef624842b01fe0" resname="Eau">
+        <source>Eau</source>
+        <target>Water</target>
+      </trans-unit>
+      <trans-unit id="94866b3d6a4e67afbd749d63e3ddee63" resname="Dépannages">
+        <source>Dépannages</source>
+        <target>Ongoing</target>
+      </trans-unit>
+      <trans-unit id="3008164f0a71b8e19b9d15e4485c4aaf" resname="en cours">
+        <source>en cours</source>
+        <target>maintenance</target>
+      </trans-unit>
+      <trans-unit id="ee05a573ae85bf406a45528168b43c31" resname="date de l'entrée en commande">
+        <source>date de l'entrée en commande</source>
+        <target>Date of order entry</target>
+      </trans-unit>
+      <trans-unit id="29391ede085b45d3b550d324c2eb9d11" resname="Alarmes client">
+        <source>Alarmes client</source>
+        <target>ALARMS</target>
+      </trans-unit>
+      <trans-unit id="3baf5e225ff350e1f93823d8bfff9766" resname="Relevé de la totalité des compteurs électriques en KWH au 21/07/15">
+        <source>Relevé de la totalité des compteurs électriques en KWH au 21/07/15</source>
+        <target>Survey of all electricity meters in KWH as of 21/07/15</target>
+      </trans-unit>
+      <trans-unit id="889d84fd805e92d9c449da4ee4f33777" resname="Aperçu de l'immeuble">
+        <source>Aperçu de l'immeuble</source>
+        <target>Overview of the object</target>
+      </trans-unit>
+      <trans-unit id="d4700b697a54fbd43a1a613d32694e7f" resname="Nom">
+        <source>Nom</source>
+        <target>Name</target>
+      </trans-unit>
+      <trans-unit id="6c78dfaa951c6bff01708ce61c8142c8" resname="Nom*">
+        <source>Nom*</source>
+        <target>Name</target>
+      </trans-unit>
+      <trans-unit id="44300c2acb88dfd979689ed56b1219ce" resname="Transfert électronique de relevés">
+        <source>Transfert électronique de relevés</source>
+        <target>Electronic Data Transfer</target>
+      </trans-unit>
+      <trans-unit id="9dbecf2631b52926e5dd1a89440ef908" resname="actif">
+        <source>actif</source>
+        <target>active</target>
+      </trans-unit>
+      <trans-unit id="14b8f0494c6f1460c3720d0ce692dbca" resname="non">
+        <source>non</source>
+        <target>no</target>
+      </trans-unit>
+      <trans-unit id="c6804af87beb4e2d4a3d9167987c75d1" resname="Dépannage en cours">
+        <source>Dépannage en cours</source>
+        <target>Ongoing  progress</target>
+      </trans-unit>
+      <trans-unit id="e7abc18daee8caad58f1f2fa8b91204e" resname="Aucun">
+        <source>Aucun</source>
+        <target>None</target>
+      </trans-unit>
+      <trans-unit id="2cb7d574a6f59ed68a76c180f99c54b6" resname="Chauffage">
+        <source>Chauffage</source>
+        <target>Heating</target>
+      </trans-unit>
+      <trans-unit id="a001f224284430ae7a1b4cb4172e7b3c" resname="Télécharger le décompte">
+        <source>Télécharger le décompte</source>
+        <target>Download last billing</target>
+      </trans-unit>
+      <trans-unit id="46b9d4c7dcd3369f7a98e428d7b09de3" resname="Télécharger le guide occupant">
+        <source>Télécharger le guide occupant</source>
+        <target>Download billing explanation guide</target>
+      </trans-unit>
+      <trans-unit id="52ec3efa3833e15b846081d10ced5f2f" resname="Coût du chauffage">
+        <source>Coût du chauffage</source>
+        <target>Cost of heating</target>
+      </trans-unit>
+      <trans-unit id="09b6e7541109cd2a5b734a03ad96dfbd" resname="Logement">
+        <source>Logement</source>
+        <target>Apartment</target>
+      </trans-unit>
+      <trans-unit id="9a407e28c2d74878abfaad7cd8cbf964" resname="Filtrer">
+        <source>Filtrer</source>
+        <target>Filter</target>
+      </trans-unit>
+      <trans-unit id="efc0f388918b00ccc99399cd7bb01e69" resname="Prix du chauffage au tantième">
+        <source>Prix du chauffage au tantième</source>
+        <target>Price of one unit of shared heat</target>
+      </trans-unit>
+      <trans-unit id="ac6a48c881ffb8e3801270c5b25f4705" resname="Cout du chauffage">
+        <source>Cout du chauffage</source>
+        <target>Cost of heating</target>
+      </trans-unit>
+      <trans-unit id="153d913716d9bbf76e429b838c3d81e8" resname="Pièce">
+        <source>Pièce</source>
+        <target>Room</target>
+      </trans-unit>
+      <trans-unit id="42353a670227e8a055123bf714cc7c28" resname="Unités consommées">
+        <source>Unités consommées</source>
+        <target>Units consumed</target>
+      </trans-unit>
+      <trans-unit id="5d1b57d2234b179b6092f30102b9ea1d" resname="Température/ humidité">
+        <source>Température/ humidité</source>
+        <target>Temperature / humidity</target>
+      </trans-unit>
+      <trans-unit id="92b31d9bde7b3b686f21801d49074b2a" resname="Modifier votre mot">
+        <source>Modifier votre mot</source>
+        <target>Change Password</target>
+      </trans-unit>
+      <trans-unit id="0110882dd45044d620dcd7fc48150948" resname="de passe">
+        <source>de passe</source>
+        <target>__de passe</target>
+      </trans-unit>
+      <trans-unit id="92a3bd06fc8c48b50ce2b72e59134fb5" resname="Modifier mot de passe">
+        <source>Modifier mot de passe</source>
+        <target>Change password</target>
+      </trans-unit>
+      <trans-unit id="c81eb9ad78a7a3dda4818c41c04b6dbb" resname="Modification mot de passe">
+        <source>Modification mot de passe</source>
+        <target>Change Password</target>
+      </trans-unit>
+      <trans-unit id="5f4818a6f0bc541861ccb64a620cf36c" resname="Liste des gestionnaires">
+        <source>Liste des gestionnaires</source>
+        <target>List of accounts</target>
+      </trans-unit>
+      <trans-unit id="1f5cf358e87b32f73455208da2614a7f" resname="Création de compte">
+        <source>Création de compte</source>
+        <target>Account creation</target>
+      </trans-unit>
+      <trans-unit id="226c03c443192cffffa4a924b4ccffde" resname="Edition">
+        <source>Edition</source>
+        <target>Edition</target>
+      </trans-unit>
+      <trans-unit id="b9473bceb50a344208c9e6cf7c62c5a7" resname="Le mot de passe a été modifié">
+        <source>Le mot de passe a été modifié</source>
+        <target>The password has been changed</target>
+      </trans-unit>
+      <trans-unit id="2d58f30f32163513048905a66b7f39d3" resname="champs obligatoire">
+        <source>champs obligatoire</source>
+        <target>obligatory fields</target>
+      </trans-unit>
+      <trans-unit id="6221175e28787a57b8b5f836db253bfa" resname="gestionnaires">
+        <source>gestionnaires</source>
+        <target>accounts</target>
+      </trans-unit>
+      <trans-unit id="b8010eb1b1d0b86ab78f3231037903b7" resname="Recherche par nom">
+        <source>Recherche par nom</source>
+        <target>Search by name</target>
+      </trans-unit>
+      <trans-unit id="c6aeb8feca6e8c7028b5071f901a002f" resname="CRÉER UN COMPTE">
+        <source>CRÉER UN COMPTE</source>
+        <target>CREATE AN ACCOUNT</target>
+      </trans-unit>
+      <trans-unit id="bc848b09140ee484fff2e417675e0820" resname="Appareil(s)">
+        <source>Appareil(s)</source>
+        <target>Device(s)</target>
+      </trans-unit>
+      <trans-unit id="8507ad1e691d9cc6769a2ebe807d9e93" resname="Modifier le mot de passe">
+        <source>Modifier le mot de passe</source>
+        <target>Change the password</target>
+      </trans-unit>
+      <trans-unit id="00b3f5b02de86e36123174619ad87ea5" resname="géré(s)">
+        <source>géré(s)</source>
+        <target>Managed</target>
+      </trans-unit>
+      <trans-unit id="2e794d6856491e41c34f85ac2f1e754c" resname="Recherche">
+        <source>Recherche</source>
+        <target>Search</target>
+      </trans-unit>
+      <trans-unit id="72ffa4acacceb75f4a6165fba7b23053" resname="FLUIDE">
+        <source>FLUIDE</source>
+        <target>FLUID</target>
+      </trans-unit>
+      <trans-unit id="7fd2e3c175e033b868131178b267b699" resname="NB DE JOURS">
+        <source>NB DE JOURS</source>
+        <target>No OF DAYS</target>
+      </trans-unit>
+      <trans-unit id="88fa71f0a6e0dfedbb46d91cc0b37a50" resname="Index">
+        <source>Index</source>
+        <target>Index</target>
+      </trans-unit>
+      <trans-unit id="dd1161669b53e80c677474009e18c962" resname="Conso">
+        <source>Conso</source>
+        <target>Conso</target>
+      </trans-unit>
+      <trans-unit id="3bc69e0c55142deb502748c15967f6a8" resname="autre(s) dysfonctionnement(s)">
+        <source>autre(s) dysfonctionnement(s)</source>
+        <target>Other dysfunction(s)</target>
+      </trans-unit>
+      <trans-unit id="0d03c0048ace0a22031d17708d754a86" resname="N° intervention">
+        <source>N° intervention</source>
+        <target>Case number</target>
+      </trans-unit>
+      <trans-unit id="4329245ad87537e738bf2fbb5e1191f7" resname="Nom occupant">
+        <source>Nom occupant</source>
+        <target>Resident name</target>
+      </trans-unit>
+      <trans-unit id="87a831bc99060c55b50dbe91c6aab6e9" resname="Statut">
+        <source>Statut</source>
+        <target>Status</target>
+      </trans-unit>
+      <trans-unit id="fe720e2568d4138c45215e471b6b45f0" resname="dépannages">
+        <source>dépannages</source>
+        <target>maintenance</target>
+      </trans-unit>
+      <trans-unit id="2bd9580cc18f15e1ee26e2e9449eac3e" resname="N°COMPTEUR">
+        <source>N°COMPTEUR</source>
+        <target>METER NUMBER</target>
+      </trans-unit>
+      <trans-unit id="6f002a8e55c87b668f385a60beeef843" resname="Aucun détail">
+        <source>Aucun détail</source>
+        <target>No details</target>
+      </trans-unit>
+      <trans-unit id="de8aecf9f226c2d7c491cfa2987ab2ed" resname="COMPTE RENDU">
+        <source>COMPTE RENDU</source>
+        <target>REPORT</target>
+      </trans-unit>
+      <trans-unit id="62083487eef0f8a9d26170181c6dcebd" resname="Modifier votre mot de passe">
+        <source>Modifier votre mot de passe</source>
+        <target>Change your password</target>
+      </trans-unit>
+      <trans-unit id="a7e73ea4a0051c570a9e10cab77f0d3a" resname="Déconnexion">
+        <source>Déconnexion</source>
+        <target>Log out</target>
+      </trans-unit>
+      <trans-unit id="b644d7be39caf36bce0b90e3fa0d1bc0" resname="Votre mot de passe a été modifié">
+        <source>Votre mot de passe a été modifié</source>
+        <target>Your password has been changed</target>
+      </trans-unit>
+      <trans-unit id="ce8ae9da5b7cd6c3df2929543a9af92d" resname="Email">
+        <source>Email</source>
+        <target>Email</target>
+      </trans-unit>
+      <trans-unit id="763edb7bbb97c00aa772c49af670bfa3" resname="Email*">
+        <source>Email*</source>
+        <target>Email</target>
+      </trans-unit>
+      <trans-unit id="b294942da594142c7ce6104d48e5cebc" resname="Confirmation de l'email">
+        <source>Confirmation de l'email</source>
+        <target>Email Confirmation</target>
+      </trans-unit>
+      <trans-unit id="1d38a1651ebabf2c1a93694cbb0332af" resname="N°immeuble">
+        <source>N°immeuble</source>
+        <target>N°object</target>
+      </trans-unit>
+      <trans-unit id="8390ce22fd7675b38222856307cac51c" resname="N° compteur">
+        <source>N° compteur</source>
+        <target>Meter number</target>
+      </trans-unit>
+      <trans-unit id="14c0e120197ec55ca7a17fa8127fb246" resname="Fluide">
+        <source>Fluide</source>
+        <target>Fluid</target>
+      </trans-unit>
+      <trans-unit id="1e9a49ea1dfc342c61fe75a9eb9e7b23" resname="Effacer">
+        <source>Effacer</source>
+        <target>Delete</target>
+      </trans-unit>
+      <trans-unit id="947da735a746a3166a19d35c463bdc33" resname="Alertes client">
+        <source>Alertes client</source>
+        <target>CLIENT ALERTS</target>
+      </trans-unit>
+      <trans-unit id="aa0bb5f559c0e652d14a5c477e617b85" resname="Electricité">
+        <source>Electricité</source>
+        <target>Electricity</target>
+      </trans-unit>
+      <trans-unit id="062df587df060f009ead6b5407ae8093" resname="Gaz">
+        <source>Gaz</source>
+        <target>Gas</target>
+      </trans-unit>
+      <trans-unit id="520ddb0f14e4ee556cebeee0cc1140d9" resname="Affichage par">
+        <source>Affichage par</source>
+        <target>Display by</target>
+      </trans-unit>
+      <trans-unit id="3e0fe668b1054d7b58f18914c15890a1" resname="Filtrer par">
+        <source>Filtrer par</source>
+        <target>Filter by</target>
+      </trans-unit>
+      <trans-unit id="c8a0ddd9d9d2981a91906b45c9126647" resname="Gérer les comptes">
+        <source>Gérer les comptes</source>
+        <target>Manage accounts</target>
+      </trans-unit>
+      <trans-unit id="868ff9c2b68f5d60af29307b0bd69833" resname="Créer un compte">
+        <source>Créer un compte</source>
+        <target>Create an account</target>
+      </trans-unit>
+      <trans-unit id="898c079d2e62a4b1971dfbad9d860838" resname="Modifier">
+        <source>Modifier</source>
+        <target>Edit</target>
+      </trans-unit>
+      <trans-unit id="e93e3cde7c878d5d02166ad0a89a619e" resname="Le compte a été créé">
+        <source>Le compte a été créé</source>
+        <target>The account was created</target>
+      </trans-unit>
+      <trans-unit id="ed1616c6a150152d263cdf2cd8e34d5a" resname="Le compte n'a pas pu être créé">
+        <source>Le compte n'a pas pu être créé</source>
+        <target>Account could not be created</target>
+      </trans-unit>
+      <trans-unit id="b19a0a5407807fe32f57d10a3f53ce2f" resname="Ouvert">
+        <source>Ouvert</source>
+        <target>Open</target>
+      </trans-unit>
+      <trans-unit id="bb46e6f7f164e06f89973b976b2bd1a0" resname="Fonction">
+        <source>Fonction</source>
+        <target>Function</target>
+      </trans-unit>
+      <trans-unit id="2a7cb032dbab78d3889d1dd3e1c05087" resname="Êtes-vous sûr de vouloir supprimer?">
+        <source>Êtes-vous sûr de vouloir supprimer?</source>
+        <target>Are you sure you want to delete?</target>
+      </trans-unit>
+      <trans-unit id="f628ae7eac054bc61babf042677832ee" resname="Utilisateur">
+        <source>Utilisateur</source>
+        <target>User</target>
+      </trans-unit>
+      <trans-unit id="dab41a0bfb8998115fa306f062b48250" resname="ÉDITION DU COMPTE">
+        <source>ÉDITION DU COMPTE</source>
+        <target>EDIT THE ACCOUNT</target>
+      </trans-unit>
+      <trans-unit id="e98d5564c6cc205c4e2f7e3df4573751" resname="Éditer">
+        <source>Éditer</source>
+        <target>Edit</target>
+      </trans-unit>
+      <trans-unit id="f0d134f81ff86c364998289b36768027" resname="Ajouter des immeubles">
+        <source>Ajouter des immeubles</source>
+        <target>ADD OBJECTS</target>
+      </trans-unit>
+      <trans-unit id="311e288b25ae330a3cd90e0ab2200ca5" resname="Toutes les énergies">
+        <source>Toutes les énergies</source>
+        <target>All energy sources</target>
+      </trans-unit>
+      <trans-unit id="072d68963ca0c133d835d2b564afada8" resname="Dépannage">
+        <source>Dépannage</source>
+        <target>Maintenance</target>
+      </trans-unit>
+      <trans-unit id="d10fe5a096167d2c2ae9610c29a83f18" resname="N° Compteur">
+        <source>N° Compteur</source>
+        <target>Meter number</target>
+      </trans-unit>
+      <trans-unit id="1d4419ff8a2aa9457558b97cd8205fcf" resname="Prénom*">
+        <source>Prénom*</source>
+        <target>First name</target>
+      </trans-unit>
+      <trans-unit id="a643cc0413977cd3ceef80563b40d5a7" resname="Téléphone*">
+        <source>Téléphone*</source>
+        <target>Phone</target>
+      </trans-unit>
+      <trans-unit id="6071b80685bd7e747dd9a469eefbd1b0" resname="Confirmation Email*">
+        <source>Confirmation Email*</source>
+        <target>Confirmation email</target>
+      </trans-unit>
+      <trans-unit id="f621fed30704ec427ae8dedbd624696d" resname="N°intervention">
+        <source>N°intervention</source>
+        <target>N°intervention</target>
+      </trans-unit>
+      <trans-unit id="6096f7b4d88668aac4dae357f2e9efe5" resname="Créer le compte">
+        <source>Créer le compte</source>
+        <target>Create Account</target>
+      </trans-unit>
+      <trans-unit id="f3d57c83cf52ecaf0799e9f793e2f5dd" resname="Filtré par">
+        <source>Filtré par</source>
+        <target>Filter by</target>
+      </trans-unit>
+      <trans-unit id="e76cf8a691823107e27238a4976cd98e" resname="Du">
+        <source>Du</source>
+        <target>From</target>
+      </trans-unit>
+      <trans-unit id="2c7e729568f6628a5e6709af3f451990" resname="STATUT">
+        <source>STATUT</source>
+        <target>STATUS</target>
+      </trans-unit>
+      <trans-unit id="3e446a07216685e75b27a788840b51f5" resname="HAUT">
+        <source>HAUT</source>
+        <target>TOP</target>
+      </trans-unit>
+      <trans-unit id="5bbbd9b1f5d89f00582e412adc0eac06" resname="DE PAGE">
+        <source>DE PAGE</source>
+        <target>OF PAGE</target>
+      </trans-unit>
+      <trans-unit id="6ba68484be023d7a6dbb170dce31deb3" resname="Mentions légales">
+        <source>Mentions légales</source>
+        <target>Legal notice</target>
+      </trans-unit>
+      <trans-unit id="3b205c88ed5076cb16663065b5a74894" resname="Données personnelles">
+        <source>Données personnelles</source>
+        <target>Personal data</target>
+      </trans-unit>
+      <trans-unit id="357d75b4bf027aa288bf5788f6afdc0d" resname="Politique de confidentialité">
+        <source>Politique de confidentialité</source>
+        <target>Privacy policy</target>
+      </trans-unit>
+      <trans-unit id="cb60fcf489729f8ac78d43ffc8c186c0" resname="Le compte a été modifié">
+        <source>Le compte a été modifié</source>
+        <target>Account has been changed</target>
+      </trans-unit>
+      <trans-unit id="44471e7a4c746fff3fbf50378f49fa2b" resname="fuites">
+        <source>fuites</source>
+        <target>leaks</target>
+      </trans-unit>
+      <trans-unit id="2e51891d323badb0dce1eaeaa5e92ae6" resname="Fuite">
+        <source>Fuite</source>
+        <target>Leaks</target>
+      </trans-unit>
+      <trans-unit id="02748efc5a188cea2223fa478d22ea16" resname="ALERTE">
+        <source>ALERTE</source>
+        <target>ALERT</target>
+      </trans-unit>
+      <trans-unit id="c07fd845670ede65cefc10888b5295d3" resname="réf.client">
+        <source>réf.client</source>
+        <target>Customer ref</target>
+      </trans-unit>
+      <trans-unit id="ca1b595f2f84b21398b359b4617b76c5" resname="conso">
+        <source>conso</source>
+        <target>conso</target>
+      </trans-unit>
+      <trans-unit id="e846404e4a55b6dae535473c9702ab6d" resname="Référence client">
+        <source>Référence client</source>
+        <target>Customer reference</target>
+      </trans-unit>
+      <trans-unit id="c936040b06701de4bab5c71e8eb19a6b" resname="Référence  client">
+        <source>Référence  client</source>
+        <target>Customer reference</target>
+      </trans-unit>
+      <trans-unit id="43563a5889b246f1277035a9aad24f20" resname="en m3">
+        <source>en m3</source>
+        <target>in m3</target>
+      </trans-unit>
+      <trans-unit id="19de37ee9e471569f1f33bdabacb8dd7" resname="Index M3">
+        <source>Index M3</source>
+        <target>Indice M3</target>
+      </trans-unit>
+      <trans-unit id="cb4ae3b37047fb4b2c0d16f8bf84f076" resname="INDEX">
+        <source>INDEX</source>
+        <target>INDEX</target>
+      </trans-unit>
+      <trans-unit id="208ad1f91f12a5e7e8bf446d7a9102d8" resname="CONSO.">
+        <source>CONSO.</source>
+        <target>CONSO.</target>
+      </trans-unit>
+      <trans-unit id="aba3cbc459b41a04aead50a408f2a4b2" resname="TOUT SUPPRIMER">
+        <source>TOUT SUPPRIMER</source>
+        <target>DELETE ALL</target>
+      </trans-unit>
+      <trans-unit id="f41aaf4c69bba4bfb7811a37865b314f" resname="TOUT AJOUTER">
+        <source>TOUT AJOUTER</source>
+        <target>ADD ALL</target>
+      </trans-unit>
+      <trans-unit id="45C79DE57A39869EF544452BF4CE5" resname="Vos relevés">
+        <source>Vos relevés</source>
+        <target>Your statements</target>
+      </trans-unit>
+      <trans-unit id="C747EC65A99686DD959E5DD73FB6F" resname="Sélectionnez votre relevé">
+        <source>Sélectionnez votre relevé</source>
+        <target>Select your statement</target>
+      </trans-unit>
+      <trans-unit id="BDF5A9C3EDAC8FD414F94B89AB2A1" resname="Export Excel">
+        <source>Export Excel</source>
+        <target>Excel export</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

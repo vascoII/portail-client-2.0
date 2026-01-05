@@ -1,0 +1,116 @@
+{% extends "base.html.twig" %}
+
+{% block body__main_menu %}
+    {% include 'Operator/_menu.html.twig' %}
+{% endblock %}
+
+{% block breadcrumb_mobile %}
+    <div class="btn btn-primary btn-lg dropdown-toggle hidden-lg hidden-md" id="dropdownMenu3" data-toggle="dropdown">
+        <h3>{{ "Liste des gestionnaires"|trans }}</h3>
+    </div>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu3">
+    </ul>
+{% endblock %}
+
+{% block main_content %}
+    <ul class="breadcrumb hidden-xs">
+        <li><a href="{{ path('TechemCoreBundle_Operator_index') }}">{{ "Liste des gestionnaires"|trans }}</a></li>
+    </ul>
+    <div class="operator-view-area">
+        <div class="header">
+            <h2 class="title"><strong id="result-length">{{ users|length }}</strong> {{ "gestionnaires"|trans }}</h2>
+
+            <form class="form pull-left" id="filters">
+                <input type="text" name="utilisateur" placeholder="{{ "Recherche par nom"|trans }}"/>
+            </form>
+            <div class="action form pull-left">
+                <a class="submit" href="{{ path('TechemCoreBundle_Operator_create') }}">{{ "CRÉER UN COMPTE"|trans
+                    }}</a>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+
+        <ul class="items">
+            {% for user in users %}
+                <li class="item" data-username="{{ user.UserName }}">
+                    <a href="{{ path('TechemCoreBundle_Operator_view', {'id': user.PKUser}) }}" class="image"><img src="{{ asset('bundles/techemcore/images/fidesio/user.png') }}"/></a>
+                    <a href="{{ path('TechemCoreBundle_Operator_view', {'id': user.PKUser}) }}" class="name">{{ user.UserName }}</a>
+                    <a href="{{ path('TechemCoreBundle_Operator_view', {'id': user.PKUser}) }}"
+                       class="number"><strong>{{ user.NbImmeubles }}</strong> {{ "Immeuble(s)"|trans }}</a>
+                    <a href="{{ path('TechemCoreBundle_Operator_edit', {'id': user.PKUser}) }}" class="action edit"><img src="{{ asset('bundles/techemcore/images/fidesio/pen.png') }}"/></a>
+                    <a href="{{ path('TechemCoreBundle_Operator_delete', {'id': user.PKUser}) }}" class="action delete"><img src="{{ asset('bundles/techemcore/images/fidesio/icon-x-black.png') }}"/></a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
+
+{% block javascripts_foot %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(function () {
+            var mapping_text = {
+                    'utilisateur': ['username']
+                };
+
+            $('#filters input[type=text]').on('keyup', function() {
+                $('#filters').trigger('data-change');
+            });
+
+            $('#filters').on('data-change', function () {
+                $('.loader').trigger('start');
+                var $items = $('.items li'),
+                    $filtered_items = $items,
+                    text_data = $('#filters input[type=text]').serializeArray();
+
+                $.each(text_data, function (key, filter) {
+                    $filtered_items = $filtered_items.filter(function(){
+                        var me = $(this),
+                            test;
+
+                        if(mapping_text.hasOwnProperty(filter.name) && filter.value != '') {
+                            test = false;
+                            $.each(mapping_text[filter.name], function(key, name){
+                                test |= me.attr('data-'+name).toLowerCase().indexOf(filter.value.toLowerCase()) === 0; // .data() try to convert values
+                            });
+
+                        } else {
+                            test = true;
+                        }
+
+                        return test;
+                    });
+                });
+
+                $items.addClass('hidden');
+                $filtered_items.toggleClass('hidden');
+                $('#result-length').text($filtered_items.length);
+                $('.loader').trigger('stop');
+            });
+
+            $('a.action.delete').click(function(e){
+                e.preventDefault();
+                var $me = $(this),
+                    $parent = $me.closest('li');
+
+                var verif = confirm('{{ "Êtes-vous sûr de vouloir supprimer?"|trans }}');
+
+                if(verif) {
+                    $.ajax({
+                        url: $me.attr('href'),
+                        method: 'get',
+                        dataType: 'html',
+                        success: function() {
+                            $parent.remove();
+                            $('#result-length').text($('.items li').length);
+                        },
+                        error: function(xhr) {
+                            alert('Erreur '+ xhr.responseText);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,291 @@
+<div class="compteur-top">
+    <span class="slabel" style="text-transform: uppercase;"><i class="icon-compteur"></i>{{ "N° compteur "|trans }}:
+        {#{ panel
+    .ListeInfosAppareils.infosAppareilEAU.Appareil.Numero }#}</span>
+
+    <a target="_blank" href="{{ path('TechemCoreBundle_Occupant_eau_releve', {'pkOccupant': logement.Occupant.PkOccupant}) }}" class="print">
+        <button type="submit" class="btn-primary btn">
+            <i class="icon-print"></i> {{ "Imprimer"|trans }}
+        </button>
+    </a>
+</div>
+
+<!-- TABLEAU DE CONSOMMATION DESKTOP TABLET -->
+<table class="housing-tab hidden-xs" cellpadding="0">
+    <tr>
+        <td>
+            <p class="clabel">{{ "consommation"|trans }}</p>
+
+            <p class="date">{{ "du"|trans }} {{ ConsoPeriode.DateDeb|date('d/m/Y') }} {{ "au"|trans }} {{ ConsoPeriode
+                .DateFin|date
+                ('d/m/Y')
+                }}</p>
+
+            <p class="tx">{{ ConsoPeriode.Conso }} m<sup>3</sup></p>
+
+            <p class="clabel">{{ "Dernier index relevé"|trans }}</p>
+
+            <p class="date">{{ "au"|trans }} {{ ConsoPeriode.R1.DateReleve|date('d/m/Y') }}</p>
+
+            <p class="tx">{{ ConsoPeriode.R1.Index }}</p>
+        </td>
+        <td>
+            <div class="title">{{ "Information consommation + variation entre deux relevés"|trans }}</div>
+
+            <table class="tab-bot" cellpadding="15">
+                <tr class="date">
+                    <td>
+                        {% if ConsoPeriode.R4 is defined and ConsoPeriode.R4.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {{ ConsoPeriode.R4.DateReleve|date('d/m/Y') }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if ConsoPeriode.R3 is defined and ConsoPeriode.R3.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {{ ConsoPeriode.R3.DateReleve|date('d/m/Y') }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if ConsoPeriode.R2 is defined and ConsoPeriode.R2.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {{ ConsoPeriode.R2.DateReleve|date('d/m/Y') }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if ConsoPeriode.R1 is defined and ConsoPeriode.R1.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {{ ConsoPeriode.R1.DateReleve|date('d/m/Y') }}
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr class="surface">
+                    <td>
+                        {% if ConsoPeriode.R4 is defined and ConsoPeriode.R4.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {{ ConsoPeriode.R4.Conso }} m<sup>3</sup>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if ConsoPeriode.R3 is defined and ConsoPeriode.R3.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {{ ConsoPeriode.R3.Conso }} m<sup>3</sup>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if ConsoPeriode.R2 is defined and ConsoPeriode.R2.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {{ ConsoPeriode.R2.Conso }} m<sup>3</sup>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if ConsoPeriode.R1 is defined and ConsoPeriode.R1.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {{ ConsoPeriode.R1.Conso }} m<sup>3</sup>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr class="arrow">
+                    <td>
+                        {% if ConsoPeriode.R4 is defined and ConsoPeriode.R4.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {% if ConsoPeriode.DegresVAR4 == 2 %}
+                                <i class="icon-arrow-high"></i>
+                            {% elseif ConsoPeriode.DegresVAR4 == 0 %}
+                                <i class="icon-arrow-low"></i>
+                            {% elseif ConsoPeriode.DegresVAR4 == 1 %}
+                                <i class="icon-arrow-nul"></i>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if ConsoPeriode.R3 is defined and ConsoPeriode.R3.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {% if ConsoPeriode.DegresVAR3 == 2 %}
+                                <i class="icon-arrow-high"></i>
+                            {% elseif ConsoPeriode.DegresVAR3 == 0 %}
+                                <i class="icon-arrow-low"></i>
+                            {% elseif ConsoPeriode.DegresVAR3 == 1 %}
+                                <i class="icon-arrow-nul"></i>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if ConsoPeriode.R2 is defined and ConsoPeriode.R2.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {% if ConsoPeriode.DegresVAR2 == 2 %}
+                                <i class="icon-arrow-high"></i>
+                            {% elseif ConsoPeriode.DegresVAR2 == 0 %}
+                                <i class="icon-arrow-low"></i>
+                            {% elseif ConsoPeriode.DegresVAR2 == 1 %}
+                                <i class="icon-arrow-nul"></i>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if ConsoPeriode.R1 is defined and ConsoPeriode.R1.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {% if ConsoPeriode.DegresVAR1 == 2 %}
+                                <i class="icon-arrow-high"></i>
+                            {% elseif ConsoPeriode.DegresVAR1 == 0 %}
+                                <i class="icon-arrow-low"></i>
+                            {% elseif ConsoPeriode.DegresVAR1 == 1 %}
+                                <i class="icon-arrow-nul"></i>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr class="tx">
+                    <td>
+                        {% if ConsoPeriode.R4 is defined and ConsoPeriode.R4.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {% if ConsoPeriode.VAR4 < 0 %}-{% else %}+{% endif %}{{ (ConsoPeriode.VAR4*100)|abs|number_format(2) }} %
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if ConsoPeriode.R3 is defined and ConsoPeriode.R3.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {% if ConsoPeriode.VAR3 < 0 %}-{% else %}+{% endif %}{{ (ConsoPeriode.VAR3*100)|abs|number_format(2) }} %
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if ConsoPeriode.R2 is defined and ConsoPeriode.R2.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {% if ConsoPeriode.VAR2 < 0 %}-{% else %}+{% endif %}{{ (ConsoPeriode.VAR2*100)|abs|number_format(2) }} %
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if ConsoPeriode.R1 is defined and ConsoPeriode.R1.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {% if ConsoPeriode.VAR1 < 0 %}-{% else %}+{% endif %}{{ (ConsoPeriode.VAR1*100)|abs|number_format(2) }} %
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+<!-- TABLEAU DE CONSOMMATION SMARTPHONE -->
+<table class="housing-tab housing-tab-xs hidden-lg hidden-md hidden-sm" cellpadding="0">
+    <tr class="ttop">
+        <td>
+            <p class="clabel">{{ "consommation"|trans }}</p>
+
+            <p class="date">{{ "du"|trans }}{{ ConsoPeriode.DateDeb|date('d/m/Y') }} {{ "au"|trans }} {{ ConsoPeriode
+                .DateFin|date
+                ('d/m/Y') }}</p>
+
+            <p class="tx">{{ ConsoPeriode.Conso }} m<sup>3</sup></p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table class="tab-bot" cellpadding="15">
+                <tr class="hidden-sm">
+                    <td colspan="4" class="tlabel">{{ "Information consommation"|trans }} <br/>{{ "+ variation entre deux relevés"|trans }}</td>
+                </tr>
+                <tr class="date">
+                    <td>
+                        {% if ConsoPeriode.R4 is defined and ConsoPeriode.R4.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {{ ConsoPeriode.R4.DateReleve|date('d/m/Y') }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if ConsoPeriode.R3 is defined and ConsoPeriode.R3.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {{ ConsoPeriode.R3.DateReleve|date('d/m/Y') }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if ConsoPeriode.R2 is defined and ConsoPeriode.R2.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {{ ConsoPeriode.R2.DateReleve|date('d/m/Y') }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if ConsoPeriode.R1 is defined and ConsoPeriode.R1.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {{ ConsoPeriode.R1.DateReleve|date('d/m/Y') }}
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr class="surface">
+                    <td>
+                        {% if ConsoPeriode.R4 is defined and ConsoPeriode.R4.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {{ ConsoPeriode.R4.Conso }} m<sup>3</sup>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if ConsoPeriode.R3 is defined and ConsoPeriode.R3.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {{ ConsoPeriode.R3.Conso }} m<sup>3</sup>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if ConsoPeriode.R2 is defined and ConsoPeriode.R2.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {{ ConsoPeriode.R2.Conso }} m<sup>3</sup>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if ConsoPeriode.R1 is defined and ConsoPeriode.R1.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {{ ConsoPeriode.R1.Conso }} m<sup>3</sup>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr class="arrow">
+                    <td>
+                        <div class="overlay">Info</div>
+                        {% if ConsoPeriode.R4 is defined and ConsoPeriode.R4.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {% if ConsoPeriode.DegresVAR4 == 2 %}
+                                <i class="icon-arrow-high"></i>
+                            {% elseif ConsoPeriode.DegresVAR4 == 0 %}
+                                <i class="icon-fleche_bas"></i>
+                            {% elseif ConsoPeriode.DegresVAR4 == 1 %}
+                                <i class="icon-arrow-low"></i>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="overlay">Info</div>
+                        {% if ConsoPeriode.R3 is defined and ConsoPeriode.R3.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {% if ConsoPeriode.DegresVAR3 == 2 %}
+                                <i class="icon-arrow-high"></i>
+                            {% elseif ConsoPeriode.DegresVAR3 == 0 %}
+                                <i class="icon-fleche_bas"></i>
+                            {% elseif ConsoPeriode.DegresVAR3 == 1 %}
+                                <i class="icon-arrow-low"></i>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="overlay">Info</div>
+                        {% if ConsoPeriode.R2 is defined and ConsoPeriode.R2.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {% if ConsoPeriode.DegresVAR2 == 2 %}
+                                <i class="icon-arrow-high"></i>
+                            {% elseif ConsoPeriode.DegresVAR2 == 0 %}
+                                <i class="icon-fleche_bas"></i>
+                            {% elseif ConsoPeriode.DegresVAR2 == 1 %}
+                                <i class="icon-arrow-low"></i>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="overlay">Info</div>
+                        {% if ConsoPeriode.R1 is defined and ConsoPeriode.R1.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {% if ConsoPeriode.DegresVAR1 == 2 %}
+                                <i class="icon-arrow-high"></i>
+                            {% elseif ConsoPeriode.DegresVAR1 == 0 %}
+                                <i class="icon-fleche_bas"></i>
+                            {% elseif ConsoPeriode.DegresVAR1 == 1 %}
+                                <i class="icon-arrow-low"></i>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr class="tx">
+                    <td>
+                        {% if ConsoPeriode.R4 is defined and ConsoPeriode.R4.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {% if ConsoPeriode.VAR4 < 0 %}-{% else %}+{% endif %}{{ (ConsoPeriode.VAR4*100)|abs|number_format(2) }} %
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if ConsoPeriode.R3 is defined and ConsoPeriode.R3.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {% if ConsoPeriode.VAR3 < 0 %}-{% else %}+{% endif %}{{ (ConsoPeriode.VAR3*100)|abs|number_format(2) }} %
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if ConsoPeriode.R2 is defined and ConsoPeriode.R2.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {% if ConsoPeriode.VAR2 < 0 %}-{% else %}+{% endif %}{{ (ConsoPeriode.VAR2*100)|abs|number_format(2) }} %
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if ConsoPeriode.R1 is defined and ConsoPeriode.R1.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {% if ConsoPeriode.VAR1 < 0 %}-{% else %}+{% endif %}{{ (ConsoPeriode.VAR1*100)|abs|number_format(2) }} %
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>

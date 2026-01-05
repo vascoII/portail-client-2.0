@@ -1,0 +1,29 @@
+{% extends "base.html.twig" %}
+
+{% block body__main_menu %}
+    {% include 'TableauBordClient/_menu.html.twig' %}
+{% endblock %}
+
+{% block breadcrumb_mobile %}
+    <div class="btn btn-primary btn-lg dropdown-toggle hidden-lg hidden-md" data-toggle="dropdown">
+        <i class="pull-right icon-arrow"></i>
+        <h3>{{ 'Liste des Tickets'|trans }}</h3>
+    </div>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu3">
+        <li role="presentation">
+            <h3><a role="menuitem" tabindex="-1" href="{{ path('TechemCoreBundle_TableauBordClient_index') }}">{{ 'Le parc'|trans }}</a></h3>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block main_content %}
+    <ul class="breadcrumb hidden-xs">
+        <li><a href="{{ path('TechemCoreBundle_TableauBordClient_index') }}">{{ 'Le parc'|trans }}</a></li>
+        <li><a href="#">{{ 'Tickets'|trans }}</a></li>
+    </ul>
+    <span class="clearfix"></span>
+
+{#    {{ render(controller('Immeuble/filterResult', app.request.query.all)) }}#}
+{% endblock %}
+
+{% block body_classes %}{{ parent() }} {% endblock %}

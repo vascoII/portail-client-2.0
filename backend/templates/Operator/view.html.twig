@@ -1,0 +1,299 @@
+{% extends "base.html.twig" %}
+
+{% block body__main_menu %}
+    <li class="category">
+        <a href="{{ path('TechemCoreBundle_Operator_index') }}">
+            <i class="icon-list2"></i><span class="title ">{{ "Liste des gestionnaires"|trans }}</span>
+        </a>
+    </li>
+    <li class="active with-icon">
+        <a  class="operateurCreateIcon" href="#">
+            <i class="icon-user"></i>
+            <span class="title">
+                {% if user.UserName is defined or user.FirstName is defined %}
+                    {% if user.UserName is defined %}{{ user.UserName }}{% endif %} {% if user.FirstName is defined %}{{ user.FirstName }}{% endif %}
+                {% else %}
+                    {{ "Utilisateur"|trans }} #{{ user.PKUser }}
+                {% endif %}
+            </span>
+        </a>
+    </li>
+{% endblock %}
+
+{% block breadcrumb_mobile %}
+    <div class="btn btn-primary btn-lg dropdown-toggle hidden-lg hidden-md" id="dropdownMenu3" data-toggle="dropdown">
+        <i class="pull-right icon-arrow"></i>
+        <h3>
+            {% if user.UserName is defined or user.FirstName is defined %}
+                {% if user.UserName is defined %}{{ user.UserName }}{% endif %} {% if user.FirstName is defined %}{{ user.FirstName }}{% endif %}
+            {% else %}
+                {{ "Utilisateur"|trans }} #{{ user.PKUser }}
+            {% endif %}
+        </h3>
+    </div>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu3">
+        <li role="presentation">
+            <h3><a role="menuitem" tabindex="-1" href="{{ path('TechemCoreBundle_Operator_index') }}">
+                    {{ "Liste des gestionnaires"|trans }}
+                </a></h3>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block main_content %}
+    <ul class="breadcrumb hidden-xs">
+        <li><a href="{{ path('TechemCoreBundle_Operator_index') }}">{{ "Liste des gestionnaires"|trans }}</a></li>
+        <li>
+            <a href="#">
+                {% if user.UserName is defined or user.FirstName is defined %}
+                    {% if user.UserName is defined %}{{ user.UserName }}{% endif %} {% if user.FirstName is defined %}{{ user.FirstName }}{% endif %}
+                {% else %}
+                    {{ "Utilisateur"|trans }} #{{ user.PKUser }}
+                {% endif %}
+            </a>
+        </li>
+    </ul>
+
+    <div class="operator-area">
+        <div class="header">
+            <div class="info">
+                <div class="title">{{ "ÉDITION DU COMPTE"|trans }}</div>
+                <div class="description">
+                    {% if user.UserName is defined or user.FirstName is defined %}
+                        {% if user.UserName is defined %}{{ user.UserName }}{% endif %} {% if user.FirstName is defined %}{{ user.FirstName }}{% endif %}
+                    {% else %}
+                        {{ "Utilisateur"|trans }} #{{ user.PKUser }}
+                    {% endif %}<br>
+                    {% if user.Adresse is defined and user.Adresse is not empty%}{{ user.Adresse }}<br>{% endif %}
+                    {% if (user.Cp is defined and user.Cp is not empty) or (user.Ville is defined and user.Ville is not empty)  %}
+                        {% if user.Cp is defined %}{{ user.Cp }}{% endif %} {% if user.Ville is defined %}{{ user.Ville }}{% endif %}<br>
+                    {% endif %}
+                    <br>
+                    <strong><a href="#">{% if user.EMail is defined %}{{ user.EMail }}{% endif %}</a></strong>
+                </div>
+            </div>
+            <div class="action form">
+                <a href="{{ path('TechemCoreBundle_Operator_edit', {'id': user.PKUser}) }}" class="submit">
+                    {{"Éditer"|trans }}</a>
+                <a href="{{ path('TechemCoreBundle_Operator_password', {'id': user.PKUser}) }}" class="submit">{{
+                    "Modifier le mot de passe"|trans }}</a>
+            </div>
+        </div>
+        <div class="panel left-panel group assigned-building">
+            <div class="head">
+                <div class="title"><strong class="result-length">{{ immeubles|length }}</strong> {{ 'Immeubles'|trans
+                    }} {{ "géré(s)"|trans }}</div>
+                <form class="form form-horizontal filters">
+                    <div class="form-group">
+                        <div class="col-sm-6 col-xs-12">
+                            <input type="text" name="numero" placeholder={{ "N°immeuble"|trans }}
+                            class="form-control" />
+                        </div>
+                        <div class="col-sm-6 col-xs-12">
+                            <input type="text" name="location" placeholder="{{ "Code postal / Ville"|trans }}" class="form-control" />
+                        </div>
+                        <a href="{{ path('TechemCoreBundle_Operator_remove_building', {'id': user.PKUser}) }}" class="action" data-action="remove">
+                            <img src="{{ asset('bundles/techemcore/images/fidesio/icon-x-black.png') }}"/><br>
+                            {{"TOUT SUPPRIMER"|trans }}
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="list-building">
+                {{ include('Operator/_remove_building.html.twig') }}
+            </div>
+        </div>
+
+        <div class="panel right-panel group available-building">
+            <div class="head">
+                <div class="title">{{ 'Ajouter des immeubles'|trans|upper }}</div>
+                <form class="form form-horizontal filters">
+                    <div class="form-group">
+                        <div class="col-sm-6 col-xs-12">
+                            <input type="text" name="numero" placeholder={{ "N°immeuble"|trans }}
+                            class="form-control" />
+                        </div>
+                        <div class="col-sm-6 col-xs-12">
+                            <input type="text" name="location" placeholder="{{ "Code postal / Ville"|trans }}" class="form-control" />
+                        </div>
+                        <a href="{{ path('TechemCoreBundle_Operator_add_building', {'id': user.PKUser}) }}" class="action" data-action="add">
+                            <img src="{{ asset('bundles/techemcore/images/fidesio/icon-plus-black.png') }}"/><br>
+                            {{"TOUT AJOUTER"|trans }}
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <div class="list-building">
+                {{ include('Operator/_add_building.html.twig') }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts_foot %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(function () {
+            var mapping_text = {
+                'numero': ['reference', 'numero'],
+                'location': ['codepostal', 'ville']
+            };
+
+            $('.filters input[type=text]').on('keyup', function() {
+                $(this).closest('.filters').trigger('data-change');
+            });
+
+            $('.filters').on('data-change', function () {
+                $('.loader').trigger('start');
+                var $me = $(this),
+                    $group = $me.closest('.group'),
+                    $items = $group.find('.items li'),
+                    $filtered_items = $items,
+                    text_data = $me.find('input[type=text]').serializeArray();
+
+                $.each(text_data, function (key, filter) {
+                    $filtered_items = $filtered_items.filter(function(){
+                        var me = $(this),
+                            test;
+
+                        if(mapping_text.hasOwnProperty(filter.name) && filter.value != '') {
+                            test = false;
+                            $.each(mapping_text[filter.name], function(key, name){
+                                test |= me.attr('data-'+name).toLowerCase().indexOf(filter.value.toLowerCase()) === 0; // .data() try to convert values
+                            });
+
+                        } else {
+                            test = true;
+                        }
+
+                        return test;
+                    });
+                });
+
+                $items.addClass('hidden');
+                $filtered_items.toggleClass('hidden');
+                $group.find('.result-length').text($filtered_items.length);
+                $('.loader').trigger('stop');
+            });
+
+            $('.list-building').on('click', '.action', function(e){
+                e.preventDefault();
+                var $me = $(this),
+                    $parent = $me.closest('li'),
+                    $group = $me.closest('.group'),
+                    list = [],
+                    options = {
+                        url: $me.attr('href'),
+                        method: 'post',
+                        error: function(xhr) {
+                            alert('Erreur: '+ xhr.responseText);
+                        }
+                    };
+
+                if($me.data('action') == 'add') {
+
+                    list.push($parent.attr('data-pkimmeuble'));
+                    $.extend(options, {
+                        data: {'immeubles': JSON.stringify(list)},
+                        success: function(html) {
+                            $parent.remove();
+                            $('.assigned-building').find('.list-building').html(html);
+                            $('.result-length').text($('.assigned-building .list-building li').length);
+                        }
+                    });
+                    $.ajax(options);
+
+                } else if($me.data('action') == 'remove') {
+
+                    list.push($parent.attr('data-pkimmeuble'));
+                    $.extend(options, {
+                        data: {'immeubles': JSON.stringify(list)},
+                        success: function(html) {
+                            $parent.remove();
+                            $('.available-building').find('.list-building').html(html);
+                            $('.result-length').text($('.assigned-building .list-building li').length);
+                        }
+                    });
+                    $.ajax(options);
+
+                }
+            });
+
+            $('.group .head .action').on('click', function(e) {
+                e.preventDefault();
+
+                var $mee = $('form.filters'),
+                        $groupp = $mee.closest('.group'),
+                        $items = $groupp.find('.items li').not('.hidden'),
+                        $immeubles = [];
+
+                $.each($items, function () {
+                    $immeubles.push($(this).attr('data-pkimmeuble'));
+                });
+
+                var $me = $(this),
+                    $group = $me.closest('.group'),
+                    $li = $group.find('.list-building li'),
+                    options = {
+                        method: 'post',
+                        error: function(xhr) {
+                            alert('Erreur: '+ xhr.responseText);
+                        }
+                    };
+
+                if($immeubles.length == $groupp.find('.items li').length) {
+                    if($me.data('action') == 'add') {
+                        $.extend(options, {
+                            url: '{{ path('TechemCoreBundle_Operator_add_building', {'id': user.PKUser}) }}',
+                            data: {'all': 1},
+                            success: function(html) {
+                                $li.remove();
+                                $('.assigned-building').find('.list-building').html(html);
+                                $('.result-length').text($('.assigned-building .list-building li').length);
+                            }
+                        });
+                        $.ajax(options);
+                    } else if($me.data('action') == 'remove') {
+                        $.extend(options, {
+                            url: '{{ path('TechemCoreBundle_Operator_remove_building', {'id': user.PKUser}) }}',
+                            data: {'all': 1},
+                            success: function(html) {
+                                $li.remove();
+                                $('.available-building').find('.list-building').html(html);
+                                $('.result-length').text($('.assigned-building .list-building li').length);
+                            }
+                        });
+                        $.ajax(options);
+                    }
+                } else {
+                    if($me.data('action') == 'add') {
+                        $.extend(options, {
+                            url: '{{ path('TechemCoreBundle_Operator_add_building', {'id': user.PKUser}) }}',
+                            data: {'immeubles': JSON.stringify($immeubles)},
+                            success: function(html) {
+                                $groupp.find('.items li').not('.hidden').remove();
+                                $('.assigned-building').find('.list-building').html(html);
+                                $('.result-length').text($('.assigned-building .list-building li').length);
+                            }
+                        });
+                        $.ajax(options);
+                    } else if($me.data('action') == 'remove') {
+                        $.extend(options, {
+                            url: '{{ path('TechemCoreBundle_Operator_remove_building', {'id': user.PKUser}) }}',
+                            data: {'immeubles': JSON.stringify($immeubles)},
+                            success: function(html) {
+                                $groupp.find('.items li').not('.hidden').remove();
+                                $('.available-building').find('.list-building').html(html);
+                                $('.result-length').text($('.assigned-building .list-building li').length);
+                            }
+                        });
+                        $.ajax(options);
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

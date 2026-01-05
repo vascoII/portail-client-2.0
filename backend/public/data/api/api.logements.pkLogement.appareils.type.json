@@ -1,0 +1,71 @@
+{
+  "pkLogement": 1209869,
+  "type": "eau",
+  "appareils": [
+    {
+      "Appareil": {
+        "PkAppareil": "4096679",
+        "Numero": "I19JA051603",
+        "Emplacement": "PLACARD - PENDERIE",
+        "Fluide": "EF",
+        "TypeAppareil": "EF",
+        "Unite": "m3"
+      },
+      "R1": {
+        "DateReleve": "2025-10-20T00:00:00",
+        "Index": 1250,
+        "Conso": 15
+      },
+      "R2": {
+        "DateReleve": "2025-09-20T00:00:00",
+        "Index": 1235,
+        "Conso": 12
+      },
+      "R3": {
+        "DateReleve": "2025-08-20T00:00:00",
+        "Index": 1223,
+        "Conso": 10
+      },
+      "R4": {
+        "DateReleve": "2025-07-20T00:00:00",
+        "Index": 1213,
+        "Conso": 8
+      },
+      "NbFuites": 0,
+      "NbAnomalies": 0
+    },
+    {
+      "Appareil": {
+        "PkAppareil": "4096681",
+        "Numero": "I19JA051606",
+        "Emplacement": "WC",
+        "Fluide": "EF",
+        "TypeAppareil": "EF",
+        "Unite": "m3"
+      },
+      "R1": {
+        "DateReleve": "2025-10-20T00:00:00",
+        "Index": 850,
+        "Conso": 8
+      },
+      "R2": {
+        "DateReleve": "2025-09-20T00:00:00",
+        "Index": 842,
+        "Conso": 7
+      },
+      "R3": {
+        "DateReleve": "2025-08-20T00:00:00",
+        "Index": 835,
+        "Conso": 6
+      },
+      "R4": {
+        "DateReleve": "2025-07-20T00:00:00",
+        "Index": 829,
+        "Conso": 5
+      },
+      "NbFuites": 1,
+      "NbAnomalies": 0
+    }
+  ]
+}
+

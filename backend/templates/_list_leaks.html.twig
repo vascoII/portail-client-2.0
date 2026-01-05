@@ -1,0 +1,168 @@
+{% if modeoccupant is not defined %}
+<div class="row filters">
+
+    <h4>{{ "Filtrer par"|trans }} : </h4>
+    <form role="form" id="filters" class="">
+        <div class="form-group">
+            <input type="text" class="col-xs-5 col-sm-2" name="numero" placeholder='{{ "N° compteur" |trans }}'>
+            <select class="col-xs-5 col-sm-2 whitevalue" name="fluide">
+                <option value="">{{ "Fluide"|trans }}</option>
+                {% for fluide in fluides %}
+                    <option value="{{ fluide }}" {% if app.request.get('fluide') == fluide %}selected{% endif %}>
+                        {{ "Fluide"|trans }} {{ fluide }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% block export %}{% endblock %}
+    </form>
+</div>
+
+<div class="row filters buttons">
+    <div class="dropdown button-wrapper col-xs-4" data-filter-name="batiment">
+        <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+            <span class="caret"></span>
+            <span class="hidden-xs">{{ "Batiment"|trans }}</span>
+            <span class="value"></span>
+            <i class="icon-immeuble-small"></i>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-value="">{{ "Aucun"|trans }}</a></li>
+            {% for batiment in batiments %}
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-value="{{ batiment }}">{{ "Batiment"|trans }} {{ batiment }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="dropdown button-wrapper col-xs-4" data-filter-name="escalier">
+        <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown">
+            <span class="caret"></span>
+            <span class="hidden-xs">{{ "Escalier"|trans }}</span>
+            <span class="value"></span>
+            <i class="icon-stairs"></i>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu2">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-value="">{{ "Aucun"|trans }}</a></li>
+            {% for escalier in escaliers %}
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-value="{{ escalier }}">{{ "Escalier"|trans }} {{ escalier }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="dropdown button-wrapper col-xs-4" data-filter-name="etage">
+        <button class="btn btn-primary btn-lg dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown">
+            <span class="caret"></span>
+            <span class="hidden-xs">{{ "Etage"|trans }}</span>
+            <span class="value"></span>
+            <i class="icon-floor"></i>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu3">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-value="">{{ "Aucun"|trans }}</a></li>
+            {% for etage in etages %}
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" data-value="{{ etage }}">{{ "Etage"|trans }} {{ etage }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endif %}
+
+<div class="list-intervention-area list-leak-area">
+    <div class="number visible-xs"><strong class="result-length">{{ fuites|length }}</strong> {{ "fuites"|trans }}</div>
+
+    <ul class="items">
+        <li class="thead hidden-xs">
+            <div class="image">&nbsp;</div>
+            <div class="info number"><strong class="result-length">{{ fuites|length }}</strong>
+                {{ "fuites"|trans }}</div>
+            <div class="date">{{ "N°COMPTEUR"|trans }}</div>
+            <div class="motif">{{ "Emplaçement"|trans|upper }}</div>
+            <div class="motif">{{ "FLUIDE"|trans }}</div>
+            <div class="date">{{ "NB DE JOURS"|trans }}</div>
+        </li>
+
+        {% block fuites %}
+        {% endblock %}
+    </ul>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        var mapping_text = {
+                'numero': ['numero'],
+                'fluide': ['fluide'],
+                'batiment': ['batiment'],
+                'escalier': ['escalier'],
+                'etage': ['etage']
+            };
+
+        $('.filters input[type=text]').on('keyup', function() {
+            $('#filters').trigger('data-change');
+        });
+
+        $('.filters select').on('change', function() {
+            $('#filters').trigger('data-change');
+        });
+
+        $('.filters .dropdown.button-wrapper a[role=menuitem]').click(function() {
+            $(this).closest('.dropdown.button-wrapper').find('.value').text($(this).attr('data-value'));
+            $('#filters').trigger('data-change');
+        });
+
+        $('#filters').on('data-change', function () {
+            $('.loader').trigger('start');
+            var $items = $('.list-leak-area li.tbody'),
+                $filtered_items = $items,
+                text_data = $('#filters').serializeArray(),
+                $button_filter = $('.filters .dropdown.button-wrapper[data-filter-name]'),
+                exact_text_data = [];
+
+            $button_filter.each(function() {
+                exact_text_data.push({
+                    'name': $(this).attr('data-filter-name'),
+                    'value': $(this).find('.value').text()
+                });
+            });
+
+            $.each(text_data, function (key, filter) {
+                $filtered_items = $filtered_items.filter(function(){
+                    var me = $(this),
+                        test;
+
+                    if(mapping_text.hasOwnProperty(filter.name) && filter.value != '') {
+                        test = false;
+                        $.each(mapping_text[filter.name], function(key, name){
+                            test |= me.attr('data-'+name).toLowerCase().indexOf(filter.value.toLowerCase()) === 0; // .data() try to convert values
+                        });
+
+                    } else {
+                        test = true;
+                    }
+
+                    return test;
+                });
+            });
+
+            $.each(exact_text_data, function (key, filter) {
+                $filtered_items = $filtered_items.filter(function(){
+                    var me = $(this),
+                        test;
+
+                    if(mapping_text.hasOwnProperty(filter.name) && filter.value != '') {
+                        test = false;
+                        $.each(mapping_text[filter.name], function(key, name){
+                            test |= me.attr('data-'+name).toLowerCase() === filter.value.toLowerCase();
+                        });
+                    } else {
+                        test = true;
+                    }
+
+                    return test;
+                });
+            });
+
+            $items.addClass('hidden');
+            $filtered_items.toggleClass('hidden');
+            $('.result-length').text($filtered_items.length);
+            $('.loader').trigger('stop');
+        });
+    });
+</script>

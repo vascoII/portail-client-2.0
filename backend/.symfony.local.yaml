@@ -1,0 +1,8 @@
+# Symfony Local Server Configuration
+# This file configures the Symfony local web server
+
+# Disable HTTPS for local development
+# This prevents the server from forcing HTTPS redirects
+tls:
+  enabled: false
+

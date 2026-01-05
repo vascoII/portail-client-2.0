@@ -1,0 +1,22 @@
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "facture": {
+      "pkFacture": 1020015,
+      "numero": 418210,
+      "dateEdition": "2025-08-01",
+      "dateEditionFormatted": "01/08/2025",
+      "montantTotalHT": 95,
+      "montantTotalHTFormatted": "95,00 €",
+      "montantTotalTTC": 104.5,
+      "montantTotalTTCFormatted": "104,50 €",
+      "montantTotalAPayer": 104.5,
+      "montantTotalAPayerFormatted": "104,50 €",
+      "codeGestio": "",
+      "adresse": "54 56 RUE DE LA PY",
+      "ville": "PARIS",
+      "cp": "75020"
+    }
+  }
+}

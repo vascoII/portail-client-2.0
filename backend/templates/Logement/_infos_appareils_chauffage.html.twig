@@ -1,0 +1,47 @@
+<table class="details hidden-xs">
+    <thead>
+        <tr>
+            <th>{{ "N°COMPTEUR"|trans }}</th>
+            <th>EMPL.</th>
+            <th>TYPE</th>
+            <th>{{ "INDEX"|trans }}</th>
+            <th>{{ "CONSO."|trans }}</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for appareil in appareils %}
+            <tr>
+                <td>
+                    <strong>
+                        {% if appareil.Appareil is defined and appareil.Appareil.Numero is defined %}
+                            {{ appareil.Appareil.Numero }}
+                        {% endif %}
+                    </strong>
+                </td>
+                <td>
+                    {% if appareil.Appareil is defined and appareil.Appareil.Emplacement is defined %}
+                        {{ appareil.Appareil.Emplacement }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if appareil.Appareil is defined and appareil.Appareil.TypeAppareil is defined %}
+                        {{ appareil.Appareil.TypeAppareil }}
+                    {% endif %}
+                </td>
+                <td>
+                    <strong>
+                        {% if appareil.R1 is defined and appareil.R1.Index is defined and appareil.R1.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {{ appareil.R1.Index }}
+                        {% endif %}
+                    </strong>
+                </td>
+                <td>
+                    {% if appareil.R1 is defined and appareil.R1.Index is defined and appareil.R1.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                        {{ appareil.R1.Conso }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

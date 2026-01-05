@@ -1,0 +1,235 @@
+{% extends "base.html.twig" %}
+
+
+{% block body__main_menu %}
+    {% include 'Occupant/_menu.html.twig' %}
+{% endblock %}
+
+{% block breadcrumb_mobile %}
+    <div class="btn btn-primary btn-lg dropdown-toggle hidden-lg hidden-md" id="dropdownMenu3" data-toggle="dropdown">
+        <i class="pull-right icon-arrow"></i>
+        <h3>{{ "Logement"|trans }} {{ logement.Occupant.Ref }}</h3>
+    </div>
+{% endblock %}
+
+{% block header %}
+    {% if occupant_no_header() != 'true' %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block main_content %}
+
+    <script type="text/javascript">
+        var charts = Array();
+    </script>
+    <ul class="breadcrumb hidden-xs">
+        <li>  </li>
+    </ul>
+    <span class="clearfix"></span>
+
+    <div class="row panel-area building-detail-area">
+        <div class="col-md-8 col-sm-6 block block-1">
+            <div class="panel panel-primary parc_summary panel-info">
+                <div class="meta clearfix">
+                    <div class="icons">
+                        <i class="icon-user"></i>
+                    </div>
+
+                    <div class="data">
+                        <p>
+                            <strong>{{ "Occupant"|trans }} : <span>{{ logement.Occupant.Nom }}</span></strong>
+                        </p>
+                        <p>
+                            <strong>{{ "Date d'arrivée"|trans }} : <span>{{ logement.Occupant.DateArrivee|date("d/m/Y") }}</span></strong>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="app">
+                    <div class="inner"><strong>{{ logement.NbAppareils }}</strong> {{ "Appareils"|trans }}</div>
+                </div>
+
+                <div class="stats clearfix">
+                    {% if logement.NbCompteursEF != -1 %}
+                        <div class="item">
+                            <div class="value">{{ logement.NbCompteursEF }}</div>
+
+                            <div class="title">{{ "Eau froide"|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if logement.NbCompteursEC != -1 %}
+                        <div class="item">
+                            <div class="value">{{ logement.NbCompteursEC }}</div>
+
+                            <div class="title">{{ 'Eau chaude'|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if logement.NbCompteursRepart != -1 %}
+                        <div class="item">
+                            <div class="value">{{ logement.NbCompteursRepart }}</div>
+
+                            <div class="title">{{ 'Répartiteurs'|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if logement.NbCompteursCET != -1 %}
+                        <div class="item">
+                            <div class="value">{{ logement.NbCompteursCET }}</div>
+
+                            <div class="title">{{ "Compteur d'énergie"|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if logement.NbCompteursElect != -1 %}
+                        <div class="item">
+                            <div class="value">{{ logement.NbCompteursElect }}</div>
+
+                            <div class="title">{{ "Electricité"|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if logement.NbCompteursGaz != -1 %}
+                        <div class="item">
+                            <div class="value">{{ logement.NbCompteursGaz }}</div>
+
+                            <div class="title">{{ "Gaz"|trans }}</div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="meta user clearfix">
+                    <div class="icons">
+                        <i class="icon-opened33"></i>
+                    </div>
+
+                    <div class="data">
+                        <p>
+                            {% if logement.Occupant is defined %}
+                                <strong>{{ 'Référence'|trans }} : <span>{{ logement.Occupant.Ref }}</span></strong>
+                            {% endif %}
+                        </p>
+                        <p>
+                            <strong>{{ "N° d'immeuble"|trans }} : <span>{{ logement.Immeuble.Numero }}</span></strong>
+                        </p>
+
+                        <div class="info clearfix">
+                            <div class="item">{{ "Batiment"|trans }} {{ logement.Logement.NumBatiment }}</div>
+                            <div class="item">{{ "Escalier"|trans }}{{ logement.Logement.NumEscalier }}</div>
+                            <div class="clearfix"></div>
+                            <div class="item">{{ "Etage"|trans }} {{ logement.Logement.NumEtage }}</div>
+                            <div class="item">{{ "Logement"|trans }} {{ logement.Logement.NumOrdre }}</div>
+                        </div>
+
+                        <p>{{ logement.Logement.AdrBatiment }}</p>
+                        <p>{{ logement.Immeuble.Cp }} {{ logement.Immeuble.Ville }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6 block block-2 status-gauge">
+            <div class="panel-default">
+                {% if logement.NbDepannages > 0 %}
+                <a href="{{ path('TechemCoreBundle_Occupant_listinterventions', {statut: 'ouvert'}) }}" class="dep">
+                    {% else %}
+                    <a href="{{ path('TechemCoreBundle_Occupant_listinterventions') }}" class="dep">
+                        {% endif %}
+                        <div class="panel">
+                            <div class="canvas {% if logement.NbDepannages > 0 %}orange{% endif %}">
+                                {% set rationDepannage = logement.NbDepannagesTotal > 0 ? 0.5 : 0 %}
+                                {% set rationDepannage = logement.NbDepannages > 0 ? 1 : rationDepannage %}
+                                <canvas width="139" height="113"
+                                        data-options=" {{ {value: rationDepannage, fillGaugeStyle: '#8e98a2'}|json_encode() }}"></canvas>
+                                <div class="icons "><i class="icon icon-wrench44"></i></div>
+                            </div>
+                            {% set NbDepannages = logement.NbDepannagesTotal > 0 ? logement.NbDepannagesTotal : 0 %}
+                            {% set NbDepannages = logement.NbDepannages > 0 ? logement.NbDepannages : 0 %}
+                            <div class="number">{{ NbDepannages }}</div>
+                            <div class="text">
+                                <span>{{ "Dépannages"|trans }}{% if logement.NbDepannages > 0 %} {{ "en cours"|trans }}{% endif %}</span>
+                            </div>
+                        </div>
+                    </a>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6 block block-3 status-gauge">
+            <div class="panel-default">
+                <a href="{{ path('TechemCoreBundle_Occupant_listdysfunctions') }}" class="dep">
+                    <div class="panel">
+                        <div class="canvas {% if logement.NbDysfonctionnements > 0 %}yellow {% endif %}">
+                            <canvas width="139" height="113"
+                                    data-options=" {{ {value: logement.NbDysfonctionnements > 0, fillGaugeStyle: '#000000'}|json_encode() }}"></canvas>
+                            <div class="icons"><i class="icon icon-bell84"></i></div>
+                        </div>
+                        <div class="number">{% if logement.NbDysfonctionnements == -1 %}0{% else %}{{ logement.NbDysfonctionnements }}{% endif %}</div>
+                        <div class="text"><span>{{ 'Alertes conso'|trans }}</span></div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-8 col-sm-6 block block-1">
+            <div class="panel panel-primary parc_summary panel-info" style="min-height: 100%!important;">
+                <div class="icons">
+                    <h2>{{ 'rgpd'|trans|upper }}</h2>
+                </div>
+                <div class="meta clearfix">
+                    <div class="meta clearfix">
+					<form class="form-horizontal code" name="edit-GDPR" role="form" url="{{ path('TechemCoreBundle_Occupant_myAccount') }}" method="POST">
+                        <div class="data">
+                            <label for="rgpd-checkbox">
+                                <input type="checkbox" id="rgpd-checkbox" name="rgpd_checkbox" {% if rgpdcheckboxvalue == 'true' %}checked{% endif %}>
+                                <strong><span>{{ "J'autorise mon gestionnaire à accéder à mes données de consommation."|trans }}</span></strong>
+                            </label>
+                            <div class="form-group text-center" style="margin-top: 5%;">
+                                <div class="col-sm-12">
+                                    <button class="btn btn-primary btn-lg" type="submit">
+                                        <span class="hidden-xs">{{ "Enregistrer"|trans }}</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+					</form>	
+						
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+{% endblock %}
+
+
+{% block body_classes %}{{ parent() }} logement{% endblock %}
+
+{% block javascripts_foot %}
+    {{ parent() }}
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="http://www.chartjs.org/assets/Chart.min.js"></script>
+    <script type="text/javascript" src="{{ asset('bundles/techemcore/js/custom/status-gauge.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/techemcore/js/custom/performance-gauge.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/techemcore/js/custom/charts.js') }}"></script>
+
+    <script type="text/javascript">
+        (function () {
+
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                var $me = $(e.target);
+                var $area = $($me.attr('href'));
+
+                drawGauge($area.attr('data-area'));
+                drawCharts($area.attr('data-area'));
+            })
+
+            var defaultArea = $('.tab-detail-area > .tab-content > .tab-pane.active').attr('data-area');
+            drawGauge(defaultArea);
+            drawCharts(defaultArea);
+
+        })();
+    </script>
+{% endblock %}

@@ -1,0 +1,351 @@
+{% extends "base.html.twig" %}
+
+
+{% block body__main_menu %}
+    {% include 'Logement/_menu.html.twig' %}
+{% endblock %}
+
+{% block breadcrumb_mobile %}
+    <div class="btn btn-primary btn-lg dropdown-toggle hidden-lg hidden-md" id="dropdownMenu3" data-toggle="dropdown">
+        <i class="pull-right icon-arrow"></i>
+        <h3>Logement {{ logement.Occupant.Ref }}</h3>
+    </div>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu3">
+        <li role="presentation">
+            <h3><a role="menuitem" tabindex="-1"
+                   href="{{ path('TechemCoreBundle_Logement_index', { 'pkImmeuble': logement.Immeuble.PkImmeuble }) }}">{{ "Immeuble"|trans }} {{ logement.Immeuble.Ref }}</a>
+            </h3>
+        </li>
+        <li role="presentation">
+            <h3><a role="menuitem" tabindex="-1"
+                   href="{{ path('TechemCoreBundle_Immeuble_show', { 'pkImmeuble': logement.Immeuble.PkImmeuble }) }}">{{ "Immeuble"|trans }} {{ logement.Immeuble.Ref }}</a>
+            </h3>
+        </li>
+        <li role="presentation">
+            <h3><a role="menuitem" tabindex="-1"
+                   href="{{ path('TechemCoreBundle_Immeuble_index') }}">{{ 'Liste des immeubles'|trans }}</a></h3>
+        </li>
+        <li role="presentation">
+            <h3><a role="menuitem" tabindex="-1"
+                   href="{{ path('TechemCoreBundle_TableauBordClient_index') }}">{{ 'Le parc'|trans }}</a></h3>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block modal %}
+    {% include 'Ticketing/form-ticket-attachment.html.twig' %}
+{% endblock %}
+
+{% block main_content %}
+<style>
+    .buttonIn {
+        position: relative;
+    }
+    .buttonIn .fa {
+        position: absolute;
+        font-size: 20px!important;
+        right: 0px;
+        margin: 2%!important;
+        transform: translateX(2px);
+    }
+    .input-enabled {
+        border: 1px solid #ccc;
+    }
+    .input-disabled {
+        border: none;
+        background-color: transparent;
+    }
+    .error-message {
+        color: #d43f3a;
+    }
+</style>
+    <script type="text/javascript">
+        var charts = Array();
+    </script>
+    <ul class="breadcrumb hidden-xs">
+        <li><a href="{{ path('TechemCoreBundle_TableauBordClient_index') }}">{{ 'Le parc'|trans }}</a></li>
+        <li><a href="{{ path('TechemCoreBundle_Immeuble_index') }}">{{ 'Liste des immeubles'|trans }}</a></li>
+        <li>
+            <a href="{{ path('TechemCoreBundle_Immeuble_show', { 'pkImmeuble': logement.Immeuble.PkImmeuble }) }}">{{ 'Immeuble'|trans }} {{ logement.Immeuble.Ref }}</a>
+        </li>
+        <li>
+            <a href="{{ path('TechemCoreBundle_Logement_index', { 'pkImmeuble': logement.Immeuble.PkImmeuble }) }}">{{ "Liste des logements"|trans }}</a>
+        </li>
+        <li><a href="#">{{ "Logement"|trans }} {{ logement.Occupant.Ref }}</a></li>
+    </ul>
+
+    <span class="clearfix"></span>
+    <h2>{{ "Aperçu du logement"|trans }}</h2>
+
+    <div class="row panel-area building-detail-area">
+
+        <div class="col-md-8 col-sm-6 block block-1">
+            <div class="panel panel-primary parc_summary panel-info">
+
+                <div class="meta clearfix">
+                    <div class="icons">
+                        <i class="icon-opened33"></i>
+                    </div>
+                    <div class="assistance">
+                        {% if logement.TicketsInterEnabled %}
+                            <a href="{{ path('TechemCoreBundle_Ticket_List') }}">
+                                <div class="tickets-inprogress" {% if  logement.NbTicketsInter <= 0 %}style="display:none"{% endif %}>
+                                    Tickets en cours
+                                    <span class="tickets-number">{{ nbTickets }}</span>
+                                </div>
+                            </a>
+                        <div class="btn-new-intervention">Demande d'intervention</div>
+                        {% endif %}
+                    </div>
+                    <div class="data">
+                        <p>
+                            {% if logement.Occupant is defined %}
+                                <strong>{{ 'Référence'|trans }} : <span>{{ logement.Occupant.Ref }}</span></strong>
+                            {% endif %}
+
+                        </p>
+                        <p>
+                            <strong>{{ "N° d'immeuble"|trans }} : <span>{{ logement.Immeuble.Numero }}</span></strong>
+                        </p>
+
+                        <div class="info clearfix">
+                            <div class="item">{{ "Batiment"|trans }} {{ logement.Logement.NumBatiment }}</div>
+                            <div class="item">{{ "Escalier"|trans }} {{ logement.Logement.NumEscalier }}</div>
+                            <div class="clearfix"></div>
+                            <div class="item">{{ "Etage"|trans }} {{ logement.Logement.NumEtage }}</div>
+                            <div class="item">{{ "Logement"|trans }} {{ logement.Logement.NumOrdre }}</div>
+                        </div>
+
+                        <p>{{ logement.Logement.AdrBatiment }}</p>
+                        <p>{{ logement.Immeuble.Cp }} {{ logement.Immeuble.Ville }}</p>
+                    </div>
+                </div>
+
+                <div class="meta user clearfix">
+                    <div class="icons">
+                        <i class="icon-user"></i>
+                    </div>
+                    <div class="data">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <p>
+                                    <strong>{{ 'Occupant'|trans }} : <span>{{ logement.Occupant.Nom }}</span></strong>
+                                </p>
+                                <p>
+                                    <strong>{{ "Date d'arrivée"|trans }} :
+                                        <span>{{ logement.Occupant.DateArrivee|date("d/m/Y") }}</span></strong>
+                                </p>
+                            </div>
+							
+                            <div class="col-sm-7">
+							<h4>
+                                {{ "Nouvelles coordonnées"|trans }}
+                            </h4>
+							{% if changeinprogress is defined and changeinprogress == true %}
+							<h5><b class="error-message">
+							Une demande de changement est actuellement en attente de traitement par les équipes Techem. Vous pouvez néamoins modifier les données de cette demande :
+							</b></h5>
+							{% endif %}
+                                <form class="form-horizontal code" name="edit-occupant" role="form">
+                                    <div class="input-group code_form">
+                                        <div class="form-group">
+                                            <label class="col-xs-3"><i class="pull-right fa fa-phone"></i></label>
+                                            <div class="controls col-xs-9">
+                                                <input type="text" class="form-control" placeholder="Enter phone" name="phone" data-field="phone" 
+												{% if occupant.newTelmobile is defined %}
+												value="{{ occupant.newTelmobile }}" 
+												{% endif %}
+												pattern="^[0-9]{10}$" required>
+                                                <span class="error-message">Veuillez saisir un numéro de téléphone valide à 10 chiffres.</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="col-xs-3"><i class="pull-right fa fa-envelope"></i></label>
+                                            <div class="controls col-xs-9">
+                                                <input type="email" class="form-control" placeholder="Enter email" name="email" data-field="email" 
+												{% if occupant.newEmail is defined %}
+												value="{{ occupant.newEmail }}" 
+												{% endif %}
+												required>
+                                                <span class="error-message">Adresse e-mail invalide.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group text-center">
+                                        <div class="col-sm-12">
+                                            <button type="submit" class="btn btn-primary submit-occupant">{{ "Enregistrer"|trans }}</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="app">
+                    <div class="inner"><strong>{{ logement.NbAppareils }}</strong> {{ "Appareils"|trans }}</div>
+                </div>
+
+                <div class="stats clearfix">
+                    {% if logement.NbCompteursEF != -1 %}
+                        <div class="item">
+                            <div class="value">{{ logement.NbCompteursEF }}</div>
+
+                            <div class="title">{{ "Eau froide"|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if logement.NbCompteursEC != -1 %}
+                        <div class="item">
+                            <div class="value">{{ logement.NbCompteursEC }}</div>
+
+                            <div class="title">{{ 'Eau chaude'|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if logement.NbCompteursRepart != -1 %}
+                        <div class="item">
+                            <div class="value">{{ logement.NbCompteursRepart }}</div>
+
+                            <div class="title">{{ 'Répartiteurs'|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if logement.NbCompteursCET != -1 %}
+                        <div class="item">
+                            <div class="value">{{ logement.NbCompteursCET }}</div>
+
+                            <div class="title">{{ "Compteur d'énergie"|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if logement.NbCompteursElect != -1 %}
+                        <div class="item">
+                            <div class="value">{{ logement.NbCompteursElect }}</div>
+
+                            <div class="title">{{ "Electricité"|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if logement.NbCompteursGaz != -1 %}
+                        <div class="item">
+                            <div class="value">{{ logement.NbCompteursGaz }}</div>
+
+                            <div class="title">{{ "Gaz"|trans }}</div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block body_classes %}{{ parent() }} logement{% endblock %}
+
+{% block javascripts_foot %}
+    {{ parent() }}
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="http://www.chartjs.org/assets/Chart.min.js"></script>
+    <script type="text/javascript" src="{{ asset('bundles/techemcore/js/custom/status-gauge.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/techemcore/js/custom/performance-gauge.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/techemcore/js/custom/charts.js') }}"></script>
+{#    <script  src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>#}
+    <script type="text/javascript" src="{{ asset('bundles/techemcore/js/jquery.validate.min.js') }}"></script>
+{#    <script type="text/javascript" src="{{ asset('bundles/techemcore/js/additional-methods.min.js') }}"></script>#}
+
+
+
+    <script>
+        $(document).ready(function() {
+            var submit = $(".submit-occupant");
+            var inputFields = $(".input-group input");
+
+            inputFields.on('input', function () {
+                checkInputValues();
+            });
+
+            $(".edit-icon[data-icon='pencil']").removeClass("hidden");
+            $(".edit-icon[data-icon='check']").addClass("hidden");
+
+            function checkInputValues() {
+                var allInputsValid = true;
+
+                inputFields.each(function () {
+                    var input = $(this);
+                    var errorSpan = input.siblings('.error-message');
+                    if (!input[0].checkValidity()) {
+                        allInputsValid = false;
+                        errorSpan.show();
+                    } else {
+                        errorSpan.hide();
+                    }
+                });
+
+                submit.prop("disabled", !allInputsValid);
+            }
+            $(".edit-icon").click(function() {
+                var input = $(this).siblings("input");
+                var editIcon = $(this);
+                var checkIcon = $(this).siblings(".fa-check");
+
+                // Enable editing
+                if (input.hasClass("input-disabled")) {
+                    input.removeClass("input-disabled").addClass("input-enabled");
+                    input.prop("disabled", false);
+                    editIcon.addClass("hidden");
+                    checkIcon.removeClass("hidden");
+                    submit.prop("disabled", true);
+                }
+            });
+
+            $(".fa-check").click(function() {
+                var editIcon = $(this).siblings(".fa-pencil");
+                var input = $(this).siblings("input");
+
+                // Disable editing
+                input.removeClass("input-enabled").addClass("input-disabled");
+                input.prop("disabled", true);
+                $(this).addClass("hidden");
+                editIcon.removeClass("hidden");
+
+                checkInputValues();
+            });
+
+            checkInputValues();
+
+            $(".submit-occupant").click(function(e) {
+                e.preventDefault();
+                var formData = {
+                    email: $("input[name='email']").val(),
+                    phone: $("input[name='phone']").val()
+                };
+
+                var url = "{{ path('TechemCoreBundle_Logement_edit', {'pkLogement': pkLogement}) }}";
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: JSON.stringify(formData),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(response) {
+                        alert("La modification a été enregistrée avec succès.");
+						window.history.go(-1);
+
+					},
+                    error: function(e) {
+
+						console.log(e);
+                        alert("Une erreur est survenue." + JSON.stringify(e));
+                    }
+                });
+            });
+        });
+
+    </script>
+
+
+
+{% endblock %}

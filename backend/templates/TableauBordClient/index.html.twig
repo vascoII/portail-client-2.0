@@ -1,0 +1,329 @@
+{% extends "base.html.twig" %}
+
+{% block body__main_menu %}
+    {% include 'TableauBordClient/_menu.html.twig' %}
+{% endblock %}
+
+{% block breadcrumb_mobile %}
+    <div class="btn btn-primary btn-lg dropdown-toggle hidden-lg hidden-md" id="dropdownMenu3" data-toggle="dropdown">
+        <h3>{{ 'Le Parc'|trans }}</h3>
+    </div>
+{% endblock %}
+
+{% block modal %}
+    <div class="form-new-intervention" style="display: none;">
+        <div class="content-form">
+            <div class="cross-close">
+                <img src="{{ asset('bundles/techemcore/images/fidesio/cross.svg') }}"/>
+            </div>
+            <h4>Livret d'intervention</h4>
+            <form action="{{ path('TechemCoreBundle_TableauBordClient_intervention') }}" class="livret-intervention"
+                  target="_blank">
+                <div class="content-date">
+                    <div class="begin">
+                        Du
+                        <div class="input-group date" data-provide="datepicker">
+                            <input class="datepicker" type="text" class="form-control" name="date-begin">
+                            <div class="input-group-addon"></div>
+                        </div>
+                    </div>
+                    <div class="end">
+                        Au
+                        <div class="input-group date" data-provide="datepicker">
+                            <input  class="datepicker" type="text" class="form-control" name="date-end">
+                            <div class="input-group-addon"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-warning warning" style="display: none">
+                    Vous devez remplir les deux champs de dates
+                </div>
+                <input type="hidden" name="doc-type" id="doc-type">
+                <input type="submit" value="Synthèse des interventions" name="synthese-inte" id="synthese-inte">
+                <input type="submit" value="Détail des interventions" name="detail-inte" id="detail-inte">
+                <input type="submit" value="Détail des interventions" name="detail-excel-inte" id="detail-excel-inte">
+            </form>
+        </div>
+        <div class="back-close"></div>
+    </div>
+{% endblock %}
+{% block main_content %}
+    <h2>{{ 'Aperçu de votre parc'|trans }}</h2>
+
+
+
+    <div class="row panel-area parc-area">
+
+        <div class="col-md-8 col-sm-6 block block-1">
+            <div class="row">
+                <div class="col-md-7 panel panel-primary panel-left panel-info">
+                    <a href="{{ path('TechemCoreBundle_Immeuble_index') }}" class="button button-parc col-md-12">
+                        <strong>{{ board.NbImmeubles }}</strong> {{ 'Immeubles'|trans }}<i
+                                class="icon icon-immeuble"></i>
+                    </a>
+
+					{% if app.token.attribute('soap.user').showChgtOccupant is defined and app.token.attribute('soap.user').showChgtOccupant == 1%}
+					
+                    <a href="{{ path('TechemCoreBundle_GestionParc_index') }}" class="button gestion-parc col-md-12">
+                        <i class="icon icon-clipboard"></i><span style="" class="title ">{{ 'Gestion parc'|trans }}</span>
+                    </a>
+					
+					{% endif %}
+					
+					
+                    </br>
+                    <div class="app">
+                        <div class="inner"><strong>{{ board.NbCompteurs }}</strong> {{ 'Appareils'|trans }}</div>
+                    </div>
+                    <div class="stats clearfix">
+                        {% if board.NbCompteursEF != -1 %}
+                            <div class="item">
+                                <div class="value">{{ board.NbCompteursEF }}</div>
+                                <div class="title">{{ "Eau froide"|trans }}</div>
+                            </div>
+                        {% endif %}
+
+                        {% if board.NbCompteursEC != -1 %}
+                            <div class="item">
+                                <div class="value">{{ board.NbCompteursEC }}</div>
+
+                                <div class="title">{{ 'Eau chaude'|trans }}</div>
+                            </div>
+                        {% endif %}
+
+                        {% if board.NbCompteursRepart != -1 %}
+                            <div class="item">
+                                <div class="value">{{ board.NbCompteursRepart }}</div>
+
+                                <div class="title">{{ 'Répartiteurs'|trans }}</div>
+                            </div>
+                        {% endif %}
+
+                        {% if board.NbCompteursCET != -1 %}
+                            <div class="item">
+                                <div class="value">{{ board.NbCompteursCET }}</div>
+
+                                <div class="title">{{ 'Compteur d\'énergie'|trans }}</div>
+                            </div>
+                        {% endif %}
+
+                        {% if board.NbCompteursElect != -1 %}
+                            <div class="item">
+                                <div class="value">{{ board.NbCompteursElect }}</div>
+
+                                <div class="title">{{ "Electricité"|trans }}</div>
+                            </div>
+                        {% endif %}
+
+                        {% if board.NbCompteursGaz != -1 %}
+                            <div class="item">
+                                <div class="value">{{ board.NbCompteursGaz }}</div>
+
+                                <div class="title">{{ "Gaz"|trans }}</div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-md-5 panel panel-primary panel-right performance-gauge">
+                    <div class="block-title">{{ 'Transfert électronique de fichiers'|trans }}</div>
+
+                    <div class="canvas">
+                        <canvas width="200" height="120"
+                                data-options="{{ { value: board.PcImmeublesTransfertFichiers/100, fillGaugeStyle: '#383d43' }|json_encode() }}"></canvas>
+                    </div>
+
+                    <div class="text">
+                        <strong>{{ board.PcImmeublesTransfertFichiers }}</strong><sup>%</sup> {{ 'des immeubles'|trans }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6 block block-2 status-gauge">
+            <div class="panel-default">
+                <a href="{{ path('TechemCoreBundle_Immeuble_index', {'depannages': 1}) }}" class="dep">
+                    <div class="panel">
+                        <div class="text"><span>{{ 'Dépannages en cours'|trans }}</span></div>
+                        <div class="canvas {% if board.NbDepannages > 0 %}brown{% endif %}">
+                            <canvas width="139" height="113"
+                                    data-options=" {{ {value: board.NbDepannages > 0 ? 100 : 0, fillGaugeStyle: '#ecca83'}|json_encode() }}"></canvas>
+                            <div class="icons troubleshooting"><i class="icon icon-wrench44"></i></div>
+                        </div>
+                        <div class="number">{% if board.NbDepannages == -1 %}0{% else %}{{ board.NbDepannages }}{% endif %}</div>
+                    </div>
+                </a>
+                <div class="btn-livret-intervention">Livret d'intervention</div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="col-md-8 col-sm-6 block block-3 panel-client">
+            <div class="panel">
+                <div class="block-title">{{ "Alertes client"|trans }}</div>
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <a href="{{ path('TechemCoreBundle_Immeuble_index', {'fuites': 1}) }}" class="fui">
+                            <div class="panel-default">
+                                <div class="icons blue">
+                                    <span class="icon-water33"></span>
+                                </div>
+
+                                <div class="title">
+                                    {{ "Nombre de fuites"|trans }}
+                                </div>
+
+                                <div class="value {% if board.NbFuites == 0 %}empty{% endif %}">
+                                    {{ board.NbFuites }}
+                                </div>
+                            </div>
+                        </a>
+						{% if demo is defined %}
+							<a href=""><div class="btn-alarme-tech">Synthese patrimoine</div></a>
+						{% endif %}
+                    </div>
+
+                    <div class="col-lg-6">
+                        <a href="{{ path('TechemCoreBundle_Immeuble_index', {'anomalies': 1}) }}" class="ano">
+                            <div class="panel-default">
+                                <div class="icons red">
+                                    <span class="icon-caution"></span>
+                                </div>
+
+                                <div class="title">
+                                    {{ "Nombre d'anomalies de consommation"|trans }}
+                                </div>
+
+                                <div class="value {% if board.NbAnomalies == 0 %}empty{% endif %}">
+                                    {{ board.NbAnomalies }}
+                                </div>
+                            </div>
+                        </a>
+						{% if demo is defined %}
+							<a href="./../xlsx/export-anomalies-global.xlsx"><div class="btn-alarme-tech">Synthese patrimoine</div></a>
+						{% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-6 block block-4 status-gauge">
+            <div class="panel-default">
+                <a href="{{ path('TechemCoreBundle_Immeuble_index', {'dysfonctionnements': 1}) }}" class="dys">
+                    <div class="panel">
+                        <div class="text"><span>{{ 'Alarmes techniques'|trans }}</span></div>
+                        <div class="canvas {% if board.NbDysfonctionnements > 0 %}orange{% endif %}">
+                            <canvas width="139" height="113" data-options=" {{ {value: board.NbDysfonctionnements > 0
+                                ? 100 : 0, fillGaugeStyle: 'orange'}|json_encode() }}"></canvas>
+                            <div class="icons technical_alert"><i class="icon icon-bell84"></i></div>
+                        </div>
+                        <div class="number">{% if board.NbDysfonctionnements == -1 %}0{% else %}{{ board.NbDysfonctionnements }}{% endif %}</div>
+                    </div>
+                </a>
+			
+			{% if demo is defined %}
+				<a href="./../xlsx/Synthese-Codes-Incident.xlsx"><div class="btn-alarme-tech">Liste des alarmes</div></a>
+			{% endif %}
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="col-xs-12 block block-5 panel-bar">
+            <div class="row">
+                <div class="col-sm-6 panel panel-primary panel-left">
+                    {% if board.NbChantiers <= 0 %}
+                        <div class="block-title">{{ "Aucun chantier en cours"|trans|upper }}</div>
+                        <br><br><br><br><br><br>
+                        <br><br><br><br><br><br>
+                    {% else %}
+                        <a href="{{ path('TechemCoreBundle_Immeuble_index', {chantiers: '1'}) }}"
+                           class="button">{{ 'Chantiers en cours'|trans|upper }} <i class="fa fa-chevron-right"></i>
+                        </a>
+
+                        <div class="row">
+                            <div class="col-sm-6 block-left">
+                                <div class="number"><i class="icon-compteur"></i> {{ board.NbCompteursCommandes }}</div>
+                                <div class="text"> {{ 'Appareils commandés'|trans }}</div>
+                                <br/><br/><br/>
+                                {#<div class="date">date de l'entrée en commande : <br /><strong>{{ board.DateEntreeChantier|date('d-m-Y') }}</strong></div>#}
+                            </div>
+
+                            <div class="col-sm-6 block-right">
+                                <div class="chart clearfix">
+                                    <div class="number dark"
+                                         style="height:{{ (board.NbCompteursCommandes - board.NbCompteursPoses) * 200 / board.NbCompteursCommandes }}px">{{ board.NbCompteursCommandes - board.NbCompteursPoses }}</div>
+                                    <div class="text">{{ 'Appareils à poser'|trans }}</div>
+                                </div>
+
+                                <div class="chart clearfix">
+                                    <div class="number blue"
+                                         style="height:{{ board.NbCompteursPoses * 200 / board.NbCompteursCommandes }}px">{{ board.NbCompteursPoses }}</div>
+                                    <div class="text">{{ 'Appareils posés'|trans }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="col-sm-6 panel panel-primary panel-right performance-gauge">
+                    <div class="block-title">{{ 'Vos relevés'|trans }}</div>
+
+                    <div class="canvas">
+                        <canvas width="200" height="150"
+                                data-options="{{ { value: board.PcImmeublesTelereleve / 100, fillGaugeStyle: "#46b5fc"}|json_encode() }}"></canvas>
+                    </div>
+
+                    <div class="text">
+                        <strong>{{ board.PcImmeublesTelereleve }}</strong><sup>%</sup> {{ 'des appareils relevés'|trans }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts_foot %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/techemcore/js/custom/status-gauge.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/techemcore/js/custom/performance-gauge.js') }}"></script>
+    <script type="text/javascript">
+
+        (function () {
+
+            $('.datepicker').datepicker();
+            // Affichage popup demande d'intervention
+
+            $('.form-new-intervention .cross-close, .form-new-intervention .back-close').click(
+                function () {
+                    $('.form-new-intervention').fadeOut();
+                }
+            );
+            $('.btn-livret-intervention').click(
+                function () {
+                    $('.form-new-intervention').fadeIn();
+                }
+            );
+            $('.livret-intervention input[type=submit]').click(
+                function (e) {
+                    e.preventDefault();
+                    var docType = $(this).attr('name');
+                    var dateBegin = $('.livret-intervention input[name=date-begin]').val();
+                    var dateEnd = $('.livret-intervention input[name=date-end]').val();
+
+                    if (dateBegin.length == 0 || dateEnd.length == 0) {
+                        console.log('vous devez renseigner les deux dates')
+                        $('.livret-intervention .warning').css('display','block')
+                    } else {
+                        $('.livret-intervention .warning').css('display','none');
+                        $('.livret-intervention input[name=doc-type]').val(docType);
+                        $('.livret-intervention').submit();
+                    }
+                }
+            );
+        })();
+    </script>
+    {#location.href = "{{ path('download_file', { 'fileId': file.id }) }}";#}
+{% endblock %}

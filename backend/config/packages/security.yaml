@@ -1,0 +1,49 @@
+security:
+  password_hashers:
+    Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: "auto"
+
+  role_hierarchy:
+    ROLE_OCCUPANT: ROLE_USER
+    ROLE_GESTIONNAIRE: ROLE_USER
+    ROLE_ADMIN: [ROLE_GESTIONNAIRE]
+    ROLE_MAISONMERE: [ROLE_ADMIN]
+    ROLE_AGENCE: [ROLE_ADMIN]
+    ROLE_SYNDICAT: [ROLE_ADMIN]
+
+  providers:
+    user_provider:
+      id: App\Security\Authentication\Provider\UserProvider
+
+  firewalls:
+    dev:
+      pattern: ^/(_(profiler|wdt)|css|images|js)/
+      security: false
+
+    api:
+      pattern: ^/api
+      stateless: true
+      lazy: true
+      security: true
+      provider: user_provider
+      custom_authenticators:
+        - App\Security\ApiHeaderAuthenticator
+        - App\Security\AppCustomAuthenticator
+
+    front_area:
+      lazy: true
+      provider: user_provider
+      form_login:
+        login_path: /login
+        check_path: /login_check
+      custom_authenticators:
+        - App\Security\AppCustomAuthenticator
+      logout:
+        path: /logout
+
+  access_control:
+    # Allow OPTIONS requests for CORS preflight (must be first)
+    - { path: ^/api, methods: [OPTIONS], roles: PUBLIC_ACCESS }
+    # Allow API security endpoints (login, logout) without authentication
+    - { path: ^/api/security/(login|logout), roles: PUBLIC_ACCESS }
+    # All other API routes require authentication
+    - { path: ^/api, roles: PUBLIC_ACCESS }

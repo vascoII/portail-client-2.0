@@ -1,0 +1,327 @@
+<div class="panel">
+
+    {% if consoTab.EvolutionChartData.temp.data|length > 0 %}
+        <div class="graph panel-chart">
+            <h3>Température du Logement</h3><br><br>
+            <div style="width: 100%; height: 80px;">
+                <form class="form-filter-temp" name="form-filter" method="post">
+                    <p>
+                        <label for="date_from">{{ "Du"|trans }}</label>
+                        <input id="date_from" type="text" name="date_from-temp" class="datepicker form-control" style="height: 30px;" data-format="dd/mm/yyyy"
+                               data-start-date="{% if consoTab.EvolutionChartData.temp.chartControl.state.startDate %}{{ consoTab.EvolutionChartData.temp.chartControl.state.startDate }}{% endif %}"
+                               data-end-date="{% if consoTab.EvolutionChartData.temp.chartControl.state.endDate %}{{ consoTab.EvolutionChartData.temp.chartControl.state.endDate }}{% endif %}"
+                               value="{% if consoTab.EvolutionChartData.temp.chartControl.state.lowDate %}{{ consoTab.EvolutionChartData.temp.chartControl.state.lowDate }}{% endif %}"/>
+                        <i class="fa fa-calendar"></i>
+                        <br class="hidden-lg hidden-md hidden-sm"/><br class="hidden-lg hidden-md hidden-sm"/>
+                        <label for="date_to">{{ "au"|trans }}</label>
+                        <input id="date_to" type="text" name="date_to-temp" class="datepicker form-control" style="height: 30px;" data-format="dd/mm/yyyy"
+                               data-start-date="{% if consoTab.EvolutionChartData.temp.chartControl.state.startDate %}{{ consoTab.EvolutionChartData.temp.chartControl.state.startDate }}{% endif %}"
+                               data-end-date="{% if consoTab.EvolutionChartData.temp.chartControl.state.endDate %}{{ consoTab.EvolutionChartData.temp.chartControl.state.endDate }}{% endif %}"
+                               value="{% if consoTab.EvolutionChartData.temp.chartControl.state.highDate %}{{ consoTab.EvolutionChartData.temp.chartControl.state.highDate }}{% endif %}"/>
+                        <i class="fa fa-calendar"></i>
+                        <button name="filtreur" id="filtreur" type="submit" class="btn btn-primary">{{ "Filtrer"|trans
+                            }}</button>
+                    </p>
+                </form>
+            </div>
+            <div id="chart_logement_dashboard_temp">
+                <div id="chart_logement_control_temp" class="chart-control" style="display: none;"></div>
+                <div id="chart_logement_conso_temp" style="width: 100%; height: 350px;"></div>
+            </div>
+            {% if panel.IndexRecapTemperature.Date|date('dmY') != '01010001' %}
+                <div class="stats" style="margin-left: 50px;">
+                    <div class="block-title">Temperature du {{ panel.IndexRecapTemperature.Date|date('d/m/Y') }}</div>
+                    <br>
+                    <i class="icon icon-temperature"></i><span class="number">{{ panel.IndexRecapTemperature.Moy }} °C </span>
+                    <span class="text">T max : <strong>{{ panel.IndexRecapTemperature.Max }}°C</strong> / T min : <strong>{{ panel.IndexRecapTemperature.Min }}°C</strong></span>
+                </div>
+            {% endif %}
+        </div>
+        <script type="text/javascript">
+
+            function drawChart_temp() {
+                console.log('drawChart_temp');
+                var drawn = false;
+                var data = new google.visualization.DataTable(),
+                    options = {
+                        title: '',
+                        chartArea: {
+                            top: '25'
+                        },
+                        vAxis: {
+                            title: 'en °C'
+                        },
+                        hAxis: {
+                            title: 'Date',
+                            format: 'dd/MM/y',
+                            viewWindowMode: 'maximized'
+                        },
+                        series: {
+                            0: {
+                                color: '#df250c'
+                            },
+                        },
+                        pointSize: 15,
+                        legend: {
+                            position: "bottom",
+                            alignment: "end"
+                        },
+                        tooltip: {trigger: 'selection', isHtml: true}
+                    };
+
+                data.addColumn('date', 'Date');
+                data.addColumn('number', 'Température');
+                data.addColumn({'type': 'string', 'role': 'tooltip', 'p': {'html': true}});
+
+                {% for chartData in consoTab.EvolutionChartData.temp.data %}
+                {% if chartData.index is defined %}
+                var date = new Date({{ chartData.label }});
+                data.addRow([
+                    date,
+                    {% if chartData.params is defined and 'NOVISIBLE' in chartData.params %}
+                    null, null,
+                    {% else %}
+                    {{ chartData.index }},
+                    customTooltip(('0' + date.getDate()).slice(-2) + ' / ' + ('0' + (date.getMonth() + 1)).slice(-2) + ' / ' + date.getFullYear() + '<br/>Température: {{ chartData.consoRaw }}'),
+                    {% endif %}
+                ]);
+                {% endif %}
+                {% endfor %}
+
+                function customTooltip(value) {
+                    return '<div style="border-radius:3px;padding:5px;width:90px;background: #717b87;color: #ffffff;text-align: center;position:absolute;left:-45px;bottom:7px;">' + value + '</div>';
+                }
+
+                var dashboard = new google.visualization.Dashboard(document.getElementById('chart_logement_dashboard_temp')),
+                    controlWrapper = new google.visualization.ControlWrapper({
+                        'controlType': 'DateRangeFilter',
+                        'containerId': 'chart_logement_control_temp',
+                        'options': {
+                            'filterColumnLabel': 'Date',
+                            'ui': {
+                                'label': 'Période de consommation affichée',
+                                'format': {
+                                    'pattern': 'dd/MM/y'
+                                }
+                            }
+                        }
+                    });
+
+                var chartWrapper = new google.visualization.ChartWrapper({
+                    'chartType': 'LineChart',
+                    'containerId': 'chart_logement_conso_temp',
+                    'options': options,
+                });
+
+                dashboard.bind(controlWrapper, chartWrapper);
+                dashboard.draw(data);
+
+
+                google.visualization.events.addListener(dashboard, 'ready', function () {
+                    if (!drawn) {
+                        {%- if consoTab.EvolutionChartData.temp.chartControl.state.lowValue -%}
+                        controlWrapper.setState({
+                            'lowValue': {{ consoTab.EvolutionChartData.temp.chartControl.state.lowValue }},
+                            'highValue': {{ consoTab.EvolutionChartData.temp.chartControl.state.highValue }}
+                        });
+                        controlWrapper.draw();
+                        {%- endif -%}
+                        drawn = true;
+                    }
+                });
+
+                $('.form-filter-temp').submit(function() {
+                    if($("input[name='date_from-temp']").val().length > 0 || $("input[name='date_to-temp']").val().length > 0) {
+                        var timelowval = $('input[name="date_from-temp"]').datepicker( "getDate" ).getTime(),
+                            timehighval = $('input[name="date_to-temp"]').datepicker( "getDate" ).getTime();
+
+                        if(!isNaN(timehighval) && !isNaN(timelowval)) {
+                            controlWrapper.setState({'lowValue': timelowval, 'highValue': timehighval});
+                        } else {
+                            if(!isNaN(timelowval)) {
+                                controlWrapper.setState({'lowValue': timelowval});
+                            }
+                            if(!isNaN(timehighval)) {
+                                controlWrapper.setState({'highValue': timehighval});
+                            }
+                        }
+                        controlWrapper.draw();
+                    }
+
+                    return false;
+                });
+            }
+
+            charts['chart_logement_conso_temp'] = {
+                type: 'function',
+                loaded: false,
+                func: drawChart_temp
+            };
+
+        </script>
+    {% endif %}
+
+    {% if consoTab.EvolutionChartData.hum.data|length > 0 %}
+        <div class="graph panel-chart">
+            <h3>Humidité du logement</h3><br><br>
+            <div style="width: 100%; height: 80px;">
+                <form class="form-filter-hum" name="form-filter" method="post">
+                    <p>
+                        <label for="date_from">{{ "Du"|trans }}</label>
+                        <input id="date_from" type="text" name="date_from-hum" class="datepicker form-control" style="height: 30px;" data-format="dd/mm/yyyy"
+                               data-start-date="{% if consoTab.EvolutionChartData.hum.chartControl.state.startDate %}{{ consoTab.EvolutionChartData.hum.chartControl.state.startDate }}{% endif %}"
+                               data-end-date="{% if consoTab.EvolutionChartData.hum.chartControl.state.endDate %}{{ consoTab.EvolutionChartData.hum.chartControl.state.endDate }}{% endif %}"
+                               value="{% if consoTab.EvolutionChartData.hum.chartControl.state.lowDate %}{{ consoTab.EvolutionChartData.hum.chartControl.state.lowDate }}{% endif %}"/>
+                        <i class="fa fa-calendar"></i>
+                        <br class="hidden-lg hidden-md hidden-sm"/><br class="hidden-lg hidden-md hidden-sm"/>
+                        <label for="date_to">{{ "au"|trans }}</label>
+                        <input id="date_to" type="text" name="date_to-hum" class="datepicker form-control" style="height: 30px;" data-format="dd/mm/yyyy"
+                               data-start-date="{% if consoTab.EvolutionChartData.hum.chartControl.state.startDate %}{{ consoTab.EvolutionChartData.hum.chartControl.state.startDate }}{% endif %}"
+                               data-end-date="{% if consoTab.EvolutionChartData.hum.chartControl.state.endDate %}{{ consoTab.EvolutionChartData.hum.chartControl.state.endDate }}{% endif %}"
+                               value="{% if consoTab.EvolutionChartData.hum.chartControl.state.highDate %}{{ consoTab.EvolutionChartData.hum.chartControl.state.highDate }}{% endif %}"/>
+                        <i class="fa fa-calendar"></i>
+                        <button name="filtreur" id="filtreur" type="submit" class="btn btn-primary">{{ "Filtrer"|trans
+                            }}</button>
+                    </p>
+                </form>
+            </div>
+            <div id="chart_logement_dashboard_hum">
+                <div id="chart_logement_control_hum" class="chart-control" style="display: none;"></div>
+                <div id="chart_logement_conso_hum" style="width: 100%; height: 350px;"></div>
+            </div>
+            {% if panel.IndexRecapHumidite.Date|date('dmY') != '01010001' %}
+                <div class="stats blue" style="margin-left: 50px;">
+                    <div class="block-title">Humidité du {{ panel.IndexRecapHumidite.Date|date('d/m/Y') }}</div>
+                    <br>
+                    <i class="icon icon-beach16"></i><span class="number">{{ panel.IndexRecapHumidite.Moy }} %</span>
+                </div>
+            {% endif %}
+        </div>
+
+        <script type="text/javascript">
+
+            function drawChart_hum() {
+                console.log('drawChart_hum');
+                var drawn = false;
+                var data = new google.visualization.DataTable(),
+                    options = {
+                        title: '',
+                        chartArea: {
+                            top: '25'
+                        },
+                        vAxis: {
+                            title: 'en %'
+                        },
+                        hAxis: {
+                            title: 'Date',
+                            format: 'dd/MM/y',
+                            viewWindowMode: 'maximized'
+                        },
+                        series: {
+                            0: {
+                                color: '#46b5fb'
+                            },
+                        },
+                        pointSize: 15,
+                        legend: {
+                            position: "bottom",
+                            alignment: "end"
+                        },
+                        tooltip: {trigger: 'selection', isHtml: true}
+                    };
+
+                data.addColumn('date', 'Date');
+                data.addColumn('number', 'Humidité');
+                data.addColumn({'type': 'string', 'role': 'tooltip', 'p': {'html': true}});
+
+                {% for chartData in consoTab.EvolutionChartData.hum.data %}
+                {% if chartData.index is defined %}
+                var date = new Date({{ chartData.label }});
+                data.addRow([
+                    date,
+                    {% if chartData.params is defined and 'NOVISIBLE' in chartData.params %}
+                    null, null,
+                    {% else %}
+                    {{ chartData.index }},
+                    customTooltip(('0' + date.getDate()).slice(-2) + ' / ' + ('0' + (date.getMonth() + 1)).slice(-2) + ' / ' + date.getFullYear() + '<br/>Humidité: {{ chartData.consoRaw }}'),
+                    {% endif %}
+                ]);
+                {% endif %}
+                {% endfor %}
+
+                function customTooltip(value) {
+                    return '<div style="border-radius:3px;padding:5px;width:90px;background: #717b87;color: #ffffff;text-align: center;position:absolute;left:-45px;bottom:7px;">' + value + '</div>';
+                }
+
+                var dashboard = new google.visualization.Dashboard(document.getElementById('chart_logement_dashboard_hum')),
+                    controlWrapper = new google.visualization.ControlWrapper({
+                        'controlType': 'DateRangeFilter',
+                        'containerId': 'chart_logement_control_hum',
+                        'options': {
+                            'filterColumnLabel': 'Date',
+                            'ui': {
+                                'label': 'Période de consommation affichée',
+                                'format': {
+                                    'pattern': 'dd/MM/y'
+                                }
+                            }
+                        }
+                    });
+
+                var chartWrapper = new google.visualization.ChartWrapper({
+                    'chartType': 'LineChart',
+                    'containerId': 'chart_logement_conso_hum',
+                    'options': options,
+                });
+
+                dashboard.bind(controlWrapper, chartWrapper);
+                dashboard.draw(data);
+
+
+                google.visualization.events.addListener(dashboard, 'ready', function () {
+                    if (!drawn) {
+                        {%- if consoTab.EvolutionChartData.hum.chartControl.state.lowValue -%}
+                        controlWrapper.setState({
+                            'lowValue': {{ consoTab.EvolutionChartData.hum.chartControl.state.lowValue }},
+                            'highValue': {{ consoTab.EvolutionChartData.hum.chartControl.state.highValue }}
+                        });
+                        controlWrapper.draw();
+                        {%- endif -%}
+                        drawn = true;
+                    }
+                });
+
+                $('.form-filter-hum').submit(function() {
+                    if($("input[name='date_from-hum']").val().length > 0 || $("input[name='date_to-hum']").val().length > 0) {
+                        var timelowval = $('input[name="date_from-hum"]').datepicker( "getDate" ).getTime(),
+                            timehighval = $('input[name="date_to-hum"]').datepicker( "getDate" ).getTime();
+
+                        if(!isNaN(timehighval) && !isNaN(timelowval)) {
+                            controlWrapper.setState({'lowValue': timelowval, 'highValue': timehighval});
+                        } else {
+                            if(!isNaN(timelowval)) {
+                                controlWrapper.setState({'lowValue': timelowval});
+                            }
+                            if(!isNaN(timehighval)) {
+                                controlWrapper.setState({'highValue': timehighval});
+                            }
+                        }
+                        controlWrapper.draw();
+                    }
+
+                    return false;
+                });
+            }
+
+            charts['chart_logement_conso_hum'] = {
+                type: 'function',
+                loaded: false,
+                func: drawChart_hum
+            };
+
+        </script>
+    {% endif %}
+
+
+
+</div>

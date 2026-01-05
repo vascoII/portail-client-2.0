@@ -1,0 +1,57 @@
+
+
+<li class="category with-icon">
+    <a href="{{ path('TechemCoreBundle_TableauBordClient_index') }}" class="wheel">
+        <i class="icon icon-cog"></i><span style="" class="title ">{{ "Le Parc"|trans }}</span>
+    </a>
+</li>
+<li class="category with-icon">
+    <a href="{{ path('TechemCoreBundle_Immeuble_show', {'pkImmeuble': logement.Immeuble.PkImmeuble}) }}" class="building">
+        <i class="icon icon-immeuble"></i><span style="" class="title ">{{ "Immeuble"|trans }} {{ logement.Immeuble
+            .Ref }}</span>
+    </a>
+</li>
+<li class="{% if active is not defined %}active{% else %}active2{% endif %} with-icon">
+    <a href="{{ path('TechemCoreBundle_Logement_show', {'pkLogement': logement.Logement.PkLogement}) }}">
+        <i class="icon icon-opened33"></i><span style="" class="title ">{{ "Logement"|trans }} {{ logement.Occupant.Ref
+            }}</span>
+    </a>
+</li>
+<li class="{% if active is defined and active == 'fui' %}active{% endif %} with-icon">
+    <a href="{{ path('TechemCoreBundle_Logement_listleaks', {'pkLogement': logement.Logement.PkLogement}) }}" class="fui">
+        {% set NbFuites = logement.LogementEC.NbFuites > 0 ? logement.LogementEC.NbFuites : 0 %}
+        {% set NbFuites = logement.LogementEF.NbFuites > 0 ? NbFuites + logement.LogementEF.NbFuites : NbFuites %}
+        <span class="badge badge-grey show" style="">{{ NbFuites }}</span>
+        <i class="icon icon-water33"></i><span style="" class="title fuites">{{ "Fuites"|trans }}</span>
+    </a>
+</li>
+<li class="{% if active is defined and active == 'dys' %}active{% endif %} with-icon">
+    <a href="{{ path('TechemCoreBundle_Logement_listdysfunctions', {'pkLogement': logement.Logement.PkLogement}) }}" class="dys">
+        <span class="badge badge-grey show" style="">{% if logement.NbDysfonctionnements == -1 %}0{% else %}{{ logement.NbDysfonctionnements }}{% endif %}</span>
+        <i class="icon icon-bell84"></i><span style="" class="title">{{ 'Alarmes techniques'|trans }}</span>
+    </a>
+</li>
+<li class="{% if active is defined and active == 'ano' %}active{% endif %} with-icon">
+    <a href="{{ path('TechemCoreBundle_Logement_listanomalies', {'pkLogement': logement.Logement.PkLogement}) }}" class="ano">
+        {% set NbAnomalies = logement.LogementEC.NbAnomalies > 0 ? logement.LogementEC.NbAnomalies : 0 %}
+        {% set NbAnomalies = logement.LogementEF.NbAnomalies > 0 ? NbAnomalies + logement.LogementEF.NbAnomalies : NbAnomalies %}
+        <span class="badge badge-grey show" style="">{{ NbAnomalies }}</span>
+        <i class="icon icon-caution"></i><span style="" class="title">{{ "Anomalies de"|trans }}<br/>{{
+            "consommation"|trans }}</span>
+    </a>
+</li>
+<li class="{% if active is defined and active == 'dep' %}active{% endif %} with-icon">
+    {% if logement.NbDepannages > 0 %}
+        <a href="{{ path('TechemCoreBundle_Logement_listinterventions', {'pkLogement': logement.Logement.PkLogement, statut: 'ouvert'}) }}" class="dep">
+            <span class="badge badge-grey show" style="">{{ logement.NbDepannages }}</span>
+            <i class="icon icon-wrench44"></i><span style="" class="title">{{ "Dépannages"|trans }}<br/>
+                {{ "en cours"|trans }}</span>
+        </a>
+    {% else %}
+        <a href="{{ path('TechemCoreBundle_Logement_listinterventions', {'pkLogement': logement.Logement.PkLogement}) }}" class="dep">
+            <span class="badge badge-grey show" style="">{{ logement.NbDepannagesTotal > 0 ? logement.NbDepannagesTotal : 0 }}</span>
+            <i class="icon icon-wrench44"></i><span style="" class="title">{{ "Dépannages"|trans }}</span>
+        </a>
+    {% endif %}
+</li>
+{{ render(controller('App\\Controller\\TicketingController::menuTicketAction')) }}

@@ -1,0 +1,172 @@
+<div class="detail-intervention-area">
+    <div class="header">
+        {#<strong class="block">Immeuble {{ depannage.InfosDepannage.Logement.Immeuble.Ref }}</strong>#}
+        {#<span class="block">1-3-5-6-9 Rue Henri Barbusse</span>#}
+        {#<span class="block">94 340 Joinville Le Pont</span>#}
+    </div>
+
+    <div class="item">
+        {% if depannage.InfosDepannage is defined and depannage.InfosDepannage.Depannage is defined %}
+            <div class="column first">
+                <div class="top">
+                    <div class="date">
+                        {% if depannage.InfosDepannage.Depannage.Date|date('d/m/Y') != '01/01/0001' %}
+                            le {{ depannage.InfosDepannage.Depannage.Date|date('d/m/Y') }}
+                        {% endif %}
+                    </div>
+                    <div class="image">
+                        <img src="{{ asset('bundles/techemcore/images/fidesio/dep.png') }}" />
+                        {#<i class="icon icon-wrench44"></i>#}
+                    </div>
+                </div>
+
+                <div class="info">
+                    <div class="name">{{ "N°intervention"|trans }} :</div>
+                    <div class="value">
+                        {% if depannage.InfosDepannage.Depannage.Numero is defined %}
+                            {{ depannage.InfosDepannage.Depannage.Numero }}
+                        {% endif %}
+                    </div>
+                    <div class="name">{{ 'Référence  client'|trans }} :</div>
+                    <div class="value">
+                        {% if depannage.InfosDepannage.Occupant is defined and depannage.InfosDepannage.Occupant.Ref is defined %}
+                            {{ depannage.InfosDepannage.Occupant.Ref }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="bottom">
+                    {% if depannage.InfosDepannage.Occupant is defined and depannage.InfosDepannage.Occupant.Nom is defined %}
+                        {{ depannage.InfosDepannage.Occupant.Nom }}<br>
+                    {% endif %}
+                    {% if depannage.InfosDepannage.Logement is defined and depannage.InfosDepannage.Logement.AdrBatiment is defined %}
+                        {{ depannage.InfosDepannage.Logement.AdrBatiment }}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="column second">
+                <div class="name">{{ "STATUT"|trans }}</div>
+                <div class="value">
+                    {% if depannage.InfosDepannage.Depannage.Statut is defined %}
+                        {{ depannage.InfosDepannage.Depannage.Statut }}
+                    {% endif %}
+                </div>
+
+                <div class="name">{{ "Motif"|trans|upper }}</div>
+                <div class="value">
+                    {% if depannage.InfosDepannage.Depannage.Motif is defined %}
+                        {{ depannage.InfosDepannage.Depannage.Motif|nl2br }}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="column third">
+                <div class="name">{{ "COMPTE RENDU"|trans }}</div>
+                <div class="value">
+                    {% if depannage.InfosDepannage.Depannage.CompteRendu is defined %}
+                       {{ depannage.InfosDepannage.Depannage.CompteRendu|nl2br }}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="print hidden-xs">
+                <a href="{{ path('TechemCoreBundle_Intervention_report', {'pkDepannage': depannage.InfosDepannage.Depannage.WorkOrderNumber}) }}" target="_blank">
+                    <img src="{{ asset('bundles/techemcore/images/fidesio/icon-print-black.png') }}" />
+                    {{ "Imprimer"|trans|upper }}
+                </a>
+            </div>
+        {% else %}
+            <div class="column first">
+                <div class="top">
+                    <div class="date">
+                        {{ "Aucun détail"|trans }}
+                    </div>
+                    <div class="image"><img src="{{ asset('bundles/techemcore/images/fidesio/dep.png') }}" /></div>
+                </div>
+
+                <div class="info">
+                </div>
+
+                <div class="bottom">
+                </div>
+            </div>
+
+            <div class="column second">
+                <div class="name">STATUT</div>
+
+                <div class="name">{{ "Motif"|trans|upper }}</div>
+            </div>
+
+            <div class="column third">
+                <div class="name">{{ "COMPTE RENDU"|trans }}</div>
+            </div>
+
+            <div class="print hidden-xs">
+            </div>
+        {% endif %}
+    </div>
+
+    {% if depannage.ListeDepannagesOccupant.depannage|length > 0 %}
+        <div class="sub">{{ 'Du même occupant'|trans }} :</div>
+
+        {% for autre in depannage.ListeDepannagesOccupant.depannage %}
+            <div class="item">
+                <div class="column first">
+                    <div class="top">
+                        <div class="date">{% if autre.Date|date('d/m/Y') != '01/01/0001' %}le {{ autre.Date|date('d/m/Y') }}{% endif %}</div>
+                        <div class="image"><img src="{{ asset('bundles/techemcore/images/fidesio/dep.png') }}" /></div>
+                    </div>
+
+                    <div class="info">
+                        <div class="name">{{ "N°intervention"|trans }} :</div>
+                        <div class="value">
+                            {% if autre.Numero is defined %}
+                                {{ autre.Numero }}
+                            {% endif %}
+                        </div>
+                        {#<div class="name">{{ 'Référence'|trans }} client :</div>#}
+                        {#<div class="value">0005 15 6001 01</div>#}
+                    </div>
+
+                    {#<div class="bottom">#}
+                        {#15 Avenue du Président Wilson<br>#}
+                        {#94 340 Joinville Le Pont#}
+                    {#</div>#}
+                </div>
+
+                <div class="column second">
+                    <div class="name">{{ "STATUT"|trans }}</div>
+                    <div class="value">
+                        {% if autre.Statut is defined %}
+                            {{ autre.Statut }}
+                        {% endif %}
+                    </div>
+
+                    <div class="name">{{ "Motif"|trans|upper }}</div>
+                    <div class="value">
+                        {% if autre.Motif is defined %}
+                            {{ autre.Motif|nl2br }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="column third">
+                    <div class="name">{{ "COMPTE RENDU"|trans }}</div>
+                    <div class="value">
+                        {% if autre.CompteRendu is defined %}
+                            {{ autre.CompteRendu|nl2br }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="print hidden-xs">
+                    <a href="{{ path('TechemCoreBundle_Intervention_report', {'pkDepannage': autre.PkDepannage}) }}" target="_blank">
+                        <img src="{{ asset('bundles/techemcore/images/fidesio/icon-print-black.png') }}" />
+                        {{ "Imprimer"|trans|upper }}
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>

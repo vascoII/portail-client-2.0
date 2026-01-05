@@ -1,0 +1,16 @@
+{% extends '_list_anomalies.html.twig' %}
+
+{% block export %}
+    <div class="action form btn pull-right" style="padding: 0px;margin: 0px;">
+        <a class="submit" href="{{ path('TechemCoreBundle_Occupant_export_anomalies') }}" target="_blank"><i class="fa fa-file-excel-o" aria-hidden="true"></i>  {{ "Export Excel"|trans }}</a>
+    </div>
+{% endblock %}
+
+{% block anomalies %}
+    {% for anomalie in anomalies %}
+        {% include '_anomaly.html.twig' with {
+            'anomalie': anomalie,
+            'link': path('TechemCoreBundle_Occupant_show')
+        } %}
+    {% endfor %}
+{% endblock %}

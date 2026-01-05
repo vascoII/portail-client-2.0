@@ -1,0 +1,62 @@
+<table class="details hidden-xs">
+    <thead>
+        <tr>
+            <th>{{ "N°COMPTEUR"|trans }}</th>
+            <th>EMPL.</th>
+            <th>{{ "FLUIDE"|trans }}</th>
+            <th>{{ "INDEX"|trans }}</th>
+            <th>CONSO.</th>
+            <th>{{ "ALERTE"|trans }}</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for type in appareils %}
+        {% for appareil in type.ListeInfosAppareils.infosAppareil %}
+            <tr>
+                <td>
+                    <strong>
+                        {% if appareil.Appareil is defined and appareil.Appareil.Numero is defined %}
+                            {{ appareil.Appareil.Numero }}
+                        {% endif %}
+                    </strong>
+                </td>
+                <td>
+                    {% if appareil.Appareil is defined and appareil.Appareil.Emplacement is defined %}
+                        {{ appareil.Appareil.Emplacement }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if appareil.Appareil is defined and appareil.Appareil.Fluide is defined %}
+                        {{ appareil.Appareil.Fluide }}
+                    {% endif %}
+                </td>
+                <td>
+                    <strong>
+                        {% if appareil.R1 is defined and appareil.R1.Index is defined and appareil.R1.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                            {{ appareil.R1.Index }}
+                        {% endif %}
+                    </strong>
+                </td>
+                <td>
+                    {% if appareil.R1 is defined and appareil.R1.Index is defined and appareil.R1.DateReleve|date('d/m/Y') != '01/01/0001' %}
+                        {{ appareil.R1.Conso }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if appareil.NbAnomalies is defined and appareil.NbAnomalies > 0 %}
+                        <a href="{% if appareil.Appareil is defined %}{{ path('TechemCoreBundle_Logement_listanomalies', {'pkLogement': pkLogement, 'appareil': appareil.Appareil.PkAppareil}) }}{% else %}#{% endif %}">
+                            <img src="{{ asset('bundles/techemcore/images/fidesio/ano.png') }}"/>
+                        </a>
+                    {% endif %}
+                    {% if appareil.NbFuites is defined and appareil.NbFuites > 0 %}
+                        <a href="{% if appareil.Appareil is defined %}{{ path('TechemCoreBundle_Logement_listleaks', {'pkLogement': pkLogement, 'appareil': appareil.Appareil.PkAppareil}) }}{% else %}#{% endif %}">
+                            <img src="{{ asset('bundles/techemcore/images/fidesio/fui.png') }}"/>
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        {% endfor %}
+    </tbody>
+</table>

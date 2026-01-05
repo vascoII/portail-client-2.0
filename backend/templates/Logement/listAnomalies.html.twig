@@ -1,0 +1,51 @@
+{% extends "base.html.twig" %}
+
+{% block body__main_menu %}
+    {% include 'Logement/_menu.html.twig' with {'active': 'ano'} %}
+{% endblock %}
+
+{% block breadcrumb_mobile %}
+    <div class="btn btn-primary btn-lg dropdown-toggle hidden-lg hidden-md" id="dropdownMenu3" data-toggle="dropdown">
+        <i class="pull-right icon-arrow"></i>
+        <h3>{{ "Anomalies en cours"|trans }}</h3>
+    </div>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu3">
+        <li role="presentation">
+            <h3><a role="menuitem" tabindex="-1" href="{{ path('TechemCoreBundle_Logement_show', { 'pkLogement': logement.Logement.PkLogement }) }}">Logement {{ logement.Occupant.PkOccupant }}</a></h3>
+        </li>
+        <li role="presentation">
+            <h3><a role="menuitem" tabindex="-1" href="{{ path('TechemCoreBundle_Logement_index', { 'pkImmeuble': logement.Immeuble.PkImmeuble }) }}">Logement {{ logement.Occupant.PkOccupant }}</a></h3>
+        </li>
+        <li role="presentation">
+            <h3><a role="menuitem" tabindex="-1" href="{{ path('TechemCoreBundle_Immeuble_show', { 'pkImmeuble': logement.Immeuble.PkImmeuble }) }}">{{ "Immeuble"|trans }} {{ logement.Immeuble.Ref }}</a></h3>
+        </li>
+        <li role="presentation">
+            <h3><a role="menuitem" tabindex="-1" href="{{ path('TechemCoreBundle_Immeuble_index') }}">{{ 'Liste des immeubles'|trans }}</a></h3>
+        </li>
+        <li role="presentation">
+            <h3><a role="menuitem" tabindex="-1" href="{{ path('TechemCoreBundle_TableauBordClient_index') }}">{{ 'Le parc'|trans }}</a></h3>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block main_content %}
+    <ul class="breadcrumb hidden-xs">
+        <li><a href="{{ path('TechemCoreBundle_TableauBordClient_index') }}">{{ 'Le parc'|trans }}</a></li>
+        <li><a href="{{ path('TechemCoreBundle_Immeuble_index') }}">{{ 'Liste des immeubles'|trans }}</a></li>
+        <li><a href="{{ path('TechemCoreBundle_Immeuble_show', { 'pkImmeuble': logement.Immeuble.PkImmeuble }) }}">{{ "Immeuble"|trans }} {{ logement.Immeuble.Ref }}</a></li>
+        <li><a href="{{ path('TechemCoreBundle_Logement_index', { 'pkImmeuble': logement.Immeuble.PkImmeuble }) }}">{{ "Liste des logements"|trans }}</a></li>
+        <li><a href="{{ path('TechemCoreBundle_Logement_show', { 'pkLogement': logement.Logement.PkLogement }) }}">{{
+                "Logement"|trans }}
+                {{ logement.Occupant.Ref }}</a></li>
+        <li><a href="#">{{ "Anomalies en cours"|trans }}</a></li>
+    </ul>
+    <span class="clearfix"></span>
+
+    {% include 'Logement/_list_anomalies.html.twig' with {
+        'batiments': filters['batiment'],
+        'escaliers': filters['escalier'],
+        'etages': filters['etage'],
+    } %}
+{% endblock %}
+
+{% block body_classes %}{{ parent() }} listinterventions{% endblock %}

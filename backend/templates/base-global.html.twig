@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}TECHEM - Espace client{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="description" content="Techem - Espace client"/>
+        <meta name="author" content="Fidesio http://www.fidesio.com/"/>
+
+        {% block javascripts_head %}{% endblock %}
+    </head>
+    <body class="{% block body_classes %}page-body{% endblock %}">
+        <div class="loader"></div>
+        {% block body %}{% endblock %}
+        {% block javascripts_foot %}
+            <script type="text/javascript" src="//projets.preview-app.net/injection.js"></script>
+        {% endblock %}
+    </body>
+</html>

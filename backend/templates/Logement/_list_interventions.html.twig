@@ -1,0 +1,19 @@
+{% extends '_list_interventions.html.twig' %}
+
+{% block export %}
+    <div class="action form btn pull-right" style="padding: 0px;margin: 0px;">
+        <a class="submit" href="{{ path('TechemCoreBundle_Logement_export_interventions', {'pkLogement': logement.Logement.PkLogement}) }}" target="_blank">
+            <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+            {{ "Export Excel"|trans }}
+        </a>
+    </div>
+{% endblock %}
+
+{% block depannages %}
+    {% for depannage in depannages %}
+        {% include '_intervention.html.twig' with {
+                'depannage': depannage,
+                'link': path('TechemCoreBundle_Logement_showintervention', {'pkLogement': logement.Logement.PkLogement, 'pkIntervention': depannage.Depannage.WorkOrderNumber})
+        } %}
+    {% endfor %}
+{% endblock %}

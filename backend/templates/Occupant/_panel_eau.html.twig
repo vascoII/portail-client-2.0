@@ -1,0 +1,547 @@
+<div class="panel">
+
+    <div class="panel-client">
+        <div class="panel">
+            <div class="block-title">{{ "Alarmes client"|trans }}</div>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <a href="{{ path('TechemCoreBundle_Occupant_listleaks', {'fluide': fluide}) }}" class="fui">
+                        <div class="panel-default">
+                            <div class="icons blue">
+                                <span class="icon-water33"></span>
+                            </div>
+
+                            <div class="title">
+                                {{ "Nombre de fuites"|trans }}
+                            </div>
+
+                            <div class="value {% if panel.NbFuites <= 0 %}empty{% endif %}">
+                                {{ panel.NbFuites }}
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <div class="col-sm-6">
+                    <a href="{{ path('TechemCoreBundle_Occupant_listanomalies') }}">
+                        <div class="panel-default">
+                            <div class="icons red">
+                                <span class="icon-caution"></span>
+                            </div>
+
+                            <div class="title">
+                                {{ "Nombre d'anomalies de consommation"|trans }}
+                            </div>
+
+                            <div class="value {% if panel.NbAnomalies <= 0 %}empty{% endif %}">
+                                {{ panel.NbAnomalies }}
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if consoTabs|length > 0 %}
+        <div class="logement">
+            <div class="panel panel-primary statement">
+                <div class="tab-content">
+                    <div class="tab-pane active" id="toto">
+                        {% include 'Occupant/_conso_tab.html.twig' with {
+                        label: 'Eau froide'|trans,
+                        ConsoPeriode: panel.ConsoPeriode,
+                        ConsoMemeTypeLogement: panel.ConsoMemeTypeLogement,
+                        NbCompteurs: NbCompteurs,
+                        ListeInfosAppareil: panel.ListeInfosAppareils
+                        } %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="graph">
+        <h3>{{ "Evolution des index"|trans }}</h3><br><br>
+        <div style="width: 100%; height: 80px;">
+            <form class="form-filter{{ consoTab.id }}" name="form-filter" method="post">
+                <p>
+                    <label for="date_from">Du</label>
+                    <input id="date_from" type="text" name="date_from{{ consoTab.id }}" class="datepicker form-control" style="height: 30px;" data-date-format="dd/mm/yyyy"
+                           data-start-date="{% if consoTab.EvolutionChartData.chartControl.state.startDate %}{{ consoTab.EvolutionChartData.chartControl.state.startDate }}{% endif %}"
+                           data-end-date="{% if consoTab.EvolutionChartData.chartControl.state.endDate %}{{ consoTab.EvolutionChartData.chartControl.state.endDate }}{% endif %}"
+                           value="{% if consoTab.EvolutionChartData.chartControl.state.lowDate %}{{ consoTab.EvolutionChartData.chartControl.state.lowDate }}{% endif %}"/>
+                    <i class="fa fa-calendar"></i>
+                    <br class="hidden-lg hidden-md hidden-sm"/><br class="hidden-lg hidden-md hidden-sm"/>
+                    <label for="date_to">{{ "au"|trans }}</label>
+                    <input id="date_to" type="text" name="date_to{{ consoTab.id }}" class="datepicker form-control" style="height: 30px;" data-date-format="dd/mm/yyyy"
+                           data-start-date="{% if consoTab.EvolutionChartData.chartControl.state.startDate %}{{ consoTab.EvolutionChartData.chartControl.state.startDate }}{% endif %}"
+                           data-end-date="{% if consoTab.EvolutionChartData.chartControl.state.endDate %}{{ consoTab.EvolutionChartData.chartControl.state.endDate }}{% endif %}"
+                           value="{% if consoTab.EvolutionChartData.chartControl.state.highDate %}{{ consoTab.EvolutionChartData.chartControl.state.highDate }}{% endif %}"/>
+                    <i class="fa fa-calendar"></i>
+                    <button name="filtreur" id="filtreur" type="submit" class="btn btn-primary">{{ "Filtrer"|trans
+                        }}</button>
+                </p>
+            </form>
+        </div>
+
+        {% if NbCompteurs > 1 %}
+            <div class="row">
+                <div class="pull-right">
+                    <br class="hidden-lg hidden-md hidden-sm"/><br class="hidden-lg hidden-md hidden-sm"/>
+                    <label for="choosed_compteur{{ consoTab.id }}">{{ "N° Compteur" }}</label>
+                    <select id="choosed_compteur{{ consoTab.id }}" name="choose_compteur{{ consoTab.id }}" class="charts-select">
+                        {#<option value="all"> Tous les compteurs</option>#}
+                        {% for appareil in panel.ListeInfosAppareils.infosAppareilEAU %}
+                            <option value="{{ appareil.Appareil.Numero|replace({'-':'_'}) }}">
+                                {% if appareil.Appareil is defined and appareil.Appareil.Emplacement is defined %}
+                                    {{ appareil.Appareil.Numero }} - {{ appareil.Appareil.Emplacement }}
+                                {% else %}
+                                    N° {{ appareil.Appareil.Numero }}
+                                {% endif %}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <br class="hidden-lg hidden-md hidden-sm"/><br class="hidden-lg hidden-md hidden-sm"/>
+                </div>
+            </div>
+        {% endif %}
+
+        {% for appareil in panel.ListeInfosAppareils.infosAppareilEAU %}
+            <div id="chart_compteur_dashboard{{ appareil.Appareil.Numero|replace({'-':'_'}) }}" class="charts{{ consoTab.id }} consochart{{ consoTab.id }}" data-compteur="{{ appareil.Appareil.Numero|replace({'-':'_'}) }}" {% if loop.index0 > 0 %}style="display: none"{% endif %}>
+                <div id="chart_compteur_control{{ appareil.Appareil.Numero|replace({'-':'_'}) }}" class="chart-control" style="display: none;"></div>
+                <div id="chart_compteur_conso{{ appareil.Appareil.Numero|replace({'-':'_'}) }}" style="width: 100%; height: 350px;"></div>
+            </div>
+        {% endfor %}
+
+        <div id="chart_logement_dashboard{{ consoTab.id }}" class="charts{{ consoTab.id }}" style="display: none">
+            <div id="chart_logement_control{{ consoTab.id }}" class="chart-control" style="display: none;"></div>
+            <div id="chart_logement_conso{{ consoTab.id }}" style="width: 100%; height: 350px;"></div>
+        </div>
+    </div>
+
+    <div class="panel-chart">
+        <div class="panel">
+            <div class="block-title">{{ "Consommations"|trans|upper }} "{{ label }}" {{ "du"|trans|upper }} {{ panel.ConsoPeriode.DateDeb|date('d/m/y') }} {{ 'au'|trans|upper }} {{ panel.ConsoPeriode.DateFin|date('d/m/y') }}<br />
+                {{ "Comparé aux logements du même type de l'immeuble"|trans|upper }}</div>
+
+            <br>
+
+            <div id="graph_conso_quot_{{ label|replace({' ': ''}) }}" style="width: 85%; height: 100px;"></div>
+
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+        {#google.setOnLoadCallback(drawChart{{ consoTab.id }});#}
+        function drawChart{{ consoTab.id }}() { // Initialise le graphique avec des paramètres par défaut
+            var drawn = false;
+            var data = new google.visualization.DataTable(),
+                options = {
+                    title: '', // Titre du graphique
+                    chartArea: {
+                        top: '25'
+                    },
+                    vAxis: {
+                        title: '{{ "Index Compteur"|trans }}' // Titre des ordonnées
+                    },
+                    hAxis: {
+                        title: 'Date', // Titre des abscisses
+                        format: 'dd/MM/y', // Format des dates
+                        viewWindowMode: 'maximized'
+                    },
+                    pointSize: 15, // Taille d'un point
+                    series: {
+                        0: {
+                            color: '{{ color }}'
+                        },
+                        1: {
+                            color: '#000000',
+                            lineWidth: 0,
+                            pointSize: 5
+                        }
+                    },
+                    legend: {
+                        position: "bottom",
+                        alignment: "end"
+                    },
+                    tooltip: {trigger: 'selection', isHtml: true}
+                };
+
+            data.addColumn('date', 'Date');
+            data.addColumn('number', '{{ "Index"|trans }}' );
+            data.addColumn({'type': 'string', 'role': 'tooltip', 'p': {'html': true}});
+            data.addColumn('number', '{{ "Fuite"|trans }}' );
+            data.addColumn({'type': 'string', 'role': 'style'});
+            data.addColumn({'type': 'string', 'role': 'tooltip', 'p': {'html': true}});
+
+            function updateWrapper(formId) { // Quand on appuie sur "FILTRER", déclenche cette fonction
+
+                var hotwFromValue = $("input[name='date_fromhotw']").val();
+                var hotwToValue = $("input[name='date_tohotw']").val();
+                var coldwFromValue = $("input[name='date_fromcoldw']").val();
+                var coldwToValue = $("input[name='date_tocoldw']").val();
+
+                if (formId == 'coldw') {
+                    hotwFromValue = coldwFromValue;
+                    hotwToValue = coldwToValue;
+                }
+                else {
+                    coldwFromValue = hotwFromValue;
+                    coldwToValue = hotwToValue;
+                }
+
+                if ($("input[name='date_from" + formId + "']").val().length > 0 || $("input[name='date_to" + formId + "']").val().length > 0) {
+
+                    var timelowval = $('input[name="date_from' + formId + '"]').datepicker("getDate").getTime(), // /!\ Valeur exprimée en millisecondes /!\
+                        timehighval = $('input[name="date_to' + formId + '"]').datepicker("getDate").getTime();
+
+                    $(".consochart" + formId + "").each(function () {
+                        var numero = $(this).attr('data-compteur');
+                        if (numero != "all") {
+                            eval("var result = isCreated" + numero);
+                            if (result !== false) {
+                                if (!isNaN(timehighval) && !isNaN(timelowval)) {
+                                    eval("controlWrapper" + numero + ".setState({'lowValue': " + timelowval + ", 'highValue': " + timehighval + "})");
+                                } else {
+                                    if (!isNaN(timelowval)) {
+                                        eval("controlWrapper" + numero + ".setState({'lowValue': " + timelowval + "})");
+                                    }
+                                    if (!isNaN(timehighval)) {
+                                        eval("controlWrapper" + numero + ".setState({'highValue': " + timehighval + "})");
+                                    }
+                                }
+                                eval("controlWrapper" + numero + ".draw()");
+                            }
+                        }
+                    });
+
+                }
+            }
+
+            {% for chartData in consoTab.EvolutionChartData.data %}
+            {% if chartData.index %}
+            var date = new Date({{ chartData.label }}); // Label correspond à un temps exprimé en millisecondes
+            data.addRow([
+                date, {{ chartData.index }}, customTooltip(('0' + date.getDate()).slice(-2) + ' / ' + ('0' + (date.getMonth() + 1)).slice(-2) + ' / ' + date.getFullYear() + '<br/>Conso: {{ chartData.consoRaw }}<br/>Index: {{ chartData.indexRaw }}'),
+                {%- if chartData.params is not empty and 'FUITE' in chartData.params -%}
+                {{ chartData.index }}, 'point { size: 6; shape-type: circle; fill-color: #000000 }', customTooltip(('0' + date.getDate()).slice(-2) + ' / ' + ('0' + (date.getMonth() + 1)).slice(-2) + ' / ' + date.getFullYear() + '<br/>Conso: {{ chartData.consoRaw }}<br/>Index: {{ chartData.indexRaw }}'),
+                {%- else -%}
+                null, null, null
+                {%- endif -%}
+            ]);
+            {% endif %}
+            {% endfor %}
+
+            function customTooltip(value) {
+                return '<div style="border-radius:3px;padding:5px;width:90px;background: #717b87;color: #ffffff;text-align: center;position:absolute;left:-45px;bottom:7px;">' + value + '</div>';
+            }
+
+            var dashboard = new google.visualization.Dashboard(document.getElementById('chart_logement_dashboard{{ consoTab.id }}')),
+                controlWrapper = new google.visualization.ControlWrapper({
+                    'controlType': 'DateRangeFilter',
+                    'containerId': 'chart_logement_control{{ consoTab.id }}',
+                    'options': {
+                        'filterColumnLabel': 'Date',
+                        'ui': {
+                            'label':  'Période de consommation affichée',
+                            'format': {
+                                'pattern': 'dd/MM/y'
+                            }
+                        }
+                    }
+                });
+
+            var chartWrapper = new google.visualization.ChartWrapper({
+                'chartType': 'LineChart',
+                'containerId': 'chart_logement_conso{{ consoTab.id }}',
+                'options': options
+            });
+
+            dashboard.bind(controlWrapper, chartWrapper);
+            dashboard.draw(data);
+
+            {#// Fix chart not drawn correctly#}
+            {#if ($('#{{ consoTab.id }}').hasClass('active')) {#}
+            {#dashboard.draw(data);#}
+            google.visualization.events.addListener(dashboard, 'ready', function () {
+                if (!drawn) {
+                    {%- if consoTab.EvolutionChartData.chartControl.state.lowValue -%}
+                    controlWrapper.setState({
+                        'lowValue': {{ consoTab.EvolutionChartData.chartControl.state.lowValue }},
+                        'highValue': {{ consoTab.EvolutionChartData.chartControl.state.highValue }}
+                    });
+                    controlWrapper.draw();
+                    {%- endif -%}
+                    drawn = true;
+                }
+            });
+
+            {#} else {#}
+            {#$('a[href=#{{ consoTab.id }}]').one('shown.bs.tab', function () {#}
+            {#dashboard.draw(data);#}
+            {% if NbCompteurs > 1 %}
+            var x11111 = $("#choosed_compteur{{ consoTab.id }}").val(),
+                timelowval = {{ consoTab.EvolutionChartData.chartControl.state.lowValue }},
+                timehighval = {{ consoTab.EvolutionChartData.chartControl.state.highValue }};
+            if (typeof window["controlWrapper" + + x11111] !== "undefined") {
+                if (!isNaN(timehighval) && !isNaN(timelowval)) {
+                    eval("controlWrapper" + x11111 + ".setState({'lowValue': " + timelowval + ", 'highValue': " + timehighval + "})");
+                } else {
+                    if (!isNaN(timelowval)) {
+                        eval("controlWrapper" + x11111 + ".setState({'lowValue': " + timelowval + "})");
+                    }
+                    if (!isNaN(timehighval)) {
+                        eval("controlWrapper" + x11111 + ".setState({'highValue': " + timehighval + "})");
+                    }
+                }
+                eval("controlWrapper" + x11111 + ".draw()");
+            }
+            {% endif %}
+            google.visualization.events.addListener(dashboard, 'ready', function () {
+                if (!drawn) {
+                    {%- if consoTab.EvolutionChartData.chartControl.state.lowValue -%}
+                    controlWrapper.setState({
+                        'lowValue': {{ consoTab.EvolutionChartData.chartControl.state.lowValue }},
+                        'highValue': {{ consoTab.EvolutionChartData.chartControl.state.highValue }}
+                    });
+                    controlWrapper.draw();
+                    {%- endif -%}
+                    drawn = true;
+                }
+            });
+//                });
+//            }
+
+            {% if NbCompteurs > 0 %}
+            {# Fix : use ajax load for chart instead of loading all chart on page load#}
+            {% for appareil in panel.ListeInfosAppareils.infosAppareilEAU %}
+            var isCreated{{ appareil.Appareil.Numero|replace({'-':'_'}) }} = false;
+            // {{ appareil.SerieConsos.ValeursXYL|length }}
+            {% if appareil.SerieConsos.ValeursXYL is defined and appareil.SerieConsos.ValeursXYL|length > 0%}
+            var drawn{{ appareil.Appareil.Numero|replace({'-':'_'}) }} = false;
+            var data{{ appareil.Appareil.Numero|replace({'-':'_'}) }} = new google.visualization.DataTable();
+            data{{ appareil.Appareil.Numero|replace({'-':'_'}) }}.addColumn('date', 'Date');
+            data{{ appareil.Appareil.Numero|replace({'-':'_'}) }}.addColumn('number', '{{ "Index"|trans }}');
+            data{{ appareil.Appareil.Numero|replace({'-':'_'}) }}.addColumn({'type': 'string', 'role': 'tooltip', 'p': {'html': true}});
+            data{{ appareil.Appareil.Numero|replace({'-':'_'}) }}.addColumn('number', '{{ "Fuite"|trans }}');
+            data{{ appareil.Appareil.Numero|replace({'-':'_'}) }}.addColumn({'type': 'string', 'role': 'style'});
+            data{{ appareil.Appareil.Numero|replace({'-':'_'}) }}.addColumn({'type': 'string', 'role': 'tooltip', 'p': {'html': true}});
+
+            var dashboard{{ appareil.Appareil.Numero|replace({'-':'_'}) }} = new google.visualization.Dashboard(document.getElementById('chart_compteur_dashboard{{ appareil.Appareil.Numero|replace({'-':'_'}) }}'));
+            controlWrapper{{ appareil.Appareil.Numero|replace({'-':'_'}) }} = new google.visualization.ControlWrapper({
+                'controlType': 'DateRangeFilter',
+                'containerId': 'chart_compteur_control{{ appareil.Appareil.Numero|replace({'-':'_'}) }}',
+                'options': {
+                    'filterColumnLabel': 'Date',
+                    'ui': {
+                        'label': 'Période de consommation affichée',
+                        'format': {
+                            'pattern': 'dd/MM/y'
+                        }
+                    }
+                }
+            });
+
+            var chartWrapper{{ appareil.Appareil.Numero|replace({'-':'_'}) }} = new google.visualization.ChartWrapper({
+                'chartType': 'LineChart',
+                'containerId': 'chart_compteur_conso{{ appareil.Appareil.Numero|replace({'-':'_'}) }}',
+                'options': options
+            });
+
+            var series_compteur = '{{ appareil.SerieConsos.ValeursXYL }}';
+            var series = series_compteur.split(";");
+            for(var i = 0; i < series.length; i++) {
+                var serie = series[i].split("|");
+                var dateString = serie[0].match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+                date = new Date(dateString[3], dateString[2] - 1, dateString[1]);
+
+                var fuiteNb = null,
+                    fuiteStyle = null,
+                    fuitetooltip = null;
+                if (serie.length > 3 && serie[3].indexOf('FUITE') > -1) {
+                    fuiteNb = parseFloat(serie[2].replace(',', '.'));
+                    fuiteStyle = 'point { size: 6; shape-type: circle; fill-color: #000000 }';
+                    fuitetooltip = customTooltip(('0' + date.getDate()).slice(-2) + ' / ' + ('0' + (date.getMonth() + 1)).slice(-2) + ' / ' + date.getFullYear() + '<br/>Conso: '+serie[1]+'<br/>Index: '+serie[2]);
+                }
+
+                data{{ appareil.Appareil.Numero|replace({'-':'_'}) }}.addRow([
+                    date, parseFloat(serie[2].replace(',', '.')), customTooltip(('0' + date.getDate()).slice(-2) + ' / ' + ('0' + (date.getMonth() + 1)).slice(-2) + ' / ' + date.getFullYear() + '<br/>Conso: ' + serie[1] + '<br/>Index: ' + serie[2]),
+                    fuiteNb, fuiteStyle, fuitetooltip
+                ]);
+            }
+
+            dashboard{{ appareil.Appareil.Numero|replace({'-':'_'}) }}.bind(controlWrapper{{ appareil.Appareil.Numero|replace({'-':'_'}) }}, chartWrapper{{ appareil.Appareil.Numero|replace({'-':'_'}) }});
+            dashboard{{ appareil.Appareil.Numero|replace({'-':'_'}) }}.draw(data{{ appareil.Appareil.Numero|replace({'-':'_'}) }});
+
+            google.visualization.events.addListener(dashboard{{ appareil.Appareil.Numero|replace({'-':'_'}) }}, 'ready', function () {
+                if (!drawn) {
+                    {%- if consoTab.EvolutionChartData.chartControl.state.lowValue -%}
+                    controlWrapper{{ appareil.Appareil.Numero|replace({'-':'_'}) }}.setState({
+                        'lowValue': {{ consoTab.EvolutionChartData.chartControl.state.lowValue }},
+                        'highValue': {{ consoTab.EvolutionChartData.chartControl.state.highValue }}
+                    });
+                    controlWrapper{{ appareil.Appareil.Numero|replace({'-':'_'}) }}.draw();
+                    {%- endif -%}
+                }
+            });
+
+            isCreated{{ appareil.Appareil.Numero|replace({'-':'_'}) }} = true;
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+            updateWrapper('{{ consoTab.id }}');
+
+            var v = $('#choosed_compteur{{ consoTab.id }}').val();
+            if (v !== undefined && v !== 'all') {
+                if (typeof window["controlWrapper" + v] !== "undefined") {
+                    var state = eval('controlWrapper' + v + '.getState()'),
+                        lowValue = new Date(state.lowValue).getTime(),
+                        highValue = new Date(state.highValue).getTime();
+                    eval("controlWrapper" + v + ".setState({ lowValue: " + lowValue + ", highValue: " + highValue + " });");
+                    $("#chart_compteur_dashboard" + v).show();
+                }
+            }
+
+            if (enableListener{{ consoTab.id }} === true) {
+                enableListener{{ consoTab.id }} = false;
+
+                $('.form-filter{{ consoTab.id }}').submit(function() {
+
+                    updateWrapper('{{ consoTab.id }}');
+
+                    {#if($("input[name='date_from{{ consoTab.id }}']").val().length > 0 || $("input[name='date_to{{ consoTab.id }}']").val().length > 0) {#}
+                    {#var timelowval = $('input[name="date_from{{ consoTab.id }}"]').datepicker( "getDate" ).getTime(),#}
+                    {#timehighval = $('input[name="date_to{{ consoTab.id }}"]').datepicker( "getDate" ).getTime();#}
+
+                    {#$(".consochart{{ consoTab.id }}").each(function() {#}
+                    {#var numero = $(this).attr('data-compteur');#}
+                    {#if (numero != "all") {#}
+                    {#eval("var result =  isCreated" + numero);#}
+                    {#console.log(numero, result);#}
+                    {#if(result !== false) {#}
+                    {#if (!isNaN(timehighval) && !isNaN(timelowval)) {#}
+                    {#eval("controlWrapper" + numero + ".setState({'lowValue': " + timelowval + ", 'highValue': " + timehighval + "})");#}
+                    {#} else {#}
+                    {#if (!isNaN(timelowval)) {#}
+                    {#eval("controlWrapper" + numero + ".setState({'lowValue': " + timelowval + "})");#}
+                    {#}#}
+                    {#if (!isNaN(timehighval)) {#}
+                    {#eval("controlWrapper" + numero + ".setState({'highValue': " + timehighval + "})");#}
+                    {#}#}
+                    {#}#}
+                    {#eval("controlWrapper" + numero + ".draw()");#}
+                    {#}#}
+                    {#}#}
+                    {#});#}
+                    {#return false;#}
+                    {#if ($("#chart_logement_dashboard{{ consoTab.id }}").is(":visible") == true) {#}
+                    {#if (!isNaN(timehighval) && !isNaN(timelowval)) {#}
+                    {#controlWrapper.setState({'lowValue': timelowval, 'highValue': timehighval});#}
+                    {#} else {#}
+                    {#if (!isNaN(timelowval)) {#}
+                    {#controlWrapper.setState({'lowValue': timelowval});#}
+                    {#}#}
+                    {#if (!isNaN(timehighval)) {#}
+                    {#controlWrapper.setState({'highValue': timehighval});#}
+                    {#}#}
+                    {#}#}
+                    {#controlWrapper.draw();#}
+                    {#}#}
+                    {#}#}
+
+                    return false;
+                });
+
+                $('#choosed_compteur{{ consoTab.id }}').on('change', function() {
+                    var timelowval = $('input[name="date_from{{ consoTab.id }}"]').datepicker("getDate").getTime(),
+                        timehighval = $('input[name="date_to{{ consoTab.id }}"]').datepicker("getDate").getTime();
+
+                    $('.charts{{ consoTab.id }}').hide();
+                    if (this.value == 'all') {
+                        $("#chart_logement_dashboard{{ consoTab.id }}").show();
+                        return;
+                    }
+                    $("#chart_compteur_dashboard" + this.value).show();
+
+                    //eval("dashboard" + this.value + ".draw(data" + this.value + ")");
+                    eval("var result =  isCreated" + this.value);
+
+                    if (result !== false) {
+                        if ($("input[name='date_from{{ consoTab.id }}']").val().length > 0 || $("input[name='date_to{{ consoTab.id }}']").val().length > 0) {
+                            if (!isNaN(timehighval) && !isNaN(timelowval)) {
+                                eval("controlWrapper" + this.value + ".setState({'lowValue': " + timelowval + ", 'highValue': " + timehighval + "})");
+                            } else {
+                                if (!isNaN(timelowval)) {
+                                    eval("controlWrapper" + this.value + ".setState({'lowValue': " + timelowval + "})");
+                                }
+                                if (!isNaN(timehighval)) {
+                                    eval("controlWrapper" + this.value + ".setState({'highValue': " + timehighval + "})");
+                                }
+                            }
+                            eval("controlWrapper" + this.value + ".draw()");
+                        }
+                    } else {
+                        $("#chart_compteur_dashboard" + this.value).html("<h2>Le compteur N° " + this.value +" n'a pas enregistré de consommation pour la période définie </h2>");
+                    }
+                });
+            }
+        };
+
+        var enableListener{{ consoTab.id }} = true;
+        charts['chart_logement_conso{{ consoTab.id }}'] = {
+            type: 'function',
+            loaded: false,
+            func: drawChart{{ consoTab.id }}
+        };
+
+        charts['graph_conso_quot_{{ label|replace({' ': ''}) }}'] = {
+            type: 'bar',
+            loaded: false,
+            options: {
+                title: '',
+                bars: 'horizontal',
+                legend: {
+                    position: "bottom",
+                    alignment: "end"
+                },
+                series: {
+                    0: {
+                        color: '{{ color }}'
+                    },
+                    1: {
+                        color: '#626B79'
+                    }
+                },
+                hAxis: {
+                    textPosition: 'none',
+                    gridlines: {
+                        color: 'transparent'
+                    },
+                    minValue: 0
+                },
+                vAxis: {
+                    textPosition: 'none',
+                    gridlines: {
+                        color: 'transparent'
+                    }
+                }
+            },
+            datatable: [
+                ['conso', '{{ "Consommation du logement"|trans }}', {role: 'annotation'},
+                    '{{ "Consommation de référence"|trans }}',
+                    {role: 'annotation'}],
+                [
+                    'tot',
+                    {{ panel.ConsoPeriode.Conso|number_format(2, '.', '') }},
+                    {{ panel.ConsoPeriode.Conso|number_format(2, '.', '') }},
+                    {{ panel.ConsoMemeTypeLogement|number_format(2, '.', '') }},
+                    {{ panel.ConsoMemeTypeLogement|number_format(2, '.', '') }}
+                ]
+            ]
+        };
+
+    </script>
+</div>

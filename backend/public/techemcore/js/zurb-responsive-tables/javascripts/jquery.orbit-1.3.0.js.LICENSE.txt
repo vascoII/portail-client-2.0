@@ -1,0 +1,7 @@
+/*!
+ * jQuery imageready Plugin
+ * http://www.zurb.com/playground/
+ *
+ * Copyright 2011, ZURB
+ * Released under the MIT License
+ */

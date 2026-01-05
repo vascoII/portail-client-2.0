@@ -1,0 +1,59 @@
+{% if link is not defined %}
+    {% set link = "#" %}
+{% endif %}
+<li class="tbody"
+    data-batiment="{% if anomalie.Logement is defined and anomalie.Logement.NumBatiment is defined %}{{ anomalie.Logement.NumBatiment }}{% endif %}"
+    data-escalier="{% if anomalie.Logement is defined and anomalie.Logement.NumEscalier is defined %}{{ anomalie.Logement.NumEscalier }}{% endif %}"
+    data-etage="{% if anomalie.Logement is defined and anomalie.Logement.NumEtage is defined %}{{ anomalie.Logement.NumEtage }}{% endif %}"
+    >
+    <a href="{{ link }}" class="image"><img src="{{ asset('bundles/techemcore/images/fidesio/ano.png') }}"/></a>
+    <a href="{{ link }}" class="info">
+        <div class="name">{{ 'Référence client'|trans }} :</div>
+        <div class="value">
+            {% if anomalie.Occupant is defined and anomalie.Occupant.Ref is defined %}
+                {{ anomalie.Occupant.Ref }}
+            {% endif %}
+        </div>
+        <div class="name">{{ "Étage"|trans }} :</div>
+        <div class="value">
+            {% if anomalie.Logement is defined and anomalie.Logement.NumEtage is defined %}
+                {{ anomalie.Logement.NumEtage }}
+            {% endif %}
+        </div>
+        <div class="name">{{ "N° logement"|trans }} :</div>
+        <div class="value">
+            {% if anomalie.Logement is defined and anomalie.Logement.NumOrdre is defined %}
+                {{ anomalie.Logement.NumOrdre }}
+            {% endif %}
+        </div>
+        <div class="description">
+            {% if anomalie.Occupant is defined and anomalie.Occupant.Nom is defined %}
+                {{ anomalie.Occupant.Nom }}
+            {% endif %}
+        </div>
+    </a>
+    <a href="{{ link }}" class="motif">
+        <div class="name visible-xs">Index</div>
+        <div class="value">
+            {% if anomalie.Anomalie is defined and anomalie.Anomalie.Index is defined %}
+                {{ anomalie.Anomalie.Index }}
+            {% endif %}
+        </div>
+    </a>
+    <a href="{{ link }}" class="motif">
+        <div class="name visible-xs">Conso</div>
+        <div class="value">
+            {% if anomalie.Anomalie is defined and anomalie.Anomalie.Conso is defined %}
+                {{ anomalie.Anomalie.Conso }}
+            {% endif %}
+        </div>
+    </a>
+    <a href="{{ link }}" class="observation">
+        <div class="name visible-xs">{{ "Observation"|trans }}</div>
+        <div class="value">
+            {% if anomalie.Anomalie is defined and anomalie.Anomalie.Observations is defined %}
+                {{ anomalie.Anomalie.Observations }}
+            {% endif %}
+        </div>
+    </a>
+</li>

@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% form_theme form 'Form/fields.html.twig' %}
+
+{% block body__main_menu %}
+    <li class="category">
+        <a class="operateurCreate"  href="{{ path('TechemCoreBundle_Operator_index') }}">
+            <i class="icon-list2"></i><span class="title ">{{ "Liste des gestionnaires"|trans }}</span>
+        </a>
+    </li>
+    <li class="active with-icon">
+        <a class="operateurCreateIcon"  href="{{ path('TechemCoreBundle_Operator_view', {'id': user.PKUser}) }}">
+            <i class="icon-user"></i>
+            <span class="title">
+                {% if user.UserName is defined or user.FirstName is defined %}
+                    {% if user.UserName is defined %}{{ user.UserName }}{% endif %} {% if user.FirstName is defined %}{{ user.FirstName }}{% endif %}
+                {% else %}
+                    Utilisateur #{{ user.PKUser }}
+                {% endif %}
+            </span>
+        </a>
+    </li>
+{% endblock %}
+
+{% block breadcrumb_mobile %}
+    <div class="btn btn-primary btn-lg dropdown-toggle hidden-lg hidden-md" id="dropdownMenu3" data-toggle="dropdown">
+        <i class="pull-right icon-arrow"></i>
+        <h3>{{ "Edition"|trans }}</h3>
+    </div>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu3">
+        <li role="presentation">
+            <h3>
+                <a role="menuitem" tabindex="-1" href="{{ path('TechemCoreBundle_Operator_view', {'id': user.PKUser}) }}">
+                    {% if user.UserName is defined or user.FirstName is defined %}
+                        {% if user.UserName is defined %}{{ user.UserName }}{% endif %} {% if user.FirstName is defined %}{{ user.FirstName }}{% endif %}
+                    {% else %}
+                        Utilisateur #{{ user.PKUser }}
+                    {% endif %}
+                </a>
+            </h3>
+        </li>
+        <li role="presentation">
+            <h3><a role="menuitem" tabindex="-1" href="{{ path('TechemCoreBundle_Operator_index') }}">
+                    {{ "Liste des gestionnaires"|trans }}
+                </a></h3>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block main_content %}
+    <ul class="breadcrumb hidden-xs">
+        <li><a href="{{ path('TechemCoreBundle_Operator_index') }}">
+                {{ "Liste des gestionnaires"|trans }}
+            </a></li>
+        <li>
+            <a href="{{ path('TechemCoreBundle_Operator_view', {'id': user.PKUser}) }}">
+                {% if user.UserName is defined or user.FirstName is defined %}
+                    {% if user.UserName is defined %}{{ user.UserName }}{% endif %} {% if user.FirstName is defined %}{{ user.FirstName }}{% endif %}
+                {% else %}
+                    {{ "Utilisateur"|trans }} #{{ user.PKUser }}
+                {% endif %}
+            </a>
+        </li>
+        <li><a href="#">{{ "Edition"|trans }}</a></li>
+    </ul>
+    <span class="clearfix"></span>
+
+    <div class="header">
+        <h2 class="title">{{ "Edition"|trans }}</h2>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6 operator-view-area">
+            <form class="form" action="{{ path('TechemCoreBundle_Operator_edit', {'id': user.PKUser}) }}" method="post">
+                {% if not form.vars.valid %}
+                    <div class="has-error">
+                        <div class="help-block">
+                            {{ form_errors(form) }}
+                        </div>
+                    </div>
+                {% elseif success %}
+                    <div class="has-success">
+                        <div class="help-block">
+                            {{ "Le compte a été modifié"|trans }}.
+                        </div>
+                    </div>
+                {% endif %}
+
+                {#{{ form_row(form.gender) }}#}
+                {{ form_row(form.job) }}
+                {{ form_row(form.lastname) }}
+                {{ form_row(form.firstname) }}
+                {{ form_row(form.phone) }}
+                {{ form_row(form.email.first) }}
+                {{ form_row(form.email.second) }}
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <input class="submit btn-lg" type="submit" value={{ "Modifier"|trans }} />
+                        <span class="text-danger">* {{ "champs obligatoire"|trans }}</span>
+                    </div>
+                </div>
+                {{ form_rest(form) }}
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% if link is not defined %}
+    {% set link = "#" %}
+{% endif %}
+<li class="tbody"
+    data-batiment="{{ dysfunction.Logement.NumBatiment }}"
+    data-numero="{% if dysfunction.Appareil is defined and dysfunction.Appareil.Numero is defined %}{{ dysfunction.Appareil.Numero }}{% endif %}"
+    data-type="{% if dysfunction.Dysfonctionnement is defined and dysfunction.Dysfonctionnement.Type is defined %}{{ dysfunction.Dysfonctionnement.Type }}{% endif %}"
+    data-escalier="{{ dysfunction.Logement.NumEscalier }}"
+    data-etage="{{ dysfunction.Logement.NumEtage }}"
+    >
+    <a href="{{ link }}" class="image"><img src="{{ asset('bundles/techemcore/images/fidesio/dys.png') }}"/></a>
+    <a href="{{ link }}" class="info">
+        <div class="name">{{ 'Référence client'|trans }}  :</div>
+        <div class="value">{{ dysfunction.Occupant.Ref }}</div>
+        <div class="description">{{ dysfunction.Occupant.Nom }}</div>
+    </a>
+    <a href="{{ link }}" class="observation mobile-footer-first">
+        <div class="name visible-xs">{{ "N°COMPTEUR"|trans }}</div>
+        <div class="value">
+            {% if dysfunction.Appareil is defined and dysfunction.Appareil.Numero is defined %}
+                {{ dysfunction.Appareil.Numero }}
+            {% endif %}
+        </div>
+    </a>
+    <a href="{{ link }}" class="motif">
+        <div class="name visible-xs">{{ "Emplaçement"|trans|upper }}</div>
+        <div class="value">
+            {% if dysfunction.Appareil is defined and dysfunction.Appareil.Emplacement is defined %}
+                {{ dysfunction.Appareil.Emplacement }}
+            {% endif %}
+        </div>
+    </a>
+    <a href="{{ link }}" class="motif">
+        <div class="name visible-xs">{{ "FLUIDE"|trans }}</div>
+        <div class="value">
+            {% if dysfunction.Appareil is defined and dysfunction.Appareil.Fluide is defined %}
+                {{ dysfunction.Appareil.Fluide }}
+            {% endif %}
+        </div>
+    </a>
+    <a href="{{ link }}" class="motif">
+        <div class="name visible-xs">{{ "Type d'alarme"|trans }}</div>
+        <div class="value">{{ dysfunction.Dysfonctionnement.Type }}</div>
+    </a>
+    <a href="{{ link }}" class="observation mobile-footer-last">
+        <div class="name visible-xs">{{ "NB DE JOURS"|trans }}</div>
+        <div class="value">
+            {% if dysfunction.Dysfonctionnement is defined and dysfunction.Dysfonctionnement.Duree is defined %}
+                {{ dysfunction.Dysfonctionnement.Duree }}
+            {% endif %}
+        </div>
+    </a>
+</li>

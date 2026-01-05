@@ -1,0 +1,33 @@
+<div class="panel-chart">
+    <div class="panel">
+        <div class="block-title">Historique des rélevés en KWH sur une année</div>
+
+        <br>
+
+        <br>
+
+        <div class="clock">
+            <div class="block-title">{{ "Relevé de la totalité des compteurs électriques en KWH au 21/07/15"|trans
+                }}</div>
+            <br>
+            {% set number = 346884.34 %}
+            <div class="counter">
+                <div class="value">
+                    {% set decimal = false %}
+                    {% for char in number|split('') %}
+                        {% if char == ',' or char == '.' %}
+                            <div class="dot">,</div>
+                            {% set decimal = true %}
+                        {% elseif decimal == true %}
+                            <div class="number red">{{ char }}</div>
+                        {% else %}
+                            <div class="number">{{ char }}</div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <span class="text">Kwh</span>
+            </div>
+        </div>
+    </div>
+</div>

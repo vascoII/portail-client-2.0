@@ -1,0 +1,433 @@
+{% extends "base.html.twig" %}
+
+{% block body__main_menu %}
+    {% include 'TableauBordClient/_menu.html.twig' %}
+{% endblock %}
+
+{% block breadcrumb_mobile %}
+    <div class="btn btn-primary btn-lg dropdown-toggle hidden-lg hidden-md" data-toggle="dropdown">
+        <i class="pull-right icon-arrow"></i>
+        <h3>{{ 'Détails de la demande'|trans }}</h3>
+    </div>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu3">
+        <li role="presentation">
+            <h3><a role="menuitem" tabindex="-1" href="{{ path('TechemCoreBundle_TableauBordClient_index') }}">{{ 'Le parc'|trans }}</a></h3>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block main_content %}
+    <ul class="breadcrumb hidden-xs">
+        <li><a href="{{ path('TechemCoreBundle_TableauBordClient_index') }}">{{ 'Le parc'|trans }}</a></li>
+        <li><a href="#">{{ 'Détails'|trans }}</a></li>
+    </ul>
+    <span class="clearfix"></span>
+
+    {{ render(controller('App\\Controller\\TicketingController::tableTicketingAction')) }}
+{% endblock %}
+
+{% block body_classes %}{{ parent() }} {% endblock %}
+
+{% block javascripts_foot %}
+
+{#    {{ parent() }}#}
+
+    {% javascripts
+
+        '@TechemCoreBundle/Resources/public/js/bootstrap.min.js'
+
+      %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+        <script  src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+
+{#        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>#}
+
+{#        <script src="https://cdn.datatables.net/plug-ins/1.10.24/sorting/datetime-moment.js"></script>#}
+    <script>
+        $(document).ready(function() {
+
+            // Setup - add a text input to each header cell
+            $('#tableTickets thead th').each( function () {
+                var title = $(this).text();
+
+                if(title != "Dépannage" && title != "Clôture" && title != "Voir") {
+
+                    $(this).html('<input type="text" class="search-dt" placeholder="' + title + '" />');
+                }
+            } );
+
+            // $.fn.dataTable.moment( 'D-M-Y');
+
+            var table = $('#tableTickets').DataTable( {
+
+                    "dom": 'Bfrti<lp>',
+                    buttons: [
+                        {extend: 'excel',  className: "btn-export-excel",
+                            title: 'Techem - Liste des Tickets',
+                            exportOptions: {
+                                columns: [ 1, 2, 3, 4, 5, 6 ,7, 8, 9, 11 ] }
+                        }
+
+                    ],
+                    "order": [[ 2, 1, "desc" ]],
+                    "lengthChange": true,
+                    "iDisplayLength": 25,
+                    "responsive": true,
+                    "columnDefs": [
+                    { "orderable": false, "targets": [0, 10] }
+                ],
+                    language: {
+                            "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/French.json"
+                    },
+
+
+                initComplete: function () {
+                    // Apply the search
+                    this.api().columns().every( function () {
+                        var that = this;
+
+                        $( 'input', this.header() ).on( 'keyup change clear', function () {
+                            if ( that.search() !== this.value ) {
+                                that
+                                    .search( this.value )
+                                    .draw();
+                            }
+                        } );
+                    } );
+                }
+            });
+
+            $('.table tbody').on('click', '.table-toggle', function () {
+                var tr = $(this).closest('tr');
+                var table = $('.table').DataTable();
+                var row = table.row(tr);
+
+                if (row.child.isShown()) {
+                    // This row is already open - close it
+                    row.child.hide();
+                    tr.removeClass('shown');
+                } else {
+                    // Open this row
+                    row.child( row.data()).show();
+                    tr.addClass('shown');
+                }
+            });
+            // table.buttons().container()
+            //     .appendTo( $('.col-sm-6:eq(1)', table.table().container() ) );
+        } );
+    </script>
+        <script>
+            $(document).ready(function() {
+            $("#close-ticket").prependTo("html");
+                $('#close-ticket').on('show.bs.modal', function(e) {
+
+                console.log('close ticket modal fire');
+                });
+            $("#ticket-details").prependTo("html");
+
+            $('#ticket-details').on('show.bs.modal', function(e) {
+
+                var objet = $(e.relatedTarget).data('objet');
+                var description = $(e.relatedTarget).data('description');
+                var date = $(e.relatedTarget).data('date');
+                var statut = $(e.relatedTarget).data('statut');
+                var numintervention =  $(e.relatedTarget).data('numintervention');
+                var ticketinter = $(e.relatedTarget).data('ticketinter');
+                var attachmentname = $(e.relatedTarget).data('attachmentname');
+
+
+                if (numintervention) {
+                    var logement = $(e.relatedTarget).data('logement');
+                    var intervention = $(e.relatedTarget).data('intervention');
+
+
+                    var urlIntervention = "{{ path('TechemCoreBundle_Logement_showintervention', {'pkLogement': 'logementId', 'pkIntervention': 'interventionId'}) }}"
+                    urlIntervention = urlIntervention.replace("logementId", logement);
+                    urlIntervention = urlIntervention.replace("interventionId", intervention);
+
+                    console.log(urlIntervention);
+
+                    // var linkIntervention = document.getElementById('depann');
+                    // linkIntervention.href = linkIntervention.href.replace('#', urlIntervention);
+
+                    $("a#depann").attr("href", urlIntervention);
+                } else {
+                    document.getElementById('depann').style.display="none";
+                }
+
+                {#if (ticketinter) {#}
+
+                {#    var routeAttachment = "{{ path('Ticketing/attachmentTicket',{'pkTicket': 'ticketInterAttach'}) }}"#}
+                {#    routeAttachment = routeAttachment.replace("ticketInterAttach", ticketinter);#}
+                {#    document.body.innerHTML = document.body.innerHTML.replace("ticketInterAttachment", "routeAttachment");#}
+                {#    console.log(routeAttachment);#}
+                {#}#}
+
+                $(e.currentTarget).find('input[name="objet"]').val(objet);
+                $(e.currentTarget).find('textarea[name="description"]').val(description);
+                $(e.currentTarget).find('input[name="date"]').val(date);
+                $(e.currentTarget).find('input[name="statut"]').val(statut);
+
+            //    ins
+                if (attachmentname !== null && attachmentname !== '') {
+                    console.log(attachmentname);
+                    $.ajax(
+                        {
+                            type: "POST",
+                            data: {pkTicket: ticketinter},
+                            url: window.location.pathname + '/attachment/' + ticketinter,
+                            success: function (data) {
+                                console.log(data);
+                                // const url = window.URL || window.webkitURL;
+                                // const src = url.createObjectURL(data.attachmentContent);
+
+                                switch(data.attachmentName.split('.').pop()) {
+                                    case 'pdf':
+                                        var pdfAttach = document.getElementById('fileAttachment');
+                                        pdfAttach.setAttribute('href', 'data:application/pdf;base64,' + data.attachmentContent)
+                                        pdfAttach.setAttribute('download', data.attachmentName)
+                                        pdfAttach.innerHTML = 'Télécharger ' + data.attachmentName;
+                                        pdfAttach.style.display = "block";
+                                        break;
+                                    case 'png':
+                                    case 'jpg':
+                                    case 'gif':
+                                        $('#imageAttachment').attr('src', 'data:image/*;base64,' + data.attachmentContent)
+                                        break;
+                                    case 'xlsx':
+                                        var xlsxAttach = document.getElementById('fileAttachment');
+                                        xlsxAttach.setAttribute('href', 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data.attachmentContent)
+                                        xlsxAttach.setAttribute('download', data.attachmentName)
+                                        xlsxAttach.innerHTML = 'Télécharger ' + data.attachmentName;
+                                        xlsxAttach.style.display = "block";
+                                        break;
+                                    case 'docx':
+                                        var docxAttach = document.getElementById('fileAttachment');
+                                        docxAttach.setAttribute('href', 'data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,' + data.attachmentContent)
+                                        docxAttach.setAttribute('download', data.attachmentName)
+                                        docxAttach.innerHTML = 'Télécharger ' + data.attachmentName;
+                                        docxAttach.style.display = "block";
+
+                                        break;
+                                    default:
+                                    //
+                                }
+
+
+                            },
+                            error: function (err) {
+                                console.log('err');
+                                console.log(err);
+                            }
+                        }
+                    );
+
+                }
+
+                $('#ticket-details').on('hidden.bs.modal', function (e) {
+                    $('#imageAttachment').attr('src', '')
+                    $('#fileAttachment').attr('href', '')
+
+                    document.getElementById("fileAttachment").style.display = "none";
+                    document.getElementById("depann").style.display = "block";
+
+
+                })
+
+            //    fin ins
+
+            });
+            } );
+        </script>
+    <script>
+
+            $('#close-ticket').on('click', '.btn-cloture', function(e) {
+
+                var $modalDiv = $(e.delegateTarget);
+
+                var ticketinter = $(this).data('recordId');
+
+                // var urlcomp = $(this).data('urlclose');
+
+                var urlcomp = window.location.pathname + "/close/" + ticketinter;
+
+                // var urlcomp = "/fr/tickets/close/" + id;
+
+
+
+                console.log(urlcomp);
+
+                $.ajax({
+                    type: "POST",
+                    url: urlcomp,
+                    data: {pkTicket: ticketinter},
+                    success: function(data) {
+                        $('#closest').find("[data-record-id='" + ticketinter + "']").addClass('hidden');
+                        console.log(data);
+                    }
+                })
+
+                $modalDiv.addClass('loading');
+                setTimeout(function() {
+                    $modalDiv.modal('hide').removeClass('loading');
+                }, 800)
+            });
+            $('#close-ticket').on('show.bs.modal', function(e) {
+                var data = $(e.relatedTarget).data();
+                $('.title', this).text(data.recordTitle);
+                $('.btn-cloture', this).data('recordId', data.recordId);
+            });
+
+    </script>
+
+    <script type="text/javascript">
+        (function () {
+
+            $(".form-new-intervention").prependTo("body");
+            // Affichage popup demande d'intervention
+
+            $('.form-new-intervention .cross-close, .form-new-intervention .back-close').click(
+                function () {
+                    $('.form-new-intervention').fadeOut();
+                }
+            );
+            $('.btn-new-intervention').click(
+                function () {
+                    $('.form-new-intervention').fadeIn();
+                }
+            );
+
+            // Créer une demande d'intervention
+
+            // $('.form-new-intervention form[name=intervention]').submit(
+            //     function (e) {
+            //         e.preventDefault();
+            //         if ($('#intervention_phone').val().length > 2 || $('#intervention_mobile').val().length > 2) {
+            //             var inputFile = document.getElementById('intervention_attachment');
+            //             var file = inputFile.files[0];
+            //
+            //             var form = document.getElementById("interventionForm");
+            //
+            //             // var dataok = new FormData($(this))
+            //             console.log(file);
+            //             console.log(form);
+            //
+            //             // console.log(dataok);
+            //             // console.log($(this).serialize())
+            //             $.ajax(
+            //                 {
+            //                     type : "POST",
+            //                     data: new FormData(form),
+            //                     dataType: 'json',
+            //                     url : $(this).attr('action'),
+            //                     processData: false,
+            //                     contentType: false,
+            //                     cache: false,
+            //                     success : function (data)
+            //                     {
+            //                         $('.tickets-inprogress').show();
+            //                         $('.form-new-intervention').fadeOut();
+            //                         $('.form-new-intervention form').find("input[type=text], textarea").val('');
+            //                         $('.confirm-new-intervention').fadeIn().delay(600).fadeOut();
+            //
+            //                     },
+            //                     error : function (data) {
+            //                         console.log(data);
+            //                     }
+            //                 }
+            //             );
+            //         }
+            //     }
+            // );
+
+        //    sdw
+
+            $('.form-new-intervention form[name=intervention]').validate({
+                rules: {
+                    "intervention[name]": {
+                        required: true,
+                        minlength: 2
+                    },
+                    "intervention[email]": {
+                        required: true,
+                        minlength: 5
+                    },
+                    "intervention[phone]": {
+                        require_from_group: [1, ".phone-group"]
+                    },
+                    "intervention[mobile]": {
+                        require_from_group: [1, ".phone-group"]
+                    },
+                    "intervention[objet]": {
+                        required: true,
+                        minlength: 5
+                    },
+                    "intervention[message]": {
+                        required: true,
+                        minlength: 5
+                    }
+                },
+                messages: {
+                    "intervention[name]": {
+                        required: "x",
+                        minlength: "Minimum 2 cartacteres"
+                    },
+                    "intervention[email]": {
+                        required: "x",
+                        minlength: "x",
+                        email: "x"
+                    },
+                    "intervention[phone]": {
+                        required: "x",
+                    },
+                    "intervention[mobile]": {
+                        required: "x",
+                        minlength: "Minimum 2 cartacteres"
+                    },
+                    "intervention[objet]": {
+                        required: "x",
+                        minlength: "x",
+                        email: "x"
+                    },
+                    "intervention[message]": {
+                        required: "x",
+                    }
+                },
+                submitHandler: function(form) {
+                    form.preventDefault();
+                    var formData = document.getElementById("interventionForm");
+                    $.ajax(
+                        {
+                            type : "POST",
+                            data: new FormData(form),
+                            dataType: 'json',
+                            url : $(this).attr('action'),
+                            processData: false,
+                            contentType: false,
+                            cache: false,
+                            success : function (data)
+                            {
+                                $('.tickets-inprogress').show();
+                                $('.form-new-intervention').fadeOut();
+                                $('.form-new-intervention form').find("input[type=text], textarea").val('');
+                                $('.confirm-new-intervention').fadeIn().delay(600).fadeOut();
+
+                            },
+                            error : function (data) {
+                                console.log(data);
+                            }
+                        }
+                    );
+                }
+            });
+
+
+
+        // en sdw
+
+        })();
+    </script>
+
+
+{% endblock %}

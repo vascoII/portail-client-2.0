@@ -1,0 +1,69 @@
+{% if link is not defined %}
+    {% set link = '#' %}
+{% endif %}
+<li class="tbody {{ fuite.degree }}"
+    data-numero="{% if fuite.Appareil is defined and fuite.Appareil.Numero is defined %}{{ fuite.Appareil.Numero }}{% endif %}"
+    data-fluide="{% if fuite.Appareil is defined and fuite.Appareil.Fluide is defined %}{{ fuite.Appareil.Fluide }}{% endif %}"
+    data-batiment="{% if fuite.Logement is defined and fuite.Logement.NumBatiment is defined %}{{ fuite.Logement.NumBatiment }}{% endif %}"
+    data-escalier="{% if fuite.Logement is defined and fuite.Logement.NumEscalier is defined %}{{ fuite.Logement.NumEscalier }}{% endif %}"
+    data-etage="{% if fuite.Logement is defined and fuite.Logement.NumEtage is defined %}{{ fuite.Logement.NumEtage }}{% endif %}"
+    >
+    <a href="{{ link }}" class="image"><img src="{{ asset('bundles/techemcore/images/fidesio/fui.png') }}" /></a>
+    <a href="{{ link }}" class="info">
+        <div class="name">{{ 'Référence client'|trans }}  :</div>
+        <div class="value">
+            {% if fuite.Occupant is defined and fuite.Occupant.Ref is defined %}
+                {{ fuite.Occupant.Ref }}
+            {% endif %}
+        </div>
+        <div class="name">{{ "Étage"|trans }} :</div>
+        <div class="value">
+            {% if fuite.Logement is defined and fuite.Logement.NumEtage is defined %}
+                {{ fuite.Logement.NumEtage }}
+            {% endif %}
+        </div>
+        <div class="name">{{ "N° logement"|trans }} :</div>
+        <div class="value">
+            {% if fuite.Logement is defined and fuite.Logement.NumOrdre is defined %}
+                {{ fuite.Logement.NumOrdre }}
+            {% endif %}
+        </div>
+        <div class="description">
+            {% if fuite.Occupant is defined and fuite.Occupant.Nom is defined %}
+                {{ fuite.Occupant.Nom}}
+            {% endif %}
+        </div>
+    </a>
+    <a href="{{ link }}" class="observation mobile-footer-first">
+        <div class="name visible-xs">{{ "N°COMPTEUR"|trans }}</div>
+        <div class="value">
+            {% if fuite.Appareil is defined and fuite.Appareil.Numero is defined %}
+                {{ fuite.Appareil.Numero }}
+            {% endif %}
+        </div>
+    </a>
+    <a href="{{ link }}" class="motif">
+        <div class="name visible-xs">{{ "Emplaçement"|trans|upper }}</div>
+        <div class="value">
+            {% if fuite.Appareil is defined and fuite.Appareil.Emplacement is defined %}
+                {{ fuite.Appareil.Emplacement }}
+            {% endif %}
+        </div>
+    </a>
+    <a href="{{ link }}" class="motif">
+        <div class="name visible-xs">{{ "FLUIDE"|trans }}</div>
+        <div class="value">
+            {% if fuite.Appareil is defined and fuite.Appareil.Fluide is defined %}
+            {{ fuite.Appareil.Fluide }}
+            {% endif %}
+        </div>
+    </a>
+    <a href="{{ link }}" class="observation mobile-footer-last">
+        <div class="name visible-xs">{{ "NB DE JOURS"|trans }}</div>
+        <div class="value">
+            {% if fuite.Fuite is defined and fuite.Fuite.Duree is defined %}
+                {{ fuite.Fuite.Duree }}
+            {% endif %}
+        </div>
+    </a>
+</li>

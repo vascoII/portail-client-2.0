@@ -1,0 +1,534 @@
+{% extends "base.html.twig" %}
+
+
+{% block body__main_menu %}
+    {% include 'Logement/_menu.html.twig' %}
+{% endblock %}
+
+{% block breadcrumb_mobile %}
+    <div class="btn btn-primary btn-lg dropdown-toggle hidden-lg hidden-md" id="dropdownMenu3" data-toggle="dropdown">
+        <i class="pull-right icon-arrow"></i>
+        <h3>Logement {{ logement.Occupant.Ref }}</h3>
+    </div>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu3">
+        <li role="presentation">
+            <h3><a role="menuitem" tabindex="-1"
+                   href="{{ path('TechemCoreBundle_Logement_index', { 'pkImmeuble': logement.Immeuble.PkImmeuble }) }}">{{ "Immeuble"|trans }} {{ logement.Immeuble.Ref }}</a>
+            </h3>
+        </li>
+        <li role="presentation">
+            <h3><a role="menuitem" tabindex="-1"
+                   href="{{ path('TechemCoreBundle_Immeuble_show', { 'pkImmeuble': logement.Immeuble.PkImmeuble }) }}">{{ "Immeuble"|trans }} {{ logement.Immeuble.Ref }}</a>
+            </h3>
+        </li>
+        <li role="presentation">
+            <h3><a role="menuitem" tabindex="-1"
+                   href="{{ path('TechemCoreBundle_Immeuble_index') }}">{{ 'Liste des immeubles'|trans }}</a></h3>
+        </li>
+        <li role="presentation">
+            <h3><a role="menuitem" tabindex="-1"
+                   href="{{ path('TechemCoreBundle_TableauBordClient_index') }}">{{ 'Le parc'|trans }}</a></h3>
+        </li>
+    </ul>
+{% endblock %}
+
+
+
+{% block main_content %}
+<style>
+    .buttonIn {
+        position: relative;
+    }
+    .buttonIn .fa {
+        position: absolute;
+        font-size: 20px!important;
+        right: 0px;
+        margin: 2%!important;
+        transform: translateX(2px);
+    }
+    .input-enabled {
+        border: 1px solid #ccc;
+    }
+    .input-disabled {
+        border: none;
+        background-color: transparent;
+    }
+    .error-message {
+        color: #d43f3a;
+    }
+</style>
+    <script type="text/javascript">
+        var charts = Array();
+    </script>
+    <ul class="breadcrumb hidden-xs">
+        <li><a href="{{ path('TechemCoreBundle_TableauBordClient_index') }}">{{ 'Le parc'|trans }}</a></li>
+        <li><a href="{{ path('TechemCoreBundle_Immeuble_index') }}">{{ 'Liste des immeubles'|trans }}</a></li>
+        <li>
+            <a href="{{ path('TechemCoreBundle_Immeuble_show', { 'pkImmeuble': logement.Immeuble.PkImmeuble }) }}">{{ 'Immeuble'|trans }} {{ logement.Immeuble.Ref }}</a>
+        </li>
+        <li>
+            <a href="{{ path('TechemCoreBundle_Logement_index', { 'pkImmeuble': logement.Immeuble.PkImmeuble }) }}">{{ "Liste des logements"|trans }}</a>
+        </li>
+        <li><a href="#">{{ "Logement"|trans }} {{ logement.Occupant.Ref }}</a></li>
+    </ul>
+
+    <span class="clearfix"></span>
+    <h2>{{ "Aperçu du logement"|trans }}</h2>
+
+    <div class="row panel-area building-detail-area">
+
+        <div class="col-md-8 col-sm-6 block block-1">
+            <div class="panel panel-primary parc_summary panel-info">
+
+                <div class="meta clearfix">
+                    <div class="icons">
+                        <i class="icon-opened33"></i>
+                    </div>
+
+                    <div class="data">
+                        <p>
+                            {% if logement.Occupant is defined %}
+                                <strong>{{ 'Référence'|trans }} : <span>{{ logement.Occupant.Ref }}</span></strong>
+                            {% endif %}
+
+                        </p>
+                        <p>
+                            <strong>{{ "N° d'immeuble"|trans }} : <span>{{ logement.Immeuble.Numero }}</span></strong>
+                        </p>
+
+                        <div class="info clearfix">
+                            <div class="item">{{ "Batiment"|trans }} {{ logement.Logement.NumBatiment }}</div>
+                            <div class="item">{{ "Escalier"|trans }} {{ logement.Logement.NumEscalier }}</div>
+                            <div class="clearfix"></div>
+                            <div class="item">{{ "Etage"|trans }} {{ logement.Logement.NumEtage }}</div>
+                            <div class="item">{{ "Logement"|trans }} {{ logement.Logement.NumOrdre }}</div>
+                        </div>
+
+                        <p>{{ logement.Logement.AdrBatiment }}</p>
+                        <p>{{ logement.Immeuble.Cp }} {{ logement.Immeuble.Ville }}</p>
+                    </div>
+                </div>
+
+                <div class="meta user clearfix">
+
+                    <div class="data col-sm-12">
+                        <div class="col-sm-6">
+                            <h4>
+                                {{ "Occupant actuel"|trans }}
+                            </h4>
+                            <div class="info clearfix" style="margin-bottom: 14%;">
+                                <div class="icons">
+                                    <i class="icon-user"></i>
+                                </div>
+                                <strong>{{ 'Occupant'|trans }} : <span>{{ logement.Occupant.Nom }}</span></strong>
+
+{#                                <p>#}
+{#                                    <strong>{{ "Date de départ"|trans }} <span style="color: red;">*</span>:<span>{{ logement.Occupant.DateArrivee|date("d/m/Y") }}</span></strong>#}
+{#                                </p>#}
+                            </div>
+                            <div class="info clearfix">
+                                <form class="form-horizontal code" action="{{ path('TechemCoreBundle_Search_index') }}" method="get" role="form">
+                                    <div class="input-group code_form hidden-xs">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-white" type="submit"></button>
+                                        </span>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <h4>
+                                {{ "Nouvel occupant"|trans }}
+                            </h4>
+							{% if changeinprogress is defined and changeinprogress == true %}
+							<h5><b class="error-message">
+							Une demande de changement est actuellement en attente de traitement par les équipes Techem. Vous pouvez néamoins modifier les données de cette demande :
+							</b></h5>
+							{% endif %}
+                            <div class="">
+
+                                <span style="float:right;">
+
+                                </span>
+                            </div>
+                            <div class="info clearfix">
+                                <form class="form-horizontal code" name="edit-occupant" role="form">
+                                    <div class="input-group code_form hidden-xs">
+                                        <div class="form-group">
+                                            <label class="col-xs-2"><i class="pull-right fa fa-user"></i></label>
+                                            <div class="controls col-xs-10 buttonIn">
+                                                <input type="text" class="form-control" placeholder="Saisir le nom de l'occupant" name="nameOccupant" data-field="nameOccupant"  
+												{% if occupant.newNom is defined %}
+													value="{{ occupant.newNom }}" 
+												{% endif%}
+												required>
+                                                <span class="error-message">Veuillez saisir le nom de l'occupant.</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-2"><i class="pull-right fa fa-envelope"></i></label>
+                                            <div class="controls col-xs-10 buttonIn">
+                                                <input type="email" class="form-control" placeholder="Saisir une adresse mail" name="email" data-field="email"
+												{% if occupant.newEmail is defined %}
+													value="{{ occupant.newEmail }}" 
+												{% endif%}>
+                                                <span class="error-message">Veuillez saisir une adresse email valide.</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-2"><i class="pull-right fa fa-phone"></i></label>
+                                            <div class="controls col-xs-10 buttonIn">
+                                                <input type="tel" class="form-control" placeholder="Saisir un numéro de téléphone" name="phone" data-field="phone" 
+												{% if occupant.newTelmobile is defined %}
+													value="{{ occupant.newTelmobile }}" 
+												{% endif%}
+												pattern="^[0-9]{10}$" required>
+                                                <span class="error-message">Veuillez saisir un numéro de téléphone valide à 10 chiffres.</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-2"><i class="pull-right fa fa-file"></i></label>
+                                            <div class="controls col-xs-10 buttonIn">
+                                                <input type="text" class="form-control" placeholder="Saisir un numéro de logement unique" name="CodeLogeGestio" data-field="CodeLogeGestio" 
+												{% if occupant.newCodeLogeGestio is defined %}
+													value="{{ occupant.newCodeLogeGestio }}" 
+												{% endif%}
+												>
+                                                <span class="error-message">Veuillez saisir un numéro de logement.</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-xs-2"><i class="pull-right fa fa-file"></i></label>
+                                            <div class="controls col-xs-10 buttonIn">
+                                                <input type="text" class="form-control" placeholder="Saisir un numéro de Bail" name="numBail" data-field="numBail" 
+												{% if occupant.newNumBail is defined %}
+													value="{{ occupant.newNumBail }}" 
+												{% endif%}
+												>
+                                                <span class="error-message">Veuillez saisir un numéro de Bail valide.</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">Date d'arrivée
+                                            <label class="col-xs-2"><i class="pull-right fa fa-calendar"></i></label>
+                                            <div class="controls col-xs-10 buttonIn">
+                                                <input type="date" class="form-control" placeholder="Enter the move-in date" name="dateArrivee" data-field="dateArrivee" id="dateArrivee"
+												
+												{% if occupant.newDateArrivee is defined %}
+													value="{{ occupant.newDateArrivee }}" 
+												{% endif%}
+
+												>
+                                            </div>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <button type="submit" style="padding: 5px; width: 80%; background: white; color: black; border: 1px solid black;" class="btn btn-primary submit-occupant">{{ "Valider"|trans }}</button>
+                                        </div>
+
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="app">
+                    <div class="inner"><strong>{{ logement.NbAppareils }}</strong> {{ "Appareils"|trans }}</div>
+                </div>
+
+                <div class="stats clearfix">
+                    {% if logement.NbCompteursEF != -1 %}
+                        <div class="item">
+                            <div class="value">{{ logement.NbCompteursEF }}</div>
+
+                            <div class="title">{{ "Eau froide"|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if logement.NbCompteursEC != -1 %}
+                        <div class="item">
+                            <div class="value">{{ logement.NbCompteursEC }}</div>
+
+                            <div class="title">{{ 'Eau chaude'|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if logement.NbCompteursRepart != -1 %}
+                        <div class="item">
+                            <div class="value">{{ logement.NbCompteursRepart }}</div>
+
+                            <div class="title">{{ 'Répartiteurs'|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if logement.NbCompteursCET != -1 %}
+                        <div class="item">
+                            <div class="value">{{ logement.NbCompteursCET }}</div>
+
+                            <div class="title">{{ "Compteur d'énergie"|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if logement.NbCompteursElect != -1 %}
+                        <div class="item">
+                            <div class="value">{{ logement.NbCompteursElect }}</div>
+
+                            <div class="title">{{ "Electricité"|trans }}</div>
+                        </div>
+                    {% endif %}
+
+                    {% if logement.NbCompteursGaz != -1 %}
+                        <div class="item">
+                            <div class="value">{{ logement.NbCompteursGaz }}</div>
+
+                            <div class="title">{{ "Gaz"|trans }}</div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block body_classes %}{{ parent() }} logement{% endblock %}
+
+{% block javascripts_foot %}
+    {{ parent() }}
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="http://www.chartjs.org/assets/Chart.min.js"></script>
+    <script type="text/javascript" src="{{ asset('bundles/techemcore/js/custom/status-gauge.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/techemcore/js/custom/performance-gauge.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/techemcore/js/custom/charts.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/techemcore/js/jquery.validate.min.js') }}"></script>
+
+
+
+    <script>
+
+        $(document).ready(function() {
+
+            var submit = $(".submit-occupant");
+            var inputFields = $(".input-group input");
+            inputFields.on('input', function () {
+                checkInputValues();
+            });
+            function checkInputValues() {
+                var allInputsValid = true;
+
+                inputFields.each(function () {
+                    var input = $(this);
+                    var errorSpan = input.siblings('.error-message');
+                    if (!input[0].checkValidity()) {
+                        allInputsValid = false;
+                        errorSpan.show();
+                    } else {
+                        errorSpan.hide();
+                    }
+                });
+
+                submit.prop("disabled", !allInputsValid);
+            }
+
+
+            $(".edit-icon").click(function() {
+                var input = $(this).siblings("input");
+                var editIcon = $(this);
+                var checkIcon = $(this).siblings(".fa-check");
+
+            });
+
+            $(".fa-check").click(function() {
+                var editIcon = $(this).siblings(".fa-pencil");
+                var input = $(this).siblings("input");
+
+                // Disable editing
+                input.removeClass("input-enabled").addClass("input-disabled");
+                input.prop("disabled", true);
+                $(this).addClass("hidden");
+                editIcon.removeClass("hidden");
+            });
+
+            $(".submit-occupant").click(function(e) {
+                e.preventDefault();
+                var formData = {
+                    email: $("input[name='email']").val(),
+                    phone: $("input[name='phone']").val(),
+                    numbail: $("input[name='numBail']").val(),
+                    dateArrivee: $("input[name='dateArrivee']").val(),
+                    name: $("input[name='nameOccupant']").val()
+                };
+
+                var url = "{{ path('TechemCoreBundle_GestionParc_show', {'pkLogement': pkLogement}) }}";
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: JSON.stringify(formData),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(response) {
+                        alert('Informations sauvegardées')
+                        window.history.go(-1);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
+                    }
+
+                });
+            });
+            // validate file extension and filesize
+            const fileInput = document.getElementById('intervention_attachment')
+
+            fileInput.addEventListener('change', (event) => {
+                const target = event.target
+                if (target.files && target.files[0]) {
+                    var attachmentError = document.getElementById('attachment_error');
+                    attachmentError.innerHTML = '';
+                    /* maximum allowed size 2 MB  */
+                    const maxAllowedSize = 2 * 1024 * 1024;
+                    var allowedExtensions =  /(\.jpg|\.gif|\.png|\.docx|\.pdf|\.xlsx)$/i;
+                    var filePath = fileInput.value;
+
+                    if (target.files[0].size > maxAllowedSize || !allowedExtensions.exec(filePath)) {
+
+                        target.value = ''
+                        attachmentError.innerHTML = ' Format de fichier non valide ou le fichier dépasse la taille maximale';
+
+                    }
+
+                }
+            })
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var today = new Date();
+            var formattedDate = today.toISOString().substr(0, 10);
+            document.getElementById("dateArrivee").value = formattedDate;
+        });
+    </script>
+
+    <script type="text/javascript">
+        (function () {
+
+            // Affichage popup demande d'intervention
+
+            $('.form-new-intervention .cross-close, .form-new-intervention .back-close').click(
+                function () {
+                    $('.form-new-intervention').fadeOut();
+
+                }
+            );
+            $('.btn-new-intervention').click(
+                function () {
+                    $('.form-new-intervention').fadeIn();
+                }
+            );
+            // validation rules
+
+            $('.form-new-intervention form[name=intervention]').validate({
+                rules: {
+                    intervention_name: {
+                        required: true,
+                        minlength: 2
+                    },
+                    intervention_email: {
+                        required: false,
+                        minlength: 5,
+                        email: true
+                    },
+                    intervention_phone: {
+                        require_from_group: [1, ".phone-group"]
+                    },
+                    intervention_mobile: {
+                        require_from_group: [1, ".phone-group"]
+                    },
+                    intervention_objet: {
+                        required: true,
+                        minlength: 5
+                    },
+                    intervention_message: {
+                        required: true,
+                        minlength: 5
+                    },
+                    intervention_attachment: {
+                        required: false
+                    }
+                },
+                messages: {
+                    intervention_name: { required: "veuillez insérer votre nom"},
+                    intervention_email: { required: "veuillez insérer une adresse mail valide"},
+                    intervention_phone: { required: "veuillez insérer un numéro de téléphone"},
+                    intervention_mobile: { required: "veuillez insérer un numéro de portable"},
+                    intervention_objet: { required: "veuillez remplir ce champ"},
+                    intervention_message: { required: "veuillez remplir ce champ"},
+                    intervention_attachment: { extension: "extensions acceptés: docx|xlsx|pdf|png|jpg|gif"}
+                },
+
+            });
+
+            //end validation rules
+
+            // call ajax send form
+
+            $('.form-new-intervention form[name=intervention]').submit(
+                function (e) {
+                    e.preventDefault();
+                    if ($('#intervention_phone').val().length > 2 || $('#intervention_mobile').val().length > 2) {
+
+                        var form = document.getElementById("interventionForm");
+
+                        console.log($(this).attr('action'));
+
+                        $.ajax(
+                            {
+                                type : "POST",
+                                data : new FormData(form),
+                                url : $(this).attr('action'),
+                                processData: false,
+                                contentType: false,
+                                cache: false,
+                                success : function (data)
+                                {
+                                    $('.tickets-inprogress').show();
+                                    $('.tickets-number').text(data.nbTickets);
+                                    $('.form-new-intervention').fadeOut();
+                                    $('.form-new-intervention form').find("input[type=text], textarea").val('');
+                                    $('.confirm-new-intervention').fadeIn().delay(600).fadeOut();
+                                },
+                                error : function (data) {
+                                    console.log(data);
+                                }
+                            }
+                        );
+                    }
+                }
+            );
+
+            // end call ajax
+
+            $('a[data-toggle="tab"]').on(
+                'shown.bs.tab', function (e) {
+                    var $me = $(e.target);
+                    var $area = $($me.attr('href'));
+
+                    drawGauge($area.attr('data-area'));
+                    drawCharts($area.attr('data-area'));
+                }
+            )
+
+            var defaultArea = $('.tab-detail-area > .tab-content > .tab-pane.active').attr('data-area');
+            drawGauge(defaultArea);
+            drawCharts(defaultArea);
+
+        })();
+    </script>
+    <script>
+        jQuery.extend(jQuery.validator.messages, {
+            required: "Veuillez remplir ce champ",
+            email: "Veuillez insérer une adresse mail valide",
+            accept: "Veuillez saisir un fichier avec une extension valide",
+
+        });</script>
+
+
+{% endblock %}

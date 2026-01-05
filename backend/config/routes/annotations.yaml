@@ -1,0 +1,13 @@
+controllers:
+  resource: ../../src/Controller/
+  type: attribute
+  prefix: "/{_locale}"
+
+# API routes (without locale prefix, controllers already have /api prefix)
+api_controllers:
+  resource: ../../src/Controller/Api/
+  type: attribute
+
+kernel:
+  resource: ../../src/Kernel.php
+  type: attribute

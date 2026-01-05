@@ -1,0 +1,224 @@
+<div class="result-area">
+    <div class="header">
+        <h2 class="title"><strong class="result-length">{{ lengthFacture }}</strong> {{ 'Factures'|trans }}</h2>
+    </div>
+
+    <div class="dx-viewport">
+    <div id="gridContainer"></div>
+    </div>
+</div>
+
+{% set downloadRoute = path('TechemCoreBundle_facture_report', {'pkFacture': 'placeholder'}) %}
+
+<script >
+    $(() => {
+        const dictionary = {
+            fr: {
+                Number: 'Numéro Facture',
+                CodeGestio: 'Code gestionnaire',
+                Adresse: 'Adresse',
+                Ville: 'Ville',
+                'Code postal': 'Code postal',
+                'Date émission': 'Date d\'émission',
+                MontantTotalHT: 'Montant total (HT)',
+                MontantTotalTTC: 'Montant total (TTC)',
+                MontantTotalAPayer: 'Montant total à payer',
+                Télécharger: 'Télécharger',
+            },
+        };
+        DevExpress.localization.loadMessages(dictionary);
+        DevExpress.localization.locale('fr');
+        const { formatMessage } = DevExpress.localization;
+        const dataGrid = $('#gridContainer').dxDataGrid({
+            dataSource: factures,
+            keyExpr: 'NumFacture',
+            columnsAutoWidth: true,
+            showBorders: true,
+            filterRow: {
+                visible: true,
+                applyFilter: 'auto',
+            },
+            searchPanel: {
+                visible: true,
+                width: 300,
+                placeholder: 'Recherche...',
+            },
+            headerFilter: {
+                visible: true,
+            },
+            scrolling: {
+                rowRenderingMode: 'virtual',
+            },
+                paging: {
+                pageSize: 10,
+            },
+                pager: {
+                visible: true,
+                allowedPageSizes: [5, 10, 20, 'all'],
+                showPageSizeSelector: true,
+                showInfo: true,
+                showNavigationButtons: true,
+            },
+            rowAlternationEnabled: true,
+            hoverStateEnabled: true,
+            columnAutoWidth: true,
+            columns: [
+                {
+                    dataField: 'NumFacture',
+                    caption: formatMessage('Number'),
+                    alignment: 'left'
+                },
+                {
+                    dataField: 'CodeGestio',
+                    caption: formatMessage('CodeGestio'),
+                    alignment: 'left',
+                    headerFilter: {
+                        allowSelectAll: false,
+                        search: {
+                            enabled: true,
+                        },
+                    },
+                },
+                {
+                    dataField: 'Adresse',
+                    caption: formatMessage('Adresse'),
+                    alignment: 'left',
+                    headerFilter: {
+                        allowSelectAll: false,
+                        search: {
+                            enabled: true,
+                        },
+                    },
+                },
+                {
+                    dataField: 'Ville',
+                    caption: formatMessage('Ville'),
+                    alignment: 'left',
+                    headerFilter: {
+                        allowSelectAll: false,
+                        search: {
+                            enabled: true,
+                        },
+                    },
+                },
+                {
+                    dataField: 'CP',
+                    caption: formatMessage('Code postal'),
+                    alignment: 'left',
+                    headerFilter: {
+                        allowSelectAll: false,
+                        search: {
+                            enabled: true,
+                        },
+                    },
+                },
+                {
+                    dataField: 'DateEdition',
+                    alignment: 'left',
+                    dataType: 'Date émission',
+                    dataType: 'date',
+                }, {
+                    dataField: 'MontantTotalHT',
+                    alignment: 'left',
+                    format: 'currency',
+                    editorOptions: {
+                        format: 'currency',
+                        showClearButton: true,
+                    },
+                    headerFilter: {
+                        dataSource: [{
+                            text: 'Less than $3000',
+                            value: ['SaleAmount', '<', 3000],
+                        }, {
+                            text: '$3000 - $5000',
+                            value: [['SaleAmount', '>=', 3000], ['SaleAmount', '<', 5000]],
+                        }, {
+                            text: '$5000 - $10000',
+                            value: [['SaleAmount', '>=', 5000], ['SaleAmount', '<', 10000]],
+                        }, {
+                            text: '$10000 - $20000',
+                            value: [['SaleAmount', '>=', 10000], ['SaleAmount', '<', 20000]],
+                        }, {
+                            text: 'Greater than $20000',
+                            value: ['SaleAmount', '>=', 20000],
+                        }],
+                    },
+                }, 
+				{
+                    dataField: 'MontantTotalTTC',
+                    alignment: 'left',
+                    format: 'currency',
+                    editorOptions: {
+                        format: 'currency',
+                        showClearButton: true,
+                    },
+                    headerFilter: {
+                        dataSource: [{
+                        text: 'Less than $3000',
+                        value: ['SaleAmount', '<', 3000],
+                        }, {
+
+                        text: '$3000 - $5000',
+                        value: [['SaleAmount', '>=', 3000], ['SaleAmount', '<', 5000]],
+                        }, {
+
+                        text: '$5000 - $10000',
+                        value: [['SaleAmount', '>=', 5000], ['SaleAmount', '<', 10000]],
+                        }, {
+
+                        text: '$10000 - $20000',
+                        value: [['SaleAmount', '>=', 10000], ['SaleAmount', '<', 20000]],
+                        }, {
+                        text: 'Greater than $20000',
+                        value: ['SaleAmount', '>=', 20000],
+                        }],
+                    },
+                },
+				{
+                    dataField: 'MontantTotalAPayer',
+                    alignment: 'left',
+                    format: 'currency',
+                    editorOptions: {
+                        format: 'currency',
+                        showClearButton: true,
+                    },
+                    headerFilter: {
+                        dataSource: [{
+                        text: 'Less than $3000',
+                        value: ['SaleAmount', '<', 3000],
+                        }, {
+
+                        text: '$3000 - $5000',
+                        value: [['SaleAmount', '>=', 3000], ['SaleAmount', '<', 5000]],
+                        }, {
+
+                        text: '$5000 - $10000',
+                        value: [['SaleAmount', '>=', 5000], ['SaleAmount', '<', 10000]],
+                        }, {
+
+                        text: '$10000 - $20000',
+                        value: [['SaleAmount', '>=', 10000], ['SaleAmount', '<', 20000]],
+                        }, {
+                        text: 'Greater than $20000',
+                        value: ['SaleAmount', '>=', 20000],
+                        }],
+                    },
+                },
+                {
+                    caption: formatMessage('Télécharger'),
+                    alignment: 'center',
+                    cellTemplate: function(container, options) {
+                        var pkFacture = options.data.PKFacture;
+                        var downloadLink = $('<a target="_blank">')
+                            .addClass('download-icon')
+                            .attr('href', '{{ downloadRoute|replace({'placeholder': '' }) }}' + pkFacture)
+                            .append($('<i>').addClass('fa fa-download'))
+                            .appendTo(container);
+                    }
+                }
+
+            ],
+        }).dxDataGrid('instance');
+    });
+    const factures ={{ factures | raw }};
+</script>

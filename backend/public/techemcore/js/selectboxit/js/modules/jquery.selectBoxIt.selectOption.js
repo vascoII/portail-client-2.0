@@ -1,0 +1,1 @@
+selectBoxIt.selectOption=function(e,t){var c=this,l=$.type(e);return"number"===l?c.selectBox.val(c.selectItems.eq(e).val()).change():"string"===l&&c.selectBox.val(e).change(),c._callbackSupport(t),c};

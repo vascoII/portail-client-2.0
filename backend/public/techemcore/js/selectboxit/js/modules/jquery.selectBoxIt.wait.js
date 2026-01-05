@@ -1,0 +1,1 @@
+selectBoxIt.wait=function(t,e){var a=this;return a.widgetProto._delay.call(a,e,t),a};

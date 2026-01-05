@@ -1,0 +1,29 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend_sandbox
+    working_dir: /var/www/backend
+    volumes:
+      - ./backend:/var/www/backend
+    environment:
+      - APP_ENV=dev
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: frontend_sandbox
+    working_dir: /usr/src/frontend
+    volumes:
+      - ./frontend:/usr/src/frontend
+      - /usr/src/frontend/node_modules
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_BASE_URL:-http://techl5599:8000/api}
+    depends_on:
+      - backend
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"

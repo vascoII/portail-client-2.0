@@ -1,0 +1,6 @@
+{% block form_row -%}
+    <div class="form-group {% if not form.vars.valid %}has-error{% endif %}">
+        <div class="col-xs-12">{{- form_widget(form) -}}</div>
+        <div class="help-block {% if form.vars.valid %}hidden{% endif %}">{{- form_errors(form) -}}</div>
+    </div>
+{%- endblock form_row %}

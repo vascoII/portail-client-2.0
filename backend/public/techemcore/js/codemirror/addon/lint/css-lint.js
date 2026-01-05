@@ -1,0 +1,1 @@
+CodeMirror.registerHelper("lint","css",(function(e){for(var r=[],o=CSSLint.verify(e).messages,s=null,i=0;i<o.length;i++){var l=(s=o[i]).line-1,n=s.line-1,t=s.col-1,a=s.col;r.push({from:CodeMirror.Pos(l,t),to:CodeMirror.Pos(n,a),message:s.message,severity:s.type})}return r}));

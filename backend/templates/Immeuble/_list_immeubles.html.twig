@@ -1,0 +1,303 @@
+<div class="row filters">
+    <h3>{{ "Filtré par"|trans }} : </h3>
+
+    <form role="form" class="form-horizontal filters">
+        <div class="form-group">
+            <div class="col-md-3 col-sm-6 select-input">
+                <div class="select-replace">
+                    <select id="EnergieSelect">
+                        <option value="">{{ "Toutes les énergies"|trans }}</option>
+                        
+                        <option value="energieef" {% if app.request.get('requestParams')['energieef'] is defined and app.request.get('requestParams')['energieef'] == 1 %} selected{% endif
+                        %}>{{ "Eau froide"|trans }}</option>
+                        <option value="energieec" {% if app.request.get('requestParams')['energieec'] is defined and app.request.get('requestParams')['energieec'] == 1 %} selected{% endif %}>{{ 'Eau chaude'|trans }}</option>
+                        <option value="energiecet" {% if app.request.get('requestParams')['energiecet'] is defined and app.request.get('requestParams')['energiecet'] == 1 %} selected{% endif %}>{{ "Compteur d'énergie thermique"|trans }}</option>
+                        <option value="energierepart" {% if app.request.get('requestParams')['energierepart'] is defined and app.request.get('requestParams')['energierepart'] == 1 %} selected{% endif %}>{{ 'Répartiteur'|trans }}</option>
+                        <option value="energieelect" {% if app.request.get('requestParams')['energieelect'] is defined and app.request.get('requestParams')['energieelect'] == 1 %} selected{% endif
+                        %}>{{ "Electricité"|trans }}</option>
+                        <option value="energiegaz" {% if app.request.get('requestParams')['energiegaz'] is defined and app.request.get('requestParams')['energiegaz'] == 1 %} selected{% endif
+                        %}>{{ "Gaz"|trans }}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="checkbox checkbox-replace" style="display:inline-block">
+                    <input name="fuites" type="checkbox" {% if app.request.get('requestParams')['fuites'] is defined and app.request.get('requestParams')['fuites'] == 1 %}checked{% endif %}>
+                    <label>{{ "Fuites"|trans }}</label>
+                </div>
+                <div class="clearfix"></div>
+                <div class="checkbox checkbox-replace" style="display:inline-block">
+                    <input name="anomalies" type="checkbox" {% if app.request.get('requestParams')['anomalies'] is defined and app.request.get('requestParams')['anomalies'] == 1 %}checked{% endif %}>
+                    <label>{{ "Anomalies"|trans }}</label>
+                </div>
+                <div class="clearfix"></div>
+                <div class="checkbox checkbox-replace" style="display:inline-block">
+                    <input name="dysfonctionnements" type="checkbox" {% if app.request.get('requestParams')['dysfonctionnements'] is defined and app.request.get('requestParams')['dysfonctionnements'] == 1 %}checked{% endif %}>
+                    <label>{{ "Alarmes techniques"|trans }}</label>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="checkbox checkbox-replace" style="display:inline-block">
+                    <input name="depannages" type="checkbox" {% if app.request.get('requestParams')['depannages'] is defined and app.request.get('requestParams')['depannages'] == 1 %}checked{% endif %}>
+                    <label>{{ "Dépannages en cours"|trans }}</label>
+                </div>
+                <div class="clearfix"></div>
+                <div class="checkbox checkbox-replace" style="display:inline-block">
+                    <input name="chantiers" type="checkbox" {% if app.request.get('requestParams')['chantiers'] is defined and app.request.get('requestParams')['chantiers'] == 1 %}checked{% endif %}>
+                    <label>{{ 'Chantiers en cours'|trans }}</label>
+                </div>
+            </div>
+
+            <div class="clearfix visible-xs"></div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <input type="text" name="reference" class="form-control" placeholder={{ "Référence / Numéro"|trans
+                    }}>
+                </div>
+                <div class="clearfix"></div>
+                <div class="form-group">
+                    <input type="text" name="location" class="form-control" placeholder="{{ "Code postal / Ville"|trans }}">
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="result-area">
+    <div class="header">
+        <h2 class="title"><strong class="result-length">{{ immeubles|length }}</strong> {{ 'Immeubles'|trans }}</h2>
+
+        <div class="display">
+            <label>{{ "Affichage par"|trans }} :</label>
+
+            <div class="select">
+                <a href="#" class="list active" data-target="list"></a>
+                <a href="#" class="grid-big" data-target="grid-big"></a>
+                <a href="#" class="grid-small hidden-xs" data-target="grid-small"></a>
+            </div>
+        </div>
+    </div>
+    <div class="content list">
+        <ul>
+            {% for infoImmeuble in immeubles %}
+
+                <li data-fuites="{% if infoImmeuble.NbFuites > 0 %}O{% else %}N{% endif %}"
+                    data-anomalies="{% if infoImmeuble.NbAnomalies > 0 %}O{% else %}N{% endif %}"
+                    data-dysfonctionnements="{% if infoImmeuble.NbDysfonctionnements > 0 %}O{% else %}N{% endif %}"
+                    data-depannages="{% if infoImmeuble.NbDepannages > 0 %}O{% else %}N{% endif %}"
+                    data-chantiers="{{ infoImmeuble.NbChantiers > 0 ? 'O' : 'N' }}"
+                    data-numero="{{ infoImmeuble.Immeuble.Numero }}"
+                    data-reference="{{ infoImmeuble.Immeuble.Ref }}"
+                    data-codepostal="{{ infoImmeuble.Immeuble.Cp }}"
+                    data-ville="{{ infoImmeuble.Immeuble.Ville }}"
+                    data-energieec="{% if infoImmeuble.NbCompteursEC > 0 %}O{% else %}N{% endif %}"
+                    data-energieef="{% if infoImmeuble.NbCompteursEF > 0 %}O{% else %}N{% endif %}"
+                    data-energiecet="{% if infoImmeuble.NbCompteursCET > 0 %}O{% else %}N{% endif %}"
+                    data-energierepart="{% if infoImmeuble.NbCompteursRepart > 0 %}O{% else %}N{% endif %}"
+                    data-energieelect="{% if infoImmeuble.NbCompteursElect > 0 %}O{% else %}N{% endif %}"
+                    data-energiegaz="{% if infoImmeuble.NbCompteursGaz > 0 %}O{% else %}N{% endif %}"
+                        >
+						
+						
+					{% if gestion is defined and gestion == true %}	
+						<a href="{{ path('TechemCoreBundle_GestionParc_logement', { pkImmeuble: infoImmeuble.Immeuble.PkImmeuble }) }}" class="image-wrapper">
+							<div class="image"><i class="icon-immeuble"></i>
+							</div>
+						</a>
+						<a href="{{ path('TechemCoreBundle_GestionParc_logement', { pkImmeuble: infoImmeuble.Immeuble.PkImmeuble }) }}" class="info-wrapper">
+					
+					{% else %}
+					
+						<a href="{{ path('TechemCoreBundle_Immeuble_show', {'pkImmeuble': infoImmeuble.Immeuble.PkImmeuble}) }}" class="image-wrapper">
+							<div class="image"><i class="icon-immeuble"></i>
+							</div>
+						</a>
+						<a href="{{ path('TechemCoreBundle_Immeuble_show', {'pkImmeuble': infoImmeuble.Immeuble.PkImmeuble}) }}" class="info-wrapper">
+						
+					{% endif %} 
+					
+					
+                        <div class="info">
+                            <div class="top">
+                                <div class="name">{{ 'Référence'|trans }} :</div>
+                                <div class="value">{{ infoImmeuble.Immeuble.Ref }}</div>
+                                <div class="name">{{ "N° d’immeuble"|trans }} :</div>
+                                <div class="value">{{ infoImmeuble.Immeuble.Numero }}</div>
+                            </div>
+                            <div class="bottom">
+                                {{ infoImmeuble.Immeuble.Adresse1 }} {{ infoImmeuble.Immeuble.Adresse2 }} {{ infoImmeuble.Immeuble.Adresse3 }}
+                                <br>
+                                {{ infoImmeuble.Immeuble.Cp }} {{ infoImmeuble.Immeuble.Ville }}
+                            </div>
+                        </div>
+                    </a>
+
+                    <div class="meter-wrapper">
+					
+						{% if gestion is defined and gestion == false or gestion is not defined %}
+						
+								<a href="{{ path('TechemCoreBundle_Immeuble_show', {'pkImmeuble': infoImmeuble.Immeuble.PkImmeuble}) }}" class="meter">
+									<div>
+										<i class="icons icon-water94"></i>
+										{% set NbCompteursEau = 0 %}
+										{% if  infoImmeuble.NbCompteursEC > 0 %}{% set NbCompteursEau = NbCompteursEau + infoImmeuble.NbCompteursEC %}{% endif %}
+										{% if  infoImmeuble.NbCompteursEF > 0 %}{% set NbCompteursEau = NbCompteursEau + infoImmeuble.NbCompteursEF %}{% endif %}
+										<span class="value">{{ NbCompteursEau }}</span>
+										<span class="unit">{{ "Eau"|trans }}</span>
+									</div>
+								</a>
+
+								<a href="{{ path('TechemCoreBundle_Immeuble_show', {'pkImmeuble': infoImmeuble.Immeuble.PkImmeuble}) }}" class="meter">
+									<div>
+										<i class="icons icon-squares36"></i>
+										<span class="value">{% if infoImmeuble.NbCompteursRepart > 0 %}{{ infoImmeuble.NbCompteursRepart }}{% else %}0{% endif %}</span>
+										<span class="unit">{{ 'Répartiteurs'|trans }}</span>
+									</div>
+								</a>
+
+								<a href="{{ path('TechemCoreBundle_Immeuble_show', {'pkImmeuble': infoImmeuble.Immeuble.PkImmeuble}) }}" class="meter">
+									<div>
+										<i class="icons icon-speedometer10"></i>
+										<span class="value">{% if infoImmeuble.NbCompteursCET > 0 %}{{ infoImmeuble.NbCompteursCET }}{% else %}0{% endif %}</span>
+										<span class="unit">{{ "Compteur d'énergie"|trans }}</span>
+									</div>
+								</a>
+								
+						{% endif %}
+                        
+						{% if app.token.attribute('soap.user').showChgtOccupant is defined and app.token.attribute('soap.user').showChgtOccupant == 1 and gestion is defined and gestion == true %}
+
+                            <a href="{{ path('TechemCoreBundle_GestionParc_logement', { pkImmeuble: infoImmeuble.Immeuble.PkImmeuble }) }}" class="meter"style="margin: 0.6%;">
+                                <div>
+                                    <i class="icons fa fa-file"></i>
+                                    <span class="unit">{{ 'Gérer les occupants'|trans }}</span>
+                                </div>
+                            </a>
+                        {% endif %}
+                    </div>
+                     {% if gestion is defined and gestion == false or gestion is not defined  %} 
+                        <div class="meta">
+                            {% if infoImmeuble.NbDysfonctionnements > 0 %}
+                                <a href="{{ path('TechemCoreBundle_Immeuble_listdysfunctions', {'pkImmeuble': infoImmeuble.Immeuble.PkImmeuble}) }}">
+                            {% endif %}
+                                <div class="item dys {% if infoImmeuble.NbDysfonctionnements > 0 %}orange{% endif %}">
+                                    <div class="wrapper">
+                                        <i class="icons icon-bell84"></i>
+                                    </div>
+                                </div>
+                            {% if infoImmeuble.NbDysfonctionnements > 0 %}
+                                </a>
+                            {% endif %}
+                            {% if infoImmeuble.NbDepannages > 0 %}
+                                <a href="{{ path('TechemCoreBundle_Immeuble_listinterventions', {'pkImmeuble': infoImmeuble.Immeuble.PkImmeuble}) }}">
+                            {% endif %}
+                                <div class="item dep {% if infoImmeuble.NbDepannages > 0 %}yellow{% endif %}">
+                                    <div class="wrapper">
+                                        <i class="icons icon-wrench44"></i>
+                                    </div>
+                                </div>
+                            {% if infoImmeuble.NbDepannages > 0 %}
+                                </a>
+                            {% endif %}
+                            {% if infoImmeuble.NbFuites > 0 %}
+                                <a href="{{ path('TechemCoreBundle_Immeuble_listleaks', {'pkImmeuble': infoImmeuble.Immeuble.PkImmeuble}) }}">
+                            {% endif %}
+                                <div class="item fui {% if infoImmeuble.NbFuites > 0 %}blue{% endif %}">
+                                    <div class="wrapper">
+                                        <i class="icons icon-water33"></i>
+                                    </div>
+                                </div>
+                            {% if infoImmeuble.NbFuites > 0 %}
+                                </a>
+                            {% endif %}
+                            {% if infoImmeuble.NbAnomalies > 0 %}
+                                <a href="{{ path('TechemCoreBundle_Immeuble_listanomalies', {'pkImmeuble': infoImmeuble.Immeuble.PkImmeuble}) }}">
+                            {% endif %}
+                                <div class="item ano {% if infoImmeuble.NbAnomalies > 0 %}red{% endif %}">
+                                    <div class="wrapper">
+                                        <i class="icons icon-caution"></i>
+                                    </div>
+                                </div>
+                            {% if infoImmeuble.NbAnomalies > 0 %}
+                            </a>
+                            {% endif %}
+                        </div>
+						
+						
+                    {% endif %}
+					
+					
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        var mapping_text = {
+            'reference': ['reference', 'numero'],
+            'location': ['codepostal', 'ville']
+        };
+
+        $('.buildingList .filters input[type=checkbox]').on('change', function () {
+            $('.buildingList .filters').trigger('data-change');
+        });
+
+        $('.buildingList .filters select').on('change', function () {
+            $('.buildingList .filters').trigger('data-change');
+        });
+
+        $('.buildingList .filters input[type=text]').on('keyup', function () {
+            $('.buildingList .filters').trigger('data-change');
+        });
+
+        $('.buildingList .filters').on('data-change', function () {
+            $('.loader').trigger('start');
+
+            var $items = $('.content li'),
+                    $filtered_items = $items,
+                    boolean_data = $('.buildingList .filters input[type=checkbox]').serializeArray(),
+                    text_data = $('.buildingList .filters input[type=text]').serializeArray();
+
+            if ($('.buildingList .filters select').val() != "") {
+                boolean_data.push({
+                    name: $('.buildingList .filters select').val(),
+                    value: 'on'
+                });
+            }
+
+            $.each(boolean_data, function (key, filter) {
+                $filtered_items = $filtered_items.filter(function () {
+                    return $(this).data(filter.name) === 'O';
+                });
+            });
+
+            $.each(text_data, function (key, filter) {
+                $filtered_items = $filtered_items.filter(function () {
+                    var me = $(this),
+                            test;
+
+                    if (mapping_text.hasOwnProperty(filter.name) && filter.value != '') {
+                        test = false;
+                        $.each(mapping_text[filter.name], function (key, name) {
+                            test |= me.attr('data-' + name).toLowerCase().indexOf(filter.value.toLowerCase()) === 0; // .data() try to convert values
+                        });
+
+                    } else {
+                        test = true;
+                    }
+
+                    return test;
+                });
+            });
+
+            $items.addClass('hidden');
+            $filtered_items.toggleClass('hidden');
+            $('.buildingList .result-length').text($filtered_items.length);
+            $('.loader').trigger('stop');
+        });
+
+        //$('.buildingList .filters').trigger('data-change');
+    });
+</script>

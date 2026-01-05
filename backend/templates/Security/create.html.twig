@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block body_classes %}
+    {{ parent() }}
+    create-page
+{% endblock %}
+
+{% block main_content %}
+
+    <div class="main-content">
+        <a href="{{ path('TechemCoreBundle_TableauBordClient_index') }}" class="logo">
+            <img src="{{ asset('bundles/techemcore/images/fidesio/logo.svg') }}"/>
+        </a>
+
+        <form action="{{ path('app_login') }}" method="post" class="form">
+            <h2 class="title">ENVOYER UN NOUVEAU MOT DE PASSE PAR COURRIER</h2>
+
+            <div class="form-group">
+            <input type="text" placeholder="Entreprise"/>
+            </div>
+
+            <div class="form-group">
+                <input type="text" placeholder="Nom *"/>
+            </div>
+
+            <div class="form-group">
+                <input type="text" placeholder="Prénom *"/>
+            </div>
+
+            <div class="form-group">
+                <input type="text" placeholder="Adresse *"/>
+            </div>
+
+            <div class="form-group">
+                <input type="text" placeholder="Complément d’adresse"/>
+            </div>
+
+            <div class="form-group">
+                <input type="text" placeholder="CP *" class="zip"/>
+
+                <input type="text" placeholder="Ville *" class="city"/>
+            </div>
+
+            <div class="form-group">
+                <input type="email" placeholder="Email *"/>
+            </div>
+
+            <input type="submit" name="login" value="VALIDER" class="submit" />
+        </form>
+    </div>
+
+{% endblock %}

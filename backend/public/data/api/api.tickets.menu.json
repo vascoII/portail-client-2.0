@@ -1,0 +1,8 @@
+{
+  "success": true,
+  "status": 200,
+  "data": {
+    "isTicketInterEnabled": true,
+    "nbTicketsInterUser": 948
+  }
+}
