@@ -8,12 +8,14 @@ parameters:
   debug_toolbar: true
   debug_redirects: false
   use_assetic_controller: true
-  # PREVIEW
+  # PREVIEW (DATA PROD)
   sopa_url: "http://techn5292.eu.techem.corp:8083/Main.asmx?wsdl"
-  # DEMO
+  # DEMO (DATA DEMO)
   #sopa_url: "http://techn5292.eu.techem.corp:8081/Main.asmx?wsdl"
-  # PROD
+  # PROD (DATA PROD)
   #sopa_url: "http://techn5292.eu.techem.corp/Main.asmx?wsdl"
+  # DEV (DATA DEV)
+  #sopa_url: "http://techn5292.eu.techem.corp:8082/Main.asmx?wsdl"
   adminSessionId: 0v728jqy-2cc0-4724-abc5-dbm1zwab9a3d
   superLoginID: "JOHN DOE"
   superPassword: DF93RN9F-SLJ528F

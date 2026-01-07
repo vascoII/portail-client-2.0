@@ -3,7 +3,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: backend_sandbox
+    container_name: backend_local
     working_dir: /var/www/backend
     volumes:
       - ./backend:/var/www/backend
@@ -16,13 +16,13 @@ services:
     build:
       context: .
       dockerfile: frontend/Dockerfile
-    container_name: frontend_sandbox
+    container_name: frontend_local
     working_dir: /usr/src/frontend
     volumes:
       - ./frontend:/usr/src/frontend
       - /usr/src/frontend/node_modules
     environment:
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_BASE_URL:-http://techl5599:8000/api}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8000/api}
     depends_on:
       - backend
     ports:
