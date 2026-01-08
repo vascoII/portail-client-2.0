@@ -414,7 +414,7 @@ class Client extends BaseClient
         return $result;
     }
 
-     /**
+    /**
      * Récupère les relevés d'un immeuble
      *
      * @param                                                       $pkImmeuble
@@ -464,10 +464,10 @@ class Client extends BaseClient
      *
      * @return mixed
      */
-    public function getFile($file )
+    public function getFile($file)
     {
-				
-		$request = (object) [
+
+        $request = (object) [
             'superLoginID'  => $this->superLoginID,
             'superPassword' => $this->superPassword,
             'FileName'      => $file,
@@ -1364,6 +1364,89 @@ class Client extends BaseClient
 
 
     /**
+     * Envoie un relevé occupant (formulaire public)
+     *
+     * Cette méthode reproduit le comportement du script legacy
+     * public/submit_contact.php en appelant directement le
+     * webservice SOAP setReleveOccupant avec les identifiants
+     * SuperLoginID / SuperPassword.
+     *
+     * @param array $data Données issues du formulaire
+     * @return mixed
+     */
+    public function setReleveOccupant(array $data)
+    {
+        // Récupération des champs, avec valeurs par défaut vides
+        $immeuble      = $data['immeuble']      ?? '';
+        $batiment      = $data['batiment']      ?? '';
+        $escalier      = $data['escalier']      ?? '';
+        $etage         = $data['etage']         ?? '';
+        $date_passage  = $data['date_passage']  ?? '';
+        $prenom        = $data['prenom']        ?? '';
+        $nom           = $data['nom']           ?? '';
+        $adresse       = $data['adresse']       ?? '';
+        $code_postal   = $data['code_postal']   ?? '';
+        $ville         = $data['ville']         ?? '';
+        $telephone     = $data['telephone']     ?? '';
+        $email         = $data['email']         ?? '';
+
+        $ef_cuisine        = $data['ef_cuisine']        ?? '';
+        $ef_salle_de_bains = $data['ef_salle_de_bains'] ?? '';
+        $ef_wc             = $data['ef_wc']             ?? '';
+        $ef_autre          = $data['ef_autre']          ?? '';
+        $ef_nomautre       = $data['ef_nomautre']       ?? '';
+
+        $ec_cuisine        = $data['ec_cuisine']        ?? '';
+        $ec_salle_de_bains = $data['ec_salle_de_bains'] ?? '';
+        $ec_wc             = $data['ec_wc']             ?? '';
+        $ec_autre          = $data['ec_autre']          ?? '';
+        $ec_nomautre       = $data['ec_nomautre']       ?? '';
+
+        $ef_cuisine_num        = $data['ef_cuisine_num']        ?? '';
+        $ef_salle_de_bains_num = $data['ef_salle_de_bains_num'] ?? '';
+        $ef_wc_num             = $data['ef_wc_num']             ?? '';
+        $ef_autre_num          = $data['ef_autre_num']          ?? '';
+        $ec_cuisine_num        = $data['ec_cuisine_num']        ?? '';
+        $ec_salle_de_bains_num = $data['ec_salle_de_bains_num'] ?? '';
+        $ec_wc_num             = $data['ec_wc_num']             ?? '';
+        $ec_autre_num          = $data['ec_autre_num']          ?? '';
+
+        // Construction des paramètres attendus par le webservice SOAP
+        $request = (object) [
+            'SuperLoginID'  => $this->superLoginID,
+            'SuperPassword' => $this->superPassword,
+            'immeuble'      => $immeuble,
+            'batiment'      => $batiment,
+            'escalier'      => $escalier,
+            'etage'         => $etage,
+            'date_passage'  => $date_passage,
+            'prenom'        => $prenom,
+            'nom'           => $nom,
+            'adresse'       => $adresse,
+            'code_postal'   => $code_postal,
+            'ville'         => $ville,
+            'telephone'     => $telephone,
+            'email'         => $email,
+            // Eau froide
+            'ef_cuisine'         => 'Numéro de compteur : ' . $ef_cuisine_num        . ' - Index : ' . $ef_cuisine,
+            'ef_salle_de_bains'  => 'Numéro de compteur : ' . $ef_salle_de_bains_num . ' - Index : ' . $ef_salle_de_bains,
+            'ef_wc'              => 'Numéro de compteur : ' . $ef_wc_num             . ' - Index : ' . $ef_wc,
+            'ef_autre'           => 'Numéro de compteur : ' . $ef_autre_num          . ' - Index : ' . $ef_autre,
+            'ef_nomautre'        => $ef_nomautre,
+            // Eau chaude
+            'ec_cuisine'         => 'Numéro de compteur : ' . $ec_cuisine_num        . ' - Index : ' . $ec_cuisine,
+            'ec_salle_de_bains'  => 'Numéro de compteur : ' . $ec_salle_de_bains_num . ' - Index : ' . $ec_salle_de_bains,
+            'ec_wc'              => 'Numéro de compteur : ' . $ec_wc_num             . ' - Index : ' . $ec_wc,
+            'ec_autre'           => 'Numéro de compteur : ' . $ec_autre_num          . ' - Index : ' . $ec_autre,
+            'ec_nomautre'        => $ec_nomautre,
+        ];
+
+        // Appel du webservice SOAP setReleveOccupant
+        return $this->sendRequest('setReleveOccupant', $request, false, false);
+    }
+
+
+    /**
      * setOccupants4Chgt
      *
      * @param object $occupant The occupant want to update.
@@ -1373,13 +1456,13 @@ class Client extends BaseClient
     public function setOccupants4Chgt($PkOccupant, $data, $IsNew)
     {
         if (isset($data['email'])) {
-			$newEmail = $data['email'];
-			$occupantToUpdate = [
-				'PkOccupant'=> (int)$PkOccupant,
-				'newEmail' 	=> $newEmail,
-				'isNew'		=> $IsNew
-			];
-		}
+            $newEmail = $data['email'];
+            $occupantToUpdate = [
+                'PkOccupant' => (int)$PkOccupant,
+                'newEmail'     => $newEmail,
+                'isNew'        => $IsNew
+            ];
+        }
 
         if (isset($data['phone'])) {
             $occupantToUpdate['newTelmobile'] = $data['phone'];
@@ -1397,7 +1480,7 @@ class Client extends BaseClient
 
         if (isset($data['name'])) {
             $occupantToUpdate['newNom'] = $data['name'];
-        } 
+        }
 
         $listOccupant = (object)[
             'occupant4Chgt' => (object)$occupantToUpdate,
@@ -1407,7 +1490,7 @@ class Client extends BaseClient
             'SessionID' => $this->getSessionId(),
             'PkUser' => (int)$this->getPkUser(),
             'occupants' => $listOccupant,
-			'isNew'		 => $IsNew,
+            'isNew'         => $IsNew,
         ];
 
         return $this->sendRequest('setOccupants4Chgt', $request, false, true);
@@ -1428,7 +1511,7 @@ class Client extends BaseClient
             'PkUser'     => (int) $this->getPkUser(),
             'PkImmeuble' => (int) $pkImmeuble,
             'PkOccupant' => (int) $pkOccupant,
-			'isNew'		 => $IsNew,
+            'isNew'         => $IsNew,
         ];
         return $this->sendRequest('getOccupants4Chgt', $request, false, true);
     }
@@ -1453,10 +1536,10 @@ class Client extends BaseClient
 
         return $this->sendRequest('SetSeuilConso', $request);
     }
-	
-	public function getSousTraitants($params = null, $use_cache = false)
+
+    public function getSousTraitants($params = null, $use_cache = false)
     {
-		
+
         $request =  [
             //'SessionID' => $this->adminSessionId,
             'SuperLoginID'  => $this->superLoginID,
@@ -1468,24 +1551,24 @@ class Client extends BaseClient
 
         return $this->sendRequest('GetSousTraitants',  $request, false);
     }
-	
+
     public function getStatOccupants($params = null, $use_cache = false)
     {
-		$modelgraph = 'CONNEXIONS_UNIQUES';
-		//$modelgraph = 'CONNEXIONS_TOTALES';
-		
+        $modelgraph = 'CONNEXIONS_UNIQUES';
+        //$modelgraph = 'CONNEXIONS_TOTALES';
+
         $request = [
             'SessionID'     => $this->getSessionId(),
-            'PkUser'     	=> (int) $this->getPkUser(),
-            'typeGraph' 	=> $modelgraph,
-            'startDate' 	=> '',
-			'endDate'		=> '',
+            'PkUser'         => (int) $this->getPkUser(),
+            'typeGraph'     => $modelgraph,
+            'startDate'     => '',
+            'endDate'        => '',
         ];
-		
+
         return $this->sendRequest('GetStatOccupantsGraph', $request, false);
     }
-	
-	/**
+
+    /**
      * Récupère les relevés par token
      *
      * @param $tokenId
@@ -1500,16 +1583,12 @@ class Client extends BaseClient
 
         return $this->sendRequest('GetReportByToken', $request, false, false);
 
-//        $request = (object) [
-//            'SessionID'     => "54ea1174-b2f9-4472-bfb6-93ebe19d596b",
-//            'PkUser'        => 1043,
-//            'ReportType'    => "RELEVE_EAU_IMMEUBLE",
-//            'ParamsFiltres' => "PKRELEVE=1395235",
-//        ];
-//        return  $this->sendRequest('GetReport', $request, false, false);
+        //        $request = (object) [
+        //            'SessionID'     => "54ea1174-b2f9-4472-bfb6-93ebe19d596b",
+        //            'PkUser'        => 1043,
+        //            'ReportType'    => "RELEVE_EAU_IMMEUBLE",
+        //            'ParamsFiltres' => "PKRELEVE=1395235",
+        //        ];
+        //        return  $this->sendRequest('GetReport', $request, false, false);
     }
-    
-
-
-	
 }

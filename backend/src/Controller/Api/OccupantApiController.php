@@ -612,6 +612,45 @@ class OccupantApiController extends AbstractApiController
     }
 
     /**
+     * Submit water meter reading (public endpoint, no authentication required)
+     * POST /api/occupant/releve
+     */
+    #[Route("/releve", name: "releve", methods: ["POST"])]
+    public function submitReleve(Request $request): JsonResponse
+    {
+        // Endpoint public : pas d'authentification requise
+        $data = $request->request->all();
+
+        // Validation des champs obligatoires (mêmes que submit_contact.php)
+        $requiredFields = [
+            'immeuble',
+            'date_passage',
+            'prenom',
+            'nom',
+            'adresse',
+            'code_postal',
+            'ville',
+            'telephone',
+            'email',
+        ];
+
+        foreach ($requiredFields as $field) {
+            if (empty($data[$field])) {
+                return $this->error("Le champ '$field' est requis", 400);
+            }
+        }
+
+        try {
+            // Délègue l'appel SOAP au service Client (setReleveOccupant)
+            $this->client->setReleveOccupant($data);
+
+            return $this->success(['success' => true], 'Relevé transmis avec succès', 200);
+        } catch (\Exception $e) {
+            return $this->error('Erreur lors de l\'envoi du relevé: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
      * Get my account information
      */
     #[Route("/{fk}/my-account", name: "my_account", methods: ["GET", "POST"])]
