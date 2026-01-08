@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { api, extractApiData, handleApiError } from "@/lib/api/client";
 import { getStaleTimeUntilMidnight } from "@/lib/utils/cache";
 import type {
@@ -63,6 +63,57 @@ export interface OccupantAlertesResponse {
 export interface UpdateAlertesParams {
   SEUIL_CONSO_ACTIF?: boolean; // Will be converted to 'O' or 'N'
   [key: string]: any;
+}
+
+/**
+ * Request data for submitting a water meter reading
+ */
+export interface ReleveOccupantRequest {
+  // Informations Immeuble
+  numeroImmeuble: string;
+  batiment?: string;
+  escalier?: string;
+  etage?: string;
+  datePassage: string;
+
+  // Informations Occupant
+  prenom: string;
+  nom: string;
+  adresse: string;
+  codePostal: string;
+  ville: string;
+  telephone: string;
+  email: string;
+
+  // Compteurs Eau Froide
+  cuisine_ef_num?: string;
+  cuisine_ef?: number;
+  salleDeBains_ef_num?: string;
+  salleDeBains_ef?: number;
+  wc_ef_num?: string;
+  wc_ef?: number;
+  autreEmplacement_ef_loc?: string;
+  autreEmplacement_ef_num?: string;
+  autreEmplacement_ef?: number;
+
+  // Compteurs Eau Chaude
+  cuisine_ec_num?: string;
+  cuisine_ec?: number;
+  salleDeBains_ec_num?: string;
+  salleDeBains_ec?: number;
+  wc_ec_num?: string;
+  wc_ec?: number;
+  autreEmplacement_ec_loc?: string;
+  autreEmplacement_ec_num?: string;
+  autreEmplacement_ec?: number;
+}
+
+/**
+ * Response from submitting a water meter reading
+ */
+export interface ReleveOccupantResponse {
+  success: boolean;
+  message?: string;
 }
 
 /**
@@ -639,6 +690,81 @@ export function useOccupant(fkUser?: string | number | null) {
     }
   };
 
+  /**
+   * Submit water meter reading mutation
+   * POST /api/occupant/releve
+   * @param data - Water meter reading data
+   * @returns Promise with success/error response
+   */
+  const setReleveOccupantMutation = useMutation({
+    mutationFn: async (
+      data: ReleveOccupantRequest
+    ): Promise<ReleveOccupantResponse> => {
+      // Préparer les données selon le format attendu par l'API
+      const formData = new FormData();
+      
+      // Informations Immeuble
+      formData.append("immeuble", data.numeroImmeuble);
+      if (data.batiment) formData.append("batiment", data.batiment);
+      if (data.escalier) formData.append("escalier", data.escalier);
+      if (data.etage) formData.append("etage", data.etage);
+      formData.append("date_passage", data.datePassage);
+
+      // Informations Occupant
+      formData.append("prenom", data.prenom);
+      formData.append("nom", data.nom);
+      formData.append("adresse", data.adresse);
+      formData.append("code_postal", data.codePostal);
+      formData.append("ville", data.ville);
+      formData.append("telephone", data.telephone);
+      formData.append("email", data.email);
+
+      // Compteurs Eau Froide
+      if (data.cuisine_ef_num) formData.append("ef_cuisine_num", data.cuisine_ef_num);
+      if (data.cuisine_ef && data.cuisine_ef > 0) formData.append("ef_cuisine", String(data.cuisine_ef));
+      if (data.salleDeBains_ef_num) formData.append("ef_salle_de_bains_num", data.salleDeBains_ef_num);
+      if (data.salleDeBains_ef && data.salleDeBains_ef > 0) formData.append("ef_salle_de_bains", String(data.salleDeBains_ef));
+      if (data.wc_ef_num) formData.append("ef_wc_num", data.wc_ef_num);
+      if (data.wc_ef && data.wc_ef > 0) formData.append("ef_wc", String(data.wc_ef));
+      if (data.autreEmplacement_ef_loc) formData.append("ef_nomautre", data.autreEmplacement_ef_loc);
+      if (data.autreEmplacement_ef_num) formData.append("ef_autre_num", data.autreEmplacement_ef_num);
+      if (data.autreEmplacement_ef && data.autreEmplacement_ef > 0) formData.append("ef_autre", String(data.autreEmplacement_ef));
+
+      // Compteurs Eau Chaude
+      if (data.cuisine_ec_num) formData.append("ec_cuisine_num", data.cuisine_ec_num);
+      if (data.cuisine_ec && data.cuisine_ec > 0) formData.append("ec_cuisine", String(data.cuisine_ec));
+      if (data.salleDeBains_ec_num) formData.append("ec_salle_de_bains_num", data.salleDeBains_ec_num);
+      if (data.salleDeBains_ec && data.salleDeBains_ec > 0) formData.append("ec_salle_de_bains", String(data.salleDeBains_ec));
+      if (data.wc_ec_num) formData.append("ec_wc_num", data.wc_ec_num);
+      if (data.wc_ec && data.wc_ec > 0) formData.append("ec_wc", String(data.wc_ec));
+      if (data.autreEmplacement_ec_loc) formData.append("ec_nomautre", data.autreEmplacement_ec_loc);
+      if (data.autreEmplacement_ec_num) formData.append("ec_autre_num", data.autreEmplacement_ec_num);
+      if (data.autreEmplacement_ec && data.autreEmplacement_ec > 0) formData.append("ec_autre", String(data.autreEmplacement_ec));
+
+      const response = await api.post<ReleveOccupantResponse>(
+        "/occupant/releve",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return extractApiData<ReleveOccupantResponse>(response);
+    },
+  });
+
+  /**
+   * Submit water meter reading
+   * @param data - Water meter reading data
+   * @returns Promise with success/error response
+   */
+  const setReleveOccupant = async (
+    data: ReleveOccupantRequest
+  ): Promise<ReleveOccupantResponse> => {
+    return setReleveOccupantMutation.mutateAsync(data);
+  };
+
   return {
     getOccupantLogement,
     getSimulator,
@@ -655,6 +781,7 @@ export function useOccupant(fkUser?: string | number | null) {
     getEauReleve,
     getRepartReleve,
     getNoteReleve,
+    setReleveOccupant,
 
     occupantLogementData: getOccupantLogementQuery.data,
     occupantLogementIsLoading: getOccupantLogementQuery.isLoading,
@@ -678,6 +805,11 @@ export function useOccupant(fkUser?: string | number | null) {
     dysfonctionnementsIsLoading: getDysfonctionnementsQuery.isLoading,
     dysfonctionnementsError: getDysfonctionnementsQuery.error
       ? handleApiError(getDysfonctionnementsQuery.error)
+      : null,
+
+    isSubmittingReleve: setReleveOccupantMutation.isPending,
+    releveError: setReleveOccupantMutation.error
+      ? handleApiError(setReleveOccupantMutation.error)
       : null,
 
     getInterventionQuery,
