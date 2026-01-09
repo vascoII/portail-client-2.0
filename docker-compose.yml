@@ -1,4 +1,18 @@
 services:
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx_sandbox
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./backend:/var/www/backend:ro
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
   backend:
     build:
       context: ./backend
@@ -7,10 +21,14 @@ services:
     working_dir: /var/www/backend
     volumes:
       - ./backend:/var/www/backend
+      - vendor:/var/www/backend/vendor 
     environment:
       - APP_ENV=dev
     ports:
-      - "${BACKEND_PORT:-8000}:8000"
+      - "${BACKEND_PORT:-8000}:8000"   # si tu utilises symfony cli/http server ou un nginx interne
+    networks:
+      - app-network
+
 
   frontend:
     build:
@@ -22,8 +40,30 @@ services:
       - ./frontend:/usr/src/frontend
       - /usr/src/frontend/node_modules
     environment:
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_BASE_URL:-http://techl5599:8000/api}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_BASE_URL:-https://portail.techem.fr/api}
     depends_on:
       - backend
     ports:
       - "${FRONTEND_PORT:-3000}:3000"
+    networks:
+      - app-network
+
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer_local
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+        #    networks:
+        #- app-network
+
+
+volumes:
+  vendor:
+  portainer_data:
+
+networks:
+  app-network:
+    driver: bridge

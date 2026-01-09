@@ -343,9 +343,12 @@ class BaseClient
 
         $resultName = $name . 'Result';
 		
+        if ($name == "setReleveOccupant") {
+            return true;
+        }
 
         if (!isset($response->{$resultName})) {
-			throw new RuntimeException($name . ' fail.'.$errresponse);
+			throw new RuntimeException($name . ' fail.'.$response);
         }
 
         $result = $response->{$resultName};

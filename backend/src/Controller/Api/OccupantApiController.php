@@ -619,7 +619,7 @@ class OccupantApiController extends AbstractApiController
     public function submitReleve(Request $request): JsonResponse
     {
         // Endpoint public : pas d'authentification requise
-        $data = $request->request->all();
+        $data = json_decode($request->getContent(), true);
 
         // Validation des champs obligatoires (mêmes que submit_contact.php)
         $requiredFields = [

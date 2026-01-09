@@ -2,7 +2,7 @@ import ResetPasswordForm from "@/components/techem/security/form/reset-password"
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Reset Password | TECHEM - Espace client",
+  title: "Réinitialiser le mot de passe | TECHEM - Espace client",
   description: "Reset your password",
 };
 

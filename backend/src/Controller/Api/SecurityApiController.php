@@ -228,9 +228,9 @@ class SecurityApiController extends AbstractApiController
 
         try {
             $this->client->resetPasswordFromEmail($email);
-            return $this->success(null, 'Email de réinitialisation du mot de passe envoyé avec succès');
+            return $this->success(null, 'Password reset email sent successfully');
         } catch (\Exception $e) {
-            return $this->error('Une erreur s\'est produite lors de l\'envoi de l\'e-mail de réinitialisation du mot de passe.', 500);
+            return $this->error('An error occurred while sending the password reset email', 500);
         }
     }
 

@@ -149,7 +149,7 @@ export default function LoginForm() {
                 <Alert
                   variant="error"
                   title="Erreur de connexion"
-                  message="La connexion a échoué. Veuillez vérifier vos identifiants."
+                  message={displayError}
                 />
               </div>
             )}

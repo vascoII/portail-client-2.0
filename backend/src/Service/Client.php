@@ -1376,69 +1376,34 @@ class Client extends BaseClient
      */
     public function setReleveOccupant(array $data)
     {
-        // Récupération des champs, avec valeurs par défaut vides
-        $immeuble      = $data['immeuble']      ?? '';
-        $batiment      = $data['batiment']      ?? '';
-        $escalier      = $data['escalier']      ?? '';
-        $etage         = $data['etage']         ?? '';
-        $date_passage  = $data['date_passage']  ?? '';
-        $prenom        = $data['prenom']        ?? '';
-        $nom           = $data['nom']           ?? '';
-        $adresse       = $data['adresse']       ?? '';
-        $code_postal   = $data['code_postal']   ?? '';
-        $ville         = $data['ville']         ?? '';
-        $telephone     = $data['telephone']     ?? '';
-        $email         = $data['email']         ?? '';
-
-        $ef_cuisine        = $data['ef_cuisine']        ?? '';
-        $ef_salle_de_bains = $data['ef_salle_de_bains'] ?? '';
-        $ef_wc             = $data['ef_wc']             ?? '';
-        $ef_autre          = $data['ef_autre']          ?? '';
-        $ef_nomautre       = $data['ef_nomautre']       ?? '';
-
-        $ec_cuisine        = $data['ec_cuisine']        ?? '';
-        $ec_salle_de_bains = $data['ec_salle_de_bains'] ?? '';
-        $ec_wc             = $data['ec_wc']             ?? '';
-        $ec_autre          = $data['ec_autre']          ?? '';
-        $ec_nomautre       = $data['ec_nomautre']       ?? '';
-
-        $ef_cuisine_num        = $data['ef_cuisine_num']        ?? '';
-        $ef_salle_de_bains_num = $data['ef_salle_de_bains_num'] ?? '';
-        $ef_wc_num             = $data['ef_wc_num']             ?? '';
-        $ef_autre_num          = $data['ef_autre_num']          ?? '';
-        $ec_cuisine_num        = $data['ec_cuisine_num']        ?? '';
-        $ec_salle_de_bains_num = $data['ec_salle_de_bains_num'] ?? '';
-        $ec_wc_num             = $data['ec_wc_num']             ?? '';
-        $ec_autre_num          = $data['ec_autre_num']          ?? '';
-
         // Construction des paramètres attendus par le webservice SOAP
-        $request = (object) [
+        $request = [
             'SuperLoginID'  => $this->superLoginID,
             'SuperPassword' => $this->superPassword,
-            'immeuble'      => $immeuble,
-            'batiment'      => $batiment,
-            'escalier'      => $escalier,
-            'etage'         => $etage,
-            'date_passage'  => $date_passage,
-            'prenom'        => $prenom,
-            'nom'           => $nom,
-            'adresse'       => $adresse,
-            'code_postal'   => $code_postal,
-            'ville'         => $ville,
-            'telephone'     => $telephone,
-            'email'         => $email,
+            'immeuble'      => $data['immeuble'] ?? '',
+            'batiment'      => $data['batiment'] ?? '',
+            'escalier'      => $data['escalier'] ?? '',
+            'etage'         => $data['etage'] ?? '',
+            'date_passage'  => $data['date_passage']  ?? '',
+            'prenom'        => $data['prenom'] ?? '',
+            'nom'           => $data['nom'] ?? '',
+            'adresse'       => $data['adresse'] ?? '',
+            'code_postal'   =>  $data['code_postal']   ?? '',
+            'ville'         => $data['ville']         ?? '',
+            'telephone'     => $data['telephone']     ?? '',
+            'email'         => $data['email']         ?? '',
             // Eau froide
-            'ef_cuisine'         => 'Numéro de compteur : ' . $ef_cuisine_num        . ' - Index : ' . $ef_cuisine,
-            'ef_salle_de_bains'  => 'Numéro de compteur : ' . $ef_salle_de_bains_num . ' - Index : ' . $ef_salle_de_bains,
-            'ef_wc'              => 'Numéro de compteur : ' . $ef_wc_num             . ' - Index : ' . $ef_wc,
-            'ef_autre'           => 'Numéro de compteur : ' . $ef_autre_num          . ' - Index : ' . $ef_autre,
-            'ef_nomautre'        => $ef_nomautre,
+            'ef_cuisine'         => 'Numéro de compteur : ' . $data['ef_cuisine_num'] ?? ''        . ' - Index : ' . $data['ef_cuisine'] ?? '',
+            'ef_salle_de_bains'  => 'Numéro de compteur : ' . $data['ef_salle_de_bains_num'] ?? '' . ' - Index : ' . $data['ef_salle_de_bains'] ?? '',
+            'ef_wc'              => 'Numéro de compteur : ' . $data['ef_wc_num'] ?? ''             . ' - Index : ' . $data['ef_wc'] ?? '',
+            'ef_autre'           => 'Numéro de compteur : ' . $data['ef_autre_num'] ?? ''          . ' - Index : ' . $data['ef_autre'] ?? '',
+            'ef_nomautre'        => $data['ef_nomautre'] ?? '',
             // Eau chaude
-            'ec_cuisine'         => 'Numéro de compteur : ' . $ec_cuisine_num        . ' - Index : ' . $ec_cuisine,
-            'ec_salle_de_bains'  => 'Numéro de compteur : ' . $ec_salle_de_bains_num . ' - Index : ' . $ec_salle_de_bains,
-            'ec_wc'              => 'Numéro de compteur : ' . $ec_wc_num             . ' - Index : ' . $ec_wc,
-            'ec_autre'           => 'Numéro de compteur : ' . $ec_autre_num          . ' - Index : ' . $ec_autre,
-            'ec_nomautre'        => $ec_nomautre,
+            'ec_cuisine'         => 'Numéro de compteur : ' . $data['ec_cuisine_num'] ?? ''        . ' - Index : ' . $data['ec_cuisine'] ?? '',
+            'ec_salle_de_bains'  => 'Numéro de compteur : ' . $data['ec_salle_de_bains_num'] ?? '' . ' - Index : ' . $data['ec_salle_de_bains'] ?? '',
+            'ec_wc'              => 'Numéro de compteur : ' . $data['ec_wc_num'] ?? ''             . ' - Index : ' . $data['ec_wc'] ?? '',
+            'ec_autre'           => 'Numéro de compteur : ' . $data['ec_autre_num'] ?? ''          . ' - Index : ' . $data['ec_autre'] ?? '',
+            'ec_nomautre'        => $data['ec_nomautre'] ?? ''
         ];
 
         // Appel du webservice SOAP setReleveOccupant
