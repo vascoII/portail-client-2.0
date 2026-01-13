@@ -324,26 +324,26 @@ class OperatorApiController extends AbstractApiController
             $params->NBFUITES = true;
             $params->NBCOMPTEURS = true;
 
+            $availableImmeublesNumbers = [];
+            $availableImmeubles = $client->getMyImmeubles($params);
+            foreach ($availableImmeubles as $immeuble) {
+                $availableImmeublesNumbers[] = $immeuble->Immeuble->PkImmeuble;
+            }
+            
+            $assignedImmeublesNumbers = [];
             $assignedImmeubles = $client->getImmeubles($id, $params, false);
-            $listImmeubles = [];
-
-            $data = json_decode($request->getContent(), true);
-            $all = $data['all'] ?? $request->query->get('all', '0') === '1';
-
-            if ($all) {
-                $availableImmeubles = $client->getMyImmeubles($params);
-                foreach ($availableImmeubles as $immeuble) {
-                    $listImmeubles[] = $immeuble->Immeuble->PkImmeuble;
-                }
-            } else {
-                foreach ($assignedImmeubles as $immeuble) {
-                    $listImmeubles[] = $immeuble->Immeuble->PkImmeuble;
-                }
-
-                $newImmeubles = $data['immeubles'] ?? json_decode($request->get('immeubles', '[]'), true);
-                $listImmeubles = array_unique(array_merge($listImmeubles, $newImmeubles));
+            foreach ($assignedImmeubles as $immeuble) {
+                $assignedImmeublesNumbers[] = $immeuble->Immeuble->PkImmeuble;
             }
 
+            $data = json_decode($request->getContent(), true);
+            $dataImmeubles = (string) $data['immeubles'] ?? null;
+            $desiredImmeubles = json_decode($dataImmeubles, true);
+            $desiredImmeubles = array_map('intval', $desiredImmeubles);
+       
+            // To be added and remove duplicates
+            $listImmeubles = array_unique(array_merge($desiredImmeubles, $assignedImmeublesNumbers));
+           
             $result = $client->setImmeubles($id, implode('|', $listImmeubles));
 
             if (isset($result->Erreur) && !empty($result->Erreur)) {
@@ -383,26 +383,19 @@ class OperatorApiController extends AbstractApiController
             $params->NBFUITES = true;
             $params->NBCOMPTEURS = true;
 
-            $availableImmeubles = $client->getMyImmeubles($params);
+            $assignedImmeublesNumbers = [];
             $assignedImmeubles = $client->getImmeubles($id, $params, false);
-            $listImmeubles = [];
+            foreach ($assignedImmeubles as $immeuble) {
+                $assignedImmeublesNumbers[] = $immeuble->Immeuble->PkImmeuble;
+            }
 
             $data = json_decode($request->getContent(), true);
-            $all = $data['all'] ?? $request->query->get('all', '0') === '1';
+            $dataImmeubles = (string) $data['immeubles'] ?? null;
+            $undesiredImmeubles = json_decode($dataImmeubles, true);
+            $undesiredImmeubles = array_map('intval', $undesiredImmeubles);
 
-            if (!$all) {
-                foreach ($assignedImmeubles as $immeuble) {
-                    $listImmeubles[] = $immeuble->Immeuble->PkImmeuble;
-                }
-
-                $removeImmeubles = $data['immeubles'] ?? json_decode($request->get('immeubles', '[]'), true);
-
-                foreach ($removeImmeubles as $immeuble) {
-                    if (($key = array_search($immeuble, $listImmeubles)) !== false) {
-                        unset($listImmeubles[$key]);
-                    }
-                }
-            }
+            // Step 1 : We remove those who have already been assigned
+            $listImmeubles = array_diff($assignedImmeublesNumbers, $undesiredImmeubles);
 
             $result = $client->setImmeubles($id, implode('|', $listImmeubles));
 
@@ -411,13 +404,9 @@ class OperatorApiController extends AbstractApiController
             }
 
             $result = $client->getImmeubles($id, $params, false);
-            $diffImmeubles = array_filter($availableImmeubles, function ($immeuble) use ($result) {
-                return !in_array($immeuble, $result);
-            });
-
             return $this->success([
                 'immeubles' => $this->normalize($result),
-                'diffImmeubles' => $this->normalize($diffImmeubles),
+                'diffImmeubles' => "", 
             ], 'Buildings removed successfully');
         } catch (\Exception $e) {
             return $this->error('Error removing buildings: ' . $e->getMessage(), 500);

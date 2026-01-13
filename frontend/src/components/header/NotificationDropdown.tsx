@@ -99,7 +99,7 @@ export default function NotificationDropdown() {
                 <span className="flex items-center gap-2 text-gray-500 text-theme-xs dark:text-gray-400">
                   <span>Techem France</span>
                   <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
-                  <span>01/12/2025</span>
+                  <span>01/01/2026</span>
                 </span>
               </span>
             </DropdownItem>
