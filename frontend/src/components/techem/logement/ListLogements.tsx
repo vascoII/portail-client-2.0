@@ -2,6 +2,7 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { FaFaucet, FaFire, FaChartBar, FaBolt } from "react-icons/fa";
 import StatusIconsAlerte from '@/components/techem/images/StatusIconsAlerte';
 import StatusIconsAnomalie from '@/components/techem/images/StatusIconsAnomalie';
 import StatusIconsDysfonctionnement from '@/components/techem/images/StatusIconsDysfonctionnement';
@@ -17,9 +18,6 @@ import { useLogements, FilterLogementsResponse } from "@/lib/hooks/useLogements"
 import { useExport } from "@/lib/hooks/useExport";
 import Alert from "@/components/ui/alert/Alert";
 import type { Housing, Device } from "@/lib/types/api";
-import EquipementIconsEau from "@/components/techem/images/EquipementIconsEau";
-import EquipementIconsRepartiteur from "@/components/techem/images/EquipementIconsRepartiteur";
-import EquipementIconsCompteur from "@/components/techem/images/EquipementIconsCompteur";
 import { Modal } from "@/components/ui/modal";
 import { useModal } from "@/hooks/useModal";
 import AppareilsTable from "./AppareilsTable";
@@ -473,7 +471,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                   className="py-3 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400"
                 >
                   <div className="flex items-center justify-center gap-2">
-                    <EquipementIconsEau size={16} className="text-gray-400 dark:text-gray-500" />
+                    <FaFaucet className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                     <span>Eau</span>
                   </div>
                 </TableCell>
@@ -482,7 +480,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                   className="py-3 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400"
                 >
                   <div className="flex items-center justify-center gap-2">
-                    <EquipementIconsRepartiteur size={16} className="text-gray-400 dark:text-gray-500" />
+                    <FaChartBar className="w-4 h-4 text-purple-600 dark:text-purple-400" />
                     <span>Répartiteurs</span>
                   </div>
                 </TableCell>
@@ -491,7 +489,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                   className="py-3 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400"
                 >
                   <div className="flex items-center justify-center gap-2">
-                    <EquipementIconsCompteur size={16} className="text-gray-400 dark:text-gray-500" />
+                    <FaBolt className="w-4 h-4 text-green-600 dark:text-green-400" />
                     <span>Compteurs d&apos;énergie</span>
                   </div>
                 </TableCell>
@@ -589,7 +587,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                     <TableCell className="py-3 text-center">
                       <div className="flex items-center justify-center gap-2">
                         <span
-                          className={`text-theme-sm ${nbCompteursEF + nbCompteursEC > 0 ? "text-green-500 dark:text-green-400 cursor-pointer hover:underline" : "text-gray-500 dark:text-gray-400"}`}
+                          className={`text-theme-sm ${nbCompteursEF + nbCompteursEC > 0 ? "text-blue-600 dark:text-blue-400 cursor-pointer hover:underline" : "text-gray-500 dark:text-gray-400"}`}
                           onClick={(e) => {
                             if (nbCompteursEF + nbCompteursEC > 0) {
                               handleOpenAppareilsModal(e, pkLogement, "eau", logement);
@@ -603,7 +601,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                             className="cursor-pointer"
                             onClick={(e) => handleOpenAppareilsModal(e, pkLogement, "eau", logement)}
                           >
-                            <EquipementIconsEau size={16} className="text-green-500 dark:text-green-400" />
+                            <FaFaucet className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                           </div>
                         )}
                       </div>
@@ -611,7 +609,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                     <TableCell className="py-3 text-center">
                       <div className="flex items-center justify-center gap-2">
                         <span
-                          className={`text-theme-sm ${nbCompteursRepart > 0 ? "text-green-500 dark:text-green-400 cursor-pointer hover:underline" : "text-gray-500 dark:text-gray-400"}`}
+                          className={`text-theme-sm ${nbCompteursRepart > 0 ? "text-purple-600 dark:text-purple-400 cursor-pointer hover:underline" : "text-gray-500 dark:text-gray-400"}`}
                           onClick={(e) => {
                             if (nbCompteursRepart > 0) {
                               handleOpenAppareilsModal(e, pkLogement, "chauffage", logement);
@@ -625,7 +623,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                             className="cursor-pointer"
                             onClick={(e) => handleOpenAppareilsModal(e, pkLogement, "chauffage", logement)}
                           >
-                            <EquipementIconsRepartiteur size={16} className="text-green-500 dark:text-green-400" />
+                            <FaChartBar className="w-4 h-4 text-purple-600 dark:text-purple-400" />
                           </div>
                         )}
                       </div>
@@ -633,7 +631,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                     <TableCell className="py-3 text-center">
                       <div className="flex items-center justify-center gap-2">
                         <span
-                          className={`text-theme-sm ${nbCompteursCET > 0 ? "text-green-500 dark:text-green-400 cursor-pointer hover:underline" : "text-gray-500 dark:text-gray-400"}`}
+                          className={`text-theme-sm ${nbCompteursCET > 0 ? "text-green-600 dark:text-green-400cursor-pointer hover:underline" : "text-gray-500 dark:text-gray-400"}`}
                           onClick={(e) => {
                             if (nbCompteursCET > 0) {
                               handleOpenAppareilsModal(e, pkLogement, "chauffage", logement);
@@ -647,7 +645,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                             className="cursor-pointer"
                             onClick={(e) => handleOpenAppareilsModal(e, pkLogement, "chauffage", logement)}
                           >
-                            <EquipementIconsCompteur size={16} className="text-green-500 dark:text-green-400" />
+                            <FaBolt className="w-4 h-4 text-green-600 dark:text-green-400" />
                           </div>
                         )}
                       </div>

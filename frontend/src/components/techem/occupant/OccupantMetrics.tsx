@@ -155,13 +155,13 @@ export const OccupantMetrics = ({ occupantData }: { occupantData: OccupantLogeme
     <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
       {/* Fuites - Metric Item Start */}
       {pkImmeuble && pkLogement ? (
-        <Link href={`/occupant/fuites?fluide=EF`}>
-          <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+        <Link href={`/occupant/fuites?fluide=EF`} className="h-full">
+          <div className="flex flex-col h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
             <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
               <StatusIconsFuite size={24} className={fuitesColor} color="currentColor" />
             </div>
 
-            <div className="flex items-end justify-between mt-5">
+            <div className="flex items-end justify-between mt-5 flex-grow">
               <div>
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                   Fuites
@@ -171,15 +171,16 @@ export const OccupantMetrics = ({ occupantData }: { occupantData: OccupantLogeme
                 </h4>
               </div>
             </div>
+            <div className="mt-5 h-[33px]"></div>
           </div>
         </Link>
       ) : (
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+        <div className="flex flex-col h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
           <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
             <StatusIconsFuite size={24} className={fuitesColor} color="currentColor" />
           </div>
 
-          <div className="flex items-end justify-between mt-5">
+          <div className="flex items-end justify-between mt-5 flex-grow">
             <div>
               <span className="text-sm text-gray-500 dark:text-gray-400">
                 Fuites
@@ -189,18 +190,19 @@ export const OccupantMetrics = ({ occupantData }: { occupantData: OccupantLogeme
               </h4>
             </div>
           </div>
+          <div className="mt-5 h-[33px]"></div>
         </div>
       )}
       {/* Fuites - Metric Item End */}
 
       {/* Alarmes (Dysfonctionnements) - Metric Item Start */}
       {pkImmeuble && pkLogement ? (
-        <Link href={`/occupant/dysfonctionnements`}>
-          <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+        <Link href={`/occupant/dysfonctionnements`} className="h-full">
+          <div className="flex flex-col h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
             <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
               <StatusIconsDysfonctionnement size={24} className={dysfonctionnementsColor} color="currentColor" />
             </div>
-            <div className="flex items-end justify-between mt-5">
+            <div className="flex items-end justify-between mt-5 flex-grow">
               <div>
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                   Alarmes techniques
@@ -210,14 +212,15 @@ export const OccupantMetrics = ({ occupantData }: { occupantData: OccupantLogeme
                 </h4>
               </div>
             </div>
+            <div className="mt-5 h-[33px]"></div>
           </div>
         </Link>
       ) : (
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+        <div className="flex flex-col h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
           <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
             <StatusIconsDysfonctionnement size={24} className={dysfonctionnementsColor} color="currentColor" />
           </div>
-          <div className="flex items-end justify-between mt-5">
+          <div className="flex items-end justify-between mt-5 flex-grow">
             <div>
               <span className="text-sm text-gray-500 dark:text-gray-400">
                 Alarmes techniques
@@ -227,19 +230,20 @@ export const OccupantMetrics = ({ occupantData }: { occupantData: OccupantLogeme
               </h4>
             </div>
           </div>
+          <div className="mt-5 h-[33px]"></div>
         </div>
       )}
       {/* Alarmes - Metric Item End */}
 
       {/* Anomalies - Metric Item Start */}
       {pkImmeuble && pkLogement ? (
-        <Link href={`/occupant/anomalies`}>
-          <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+        <Link href={`/occupant/anomalies`} className="h-full">
+          <div className="flex flex-col h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
             <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
               <StatusIconsAnomalie size={24} className={anomaliesColor} color="currentColor" />
             </div>
 
-            <div className="flex items-end justify-between mt-5">
+            <div className="flex items-end justify-between mt-5 flex-grow">
               <div>
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                   Anomalies de consommation
@@ -249,15 +253,16 @@ export const OccupantMetrics = ({ occupantData }: { occupantData: OccupantLogeme
                 </h4>
               </div>
             </div>
+            <div className="mt-5 h-[33px]"></div>
           </div>
         </Link>
       ) : (
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+        <div className="flex flex-col h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
           <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
             <StatusIconsAnomalie size={24} className={anomaliesColor} color="currentColor" />
           </div>
 
-          <div className="flex items-end justify-between mt-5">
+          <div className="flex items-end justify-between mt-5 flex-grow">
             <div>
               <span className="text-sm text-gray-500 dark:text-gray-400">
                 Anomalies de consommation
@@ -267,18 +272,19 @@ export const OccupantMetrics = ({ occupantData }: { occupantData: OccupantLogeme
               </h4>
             </div>
           </div>
+          <div className="mt-5 h-[33px]"></div>
         </div>
       )}
       {/* Anomalies - Metric Item End */}
 
       {/* Depannages - Metric Item Start */}
       {pkImmeuble && pkLogement ? (
-        <Link href={`/occupant/interventions?statut=ouvert`}>
-          <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+        <Link href={`/occupant/interventions?statut=ouvert`} className="h-full">
+          <div className="flex flex-col h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
             <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
               <StatusIconsAlerte size={24} className={depannagesColor} color="currentColor" />
             </div>
-            <div className="flex items-end justify-between mt-5">
+            <div className="flex items-end justify-between mt-5 flex-grow">
               <div>
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                   Depannages en cours
@@ -288,14 +294,26 @@ export const OccupantMetrics = ({ occupantData }: { occupantData: OccupantLogeme
                 </h4>
               </div>
             </div>
+            <div className="mt-5 flex justify-end">
+              <button
+                className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 shadow-theme-xs transition hover:bg-gray-50 hover:text-gray-900 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-white/[0.05]"
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  livretModal.openModal();
+                }}
+              >
+                Livret d&apos;intervention
+              </button>
+            </div>
           </div>
         </Link>
       ) : (
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+        <div className="flex flex-col h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
           <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
             <StatusIconsAlerte size={24} className={depannagesColor} color="currentColor" />
           </div>
-          <div className="flex items-end justify-between mt-5">
+          <div className="flex items-end justify-between mt-5 flex-grow">
             <div>
               <span className="text-sm text-gray-500 dark:text-gray-400">
                 Depannages en cours
@@ -304,6 +322,18 @@ export const OccupantMetrics = ({ occupantData }: { occupantData: OccupantLogeme
                 {formatNumber(Math.max(metrics.depannages, 0))}
               </h4>
             </div>
+          </div>
+          <div className="mt-5 flex justify-end">
+            <button
+              className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 shadow-theme-xs transition hover:bg-gray-50 hover:text-gray-900 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-white/[0.05]"
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                livretModal.openModal();
+              }}
+            >
+              Livret d&apos;intervention
+            </button>
           </div>
         </div>
       )}

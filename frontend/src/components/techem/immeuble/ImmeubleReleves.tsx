@@ -2,9 +2,12 @@
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 import { useState, useMemo, useCallback } from "react";
+import { FaFaucet, FaFire, FaChartBar, FaBolt } from "react-icons/fa";
 import { useImmeubles } from "@/lib/hooks/useImmeubles";
 import { useExport } from "@/lib/hooks/useExport";
+import { useModal } from "@/hooks/useModal";
 import Alert from "@/components/ui/alert/Alert";
+import { Modal } from "@/components/ui/modal";
 import { Table, TableHeader, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import { LoadingChart } from "@/components/ui/loading";
 
@@ -25,14 +28,22 @@ export type TabType =
   | "repartiteur"
   | "compteurEnergie";
 
+interface ReleveOption {
+  pkReleve: number;
+  dateReleve: string;
+  formattedDate: string;
+}
+
 export default function ImmeubleReleves({
   pkImmeuble,
   selectedTab: controlledTab,
   onTabChange,
 }: ImmeubleRelevesProps) {
-  const { getImmeubleQuery, getReport } = useImmeubles();
+  const { getImmeubleQuery, getReport, exportReleveExcel } = useImmeubles();
   const { data: immeubleData, isLoading: isImmeubleLoading } = getImmeubleQuery(pkImmeuble);
   const [uncontrolledTab, setUncontrolledTab] = useState<TabType>("eauFroide");
+  const { isOpen: isModalOpen, openModal, closeModal } = useModal();
+  const [selectedPkReleve, setSelectedPkReleve] = useState<number | null>(null);
 
   const selectedTab = controlledTab ?? uncontrolledTab;
 
@@ -57,13 +68,79 @@ export default function ImmeubleReleves({
     await getReport(pkImmeuble, params);
   }, [getReport, pkImmeuble, selectedTab]);
 
-  // Create wrapper function for Excel export based on selected tab
-  // TODO: Implement Excel export function when available
-  const handleExportExcel = useCallback(async () => {
-    // For now, throw an error indicating Excel export is not yet implemented
-    // This can be replaced with actual Excel export function when available
-    throw new Error("L'export Excel des relevés n'est pas encore disponible.");
+  // Format date from ISO string to French format (DD/MM/YYYY)
+  const formatDateToFrench = useCallback((dateString: string): string => {
+    try {
+      const date = new Date(dateString);
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    } catch {
+      return dateString;
+    }
   }, []);
+
+  // Extract ListeReleves data based on selected tab
+  const relevesOptions = useMemo<ReleveOption[]>(() => {
+    const immeuble = immeubleData?.immeuble;
+    if (!immeuble) return [];
+
+    let listeReleves: { releve?: Array<{ PkReleve?: number; DateReleve?: string }> } | null = null;
+
+    if (selectedTab === "eauFroide") {
+      const immeubleEF = (immeuble && typeof immeuble === 'object' && 'ImmeubleEF' in immeuble)
+        ? (immeuble as { ImmeubleEF?: Record<string, unknown> }).ImmeubleEF
+        : null;
+      listeReleves = (immeubleEF && typeof immeubleEF === 'object' && 'ListeReleves' in immeubleEF)
+        ? (immeubleEF as { ListeReleves?: { releve?: Array<{ PkReleve?: number; DateReleve?: string }> } }).ListeReleves ?? null
+        : null;
+    } else if (selectedTab === "eauChaude") {
+      const immeubleEC = (immeuble && typeof immeuble === 'object' && 'ImmeubleEC' in immeuble)
+        ? (immeuble as { ImmeubleEC?: Record<string, unknown> }).ImmeubleEC
+        : null;
+      listeReleves = (immeubleEC && typeof immeubleEC === 'object' && 'ListeReleves' in immeubleEC)
+        ? (immeubleEC as { ListeReleves?: { releve?: Array<{ PkReleve?: number; DateReleve?: string }> } }).ListeReleves ?? null
+        : null;
+    }
+
+    if (!listeReleves?.releve || !Array.isArray(listeReleves.releve)) {
+      return [];
+    }
+
+    return listeReleves.releve
+      .filter((releve) => releve.PkReleve && releve.DateReleve)
+      .map((releve) => ({
+        pkReleve: releve.PkReleve!,
+        dateReleve: releve.DateReleve!,
+        formattedDate: formatDateToFrench(releve.DateReleve!),
+      }))
+      .sort((a, b) => new Date(b.dateReleve).getTime() - new Date(a.dateReleve).getTime()); // Sort by date descending (newest first)
+  }, [immeubleData, selectedTab, formatDateToFrench]);
+
+  // Check if Excel export is available for current tab
+  const isExcelExportAvailable = selectedTab === "eauFroide" || selectedTab === "eauChaude";
+
+  // Handle opening Excel export modal
+  const handleExportExcelClick = useCallback(() => {
+    if (relevesOptions.length === 0) {
+      // If no releves available, show error or disable button
+      return;
+    }
+    setSelectedPkReleve(null);
+    openModal();
+  }, [relevesOptions, openModal]);
+
+  // Handle Excel export with selected PkReleve
+  const handleExportExcel = useCallback(async () => {
+    if (!selectedPkReleve) {
+      throw new Error("Veuillez sélectionner une date de relevé.");
+    }
+    await exportReleveExcel(pkImmeuble, selectedPkReleve);
+    // Close modal only on success (if error, useExport will handle it and modal stays open)
+    closeModal();
+    setSelectedPkReleve(null);
+  }, [selectedPkReleve, exportReleveExcel, pkImmeuble, closeModal]);
 
   // Use the reusable export hooks
   const { 
@@ -74,11 +151,19 @@ export default function ImmeubleReleves({
   } = useExport(handleExportPdf, { errorTitle: "Erreur d'export PDF" });
 
   const { 
-    handleExport: handleExportExcelClick, 
+    handleExport: handleExportExcelConfirm, 
     isExporting: isExportingExcel, 
     error: exportExcelError, 
     clearError: clearExportExcelError 
   } = useExport(handleExportExcel, { errorTitle: "Erreur d'export Excel" });
+
+  // Handle modal validation
+  const handleModalValidate = useCallback(() => {
+    if (!selectedPkReleve) {
+      return;
+    }
+    handleExportExcelConfirm();
+  }, [selectedPkReleve, handleExportExcelConfirm]);
 
   // Extract data from API response
   const relevesData = useMemo(() => {
@@ -245,9 +330,25 @@ export default function ImmeubleReleves({
   // Get current tab data
   const currentData = relevesData[selectedTab];
 
+  // Get color for current tab
+  const getTabColor = (tab: TabType): string => {
+    switch (tab) {
+      case "eauFroide":
+        return "#2563EB"; // blue-600
+      case "eauChaude":
+        return "#EA580C"; // orange-600
+      case "repartiteur":
+        return "#9333EA"; // purple-600
+      case "compteurEnergie":
+        return "#16A34A"; // green-600
+    }
+  };
+
+  const currentTabColor = getTabColor(selectedTab);
+
   // Chart options
   const chartOptions: ApexOptions = useMemo(() => ({
-    colors: ["#465FFF"],
+    colors: [currentTabColor],
     chart: {
       fontFamily: "Outfit, sans-serif",
       type: "radialBar",
@@ -286,20 +387,52 @@ export default function ImmeubleReleves({
     },
     fill: {
       type: "solid",
-      colors: ["#465FFF"],
+      colors: [currentTabColor],
     },
     stroke: {
       lineCap: "round",
     },
     labels: ["Progress"],
-  }), []);
+  }), [currentTabColor]);
 
   const series = [currentData.percentage];
 
-  const getButtonClass = (tab: TabType) =>
-    selectedTab === tab
-      ? "shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-gray-800"
-      : "text-gray-500 dark:text-gray-400";
+  const getButtonClass = (tab: TabType) => {
+    const baseClasses = "px-3 py-2 font-medium w-full rounded-md text-theme-sm transition-all duration-200 flex items-center justify-center gap-2";
+    const isActive = selectedTab === tab;
+    
+    if (isActive) {
+      return `${baseClasses} shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-2 border-blue-500 dark:border-blue-400`;
+    }
+    
+    return `${baseClasses} text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50`;
+  };
+
+  // Get icon and color for each tab
+  const getTabConfig = (tab: TabType) => {
+    switch (tab) {
+      case "eauFroide":
+        return {
+          icon: <FaFaucet className="w-4 h-4" />,
+          color: "text-blue-600 dark:text-blue-400",
+        };
+      case "eauChaude":
+        return {
+          icon: <FaFire className="w-4 h-4" />,
+          color: "text-orange-600 dark:text-orange-400",
+        };
+      case "repartiteur":
+        return {
+          icon: <FaChartBar className="w-4 h-4" />,
+          color: "text-purple-600 dark:text-purple-400",
+        };
+      case "compteurEnergie":
+        return {
+          icon: <FaBolt className="w-4 h-4" />,
+          color: "text-green-600 dark:text-green-400",
+        };
+    }
+  };
 
   // Show loading state while fetching data
   if (isImmeubleLoading) {
@@ -343,7 +476,7 @@ export default function ImmeubleReleves({
           <div className="flex items-center gap-3">
             <button
               onClick={handleExportExcelClick}
-              disabled={isExportingExcel || isImmeubleLoading}
+              disabled={!isExcelExportAvailable || relevesOptions.length === 0 || isExportingExcel || isImmeubleLoading}
               className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
             >
               <svg
@@ -436,35 +569,39 @@ export default function ImmeubleReleves({
         <div className="flex items-center gap-0.5 rounded-lg bg-gray-100 p-0.5 dark:bg-gray-900 mb-6">
           <button
             onClick={() => handleTabChange("eauFroide")}
-            className={`px-3 py-2 font-medium w-full rounded-md text-theme-sm hover:text-gray-900 dark:hover:text-white ${getButtonClass(
-              "eauFroide"
-            )}`}
+            className={getButtonClass("eauFroide")}
           >
-            Eau froide
+            <span className={selectedTab === "eauFroide" ? "text-blue-600 dark:text-blue-400" : "text-gray-500 dark:text-gray-400"}>
+              {getTabConfig("eauFroide").icon}
+            </span>
+            <span>Eau froide</span>
           </button>
           <button
             onClick={() => handleTabChange("eauChaude")}
-            className={`px-3 py-2 font-medium w-full rounded-md text-theme-sm hover:text-gray-900 dark:hover:text-white ${getButtonClass(
-              "eauChaude"
-            )}`}
+            className={getButtonClass("eauChaude")}
           >
-            Eau chaude
+            <span className={selectedTab === "eauChaude" ? "text-orange-600 dark:text-orange-400" : "text-gray-500 dark:text-gray-400"}>
+              {getTabConfig("eauChaude").icon}
+            </span>
+            <span>Eau chaude</span>
           </button>
           <button
             onClick={() => handleTabChange("repartiteur")}
-            className={`px-3 py-2 font-medium w-full rounded-md text-theme-sm hover:text-gray-900 dark:hover:text-white ${getButtonClass(
-              "repartiteur"
-            )}`}
+            className={getButtonClass("repartiteur")}
           >
-            Répartiteur
+            <span className={selectedTab === "repartiteur" ? "text-purple-600 dark:text-purple-400" : "text-gray-500 dark:text-gray-400"}>
+              {getTabConfig("repartiteur").icon}
+            </span>
+            <span>Répartiteur</span>
           </button>
           <button
             onClick={() => handleTabChange("compteurEnergie")}
-            className={`px-3 py-2 font-medium w-full rounded-md text-theme-sm hover:text-gray-900 dark:hover:text-white ${getButtonClass(
-              "compteurEnergie"
-            )}`}
+            className={getButtonClass("compteurEnergie")}
           >
-            Compteur d&apos;énergie
+            <span className={selectedTab === "compteurEnergie" ? "text-green-600 dark:text-green-400" : "text-gray-500 dark:text-gray-400"}>
+              {getTabConfig("compteurEnergie").icon}
+            </span>
+            <span>Compteur d&apos;énergie</span>
           </button>
         </div>
 
@@ -472,6 +609,7 @@ export default function ImmeubleReleves({
         <div className="relative">
           <div className="max-h-[330px]">
             <ReactApexChart
+              key={selectedTab}
               options={chartOptions}
               series={series}
               type="radialBar"
@@ -599,6 +737,62 @@ export default function ImmeubleReleves({
         <div className="w-px bg-gray-200 h-7 dark:bg-gray-800"></div>
         <div className="w-px bg-gray-200 h-7 dark:bg-gray-800"></div>
       </div>
+
+      {/* Modal for Excel export date selection */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        className="max-w-[500px] p-6 lg:p-8"
+      >
+        <h4 className="font-semibold text-gray-800 mb-6 text-title-sm dark:text-white/90 text-center">
+          Sélectionner une date
+        </h4>
+        
+        {relevesOptions.length === 0 ? (
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+            Aucun relevé disponible pour cet onglet.
+          </p>
+        ) : (
+          <>
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Date de relevé
+              </label>
+              <div className="max-h-[300px] overflow-y-auto border border-gray-200 rounded-lg dark:border-gray-700">
+                {relevesOptions.map((option) => (
+                  <button
+                    key={option.pkReleve}
+                    onClick={() => setSelectedPkReleve(option.pkReleve)}
+                    className={`w-full px-4 py-3 text-left text-sm transition-colors border-b border-gray-100 last:border-b-0 dark:border-gray-800 ${
+                      selectedPkReleve === option.pkReleve
+                        ? "bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400"
+                        : "text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
+                    }`}
+                  >
+                    {option.formattedDate}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-3">
+              <button
+                onClick={closeModal}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={handleModalValidate}
+                disabled={!selectedPkReleve || isExportingExcel}
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isExportingExcel ? "Export en cours..." : "Valider"}
+              </button>
+            </div>
+          </>
+        )}
+      </Modal>
     </div>
   );
 }

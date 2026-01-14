@@ -190,8 +190,8 @@ class TicketingApiController extends AbstractApiController
     /**
      * Close a ticket
      */
-    #[Route("/{pkTicket}/close", name: "close", methods: ["POST", "PUT"])]
-    public function closeTicket(string $pkTicket, Request $request): JsonResponse
+    #[Route("/{caseId}/close", name: "close", methods: ["POST", "PUT"])]
+    public function closeTicket(string $caseId, Request $request): JsonResponse
     {
         $client = $this->getAuthenticatedClientFromHeaders($request);
         if ($client instanceof JsonResponse) {
@@ -200,16 +200,16 @@ class TicketingApiController extends AbstractApiController
 
         try {
             $statut = 'Clos';
-            $ticketResponse = $client->setTicketStatutClient($pkTicket, $statut);
+            $ticketResponse = $client->setTicketStatutClient($caseId, $statut);
 
             // Check if there's an error in the response
             if (is_object($ticketResponse) && isset($ticketResponse->Erreur) && !empty($ticketResponse->Erreur)) {
                 return $this->error($ticketResponse->Erreur, 500);
             }
 
-            return $this->success(null, 'Ticket closed successfully');
+            return $this->success([], 'Ticket clôturé avec succès.', 200);
         } catch (\Exception $e) {
-            return $this->error('Error closing ticket: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la fermeture du ticket: ' . $e->getMessage(), 500);
         }
     }
 

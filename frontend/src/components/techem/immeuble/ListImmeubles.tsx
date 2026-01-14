@@ -2,6 +2,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { FaFaucet, FaFire, FaChartBar, FaBolt } from "react-icons/fa";
 import StatusIconsAlerte from '@/components/techem/images/StatusIconsAlerte';
 import StatusIconsAnomalie from '@/components/techem/images/StatusIconsAnomalie';
 import StatusIconsDysfonctionnement from '@/components/techem/images/StatusIconsDysfonctionnement';
@@ -18,9 +19,6 @@ import { useModal } from "@/hooks/useModal";
 import { useImmeubles } from "@/lib/hooks/useImmeubles";
 import { useExport } from "@/lib/hooks/useExport";
 import type { Building } from "@/lib/types/api";
-import EquipementIconsEau from "@/components/techem/images/EquipementIconsEau";
-import EquipementIconsRepartiteur from "@/components/techem/images/EquipementIconsRepartiteur";
-import EquipementIconsCompteur from "@/components/techem/images/EquipementIconsCompteur";
 import ToggleSwitchListImmeubles from "@/components/techem/immeuble/form/ToggleSwitchListImmeubles";
 import Alert from "@/components/ui/alert/Alert";
 import { LoadingTable } from "@/components/ui/loading";
@@ -418,7 +416,7 @@ export default function ListImmeubles() {
                 className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
               >
                 <div className="flex items-center gap-2">
-                  <EquipementIconsEau size={16} className="text-gray-400 dark:text-gray-500" />
+                  <FaFaucet className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                   <span>Eau froide</span>
                 </div>
               </TableCell>
@@ -427,7 +425,7 @@ export default function ListImmeubles() {
                 className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
               >
                 <div className="flex items-center gap-2">
-                  <EquipementIconsEau size={16} className="text-gray-400 dark:text-gray-500" />
+                  <FaFire className="w-4 h-4 text-orange-600 dark:text-orange-400" />
                   <span>Eau chaude</span>
                 </div>
               </TableCell>
@@ -436,7 +434,7 @@ export default function ListImmeubles() {
                 className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
               >
                 <div className="flex items-center gap-2">
-                  <EquipementIconsRepartiteur size={16} className="text-gray-400 dark:text-gray-500" />
+                  <FaChartBar className="w-4 h-4 text-purple-600 dark:text-purple-400" />
                   <span>Répartiteurs</span>
                 </div>
               </TableCell>
@@ -445,7 +443,7 @@ export default function ListImmeubles() {
                 className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
               >
                 <div className="flex items-center gap-2">
-                  <EquipementIconsCompteur size={16} className="text-gray-400 dark:text-gray-500" />
+                  <FaBolt className="w-4 h-4 text-green-600 dark:text-green-400" />
                   <span>Compteurs d&apos;énergie</span>
                 </div>
               </TableCell>
@@ -453,7 +451,9 @@ export default function ListImmeubles() {
                 isHeader
                 className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
               >
-                Statut
+                <div className="flex items-center gap-2">
+                  <span>Statut</span>
+                </div>
               </TableCell>
               </TableRow>
             </TableHeader>
@@ -539,19 +539,55 @@ export default function ListImmeubles() {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                    <TableCell 
+                      className={
+                          [
+                            "py-3 text-theme-sm text-center",
+                            nbCompteursEF === 0
+                              ? "text-gray-600 dark:text-gray-400"
+                              : "text-blue-600 dark:text-blue-400",
+                          ].join(" ")
+                        }
+                      >
                       {formatNumber(nbCompteursEF)}
                     </TableCell>
-                    <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                    <TableCell
+                      className={
+                          [
+                            "py-3 text-theme-sm text-center",
+                            nbCompteursEC === 0
+                              ? "text-gray-600 dark:text-gray-400"
+                              : "text-orange-600 dark:text-orange-400",
+                          ].join(" ")
+                        }
+                      >
                       {formatNumber(nbCompteursEC)}
                     </TableCell>
-                    <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                    <TableCell 
+                      className={
+                          [
+                            "py-3 text-theme-sm text-center",
+                            nbCompteursRepart === 0
+                              ? "text-gray-600 dark:text-gray-400"
+                              : "text-purple-600 dark:text-purple-400",
+                          ].join(" ")
+                        }
+                      >
                       {formatNumber(nbCompteursRepart)}
                     </TableCell>
-                    <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                    <TableCell 
+                      className={
+                          [
+                            "py-3 text-theme-sm text-center",
+                            nbCompteursCET === 0
+                              ? "text-gray-600 dark:text-gray-400"
+                              : "text-green-600 dark:text-green-400", // <- si tu veux garder vert quand ≠ 0, change à une autre couleur
+                          ].join(" ")
+                        }
+                      >
                       {formatNumber(nbCompteursCET)}
                     </TableCell>
-                    <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                    <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400 text-center">
                       <div className="grid grid-cols-2 gap-2 w-20">
                         {/* Row 1 - Col 1: Dysfonctionnements (Bell) */}
                         {issues.nbDysfonctionnements > 0 ? (

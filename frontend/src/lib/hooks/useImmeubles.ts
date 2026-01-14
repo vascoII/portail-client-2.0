@@ -616,6 +616,43 @@ export function useImmeubles() {
   };
 
   /**
+   * Export releve to Excel
+   * GET /api/immeubles/{pkImmeuble}/releve/excel?pkReleve={pkReleve}
+   * Downloads the file automatically
+   * @param pkImmeuble - Building ID
+   * @param pkReleve - Releve ID
+   * @returns Promise that resolves when download is complete
+   */
+  const exportReleveExcel = async (
+    pkImmeuble: string | number,
+    pkReleve: string | number
+  ): Promise<void> => {
+    try {
+      const response = await api.get(
+        `/immeubles/${pkImmeuble}/releve/excel`,
+        {
+          params: { pkReleve },
+          responseType: "blob",
+        }
+      );
+
+      const blob = new Blob([response.data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      // Generate filename with date
+      const dateStr = new Date().toISOString().split("T")[0];
+      const filename = `relevé-${dateStr}.xlsx`;
+
+      // Download the file
+      downloadBlob(blob, filename);
+    } catch (error) {
+      const errorMessage = handleApiError(error);
+      throw new Error(`Failed to export releve: ${errorMessage}`);
+    }
+  };
+
+  /**
    * Export anomalies to Excel
    * GET /api/immeubles/{pkImmeuble}/anomalies/export
    * Downloads the file automatically
@@ -831,6 +868,7 @@ export function useImmeubles() {
 
     // Export/Download functions
     getReport,
+    exportReleveExcel,
     exportImmeubles,
     exportAnomalies,
     exportFuites,
@@ -864,4 +902,3 @@ export function useImmeubles() {
     immeublesQuery,
   };
 }
-

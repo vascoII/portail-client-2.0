@@ -1,0 +1,47 @@
+
+version: "3.9"
+
+services:
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx_preview
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf.d.preview:/etc/nginx/conf.d:ro
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.preview
+    container_name: backend_preview
+    environment:
+      - APP_ENV=preview
+      - APP_DEBUG=0
+      # Ajoute DB_HOST, DB_NAME, etc. spécifiques à preview
+    expose:
+      - "9000" # PHP-FPM port
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.preview
+    container_name: frontend_preview
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_BASE_URL:-https://portail.techem.fr/api}
+    expose:
+      - "3000" # SSR port
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

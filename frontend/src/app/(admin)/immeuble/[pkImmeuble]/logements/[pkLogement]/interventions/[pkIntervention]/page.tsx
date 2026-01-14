@@ -4,7 +4,7 @@ import ListInterventions from "@/components/techem/logement/ListInterventions";
 /**
  * Revalidation ISR : Revalider toutes les 2 heures (données dynamiques)
  */
-export const revalidate = 2 * 60 * 60; // 2 heures
+export const revalidate = 7200;
 
 export async function generateMetadata({
   params,

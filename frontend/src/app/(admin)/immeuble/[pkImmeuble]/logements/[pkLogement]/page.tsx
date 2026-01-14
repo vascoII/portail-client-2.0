@@ -34,7 +34,7 @@ export async function generateMetadata({
  * - Revalider en arrière-plan toutes les 6 heures
  * - Mettre à jour le cache si les données ont changé
  */
-export const revalidate = 6 * 60 * 60; // 6 heures
+export const revalidate = 7200;
 
 /**
  * Page de détails d'un logement

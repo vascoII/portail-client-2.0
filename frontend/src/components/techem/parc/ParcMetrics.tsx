@@ -12,6 +12,12 @@ import { useModal } from "@/hooks/useModal";
 import { useExport } from "@/lib/hooks/useExport";
 import Alert from "@/components/ui/alert/Alert";
 import apiClient from "@/lib/api/client";
+// + NEW
+import DatePicker from 'react-datepicker';
+import { fr } from 'date-fns/locale';
+import { format } from 'date-fns';
+import 'react-datepicker/dist/react-datepicker.css';
+
 
 /**
  * Component displaying 4 parc metrics side by side:
@@ -22,29 +28,32 @@ import apiClient from "@/lib/api/client";
  */
 export const ParcMetrics = () => {
   const { parcData, isParcLoading } = useParc();
-  const livretModal = useModal();
-  const [dateStart, setDateStart] = useState("");
-  const [dateEnd, setDateEnd] = useState("");
+  const livretModal = useModal();  
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
 
-  const formatDateForApi = (value: string) => {
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) {
+  const formatDateForApi = (value: Date) => {
+    if (!(value instanceof Date) || isNaN(value.getTime())) {
       throw new Error("Date invalide, veuillez sélectionner une date valide.");
     }
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
+    return format(value, 'dd/MM/yyyy'); // ex: 31/12/2025
   };
 
+  // Aides
+  const isRangeValid = !!(startDate && endDate && startDate <= endDate);
+  const safeFilePart = (d: Date | null) => (d ? format(d, 'yyyy-MM-dd') : '');
+  
   const downloadInterventionReport = useCallback(
     async (exportType: "synthese-inte" | "detail-inte" | "detail-excel-inte") => {
-      if (!dateStart || !dateEnd) {
+      if (!startDate || !endDate) {
         throw new Error("Veuillez sélectionner une date de début et une date de fin.");
       }
+      if (startDate > endDate) {
+        throw new Error("La date de début doit être antérieure ou égale à la date de fin.");
+      }
 
-      const dateBegin = formatDateForApi(dateStart);
-      const dateEndFormatted = formatDateForApi(dateEnd);
+      const dateBegin = formatDateForApi(startDate);
+      const dateEndFormatted = formatDateForApi(endDate);
 
       const response = await apiClient.get<Blob>("parc/intervention", {
         params: {
@@ -57,7 +66,8 @@ export const ParcMetrics = () => {
 
       const blob = response.data;
       const extension = exportType === "detail-excel-inte" ? "xlsx" : "pdf";
-      const fileName = `interventions-${exportType}-${dateStart}-${dateEnd}.${extension}`;
+      const fileName = `interventions-${exportType}-${safeFilePart(startDate)}-${safeFilePart(endDate)}.${extension}`;
+
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
@@ -67,7 +77,7 @@ export const ParcMetrics = () => {
       link.remove();
       window.URL.revokeObjectURL(url);
     },
-    [dateStart, dateEnd]
+    [startDate, endDate]
   );
 
   const syntheseExportFn = useCallback(
@@ -165,13 +175,13 @@ export const ParcMetrics = () => {
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-4 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
     <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
       {/* Fuites - Metric Item Start */}
-      <Link href="/immeuble?fuites=1">
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+      <Link href="/immeuble?fuites=1" className="h-full">
+      <div className="flex flex-col h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
         <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
           <StatusIconsFuite size={24} className={fuitesColor} color="currentColor" />
         </div>
 
-        <div className="flex items-end justify-between mt-5">
+        <div className="flex items-end justify-between mt-5 flex-grow">
           <div>
             <span className="text-sm text-gray-500 dark:text-gray-400">
               Fuites
@@ -181,17 +191,18 @@ export const ParcMetrics = () => {
             </h4>
           </div>
         </div>
+        <div className="mt-5 h-[33px]"></div>
         </div>
       </Link>
       {/* Fuites - Metric Item End */}
 
       {/* Alarmes (Dysfonctionnements) - Metric Item Start */}
-      <Link href="/immeuble?dysfonctionnements=1">
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+      <Link href="/immeuble?dysfonctionnements=1" className="h-full">
+      <div className="flex flex-col h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
         <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
           <StatusIconsDysfonctionnement size={24} className={dysfonctionnementsColor} color="currentColor" />
         </div>
-        <div className="flex items-end justify-between mt-5">
+        <div className="flex items-end justify-between mt-5 flex-grow">
           <div>
             <span className="text-sm text-gray-500 dark:text-gray-400">
               Alarmes techniques
@@ -201,18 +212,19 @@ export const ParcMetrics = () => {
             </h4>
           </div>
         </div>
+        <div className="mt-5 h-[33px]"></div>
         </div>
       </Link>
       {/* Alarmes - Metric Item End */}
 
       {/* Anomalies - Metric Item Start */}
-      <Link href="/immeuble?anomalies=1">
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+      <Link href="/immeuble?anomalies=1" className="h-full">
+      <div className="flex flex-col h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
         <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
           <StatusIconsAnomalie size={24} className={anomaliesColor} color="currentColor" />
         </div>
 
-        <div className="flex items-end justify-between mt-5">
+        <div className="flex items-end justify-between mt-5 flex-grow">
           <div>
             <span className="text-sm text-gray-500 dark:text-gray-400">
               Anomalies de consommation
@@ -222,18 +234,18 @@ export const ParcMetrics = () => {
             </h4>
           </div>
         </div>
+        <div className="mt-5 h-[33px]"></div>
         </div>
       </Link>
       {/* Anomalies - Metric Item End */}
 
       {/* Depannages - Metric Item Start */}
-      {/* Depannages - Metric Item Start */}
-      <Link href="/immeuble?depannages=1">
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+      <Link href="/immeuble?depannages=1" className="h-full">
+      <div className="flex flex-col h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
         <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
           <StatusIconsAlerte size={24} className={depannagesColor} color="currentColor" />
         </div>
-        <div className="flex items-end justify-between mt-5">
+        <div className="flex items-end justify-between mt-5 flex-grow">
           <div>
             <span className="text-sm text-gray-500 dark:text-gray-400">
               Depannages en cours
@@ -288,35 +300,60 @@ export const ParcMetrics = () => {
             </button>
           </div>
         )}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
-              Date de début
-            </label>
-            <input
-              type="date"
-              value={dateStart}
-              onChange={(event) => setDateStart(event.target.value)}
-              className="rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 focus:border-brand-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
-              Date de fin
-            </label>
-            <input
-              type="date"
-              value={dateEnd}
-              onChange={(event) => setDateEnd(event.target.value)}
-              className="rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 focus:border-brand-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
-            />
-          </div>
+        
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="flex flex-col gap-1">
+          <label className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+            Date de début
+          </label>
+          <DatePicker
+            selected={startDate}
+            onChange={(d) => setStartDate(d)}
+            selectsStart
+            startDate={startDate}
+            endDate={endDate}
+            maxDate={endDate ?? undefined}
+            dateFormat="dd/MM/yyyy"
+            locale={fr}
+            placeholderText="JJ/MM/AAAA"
+            // options UX
+            isClearable
+            showMonthDropdown
+            showYearDropdown
+            dropdownMode="select"
+            // styling: on laisse la classe Tailwind sur l'input interne
+            className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 focus:border-brand-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
+          />
         </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+            Date de fin
+          </label>
+          <DatePicker
+            selected={endDate}
+            onChange={(d) => setEndDate(d)}
+            selectsEnd
+            startDate={startDate}
+            endDate={endDate}
+            minDate={startDate ?? undefined}
+            dateFormat="dd/MM/yyyy"
+            locale={fr}
+            placeholderText="JJ/MM/AAAA"
+            isClearable
+            showMonthDropdown
+            showYearDropdown
+            dropdownMode="select"
+            className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 focus:border-brand-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
+          />
+        </div>
+      </div>
+
         <div className="space-y-3">
           <button
             type="button"
             onClick={handleSyntheseExport}
-            disabled={isSyntheseExporting || !dateStart || !dateEnd}
+            disabled={isSyntheseExporting || !isRangeValid}
             className="flex w-full items-center justify-between rounded-lg border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-white/[0.05]"
           >
             <span>
@@ -336,7 +373,7 @@ export const ParcMetrics = () => {
           <button
             type="button"
             onClick={handleDetailPdfExport}
-            disabled={isDetailPdfExporting || !dateStart || !dateEnd}
+            disabled={isDetailPdfExporting || !isRangeValid}
             className="flex w-full items-center justify-between rounded-lg border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-white/[0.05]"
           >
             <span>
@@ -356,7 +393,7 @@ export const ParcMetrics = () => {
           <button
             type="button"
             onClick={handleDetailExcelExport}
-            disabled={isDetailExcelExporting || !dateStart || !dateEnd}
+            disabled={isDetailExcelExporting || !isRangeValid}
             className="flex w-full items-center justify-between rounded-lg border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-white/[0.05]"
           >
             <span>

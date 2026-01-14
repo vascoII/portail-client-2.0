@@ -1,7 +1,7 @@
 services:
   nginx:
     image: nginx:stable-alpine
-    container_name: nginx_sandbox
+    container_name: nginx_preview
     restart: unless-stopped
     ports:
       - "8080:80"
@@ -17,7 +17,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: backend_sandbox
+    container_name: backend_preview
     working_dir: /var/www/backend
     volumes:
       - ./backend:/var/www/backend
@@ -34,7 +34,7 @@ services:
     build:
       context: .
       dockerfile: frontend/Dockerfile
-    container_name: frontend_sandbox
+    container_name: frontend_preview
     working_dir: /usr/src/frontend
     volumes:
       - ./frontend:/usr/src/frontend

@@ -4,7 +4,7 @@ import ListDysfonctionnements from "@/components/techem/logement/ListDysfonction
 /**
  * Revalidation ISR : Revalider toutes les 6 heures
  */
-export const revalidate = 6 * 60 * 60; // 6 heures
+export const revalidate = 7200;
 
 export async function generateMetadata({
   params,

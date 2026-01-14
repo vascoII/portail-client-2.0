@@ -1,0 +1,40 @@
+# Stage 1: Build & Composer install
+FROM php:8.3-fpm AS builder
+
+WORKDIR /var/www/backend
+
+# Install PHP extensions
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git unzip libicu-dev libzip-dev libonig-dev zlib1g-dev libxml2-dev \
+    libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
+ && docker-php-ext-configure intl \
+ && docker-php-ext-configure gd --with-freetype --with-jpeg \
+ && docker-php-ext-install -j"$(nproc)" intl pdo_mysql zip opcache soap gd mbstring \
+ && rm -rf /var/lib/apt/lists/*
+
+# Copy composer from official image
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Copy composer files and install dependencies (no dev)
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+
+# Copy application code
+COPY . .
+
+# Optimize Symfony cache (si applicable)
+RUN php bin/console cache:warmup --env=preview || true
+
+# Stage 2: Final image
+FROM php:8.3-fpm
+
+WORKDIR /var/www/backend
+
+# Copy built app from builder
+COPY --from=builder /var/www/backend /var/www/backend
+
+# Environment variables
+ENV APP_ENV=preview APP_DEBUG=0
+
+EXPOSE 9000
+CMD ["php-fpm"]

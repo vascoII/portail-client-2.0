@@ -1,6 +1,6 @@
 # Project Setup Guide - TECHEM Portail Client
 
-Ce guide explique comment lancer le projet en local, soit en mode classique, soit via la sandbox Docker.
+Ce guide explique comment lancer le projet en local, soit en mode classique, soit via la preview Docker.
 
 ---
 
@@ -9,28 +9,28 @@ Ce guide explique comment lancer le projet en local, soit en mode classique, soi
 ```bash
 git clone https://gitlab-prod.eu.techem.corp/france/portal/portail-client-2.0.git
 cd portail-client-2.0
-dos2unix docker-sandbox-starter.sh (si besoin au premier lanch si error, sudo apt install dos2unix)
-dos2unix dockerless-sandbox-starter.sh (si besoin au premier lanch si error, sudo apt install dos2unix)
+dos2unix docker-preview-starter.sh (si besoin au premier lanch si error, sudo apt install dos2unix)
+dos2unix dockerless-preview-starter.sh (si besoin au premier lanch si error, sudo apt install dos2unix)
 ```
 
 ---
 
-## 2. Lancer la sandbox Docker (recommandé pour la branche `sandbox`)
+## 2. Lancer la preview Docker (recommandé pour la branche `preview`)
 
 Lancer le projet avec Docker, voici les grandes étapes.
 
-### 2.1. Lancer la sandbox Docker
+### 2.1. Lancer la preview Docker
 
 Depuis la racine du projet :
 
 ```bash
-git checkout sandbox
-./docker-sandbox-starter.sh
+git checkout preview
+./docker-preview-starter.sh
 ```
 
 Le script va :
 
-- Copier `env.sandbox.example` vers `.env` si `.env` n’existe pas encore
+- Copier `env.preview.example` vers `.env` si `.env` n’existe pas encore
 - Construire les conteneurs **sans cache** :
   ```bash
   docker compose build --no-cache
@@ -47,10 +47,10 @@ Par défaut, les services seront disponibles sur :
 
 Ajuster les ports via les variables `BACKEND_PORT` et `FRONTEND_PORT` dans le fichier `.env`.
 
-### 2.2. Stopper la sandbox Docker
+### 2.2. Stopper la preview Docker
 
 ```bash
-./docker-sandbox-stop.sh
+./docker-preview-stop.sh
 ```
 ---
 
@@ -63,21 +63,21 @@ Lancer le projet sans Docker, voici les grandes étapes.
 Copier le fichier d’exemple et ajuster les valeurs :
 
 ```bash
-cp .env.sandbox.example .env
+cp .env.preview.example .env
 ```
 
-### 3.2. Lancer la sandbox DockerLess
+### 3.2. Lancer la preview DockerLess
 
 ```bash
-./dockerless-sandbox-starter.sh
+./dockerless-preview-starter.sh
 ```
 
 L’application backend sera disponible par défaut sur `https://localhost:3000`.
 
-### 3.3. Stopper la sandbox DockerLess
+### 3.3. Stopper la preview DockerLess
 
 ```bash
-./dockerless-sandbox-stop.sh
+./dockerless-preview-stop.sh
 ```
 
 Les ports 8000 et 3000 seront libérés

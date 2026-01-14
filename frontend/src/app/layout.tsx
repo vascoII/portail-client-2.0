@@ -1,4 +1,4 @@
-import { Outfit } from 'next/font/google';
+import localFont from 'next/font/local';
 import type { Metadata } from 'next';
 import './globals.css';
 
@@ -6,9 +6,15 @@ import { SidebarProvider } from '@/context/SidebarContext';
 import { ThemeProvider } from '@/context/ThemeContext';
 import Providers from './providers';
 
-const outfit = Outfit({
-  subsets: ["latin"],
+const outfit = localFont({
+  src: [
+    { path: 'Outfit-Regular.woff2', weight: '400', style: 'normal' },
+    { path: 'Outfit-Medium.woff2',  weight: '500', style: 'normal' },
+    { path: 'Outfit-Bold.woff2',    weight: '700', style: 'normal' },
+  ],
+  display: 'swap',
 });
+
 
 export const metadata: Metadata = {
   title: 'TECHEM - Espace client',
@@ -26,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="fr">
       <body className={`${outfit.className} dark:bg-gray-900`}>
         <Providers>
           <ThemeProvider>

@@ -1,0 +1,29 @@
+# Stage 1: Build
+FROM node:20 AS builder
+WORKDIR /usr/src/frontend
+
+# Install dependencies
+COPY package.json package-lock.json* ./
+RUN npm ci
+
+# Copy source code
+COPY . .
+
+# Build Next.js (SSR)
+RUN npm run build
+
+# Stage 2: Runtime (SSR)
+FROM node:20-alpine
+WORKDIR /usr/src/frontend
+
+# Copy built app and node_modules from builder
+COPY --from=builder /usr/src/frontend ./
+
+# Set environment variables
+ENV NODE_ENV=production
+
+# Expose SSR port
+EXPOSE 3000
+
+# Start Next.js in production mode
+CMD ["npm", "run", "start"]

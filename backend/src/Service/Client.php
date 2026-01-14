@@ -1271,25 +1271,19 @@ class Client extends BaseClient
         return $board;
     }
 
-    public function setTicketStatutClient($pkTicket, $statut)
+    public function setTicketStatutClient(string $caseId, string $statut)
     {
-
         $sessionId = $this->getSessionId();
-        $pkUser = $this->getPkUser();
-
+        $pkUser = (int) $this->getPkUser();
 
         $request = (object) [
             'SessionID' => $sessionId,
-            'PkUser'    => (int) $pkUser,
-            'pkticket'  => (int) $pkTicket,
+            'PkUser'    => $pkUser,
+            'CaseId'    => $caseId,
             'statut'    => $statut
-
-
         ];
 
-        $board = $this->sendRequest('SetTicketStatus', $request, $use_cache = false);
-
-        return $board;
+        return $this->sendRequest('SetTicketStatus', $request, false, false);
     }
 
     /**
