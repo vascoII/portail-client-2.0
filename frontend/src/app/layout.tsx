@@ -8,9 +8,9 @@ import Providers from './providers';
 
 const outfit = localFont({
   src: [
-    { path: 'Outfit-Regular.woff2', weight: '400', style: 'normal' },
-    { path: 'Outfit-Medium.woff2',  weight: '500', style: 'normal' },
-    { path: 'Outfit-Bold.woff2',    weight: '700', style: 'normal' },
+    { path: '../../public/fonts/outfit/Outfit-Regular.woff2', weight: '400', style: 'normal' },
+    { path: '../../public/fonts/outfit/Outfit-Medium.woff2',  weight: '500', style: 'normal' },
+    { path: '../../public/fonts/outfit/Outfit-Bold.woff2',    weight: '700', style: 'normal' },
   ],
   display: 'swap',
 });
