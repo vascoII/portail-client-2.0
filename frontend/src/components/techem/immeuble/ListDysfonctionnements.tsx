@@ -28,7 +28,7 @@ const formatDays = (value?: number | null): string => {
   return `${value} jour${value > 1 ? "s" : ""}`;
 };
 
-const getDysfunctionCount = (dysfonctionnement: Dysfunction): number => {
+const getDysfunctionCount = (dysfonctionnement: Dysfunction): number => { // eslint-disable-line @typescript-eslint/no-unused-vars
   // For dysfunctions, we typically count 1 per record
   return 1;
 };

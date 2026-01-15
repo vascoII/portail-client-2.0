@@ -9,23 +9,25 @@ export const revalidate = 7200;
 export async function generateMetadata({
   params,
 }: {
-  params: { pkImmeuble: string; pkLogement: string };
+  params: Promise<{ pkImmeuble: string; pkLogement: string }>;
 }): Promise<Metadata> {
+  const { pkLogement } = await params;
   return {
-    title: `Dysfonctionnements - Logement ${params.pkLogement} | TECHEM - Espace client`,
-    description: `Liste des dysfonctionnements pour le logement ${params.pkLogement}`,
+    title: `Dysfonctionnements - Logement ${pkLogement} | TECHEM - Espace client`,
+    description: `Liste des dysfonctionnements pour le logement ${pkLogement}`,
   };
 }
 
-export default function LogementDysfonctionnementsPage({
+export default async function LogementDysfonctionnementsPage({
   params,
 }: {
-  params: { pkImmeuble: string; pkLogement: string };
+  params: Promise<{ pkImmeuble: string; pkLogement: string }>;
 }) {
+  const { pkLogement } = await params;
   return (
     <div className="grid grid-cols-12 gap-4 md:gap-6">
       <div className="col-span-12">
-        <ListDysfonctionnements pkLogement={params.pkLogement} />
+        <ListDysfonctionnements pkLogement={pkLogement} />
       </div>
     </div>
   );

@@ -1,7 +1,8 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, extractApiData, handleApiError } from "@/lib/api/client";
 import { getStaleTimeUntilMidnight } from "@/lib/utils/cache";
-import type { Invoice, InvoiceListResponse } from "@/lib/types/api";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { Invoice, InvoiceListResponse as _InvoiceListResponse } from "@/lib/types/api";
 
 /**
  * Response from /api/factures endpoint
@@ -14,6 +15,7 @@ export interface FacturesListResponse {
 /**
  * Response from /api/factures/{pkFacture} endpoint
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface FactureDetailsResponse extends Invoice {}
 
 /**
@@ -77,7 +79,7 @@ export function useFactures() {
    * GET /api/factures/{pkFacture}
    * @param pkFacture - Invoice ID
    */
-  const getFactureQuery = (pkFacture: string | number) => {
+  const useFactureQuery = (pkFacture: string | number) => {
     return useQuery({
       queryKey: ["factures", pkFacture],
       queryFn: async (): Promise<FactureDetailsResponse> => {
@@ -151,7 +153,8 @@ export function useFactures() {
           .toLocaleDateString("fr-FR")
           .replace(/\//g, "-")}.pdf`;
 
-      downloadBlob(response.data, filename, contentType);
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
+      downloadBlob(response.data as unknown as Blob, filename, contentType);
     } catch (error) {
       throw new Error(handleApiError(error));
     }
@@ -173,7 +176,7 @@ export function useFactures() {
       : null,
 
     // Query hooks for reactive usage (with parameters)
-    getFactureQuery,
+    useFactureQuery,
 
     // Direct access to queries for advanced usage
     getFacturesQuery,

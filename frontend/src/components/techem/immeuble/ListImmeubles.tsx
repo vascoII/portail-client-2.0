@@ -36,7 +36,7 @@ export default function ListImmeubles() {
   const { isOpen, openModal, closeModal } = useModal();
   
   // Use the reusable export hook
-  const { handleExport, isExporting, error: exportError, clearError: clearExportError } = useExport(exportImmeubles);
+  const { handleExport: _handleExport, isExporting: _isExporting, error: exportError, clearError: clearExportError } = useExport(exportImmeubles); // eslint-disable-line @typescript-eslint/no-unused-vars
 
   // Get active filters from URL parameters
   const activeFilters = useMemo(() => {

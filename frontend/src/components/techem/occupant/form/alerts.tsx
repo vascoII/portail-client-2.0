@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { handleApiError } from "@/lib/api/client";
-import Loader from "@/components/ui/loader/Loader";
+import { LoadingContainer } from "@/components/ui/loading";
 import { useFkUser } from "@/lib/hooks/useFkUser";
 import { useAlertes } from "@/lib/hooks/useAlertes";
 
@@ -69,7 +69,8 @@ export default function AlertsSettingsForm() {
   });
 
   const {
-    getAlertes,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    getAlertes: _getAlertes,
     updateAlertes,
     isUpdatingAlertes,
     updateAlertesError,
@@ -103,7 +104,7 @@ export default function AlertsSettingsForm() {
   const onSubmit = async (data: AlertsFormData) => {
     try {
       // Préparer les données selon le format attendu par l'API
-      const alertData: any = {};
+      const alertData: any = {}; // eslint-disable-line @typescript-eslint/no-explicit-any
 
       // Convertir le boolean en 'O' ou 'N' (le hook le fait déjà, mais on peut le faire ici aussi)
       if (data.SEUIL_CONSO_ACTIF !== undefined) {
@@ -147,8 +148,13 @@ export default function AlertsSettingsForm() {
   const isLoading = isSubmitting || isUpdatingAlertes || isAlertesLoading;
   const displayError = updateAlertesError || alertesLoadingError || errors.root?.message;
 
+  // Convert displayError to string for Alert component
+  const displayErrorString = displayError 
+    ? (typeof displayError === 'string' ? displayError : handleApiError(displayError))
+    : undefined;
+
   if (!fkUser || isAlertesLoading) {
-    return <Loader />;
+    return <LoadingContainer message="Chargement des paramètres d'alerte..." />;
   }
 
   if (alertesLoadingError) {
@@ -189,9 +195,9 @@ export default function AlertsSettingsForm() {
             )}
 
             {/* Alerte d'erreur */}
-            {displayError && !isSuccess && (
+            {displayErrorString && !isSuccess && (
               <div className="mb-6">
-                <Alert variant="error" title="Erreur" message={displayError} />
+                <Alert variant="error" title="Erreur" message={displayErrorString} />
               </div>
             )}
 

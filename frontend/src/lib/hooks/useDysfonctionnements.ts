@@ -10,7 +10,7 @@ import type { DysfunctionListResponse } from "@/lib/types/api";
 export function useDysfonctionnements(fkUser?: string | number | null) {
   const queryClient = useQueryClient();
 
-  const getDysfonctionnementsQuery = useQuery({
+  const useDysfonctionnementsQuery = useQuery({
     queryKey: ["occupant", "dysfonctionnements", fkUser],
     queryFn: async (): Promise<DysfunctionListResponse> => {
       const response = await api.get<DysfunctionListResponse>(
@@ -81,12 +81,12 @@ export function useDysfonctionnements(fkUser?: string | number | null) {
 
   return {
     getDysfonctionnements,
-    getDysfonctionnementsQuery,
+    useDysfonctionnementsQuery,
     exportDysfonctionnements,
-    dysfonctionnementsData: getDysfonctionnementsQuery.data,
-    dysfonctionnementsIsLoading: getDysfonctionnementsQuery.isLoading,
-    dysfonctionnementsError: getDysfonctionnementsQuery.error
-      ? handleApiError(getDysfonctionnementsQuery.error)
+    dysfonctionnementsData: useDysfonctionnementsQuery.data,
+    dysfonctionnementsIsLoading: useDysfonctionnementsQuery.isLoading,
+    dysfonctionnementsError: useDysfonctionnementsQuery.error
+      ? handleApiError(useDysfonctionnementsQuery.error)
       : null,
   };
 }

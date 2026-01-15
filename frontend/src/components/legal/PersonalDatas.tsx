@@ -150,7 +150,7 @@ export default function PersonalDatas() {
               </Link>
               
               <br/><br/>
-              Grâce à cela, un Opt-Out-Cookie avec le nom "cntcookie" est placé par etracker. 
+              Grâce à cela, un Opt-Out-Cookie avec le nom &quot;cntcookie&quot; est placé par etracker. 
               Veuillez ne pas supprimer ce cookie tant que vous souhaitez conserver votre objection. 
               Pour plus d&apos;informations, consultez les dispositions de protection des données d&apos;etracker: 
               <br/><br/>
@@ -169,7 +169,7 @@ export default function PersonalDatas() {
               Tous les sites internet utilisent dans une certaine mesure des soi-disant cookies. Les cookies ne causent aucun dommage à votre ordinateur et ne contiennent aucun virus. Les cookies aident à rendre nos offres plus conviviales, plus efficaces et plus sécurisées. Les cookies sont de petits fichiers texte stockés sur votre ordinateur et enregistrés par votre navigateur.
             </p>
             <p className="text-sm text-gray-700 dark:text-gray-300">
-              La majorité des cookies que nous utilisons sont des "cookies de session". Ils sont automatiquement supprimés à la fin de votre visite. Les autres cookies restent enregistrés sur votre terminal jusqu&apos;à leur suppression. Ces cookies nous permettent de reconnaître votre navigateur lors de visites ultérieures.
+              La majorité des cookies que nous utilisons sont des &quot;cookies de session&quot;. Ils sont automatiquement supprimés à la fin de votre visite. Les autres cookies restent enregistrés sur votre terminal jusqu&apos;à leur suppression. Ces cookies nous permettent de reconnaître votre navigateur lors de visites ultérieures.
             </p>
             <p className="text-sm text-gray-700 dark:text-gray-300">
               Vous pouvez configurer votre navigateur de sorte que vous soyez informé de l&apos;emplacement des cookies et uniquement autoriser les cookies dans certains cas, exclure l&apos;acceptation des cookies dans certains cas ou en général, et activer la suppression automatique des cookies en fermant le navigateur. La fonctionnalité de ce site peut être restreinte lors de la désactivation des cookies.
@@ -201,7 +201,7 @@ export default function PersonalDatas() {
               12. Cryptage SSL
             </h2>
             <p className="text-sm text-gray-700 dark:text-gray-300">
-              Ce site utilise le cryptage SSL pour des raisons de sécurité et de protection de la transmission de contenus confidentiels, tels que les requêtes que vous nous envoyez en tant qu&apos;opérateur du site. Vous pouvez reconnaître une connexion cryptée en changeant la barre d&apos;adresse du navigateur de "http: //" à "https: //" par le symbole de cadenas dans la ligne de votre navigateur. Lorsque le cryptage SSL est activé, les données que vous nous transmettez ne peuvent pas être lues par des tiers.
+              Ce site utilise le cryptage SSL pour des raisons de sécurité et de protection de la transmission de contenus confidentiels, tels que les requêtes que vous nous envoyez en tant qu&apos;opérateur du site. Vous pouvez reconnaître une connexion cryptée en changeant la barre d&apos;adresse du navigateur de &quot;http: //&quot; à &quot;https: //&quot; par le symbole de cadenas dans la ligne de votre navigateur. Lorsque le cryptage SSL est activé, les données que vous nous transmettez ne peuvent pas être lues par des tiers.
             </p>
           </section>
 

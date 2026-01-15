@@ -26,8 +26,8 @@ interface LogementMetricsProps {
  * - Depannages (nbDepannages)
  */
 export const LogementMetrics = ({ pkLogement, pkImmeuble }: LogementMetricsProps) => {
-  const { getLogementQuery } = useLogements();
-  const { data: logementData, isLoading: isLogementLoading } = getLogementQuery(pkLogement);
+  const { useLogementQuery } = useLogements();
+  const { data: logementData, isLoading: isLogementLoading } = useLogementQuery(pkLogement);
   const livretModal = useModal();
   const [dateStart, setDateStart] = useState("");
   const [dateEnd, setDateEnd] = useState("");

@@ -3,10 +3,7 @@
 import { ApexOptions } from "apexcharts";
 
 import dynamic from "next/dynamic";
-import { Dropdown } from "@/components/ui/dropdown/Dropdown";
-import { MoreDotIcon } from "@/icons";
 import { useState, useMemo } from "react";
-import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 import { useParc } from "@/lib/hooks/useParc";
 import { LoadingChart } from "@/components/ui/loading";
 // Dynamically import the ReactApexChart component
@@ -75,11 +72,13 @@ export default function VosReleves() {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  function toggleDropdown() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function _toggleDropdown() {
     setIsOpen(!isOpen);
   }
 
-  function closeDropdown() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function _closeDropdown() {
     setIsOpen(false);
   }
 

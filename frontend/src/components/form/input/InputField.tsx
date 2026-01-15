@@ -8,9 +8,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   defaultValue?: string | number;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
-  min?: string;
-  max?: string;
-  step?: number;
+  // min, max, step are inherited from React.InputHTMLAttributes<HTMLInputElement>
   disabled?: boolean;
   success?: boolean;
   error?: boolean;

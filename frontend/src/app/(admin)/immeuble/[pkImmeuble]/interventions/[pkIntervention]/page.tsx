@@ -6,12 +6,12 @@ export const metadata: Metadata = {
   description: "Détails d'une intervention de dépannage",
 };
 
-export default function InterventionDetailsPage({
+export default async function InterventionDetailsPage({
   params,
 }: {
-  params: { pkImmeuble: string; pkIntervention: string };
+  params: Promise<{ pkImmeuble: string; pkIntervention: string }>;
 }) {
-  const { pkImmeuble, pkIntervention } = params;
+  const { pkImmeuble, pkIntervention } = await params;
 
   return (
     <div className="px-4 py-6 sm:px-6 lg:px-8">

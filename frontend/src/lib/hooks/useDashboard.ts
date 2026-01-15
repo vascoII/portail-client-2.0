@@ -16,7 +16,7 @@ export interface InterventionReportParams {
  * Response from dashboard API
  */
 export interface DashboardApiResponse {
-  board: any; // DashboardData normalized
+  board: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   chantier: ChantierData;
   demo?: boolean;
 }
@@ -138,7 +138,8 @@ export function useDashboard() {
       });
 
       // Create blob from response data
-      const blob = new Blob([response.data], {
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
+      const blob = new Blob([response.data as unknown as BlobPart], {
         type: isExcel
           ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
           : "application/pdf",

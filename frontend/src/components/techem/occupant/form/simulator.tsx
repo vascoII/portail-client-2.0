@@ -130,7 +130,7 @@ function calculateConsumption(
       : 0;
   const gardenUse = garden === "yes" && gardenSize ? gardenSize * 6 : 0;
 
-  let consumption: ConsumptionData = {
+  const consumption: ConsumptionData = {
     Douches: showerUse,
     Bains: bathUse,
     "Chasses d'eau": toiletUse,

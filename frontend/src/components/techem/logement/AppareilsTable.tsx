@@ -20,11 +20,11 @@ interface AppareilsTableProps {
 export default function AppareilsTable({
   pkLogement,
   type,
-  pkImmeuble,
+  pkImmeuble, // eslint-disable-line @typescript-eslint/no-unused-vars
   appareils: localAppareils,
 }: AppareilsTableProps) {
-  const { getInfosAppareilsQuery } = useLogements();
-  const { data, isLoading, error } = getInfosAppareilsQuery(pkLogement, type);
+  const { useInfosAppareilsQuery } = useLogements();
+  const { data, isLoading, error } = useInfosAppareilsQuery(pkLogement, type);
 
   // Check if date is valid (not 0001-01-01)
   const isValidDate = (dateStr: string | undefined): boolean => {

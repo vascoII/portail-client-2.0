@@ -78,7 +78,7 @@ export default function OperatorUpdateForm({ operatorId }: OperatorUpdateFormPro
   });
 
   const {
-    getOperatorQuery,
+    useOperatorQuery,
     updateOperator,
     isUpdating,
     updateError,
@@ -89,7 +89,7 @@ export default function OperatorUpdateForm({ operatorId }: OperatorUpdateFormPro
     data: operatorData,
     isLoading: isLoadingOperator,
     error: operatorError,
-  } = getOperatorQuery(operatorId);
+  } = useOperatorQuery(operatorId);
 
   // Pré-remplir le formulaire avec les données de l'opérateur
   useEffect(() => {

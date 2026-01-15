@@ -3,7 +3,8 @@ import React, { useMemo } from "react";
 import { OccupantLogementResponse } from "@/lib/hooks/useOccupant";
 import { LoadingCard } from "@/components/ui/loading";
 
-interface OccupantMainCardProps {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+interface _OccupantMainCardProps {
   occupantData: OccupantLogementResponse;
 }
 

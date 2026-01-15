@@ -237,7 +237,7 @@ const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const pathname = usePathname();
   const { user } = useAuth();
-  const { getLogementQuery } = useLogements();
+  const { useLogementQuery } = useLogements();
 
   const isDevelopment = process.env.NODE_ENV === "development";
 
@@ -253,26 +253,35 @@ const AppSidebar: React.FC = () => {
 
   // If we're on a logement page, try to get pkImmeuble from the logement data
   // Always call the hook (React rules), but it will only execute when pkLogement is provided
-  const { data: logementData } = getLogementQuery(pkLogement || "");
+  const { data: logementData } = useLogementQuery(pkLogement || "");
   
   // Extract current section (fuites, anomalies, etc.) from pathname
   let currentSection: string | undefined;
   if (pkImmeuble) {
     // Match direct section URL: /immeuble/{pkImmeuble}/{section}
     let sectionMatch = pathname.match(/^\/immeuble\/[^/]+\/([^/]+)$/);
-    if (
-      sectionMatch &&
-      IMMEUBLE_SECTION_SLUGS.some((s) => s.slug === sectionMatch[1])
-    ) {
-      currentSection = sectionMatch[1];
+    if (sectionMatch && sectionMatch[1]) {
+      const sectionSlug = sectionMatch[1];
+      if (IMMEUBLE_SECTION_SLUGS.some((s) => s.slug === sectionSlug)) {
+        currentSection = sectionSlug;
+      } else {
+        // Match nested URLs like /immeuble/{pkImmeuble}/{section}/{pkIntervention}
+        sectionMatch = pathname.match(/^\/immeuble\/[^/]+\/([^/]+)\/[^/]+$/);
+        if (sectionMatch && sectionMatch[1]) {
+          const nestedSectionSlug = sectionMatch[1];
+          if (IMMEUBLE_SECTION_SLUGS.some((s) => s.slug === nestedSectionSlug)) {
+            currentSection = nestedSectionSlug;
+          }
+        }
+      }
     } else {
       // Match nested URLs like /immeuble/{pkImmeuble}/{section}/{pkIntervention}
       sectionMatch = pathname.match(/^\/immeuble\/[^/]+\/([^/]+)\/[^/]+$/);
-      if (
-        sectionMatch &&
-        IMMEUBLE_SECTION_SLUGS.some((s) => s.slug === sectionMatch[1])
-      ) {
-        currentSection = sectionMatch[1];
+      if (sectionMatch && sectionMatch[1]) {
+        const nestedSectionSlug = sectionMatch[1];
+        if (IMMEUBLE_SECTION_SLUGS.some((s) => s.slug === nestedSectionSlug)) {
+          currentSection = nestedSectionSlug;
+        }
       }
     }
   }
@@ -280,11 +289,11 @@ const AppSidebar: React.FC = () => {
     const sectionMatch = pathname.match(
       /^\/immeuble\/[^/]+\/logements\/[^/]+\/([^/]+)$/
     );
-    if (
-      sectionMatch &&
-      IMMEUBLE_SECTION_SLUGS.some((s) => s.slug === sectionMatch[1])
-    ) {
-      currentSection = sectionMatch[1];
+    if (sectionMatch && sectionMatch[1]) {
+      const sectionSlug = sectionMatch[1];
+      if (IMMEUBLE_SECTION_SLUGS.some((s) => s.slug === sectionSlug)) {
+        currentSection = sectionSlug;
+      }
     }
   }
 

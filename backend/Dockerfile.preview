@@ -17,10 +17,13 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Copy composer files and install dependencies (no dev)
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+RUN composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader --no-scripts
 
 # Copy application code
 COPY . .
+
+# Exécuter les scripts post-install après avoir copié le code
+RUN composer run-script post-install-cmd || true
 
 # Optimize Symfony cache (si applicable)
 RUN php bin/console cache:warmup --env=preview || true

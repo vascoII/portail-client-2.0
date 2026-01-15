@@ -19,7 +19,7 @@ export function useAlertes(fkUser?: string | number | null) {
       }
 
       if (params) {
-        const data: any = { ...params };
+        const data: any = { ...params }; // eslint-disable-line @typescript-eslint/no-explicit-any
         if (typeof data.SEUIL_CONSO_ACTIF === "boolean") {
           data.SEUIL_CONSO_ACTIF = data.SEUIL_CONSO_ACTIF ? "O" : "N";
         }

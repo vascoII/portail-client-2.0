@@ -67,12 +67,12 @@ const parseConsoPeriodeReadings = (
 };
 
 export default function LogementConsommationChartEc({ pkLogement }: LogementConsommationChartEcProps) {
-  const { getLogementQuery } = useLogements();
+  const { useLogementQuery } = useLogements();
   const {
     data: logementData,
     isLoading,
     error,
-  } = getLogementQuery(pkLogement);
+  } = useLogementQuery(pkLogement);
 
   const { categories, values } = useMemo(() => {
     const logement = logementData?.logement as Record<string, unknown> | undefined;

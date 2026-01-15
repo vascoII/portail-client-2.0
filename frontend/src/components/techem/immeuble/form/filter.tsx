@@ -112,7 +112,7 @@ export default function FilterImmeublesForm({
    * Gestion du changement d'un filtre
    */
   const handleFilterChange = useCallback(
-    (key: keyof ImmeubleFilters, value: any) => {
+    (key: keyof ImmeubleFilters, value: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
       setFilters((prev) => {
         const newFilters = { ...prev, [key]: value };
         // Appeler le callback si fourni

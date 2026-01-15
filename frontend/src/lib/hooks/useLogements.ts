@@ -12,7 +12,6 @@ import type {
   DysfunctionListResponse,
   FilterParams,
   FilterValues,
-  TicketOwner,
   CreateTicketRequest,
   CreateTicketResponse,
   OccupantData,
@@ -44,7 +43,7 @@ export interface TicketOwnerResponse {
   Email?: string;
   TelFixe?: string;
   TelMobile?: string;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 /**
@@ -86,7 +85,7 @@ export interface LogementInterventionsListResponse {
 export interface FilterLogementsResponse {
   logements: Array<{
     infosLogement: Housing;
-    comptesAppareils: any;
+    comptesAppareils: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   }>;
   filters: FilterValues;
   gestion?: boolean;
@@ -100,7 +99,7 @@ export interface FilterLogementsResponse {
 export interface UpdateOccupantResponse {
   success: boolean;
   message?: string;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 /**
@@ -155,7 +154,7 @@ export function useLogements() {
    * GET /api/logements/immeuble/{pkImmeuble}
    * @param pkImmeuble - Building ID
    */
-  const getLogementsByImmeubleQuery = (pkImmeuble: string | number) => {
+  const useLogementsByImmeubleQuery = (pkImmeuble: string | number) => {
     return useQuery({
       queryKey: ["logements", "immeuble", pkImmeuble],
       queryFn: async (): Promise<LogementsByImmeubleResponse> => {
@@ -267,7 +266,7 @@ export function useLogements() {
    * GET/POST /api/logements/{pkLogement}/ticket-owner
    * @param pkLogement - Logement ID
    */
-  const getTicketOwnerQuery = (pkLogement: string | number) => {
+  const useTicketOwnerQuery = (pkLogement: string | number) => {
     return useQuery({
       queryKey: ["logements", pkLogement, "ticket-owner"],
       queryFn: async (): Promise<TicketOwnerResponse> => {
@@ -346,7 +345,7 @@ export function useLogements() {
    * @param pkLogement - Logement ID
    * @param type - Device type ('eau' or 'chauffage')
    */
-  const getInfosAppareilsQuery = (
+  const useInfosAppareilsQuery = (
     pkLogement: string | number,
     type: "eau" | "chauffage"
   ) => {
@@ -393,7 +392,7 @@ export function useLogements() {
    * GET /api/logements/{pkLogement}
    * @param pkLogement - Logement ID
    */
-  const getLogementQuery = (pkLogement: string | number) => {
+  const useLogementQuery = (pkLogement: string | number) => {
     return useQuery({
       queryKey: ["logements", pkLogement],
       queryFn: async (): Promise<HousingDetailsResponse> => {
@@ -506,7 +505,7 @@ export function useLogements() {
    * @param pkLogement - Logement ID
    * @param pkIntervention - Intervention ID
    */
-  const getInterventionQuery = (
+  const useInterventionQuery = (
     pkLogement: string | number,
     pkIntervention: string | number
   ) => {
@@ -563,7 +562,7 @@ export function useLogements() {
    * GET /api/logements/{pkLogement}/interventions
    * @param pkLogement - Logement ID
    */
-  const getInterventionsQuery = (pkLogement: string | number) => {
+  const useInterventionsQuery = (pkLogement: string | number) => {
     return useQuery({
       queryKey: ["logements", pkLogement, "interventions"],
       queryFn: async (): Promise<LogementInterventionsListResponse> => {
@@ -634,7 +633,7 @@ export function useLogements() {
    * @param pkLogement - Logement ID
    * @param appareil - Optional device ID
    */
-  const getFuitesQuery = (
+  const useFuitesQuery = (
     pkLogement: string | number,
     appareil?: string
   ) => {
@@ -685,7 +684,7 @@ export function useLogements() {
    * GET /api/logements/{pkLogement}/dysfonctionnements
    * @param pkLogement - Logement ID
    */
-  const getDysfonctionnementsQuery = (pkLogement: string | number) => {
+  const useDysfonctionnementsQuery = (pkLogement: string | number) => {
     return useQuery({
       queryKey: ["logements", pkLogement, "dysfonctionnements"],
       queryFn: async (): Promise<DysfunctionListResponse> => {
@@ -728,7 +727,7 @@ export function useLogements() {
    * @param pkLogement - Logement ID
    * @param appareil - Optional device ID
    */
-  const getAnomaliesQuery = (
+  const useAnomaliesQuery = (
     pkLogement: string | number,
     appareil?: string
   ) => {
@@ -1071,15 +1070,15 @@ export function useLogements() {
       : null,
 
     // Query hooks for reactive usage (with parameters)
-    getLogementsByImmeubleQuery,
-    getTicketOwnerQuery,
-    getInfosAppareilsQuery,
-    getLogementQuery,
-    getInterventionQuery,
-    getInterventionsQuery,
-    getFuitesQuery,
-    getAnomaliesQuery,
-    getDysfonctionnementsQuery,
+    useLogementsByImmeubleQuery,
+    useTicketOwnerQuery,
+    useInfosAppareilsQuery,
+    useLogementQuery,
+    useInterventionQuery,
+    useInterventionsQuery,
+    useFuitesQuery,
+    useAnomaliesQuery,
+    useDysfonctionnementsQuery,
 
     // Direct access to mutations/queries for advanced usage
     createTicketMutation,

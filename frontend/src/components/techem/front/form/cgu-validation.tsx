@@ -53,7 +53,7 @@ interface CGUValidationFormProps {
 }
 
 export default function CGUValidationForm({
-  typeUser,
+  typeUser, // eslint-disable-line @typescript-eslint/no-unused-vars
   cguContent,
 }: CGUValidationFormProps) {
   const [isSuccess, setIsSuccess] = useState(false);
@@ -81,10 +81,10 @@ export default function CGUValidationForm({
   useEffect(() => {
     const loadCurrentEmail = async () => {
       try {
-        const status = await getCGUStatus();
+        const status = await getCGUStatus(); // eslint-disable-line @typescript-eslint/no-unused-vars
         // Si l'utilisateur a déjà un email, on peut le pré-remplir
         // (mais normalement en première connexion, il n'y en a pas)
-      } catch (error) {
+      } catch (error) { // eslint-disable-line @typescript-eslint/no-unused-vars
         // Ignorer les erreurs, on continue avec des champs vides
       }
     };

@@ -1,5 +1,5 @@
 "use client";
-import { useState, Suspense, lazy } from "react";
+import { useState, lazy } from "react";
 import LogementReleves, { TabType } from "@/components/techem/logement/LogementReleves";
 import LogementConsommationChartEf from "@/components/techem/logement/releve/LogementConsommationChartEf";
 import LogementStatisticsConsommationChartEf from "@/components/techem/logement/releve/LogementStatisticsConsommationChartEf";
@@ -9,32 +9,30 @@ import LogementConsommationChartRepart from "@/components/techem/logement/releve
 import LogementStatisticsConsommationChartRepart from "@/components/techem/logement/releve/LogementStatisticsConsommationChartRepart";
 import LogementConsommationChartCet from "@/components/techem/logement/releve/LogementConsommationChartCet";
 import LogementStatisticsConsommationChartCet from "@/components/techem/logement/releve/LogementStatisticsConsommationChartCet";
-import Accordion from "@/components/ui/accordion/Accordion";
-import { LoadingChart } from "@/components/ui/loading";
 
 // Lazy load des composants lourds
-const LogementStatisticsConsommationChartConsoTabsEf = lazy(
+const LogementStatisticsConsommationChartConsoTabsEf = lazy( // eslint-disable-line @typescript-eslint/no-unused-vars
   () => import("@/components/techem/logement/releve/LogementStatisticsConsommationChartConsoTabsEf")
 );
-const LogementStatisticsConsommationChartSerieConsosEf = lazy(
+const LogementStatisticsConsommationChartSerieConsosEf = lazy( // eslint-disable-line @typescript-eslint/no-unused-vars
   () => import("@/components/techem/logement/releve/LogementStatisticsConsommationChartSerieConsosEf")
 );
-const LogementStatisticsConsommationChartConsoTabsEc = lazy(
+const LogementStatisticsConsommationChartConsoTabsEc = lazy( // eslint-disable-line @typescript-eslint/no-unused-vars
   () => import("@/components/techem/logement/releve/LogementStatisticsConsommationChartConsoTabsEc")
 );
-const LogementStatisticsConsommationChartSerieConsosEc = lazy(
+const LogementStatisticsConsommationChartSerieConsosEc = lazy( // eslint-disable-line @typescript-eslint/no-unused-vars
   () => import("@/components/techem/logement/releve/LogementStatisticsConsommationChartSerieConsosEc")
 );
-const LogementStatisticsConsommationChartConsoTabsRepart = lazy(
+const LogementStatisticsConsommationChartConsoTabsRepart = lazy( // eslint-disable-line @typescript-eslint/no-unused-vars
   () => import("@/components/techem/logement/releve/LogementStatisticsConsommationChartConsoTabsRepart")
 );
-const LogementStatisticsConsommationChartSerieConsosRepart = lazy(
+const LogementStatisticsConsommationChartSerieConsosRepart = lazy( // eslint-disable-line @typescript-eslint/no-unused-vars
   () => import("@/components/techem/logement/releve/LogementStatisticsConsommationChartSerieConsosRepart")
 );
-const LogementStatisticsConsommationChartConsoTabsCet = lazy(
+const LogementStatisticsConsommationChartConsoTabsCet = lazy( // eslint-disable-line @typescript-eslint/no-unused-vars
   () => import("@/components/techem/logement/releve/LogementStatisticsConsommationChartConsoTabsCet")
 );
-const LogementStatisticsConsommationChartSerieConsosCet = lazy(
+const LogementStatisticsConsommationChartSerieConsosCet = lazy( // eslint-disable-line @typescript-eslint/no-unused-vars
   () => import("@/components/techem/logement/releve/LogementStatisticsConsommationChartSerieConsosCet")
 );
 

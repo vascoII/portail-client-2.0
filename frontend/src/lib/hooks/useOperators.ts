@@ -3,10 +3,8 @@ import { useCallback } from "react";
 import { api, extractApiData, handleApiError } from "@/lib/api/client";
 import type {
   Operator,
-  OperatorListResponse,
   CreateOperatorRequest,
   UpdateOperatorRequest,
-  UpdatePasswordRequest,
   Building,
   OccupantStatistics,
 } from "@/lib/types/api";
@@ -132,7 +130,7 @@ export function useOperators() {
       data: CreateOperatorRequest
     ): Promise<{ success: boolean; message?: string }> => {
       // Handle email format (can be string or object with first/second)
-      const requestData: any = { ...data };
+      const requestData: any = { ...data }; // eslint-disable-line @typescript-eslint/no-explicit-any
       if (typeof data.email === "object" && "first" in data.email) {
         // Email is already in the correct format
       } else if (typeof data.email === "string") {
@@ -213,7 +211,7 @@ export function useOperators() {
    * @param id - Operator ID
    * Note: No cache enabled (staleTime: 0) to always fetch fresh data
    */
-  const getOperatorQuery = (id: string | number) => {
+  const useOperatorQuery = (id: string | number) => {
     return useQuery({
       queryKey: ["operators", id],
       queryFn: async (): Promise<OperatorDetailsResponse> => {
@@ -268,7 +266,7 @@ export function useOperators() {
       data: UpdateOperatorRequest;
     }): Promise<{ success: boolean; message?: string }> => {
       // Handle email format (can be string or object with first/second)
-      const requestData: any = { ...data };
+      const requestData: any = { ...data }; // eslint-disable-line @typescript-eslint/no-explicit-any
       if (data.email) {
         if (typeof data.email === "object" && "first" in data.email) {
           // Email is already in the correct format
@@ -326,7 +324,7 @@ export function useOperators() {
       password: string | { first: string; second: string };
     }): Promise<{ success: boolean; message?: string }> => {
       // Handle password format (can be string or object with first/second)
-      const requestData: any = {};
+      const requestData: any = {}; // eslint-disable-line @typescript-eslint/no-explicit-any
       if (typeof password === "object" && "first" in password) {
         requestData.password = password;
       } else if (typeof password === "string") {
@@ -371,7 +369,7 @@ export function useOperators() {
       id: string | number;
       params: AddBuildingsParams;
     }): Promise<OperatorBuildingsResponse> => {
-      const requestData: any = {};
+      const requestData: any = {}; // eslint-disable-line @typescript-eslint/no-explicit-any
       if (params.all) {
         requestData.all = "1";
       } else if (params.immeubles) {
@@ -417,7 +415,7 @@ export function useOperators() {
       id: string | number;
       params: RemoveBuildingsParams;
     }): Promise<OperatorBuildingsResponse> => {
-      const requestData: any = {};
+      const requestData: any = {}; // eslint-disable-line @typescript-eslint/no-explicit-any
       if (params.all) {
         requestData.all = "1";
       } else if (params.immeubles) {
@@ -534,7 +532,7 @@ export function useOperators() {
       : null,
 
     // Query hooks for reactive usage (with parameters)
-    getOperatorQuery,
+    useOperatorQuery,
 
     // Direct access to mutations/queries for advanced usage
     createOperatorMutation,

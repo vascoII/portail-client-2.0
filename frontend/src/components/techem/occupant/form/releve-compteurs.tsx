@@ -8,7 +8,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useOccupant, type ReleveOccupantRequest } from "@/lib/hooks/useOccupant";
-import { handleApiError } from "@/lib/api/client";
 
 /**
  * Schéma de validation pour le formulaire de relevé de compteurs
@@ -35,78 +34,30 @@ const releveCompteursSchema = z.object({
 
   // Compteurs Eau Froide
   cuisine_ef_num: z.string().optional(),
-  cuisine_ef: z.preprocess(
-    (val) => {
-      if (val === "" || val === null || val === undefined || isNaN(Number(val))) return 0;
-      return Number(val);
-    },
-    z.number().min(0).optional()
-  ),
+  cuisine_ef: z.number().min(0).optional(),
   salleDeBains_ef_num: z.string().optional(),
-  salleDeBains_ef: z.preprocess(
-    (val) => {
-      if (val === "" || val === null || val === undefined || isNaN(Number(val))) return 0;
-      return Number(val);
-    },
-    z.number().min(0).optional()
-  ),
+  salleDeBains_ef: z.number().min(0).optional(),
   wc_ef_num: z.string().optional(),
-  wc_ef: z.preprocess(
-    (val) => {
-      if (val === "" || val === null || val === undefined || isNaN(Number(val))) return 0;
-      return Number(val);
-    },
-    z.number().min(0).optional()
-  ),
+  wc_ef: z.number().min(0).optional(),
   autreEmplacement_ef_loc: z.string().optional(),
   autreEmplacement_ef_num: z.string().optional(),
-  autreEmplacement_ef: z.preprocess(
-    (val) => {
-      if (val === "" || val === null || val === undefined || isNaN(Number(val))) return 0;
-      return Number(val);
-    },
-    z.number().min(0).optional()
-  ),
+  autreEmplacement_ef: z.number().min(0).optional(),
 
   // Compteurs Eau Chaude
   cuisine_ec_num: z.string().optional(),
-  cuisine_ec: z.preprocess(
-    (val) => {
-      if (val === "" || val === null || val === undefined || isNaN(Number(val))) return 0;
-      return Number(val);
-    },
-    z.number().min(0).optional()
-  ),
+  cuisine_ec: z.number().min(0).optional(),
   salleDeBains_ec_num: z.string().optional(),
-  salleDeBains_ec: z.preprocess(
-    (val) => {
-      if (val === "" || val === null || val === undefined || isNaN(Number(val))) return 0;
-      return Number(val);
-    },
-    z.number().min(0).optional()
-  ),
+  salleDeBains_ec: z.number().min(0).optional(),
   wc_ec_num: z.string().optional(),
-  wc_ec: z.preprocess(
-    (val) => {
-      if (val === "" || val === null || val === undefined || isNaN(Number(val))) return 0;
-      return Number(val);
-    },
-    z.number().min(0).optional()
-  ),
+  wc_ec: z.number().min(0).optional(),
   autreEmplacement_ec_loc: z.string().optional(),
   autreEmplacement_ec_num: z.string().optional(),
-  autreEmplacement_ec: z.preprocess(
-    (val) => {
-      if (val === "" || val === null || val === undefined || isNaN(Number(val))) return 0;
-      return Number(val);
-    },
-    z.number().min(0).optional()
-  ),
+  autreEmplacement_ec: z.number().min(0).optional(),
 });
 
 type ReleveCompteursFormData = z.infer<typeof releveCompteursSchema>;
 
-export default function releveCompteursForm() {
+export default function ReleveCompteursForm() {
   const [isSuccess, setIsSuccess] = useState(false);
 
   const {
@@ -200,7 +151,7 @@ export default function releveCompteursForm() {
 
       await setReleveOccupant(releveData);
       setIsSuccess(true);
-    } catch (error) {
+    } catch (_error) {// eslint-disable-line @typescript-eslint/no-unused-vars
       // L'erreur est déjà gérée par le hook useOccupant
       // Mais on peut définir une erreur au niveau du formulaire si nécessaire
       setError("root", {

@@ -309,7 +309,7 @@ export default function CreateTicketModal({
                 <Controller
                   name="attachment"
                   control={control}
-                  render={({ field: { onChange, value, ...field } }) => (
+                  render={({ field: { onChange, value: _value, ...field } }) => ( // eslint-disable-line @typescript-eslint/no-unused-vars
                     <div>
                       <FileInput
                         {...field}

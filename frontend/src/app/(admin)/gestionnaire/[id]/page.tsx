@@ -5,11 +5,12 @@ export const metadata: Metadata = {
   description: "Manager details",
 };
 
-export default function GestionnaireDetailsPage({
+export default async function GestionnaireDetailsPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  await params;
   return (
     <div className="flex items-center justify-center min-h-screen">
       <h1 className="text-2xl font-bold">Hello</h1>

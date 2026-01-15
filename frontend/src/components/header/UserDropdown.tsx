@@ -22,9 +22,7 @@ export default function UserDropdown() {
   }, [user]);
 
   const email = user?.EMail ?? user?.Email ?? "";
-  const hasShowFactures = user?.showFactures ?? false;
-  const isDevelopment = process.env.NODE_ENV === "development" ? true : false;
-
+  
   // Determine which menu items to show based on UserType
   // Show menu items only if UserType is "C" (Client)
   // For OCCUPANT or GESTIONNAIRE, only show "Mon compte"

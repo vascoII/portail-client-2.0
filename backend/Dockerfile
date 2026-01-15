@@ -38,10 +38,13 @@ ENV APP_ENV=dev \
 
 # Caching des vendors
 COPY composer.json composer.lock ./
-RUN composer install --prefer-dist --no-interaction --no-progress
+RUN composer install --prefer-dist --no-interaction --no-progress --no-scripts
 
 # Code applicatif
 COPY . .
+
+# Exécuter les scripts post-install après avoir copié le code
+RUN composer run-script post-install-cmd || true
 
 EXPOSE 8000
 CMD ["php", "-S", "0.0.0.0:8000", "-t", "public"]

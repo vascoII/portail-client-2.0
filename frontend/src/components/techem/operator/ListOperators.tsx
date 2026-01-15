@@ -19,7 +19,7 @@ import Checkbox from "@/components/form/input/Checkbox";
 import { LoadingSpinner } from "@/components/ui/loading";
 
 export default function ListOperators() {
-  const { getOperatorsQuery, deleteOperator, isDeleting, deleteError, getOperatorQuery, addBuildings, removeBuildings, isAddingBuildings, isRemovingBuildings } = useOperators();
+  const { getOperatorsQuery, deleteOperator, isDeleting, deleteError, useOperatorQuery, addBuildings, removeBuildings, isAddingBuildings, isRemovingBuildings } = useOperators();
   const [operators, setOperators] = useState<Operator[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [operatorToDelete, setOperatorToDelete] = useState<Operator | null>(null);
@@ -448,7 +448,7 @@ export default function ListOperators() {
           operator={operatorToShare}
           isOpen={shareModal.isOpen}
           onClose={handleCancelShare}
-          getOperatorQuery={getOperatorQuery}
+          useOperatorQuery={useOperatorQuery}
           addBuildings={addBuildings}
           removeBuildings={removeBuildings}
           isAddingBuildings={isAddingBuildings}
@@ -470,7 +470,7 @@ interface ShareBuildingsModalProps {
   operator: Operator;
   isOpen: boolean;
   onClose: () => void;
-  getOperatorQuery: ReturnType<typeof useOperators>["getOperatorQuery"];
+  useOperatorQuery: ReturnType<typeof useOperators>["useOperatorQuery"];
   addBuildings: (id: string | number, params: { immeubles?: (string | number)[]; all?: boolean }) => Promise<{ immeubles: Building[] }>;
   removeBuildings: (id: string | number, params: { immeubles?: (string | number)[]; all?: boolean }) => Promise<{ immeubles: Building[] }>;
   isAddingBuildings: boolean;
@@ -482,7 +482,7 @@ function ShareBuildingsModal({
   operator,
   isOpen,
   onClose,
-  getOperatorQuery,
+  useOperatorQuery,
   addBuildings,
   removeBuildings,
   isAddingBuildings,
@@ -498,14 +498,11 @@ function ShareBuildingsModal({
     isLoading,
     error: operatorError,
     refetch: refetchOperator,
-  } = getOperatorQuery(operator.PKUser);
+  } = useOperatorQuery(operator.PKUser);
 
   // Debug: log the raw operatorData to see what we're getting
-  // eslint-disable-next-line no-console
   console.log("[ShareBuildingsModal] operatorData:", operatorData);
-  // eslint-disable-next-line no-console
   console.log("[ShareBuildingsModal] operatorData?.immeubles:", operatorData?.immeubles);
-  // eslint-disable-next-line no-console
   console.log("[ShareBuildingsModal] operatorData?.diffImmeubles:", operatorData?.diffImmeubles);
 
   // immeubles is an array, diffImmeubles can be an object with numeric keys or an array
@@ -524,9 +521,7 @@ function ShareBuildingsModal({
     }
   }
 
-  // eslint-disable-next-line no-console
   console.log("[ShareBuildingsModal] assignedImmeubles:", assignedImmeubles);
-  // eslint-disable-next-line no-console
   console.log("[ShareBuildingsModal] availableImmeubles:", availableImmeubles);
 
   // Reset selections when modal opens/closes or data changes

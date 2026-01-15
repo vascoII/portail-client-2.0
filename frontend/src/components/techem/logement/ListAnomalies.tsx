@@ -22,7 +22,7 @@ interface ListAnomaliesProps {
 export default function ListAnomalies({ pkLogement }: ListAnomaliesProps) {
   const { getAnomalies, exportAnomalies } = useLogements();
   const [anomalies, setAnomalies] = useState<Anomaly[]>([]);
-  const [logement, setLogement] = useState<Housing | null>(null);
+  const [logement, setLogement] = useState<Housing | null>(null); // eslint-disable-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 

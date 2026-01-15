@@ -27,20 +27,20 @@ type SortKey =
   | "depannage";
 
 export default function ListTickets() {
-  const { getTicketsQuery, closeTicket, isClosing, closeError } = useTickets();
+  const { useTicketsQuery, closeTicket, isClosing, closeError } = useTickets();
 
   // Chargement des tickets "Tous" (showall=O) et "Actif" (showall=N)
   const {
     data: ticketsTousData,
     isLoading: ticketsTousIsLoading,
     error: ticketsTousError,
-  } = getTicketsQuery({ showAll: true });
+  } = useTicketsQuery({ showAll: true });
 
   const {
     data: ticketsActifData,
     isLoading: ticketsActifIsLoading,
     error: ticketsActifError,
-  } = getTicketsQuery({ showAll: false });
+  } = useTicketsQuery({ showAll: false });
 
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -234,7 +234,7 @@ export default function ListTickets() {
       errorMessage ||
       (typeof currentTicketsError === "string"
         ? currentTicketsError
-        : (currentTicketsError as any)?.message) ||
+        : (currentTicketsError as any)?.message) || // eslint-disable-line @typescript-eslint/no-explicit-any
       "Impossible de charger les tickets.";
     return (
       <div className="overflow-hidden rounded-2xl border border-red-200 bg-red-50 px-4 py-6 dark:border-red-900/60 dark:bg-red-950/40 sm:px-6">

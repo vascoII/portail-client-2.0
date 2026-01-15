@@ -18,7 +18,7 @@ export default function AdminLayout({
 }) {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
   // TEMPORARILY DISABLED: Authentication check variables
-  const { isAuthenticated, user, sessionId, isLoading, hasHydrated } = useAuth();
+  const { isAuthenticated, user, sessionId, hasHydrated } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);

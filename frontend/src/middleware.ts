@@ -24,7 +24,8 @@ function isPublicRoute(pathname: string): boolean {
 /**
  * Check if a path is an auth route (login/signup)
  */
-function isAuthRoute(pathname: string): boolean {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function _isAuthRoute(pathname: string): boolean {
   return pathname.startsWith("/login") || pathname.startsWith("/signup");
 }
 

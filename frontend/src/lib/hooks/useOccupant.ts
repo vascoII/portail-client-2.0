@@ -62,7 +62,7 @@ export interface OccupantAlertesResponse {
 
 export interface UpdateAlertesParams {
   SEUIL_CONSO_ACTIF?: boolean; // Will be converted to 'O' or 'N'
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 /**
@@ -129,7 +129,7 @@ export function useOccupant(fkUser?: string | number | null) {
    * Get current occupant's logement query
    * GET /api/occupant/{fk}
    */
-  const getOccupantLogementQuery = useQuery({
+  const useOccupantLogementQuery = useQuery({
     queryKey: ["occupant", "logement", fkUser],
     queryFn: async (): Promise<OccupantLogementResponse> => {
       const response = await api.get<OccupantLogementResponse>(
@@ -169,7 +169,7 @@ export function useOccupant(fkUser?: string | number | null) {
    * Get simulator data query
    * GET /api/occupant/{fk}/simulateur
    */
-  const getSimulatorQuery = useQuery({
+  const useSimulatorQuery = useQuery({
     queryKey: ["occupant", "simulateur", fkUser],
     queryFn: async (): Promise<OccupantSimulatorResponse> => {
       const response = await api.get<OccupantSimulatorResponse>(
@@ -210,7 +210,7 @@ export function useOccupant(fkUser?: string | number | null) {
    * GET /api/occupant/interventions/{pkIntervention}
    * @param pkIntervention - Intervention ID
    */
-  const getInterventionQuery = (pkIntervention: string | number) => {
+  const useInterventionQuery = (pkIntervention: string | number) => {
     return useQuery({
       queryKey: ["occupant", "interventions", pkIntervention],
       queryFn: async (): Promise<OccupantInterventionResponse> => {
@@ -251,7 +251,7 @@ export function useOccupant(fkUser?: string | number | null) {
    * Get interventions list query
    * GET /api/occupant/{fk}/interventions
    */
-  const getInterventionsQuery = useQuery({
+  const useInterventionsQuery = useQuery({
     queryKey: ["occupant", "interventions", fkUser],
     queryFn: async (): Promise<OccupantInterventionsListResponse> => {
       const response = await api.get<OccupantInterventionsListResponse>(
@@ -292,7 +292,7 @@ export function useOccupant(fkUser?: string | number | null) {
    * GET /api/occupant/{fk}/fuites
    * @param appareil - Optional device ID
    */
-  const getFuitesQuery = (appareil?: string) => {
+  const useFuitesQuery = (appareil?: string) => {
     return useQuery({
       queryKey: ["occupant", "fuites", fkUser, appareil],
       queryFn: async (): Promise<LeakListResponse> => {
@@ -343,7 +343,7 @@ export function useOccupant(fkUser?: string | number | null) {
    * Get dysfunctions list query
    * GET /api/occupant/{fk}/dysfonctionnements
    */
-  const getDysfonctionnementsQuery = useQuery({
+  const useDysfonctionnementsQuery = useQuery({
     queryKey: ["occupant", "dysfonctionnements", fkUser],
     queryFn: async (): Promise<DysfunctionListResponse> => {
       const response = await api.get<DysfunctionListResponse>(
@@ -384,7 +384,7 @@ export function useOccupant(fkUser?: string | number | null) {
    * GET /api/occupant/{fk}/anomalies
    * @param appareil - Optional device ID
    */
-  const getAnomaliesQuery = (appareil?: string) => {
+  const useAnomaliesQuery = (appareil?: string) => {
     return useQuery({
       queryKey: ["occupant", "anomalies", fkUser, appareil],
       queryFn: async (): Promise<AnomalyListResponse> => {
@@ -780,28 +780,28 @@ export function useOccupant(fkUser?: string | number | null) {
     getNoteReleve,
     setReleveOccupant,
 
-    occupantLogementData: getOccupantLogementQuery.data,
-    occupantLogementIsLoading: getOccupantLogementQuery.isLoading,
-    occupantLogementError: getOccupantLogementQuery.error
-      ? handleApiError(getOccupantLogementQuery.error)
+    occupantLogementData: useOccupantLogementQuery.data,
+    occupantLogementIsLoading: useOccupantLogementQuery.isLoading,
+    occupantLogementError: useOccupantLogementQuery.error
+      ? handleApiError(useOccupantLogementQuery.error)
       : null,
 
-    simulatorData: getSimulatorQuery.data,
-    simulatorIsLoading: getSimulatorQuery.isLoading,
-    simulatorError: getSimulatorQuery.error
-      ? handleApiError(getSimulatorQuery.error)
+    simulatorData: useSimulatorQuery.data,
+    simulatorIsLoading: useSimulatorQuery.isLoading,
+    simulatorError: useSimulatorQuery.error
+      ? handleApiError(useSimulatorQuery.error)
       : null,
 
-    interventionsData: getInterventionsQuery.data,
-    interventionsIsLoading: getInterventionsQuery.isLoading,
-    interventionsError: getInterventionsQuery.error
-      ? handleApiError(getInterventionsQuery.error)
+    interventionsData: useInterventionsQuery.data,
+    interventionsIsLoading: useInterventionsQuery.isLoading,
+    interventionsError: useInterventionsQuery.error
+      ? handleApiError(useInterventionsQuery.error)
       : null,
 
-    dysfonctionnementsData: getDysfonctionnementsQuery.data,
-    dysfonctionnementsIsLoading: getDysfonctionnementsQuery.isLoading,
-    dysfonctionnementsError: getDysfonctionnementsQuery.error
-      ? handleApiError(getDysfonctionnementsQuery.error)
+    dysfonctionnementsData: useDysfonctionnementsQuery.data,
+    dysfonctionnementsIsLoading: useDysfonctionnementsQuery.isLoading,
+    dysfonctionnementsError: useDysfonctionnementsQuery.error
+      ? handleApiError(useDysfonctionnementsQuery.error)
       : null,
 
     isSubmittingReleve: setReleveOccupantMutation.isPending,
@@ -809,13 +809,13 @@ export function useOccupant(fkUser?: string | number | null) {
       ? handleApiError(setReleveOccupantMutation.error)
       : null,
 
-    getInterventionQuery,
-    getFuitesQuery,
-    getAnomaliesQuery,
-    getOccupantLogementQuery,
-    getSimulatorQuery,
-    getInterventionsQuery,
-    getDysfonctionnementsQuery,
+    useInterventionQuery,
+    useFuitesQuery,
+    useAnomaliesQuery,
+    useOccupantLogementQuery,
+    useSimulatorQuery,
+    useInterventionsQuery,
+    useDysfonctionnementsQuery,
   };
 }
 

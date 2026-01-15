@@ -8,8 +8,8 @@ interface ImmeubleRelevesCardProps {
 }
 
 export default function ImmeubleRelevesCard({ pkImmeuble }: ImmeubleRelevesCardProps) {
-  const { getImmeubleQuery } = useImmeubles();
-  const { data: immeubleData, isLoading: isImmeubleLoading } = getImmeubleQuery(pkImmeuble);
+  const { useImmeubleQuery } = useImmeubles();
+  const { data: immeubleData, isLoading: isImmeubleLoading } = useImmeubleQuery(pkImmeuble);
 
   // Extract immeuble information from API response
   const immeubleInfo = useMemo(() => {

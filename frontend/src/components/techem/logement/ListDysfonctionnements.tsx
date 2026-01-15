@@ -27,7 +27,7 @@ const formatDays = (value?: number | null): string => {
   return `${value} jour${value > 1 ? "s" : ""}`;
 };
 
-const getDysfunctionCount = (_dysfonctionnement: Dysfunction): number => {
+const getDysfunctionCount = (_dysfonctionnement: Dysfunction): number => { // eslint-disable-line @typescript-eslint/no-unused-vars
   // For dysfunctions, we typically count 1 per record
   return 1;
 };
@@ -35,7 +35,7 @@ const getDysfunctionCount = (_dysfonctionnement: Dysfunction): number => {
 export default function ListDysfonctionnements({ pkLogement }: ListDysfonctionnementsProps) {
   const { getDysfonctionnements, exportDysfonctionnements } = useLogements();
   const [dysfonctionnements, setDysfonctionnements] = useState<Dysfunction[]>([]);
-  const [_logement, setLogement] = useState<Housing | null>(null);
+  const [_logement, setLogement] = useState<Housing | null>(null); // eslint-disable-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 

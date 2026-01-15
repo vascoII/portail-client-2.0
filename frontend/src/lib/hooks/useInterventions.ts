@@ -44,7 +44,8 @@ export function useInterventions() {
         }
       );
 
-      const blob = response.data;
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
+      const blob = response.data as unknown as Blob;
 
       const filename = `releve-intervention-${pkDepannage}-${new Date()
         .toLocaleDateString("fr-FR")

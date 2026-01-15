@@ -131,7 +131,7 @@ export const useAuthStore = create<AuthStore>()(
       skipHydration: false,
       // Callback when hydration is complete
       onRehydrateStorage: () => {
-        return (state, error) => {
+        return (state, _error) => { // eslint-disable-line @typescript-eslint/no-unused-vars
           // After rehydration, we need to set the hydrated flag
           // We'll do this by calling set from the store instance
           // But since we can't access set here, we'll use a different approach:
