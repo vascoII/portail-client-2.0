@@ -485,7 +485,8 @@ export function useLogements() {
         responseType: "blob",
       });
 
-      const blob = new Blob([response.data], {
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
+      const blob = new Blob([response.data as unknown as BlobPart], {
         type: "application/pdf",
       });
 
@@ -791,7 +792,8 @@ export function useLogements() {
         }
       );
 
-      const blob = new Blob([response.data], {
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
+      const blob = new Blob([response.data as unknown as BlobPart], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
 
@@ -820,7 +822,8 @@ export function useLogements() {
         }
       );
 
-      const blob = new Blob([response.data], {
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
+      const blob = new Blob([response.data as unknown as BlobPart], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
 
@@ -849,7 +852,8 @@ export function useLogements() {
         }
       );
 
-      const blob = new Blob([response.data], {
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
+      const blob = new Blob([response.data as unknown as BlobPart], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
 
@@ -878,7 +882,8 @@ export function useLogements() {
         }
       );
 
-      const blob = new Blob([response.data], {
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
+      const blob = new Blob([response.data as unknown as BlobPart], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
 
@@ -907,7 +912,8 @@ export function useLogements() {
         }
       );
 
-      const blob = new Blob([response.data], {
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
+      const blob = new Blob([response.data as unknown as BlobPart], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
 
@@ -930,7 +936,8 @@ export function useLogements() {
         responseType: "blob",
       });
 
-      const blob = new Blob([response.data], {
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
+      const blob = new Blob([response.data as unknown as BlobPart], {
         type: "application/pdf",
       });
 

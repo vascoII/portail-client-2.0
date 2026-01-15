@@ -82,9 +82,6 @@ export interface GetTicketsParams {
 export function useTickets() {
   const queryClient = useQueryClient();
   
-  // Call useTicketsQuery once at the top level to avoid conditional hook calls
-  const defaultTicketsQuery = useTicketsQuery();
-
   /**
    * Get tickets list query
    * GET /api/tickets
@@ -111,6 +108,9 @@ export function useTickets() {
       staleTime: 1 * 60 * 1000, // Consider fresh for 1 minute (tickets change frequently)
     });
   };
+
+  // Call useTicketsQuery once at the top level to avoid conditional hook calls
+  const defaultTicketsQuery = useTicketsQuery();
 
   /**
    * Get tickets list

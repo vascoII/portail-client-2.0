@@ -132,7 +132,7 @@ export function useParc() {
   const parcQuery = useQuery({
     queryKey: ["parc"],
     queryFn: async (): Promise<ParcApiResponse> => {
-      const response = await api.get<{ success: boolean; data: ParcApiRawResponse }>("/parc");
+      const response = await api.get<ParcApiRawResponse>("/parc");
       const raw = extractApiData<ParcApiRawResponse>(response);
       return normalizeParcResponse(raw);
     },
