@@ -1,6 +1,6 @@
 "use client";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState, ReactNode } from "react";
@@ -39,7 +39,7 @@ export default function Providers({ children }: { children: ReactNode }) {
             // Network mode: use cache if offline
             networkMode: "offlineFirst",
             // Keep previous data while refetching (better UX)
-            placeholderData: (previousData) => previousData,
+            placeholderData: (previousData: unknown) => previousData,
           },
           mutations: {
             // Retry failed mutations 0 times (mutations should not retry by default)

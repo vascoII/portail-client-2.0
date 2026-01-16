@@ -8,8 +8,8 @@ interface LogementMainCardProps {
 }
 
 export default function LogementMainCard({ pkLogement }: LogementMainCardProps) {
-  const { getLogementQuery } = useLogements();
-  const { data: logementData, isLoading: isLogementLoading, error: logementError } = getLogementQuery(pkLogement);
+  const { useLogementQuery } = useLogements();
+  const { data: logementData, isLoading: isLogementLoading, error: logementError } = useLogementQuery(pkLogement);
   
   // Debug: Log loading state and errors
   console.log("[LogementMainCard] pkLogement:", pkLogement);

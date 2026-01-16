@@ -67,7 +67,7 @@ export default function ListInterventions({
   const { getInterventions, exportInterventions } = useOccupant(fkUser);
   const router = useRouter();
   const [depannages, setDepannages] = useState<DepannageRecord[]>([]);
-  const [logement, setLogement] = useState<Housing | null>(null);
+  const [_logement, setLogement] = useState<Housing | null>(null);// eslint-disable-line @typescript-eslint/no-unused-vars
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 

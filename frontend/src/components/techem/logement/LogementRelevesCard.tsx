@@ -8,8 +8,8 @@ interface LogementRelevesCardProps {
 }
 
 export default function LogementRelevesCard({ pkLogement }: LogementRelevesCardProps) {
-  const { getLogementQuery } = useLogements();
-  const { data: logementData, isLoading: isLogementLoading } = getLogementQuery(pkLogement);
+  const { useLogementQuery } = useLogements();
+  const { data: logementData, isLoading: isLogementLoading } = useLogementQuery(pkLogement);
 
   // Extract logement information from API response
   // HasTelereleve is typically at the immeuble level, so we access it via logement.Immeuble

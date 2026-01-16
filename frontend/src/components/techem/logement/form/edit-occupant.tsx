@@ -68,7 +68,7 @@ export default function EditOccupantForm({ pkLogement }: EditOccupantFormProps) 
   });
 
   const {
-    getLogementQuery,
+    useLogementQuery,
     updateOccupant,
     isUpdatingOccupant,
     updateOccupantError,
@@ -79,7 +79,7 @@ export default function EditOccupantForm({ pkLogement }: EditOccupantFormProps) 
     data: logementData,
     isLoading: isLoadingLogement,
     error: logementError,
-  } = getLogementQuery(pkLogement);
+  } = useLogementQuery(pkLogement);
 
   // Pré-remplir le formulaire avec les données de l'occupant
   useEffect(() => {
@@ -120,7 +120,7 @@ export default function EditOccupantForm({ pkLogement }: EditOccupantFormProps) 
   const onSubmit = async (data: EditOccupantFormData) => {
     try {
       // Préparer les données selon le format attendu par l'API
-      const occupantData: any = {
+      const occupantData: any = { // eslint-disable-line @typescript-eslint/no-explicit-any
         newNom: data.nameOccupant,
         newTelmobile: data.phone,
       };

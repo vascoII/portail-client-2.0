@@ -10,7 +10,7 @@ import type { LeakListResponse } from "@/lib/types/api";
 export function useFuites(fkUser?: string | number | null) {
   const queryClient = useQueryClient();
 
-  const getFuitesQuery = (appareil?: string) =>
+  const useFuitesQuery = (appareil?: string) =>
     useQuery({
       queryKey: ["occupant", "fuites", fkUser, appareil],
       queryFn: async (): Promise<LeakListResponse> => {
@@ -82,7 +82,7 @@ export function useFuites(fkUser?: string | number | null) {
 
   return {
     getFuites,
-    getFuitesQuery,
+    useFuitesQuery,
     exportFuites,
   };
 }

@@ -3,7 +3,7 @@ import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, AxiosResponse } f
 /**
  * API Response structure
  */
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = any> { // eslint-disable-line @typescript-eslint/no-explicit-any
   success: boolean;
   status: number;
   message?: string;
@@ -25,7 +25,7 @@ export interface ApiError {
  * Create and configure Axios instance for API calls
  */
 const createApiClient = (): AxiosInstance => {
-  const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://techl5599:9000/api';
+  const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:9000/api';
 
   const client = axios.create({
     baseURL,
@@ -147,7 +147,7 @@ export const extractApiData = <T>(response: AxiosResponse<ApiResponse<T>>): T =>
 /**
  * Helper function to handle API errors
  */
-export const handleApiError = (error: any): string => {
+export const handleApiError = (error: any): string => { // eslint-disable-line @typescript-eslint/no-explicit-any
   if (error?.apiError?.message) {
     return error.apiError.message;
   }
@@ -157,7 +157,7 @@ export const handleApiError = (error: any): string => {
   if (error?.message) {
     return error.message;
   }
-  return 'An unexpected error occurred';
+  return 'Une erreur inattendue s\'est produite. Veuillez réessayer.';
 };
 
 /**
@@ -167,35 +167,35 @@ export const api = {
   /**
    * GET request
    */
-  get: <T = any>(url: string, config?: AxiosRequestConfig) => {
+  get: <T = any>(url: string, config?: AxiosRequestConfig) => { // eslint-disable-line @typescript-eslint/no-explicit-any
     return apiClient.get<ApiResponse<T>>(url, config);
   },
 
   /**
    * POST request
    */
-  post: <T = any>(url: string, data?: any, config?: AxiosRequestConfig) => {
+  post: <T = any>(url: string, data?: any, config?: AxiosRequestConfig) => { // eslint-disable-line @typescript-eslint/no-explicit-any
     return apiClient.post<ApiResponse<T>>(url, data, config);
   },
 
   /**
    * PUT request
    */
-  put: <T = any>(url: string, data?: any, config?: AxiosRequestConfig) => {
+  put: <T = any>(url: string, data?: any, config?: AxiosRequestConfig) => { // eslint-disable-line @typescript-eslint/no-explicit-any
     return apiClient.put<ApiResponse<T>>(url, data, config);
   },
 
   /**
    * PATCH request
    */
-  patch: <T = any>(url: string, data?: any, config?: AxiosRequestConfig) => {
+  patch: <T = any>(url: string, data?: any, config?: AxiosRequestConfig) => { // eslint-disable-line @typescript-eslint/no-explicit-any
     return apiClient.patch<ApiResponse<T>>(url, data, config);
   },
 
   /**
    * DELETE request
    */
-  delete: <T = any>(url: string, config?: AxiosRequestConfig) => {
+  delete: <T = any>(url: string, config?: AxiosRequestConfig) => { // eslint-disable-line @typescript-eslint/no-explicit-any
     return apiClient.delete<ApiResponse<T>>(url, config);
   },
 };

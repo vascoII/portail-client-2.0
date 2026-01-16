@@ -125,8 +125,8 @@ const parseLogementChartValues = (rawValues?: unknown): { categories: string[]; 
 };
 
 export default function LogementStatisticsConsommationChartConsoTabsCet({ pkLogement }: LogementStatisticsChartProps) {
-  const { getLogementQuery } = useLogements();
-  const { data: logementData, isLoading, error } = getLogementQuery(pkLogement);
+  const { useLogementQuery } = useLogements();
+  const { data: logementData, isLoading, error } = useLogementQuery(pkLogement);
 
   const { categories, points } = useMemo(() => {
     const rawValues = logementData?.consoTabs?.CET?.EvolutionChartData?.data;

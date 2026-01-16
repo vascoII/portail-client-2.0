@@ -9,18 +9,20 @@ export const revalidate = 7200;
 export async function generateMetadata({
   params,
 }: {
-  params: { pkImmeuble: string };
+  params: Promise<{ pkImmeuble: string }>;
 }): Promise<Metadata> {
+  const { pkImmeuble } = await params;
   return {
-    title: `Immeuble ${params.pkImmeuble} | TECHEM - Espace client`,
-    description: `Détails de l'immeuble ${params.pkImmeuble}`,
+    title: `Immeuble ${pkImmeuble} | TECHEM - Espace client`,
+    description: `Détails de l'immeuble ${pkImmeuble}`,
   };
 }
 
-export default function ImmeubleDetailsPage({
+export default async function ImmeubleDetailsPage({
   params,
 }: {
-  params: { pkImmeuble: string };
+  params: Promise<{ pkImmeuble: string }>;
 }) {
-  return <ImmeubleDetailsClient pkImmeuble={params.pkImmeuble} />;
+  const { pkImmeuble } = await params;
+  return <ImmeubleDetailsClient pkImmeuble={pkImmeuble} />;
 }

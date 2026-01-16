@@ -6,12 +6,12 @@ export const metadata: Metadata = {
   description: "Détails d'une intervention de dépannage pour l'occupant",
 };
 
-export default function OccupantInterventionDetailsPage({
+export default async function OccupantInterventionDetailsPage({
   params,
 }: {
-  params: { pkIntervention: string };
+  params: Promise<{ pkIntervention: string }>;
 }) {
-  const { pkIntervention } = params;
+  const { pkIntervention } = await params;
 
   return (
     <OccupantInterventionDetailsClient pkIntervention={pkIntervention} />

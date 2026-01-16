@@ -6,13 +6,14 @@ export const metadata: Metadata = {
   description: "Modifier un compte gestionnaire",
 };
 
-export default function EditGestionnairePage({
+export default async function EditGestionnairePage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = await params;
   return (
-    <OperatorUpdateForm operatorId={params.id} />
+    <OperatorUpdateForm operatorId={id} />
   );
 }
 

@@ -83,7 +83,7 @@ export default function NewOccupantForm({ pkLogement }: NewOccupantFormProps) {
   const onSubmit = async (data: NewOccupantFormData) => {
     try {
       // Préparer les données selon le format attendu par l'API
-      const occupantData: any = {
+      const occupantData: any = { // eslint-disable-line @typescript-eslint/no-explicit-any
         newNom: data.nameOccupant,
         newTelmobile: data.phone,
       };

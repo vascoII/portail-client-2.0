@@ -46,7 +46,7 @@ export interface CGUAcceptResponse {
  * Response from /api/dashboard endpoint
  */
 export interface DashboardApiResponse {
-  dashboard: any; // DashboardData normalized
+  dashboard: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 /**

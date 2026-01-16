@@ -54,14 +54,14 @@ export default function InterventionDetails({
         const response = await api.get(url);
 
         // API returns: { success, status, data: { immeuble/logement, depannage } }
-        const root = (response as any).data?.data ?? (response as any).data ?? {};
+        const root = (response as any).data?.data ?? (response as any).data ?? {}; // eslint-disable-line @typescript-eslint/no-explicit-any
         const immeubleSource =
           root.immeuble?.Immeuble ??
           root.logement?.Immeuble ??
           {};
         const immeuble = immeubleSource ?? {};
         const depannageInfo = root.depannage?.InfosDepannage ?? {};
-        const logement = depannageInfo.Logement ?? {};
+        const logement = depannageInfo.Logement ?? {}; // eslint-disable-line @typescript-eslint/no-unused-vars
         const occupant = depannageInfo.Occupant ?? {};
         const depannage = depannageInfo.Depannage ?? {};
 

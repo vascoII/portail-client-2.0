@@ -81,8 +81,8 @@ const extractValeursXYL = (node?: unknown): string | undefined => {
 };
 
 export default function LogementStatisticsConsommationChartSerieConsosEf({ pkLogement }: LogementStatisticsChartProps) {
-  const { getLogementQuery } = useLogements();
-  const { data: logementData, isLoading, error } = getLogementQuery(pkLogement);
+  const { useLogementQuery } = useLogements();
+  const { data: logementData, isLoading, error } = useLogementQuery(pkLogement);
 
   const { categories, points } = useMemo(() => {
     const logement = logementData?.logement as Record<string, unknown> | undefined;

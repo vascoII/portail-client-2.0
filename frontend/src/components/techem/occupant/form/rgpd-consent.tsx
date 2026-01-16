@@ -7,9 +7,10 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useOccupant } from "@/lib/hooks/useOccupant";
+import { useMyAccount } from "@/lib/hooks/useMyAccount";
 import { handleApiError } from "@/lib/api/client";
-import Loader from "@/components/ui/loader/Loader";
+import { LoadingContainer } from "@/components/ui/loading";
+import { useFkUser } from "@/lib/hooks/useFkUser";
 
 /**
  * Schéma de validation pour le formulaire de consentement RGPD
@@ -24,9 +25,10 @@ type RGPDConsentFormData = z.infer<typeof rgpdConsentSchema>;
 
 export default function RGPDConsentForm() {
   const [isSuccess, setIsSuccess] = useState(false);
+  const fkUser = useFkUser();
 
   const {
-    register,
+    register: _register,// eslint-disable-line @typescript-eslint/no-unused-vars
     handleSubmit,
     formState: { errors, isSubmitting },
     setError,
@@ -43,7 +45,7 @@ export default function RGPDConsentForm() {
   const {
     getMyAccount,
     getMyAccountQuery,
-  } = useOccupant();
+  } = useMyAccount(fkUser);
 
   const {
     data: accountData,
@@ -54,7 +56,7 @@ export default function RGPDConsentForm() {
   // Pré-remplir le formulaire avec les données existantes
   useEffect(() => {
     if (accountData?.rgpdcheckboxvalue) {
-      const rgpdValue = accountData.rgpdcheckboxvalue === "true" || accountData.rgpdcheckboxvalue === true;
+      const rgpdValue = accountData.rgpdcheckboxvalue === "true";
       reset({
         rgpd_checkbox: rgpdValue,
       });
@@ -78,7 +80,11 @@ export default function RGPDConsentForm() {
       // Sinon, on envoie un body vide
       const body = data.rgpd_checkbox ? { rgpd_checkbox: true } : {};
       
-      await api.post("/occupant/my-account", body);
+      if (!fkUser) {
+        throw new Error("fkUser is required to update account");
+      }
+      
+      await api.post(`/occupant/${fkUser}/my-account`, body);
       
       // Recharger les données pour mettre à jour l'état
       await getMyAccount();
@@ -104,7 +110,7 @@ export default function RGPDConsentForm() {
   const displayError = accountLoadingError || errors.root?.message;
 
   if (isAccountLoading) {
-    return <Loader />;
+    return <LoadingContainer message="Chargement des paramètres RGPD..." />;
   }
 
   if (accountLoadingError) {
@@ -147,7 +153,11 @@ export default function RGPDConsentForm() {
             {/* Alerte d'erreur */}
             {displayError && !isSuccess && (
               <div className="mb-6">
-                <Alert variant="error" title="Erreur" message={displayError} />
+                <Alert 
+                  variant="error" 
+                  title="Erreur" 
+                  message={typeof displayError === 'string' ? displayError : handleApiError(displayError)} 
+                />
               </div>
             )}
 

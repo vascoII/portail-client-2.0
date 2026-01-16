@@ -39,8 +39,8 @@ export default function ImmeubleReleves({
   selectedTab: controlledTab,
   onTabChange,
 }: ImmeubleRelevesProps) {
-  const { getImmeubleQuery, getReport, exportReleveExcel } = useImmeubles();
-  const { data: immeubleData, isLoading: isImmeubleLoading } = getImmeubleQuery(pkImmeuble);
+  const { useImmeubleQuery, getReport, exportReleveExcel } = useImmeubles();
+  const { data: immeubleData, isLoading: isImmeubleLoading } = useImmeubleQuery(pkImmeuble);
   const [uncontrolledTab, setUncontrolledTab] = useState<TabType>("eauFroide");
   const { isOpen: isModalOpen, openModal, closeModal } = useModal();
   const [selectedPkReleve, setSelectedPkReleve] = useState<number | null>(null);

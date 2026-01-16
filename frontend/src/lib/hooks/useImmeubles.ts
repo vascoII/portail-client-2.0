@@ -5,7 +5,8 @@ import type {
   BuildingDetailsResponse,
   Building,
   InterventionDetails,
-  Intervention,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  Intervention as _Intervention,
   DepannageRecord,
   AnomalyListResponse,
   LeakListResponse,
@@ -14,7 +15,6 @@ import type {
   FilterValues,
 } from "@/lib/types/api";
 
-/* eslint-disable react-hooks/rules-of-hooks */
 
 /**
  * Parameters for filtering buildings
@@ -315,7 +315,7 @@ export function useImmeubles() {
    * GET /api/immeubles/{pkImmeuble}
    * @param pkImmeuble - Building ID
    */
-  const getImmeubleQuery = (pkImmeuble: string | number) => {
+  const useImmeubleQuery = (pkImmeuble: string | number) => {
     return useQuery({
       queryKey: ["immeubles", pkImmeuble],
       queryFn: async (): Promise<BuildingDetailsResponse> => {
@@ -358,7 +358,7 @@ export function useImmeubles() {
    * @param pkImmeuble - Building ID
    * @param pkIntervention - Intervention ID
    */
-  const getInterventionQuery = (
+  const useInterventionQuery = (
     pkImmeuble: string | number,
     pkIntervention: string | number
   ) => {
@@ -405,7 +405,7 @@ export function useImmeubles() {
    * GET /api/immeubles/{pkImmeuble}/interventions
    * @param pkImmeuble - Building ID
    */
-  const getInterventionsQuery = (pkImmeuble: string | number) => {
+  const useInterventionsQuery = (pkImmeuble: string | number) => {
     return useQuery({
       queryKey: ["immeubles", pkImmeuble, "interventions"],
       queryFn: async (): Promise<InterventionsListResponse> => {
@@ -447,7 +447,7 @@ export function useImmeubles() {
    * GET /api/immeubles/{pkImmeuble}/fuites
    * @param pkImmeuble - Building ID
    */
-  const getFuitesQuery = (pkImmeuble: string | number) => {
+  const useFuitesQuery = (pkImmeuble: string | number) => {
     return useQuery({
       queryKey: ["immeubles", pkImmeuble, "fuites"],
       queryFn: async (): Promise<LeakListResponse> => {
@@ -489,7 +489,7 @@ export function useImmeubles() {
    * GET /api/immeubles/{pkImmeuble}/anomalies
    * @param pkImmeuble - Building ID
    */
-  const getAnomaliesQuery = (pkImmeuble: string | number) => {
+  const useAnomaliesQuery = (pkImmeuble: string | number) => {
     return useQuery({
       queryKey: ["immeubles", pkImmeuble, "anomalies"],
       queryFn: async (): Promise<AnomalyListResponse> => {
@@ -531,7 +531,7 @@ export function useImmeubles() {
    * GET /api/immeubles/{pkImmeuble}/dysfonctionnements
    * @param pkImmeuble - Building ID
    */
-  const getDysfonctionnementsQuery = (pkImmeuble: string | number) => {
+  const useDysfonctionnementsQuery = (pkImmeuble: string | number) => {
     return useQuery({
       queryKey: ["immeubles", pkImmeuble, "dysfonctionnements"],
       queryFn: async (): Promise<DysfunctionListResponse> => {
@@ -599,7 +599,8 @@ export function useImmeubles() {
       );
 
       // Create blob from response data
-      const blob = new Blob([response.data], {
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
+      const blob = new Blob([response.data as unknown as BlobPart], {
         type: "application/pdf",
       });
 
@@ -636,7 +637,8 @@ export function useImmeubles() {
         }
       );
 
-      const blob = new Blob([response.data], {
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
+      const blob = new Blob([response.data as unknown as BlobPart], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
 
@@ -670,7 +672,8 @@ export function useImmeubles() {
         }
       );
 
-      const blob = new Blob([response.data], {
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
+      const blob = new Blob([response.data as unknown as BlobPart], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
 
@@ -699,7 +702,8 @@ export function useImmeubles() {
         }
       );
 
-      const blob = new Blob([response.data], {
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
+      const blob = new Blob([response.data as unknown as BlobPart], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
 
@@ -728,7 +732,8 @@ export function useImmeubles() {
         }
       );
 
-      const blob = new Blob([response.data], {
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
+      const blob = new Blob([response.data as unknown as BlobPart], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
 
@@ -757,7 +762,8 @@ export function useImmeubles() {
         }
       );
 
-      const blob = new Blob([response.data], {
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
+      const blob = new Blob([response.data as unknown as BlobPart], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
 
@@ -783,7 +789,8 @@ export function useImmeubles() {
         }
       );
 
-      const blob = new Blob([response.data], {
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
+      const blob = new Blob([response.data as unknown as BlobPart], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
 
@@ -837,7 +844,8 @@ export function useImmeubles() {
       );
 
       // Create blob from response data
-      const blob = new Blob([response.data], {
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
+      const blob = new Blob([response.data as unknown as BlobPart], {
         type: isExcel
           ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
           : "application/pdf",
@@ -890,12 +898,12 @@ export function useImmeubles() {
       : null,
 
     // Query hooks for reactive usage (with parameters)
-    getImmeubleQuery,
-    getInterventionQuery,
-    getInterventionsQuery,
-    getFuitesQuery,
-    getAnomaliesQuery,
-    getDysfonctionnementsQuery,
+    useImmeubleQuery,
+    useInterventionQuery,
+    useInterventionsQuery,
+    useFuitesQuery,
+    useAnomaliesQuery,
+    useDysfonctionnementsQuery,
 
     // Direct access to mutations/queries for advanced usage
     filterImmeublesMutation,

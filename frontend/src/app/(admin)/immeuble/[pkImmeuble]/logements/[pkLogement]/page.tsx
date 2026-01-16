@@ -16,9 +16,9 @@ import LogementDetailsClient from "@/components/techem/logement/LogementDetailsC
 export async function generateMetadata({
   params,
 }: {
-  params: { pkImmeuble: string; pkLogement: string };
+  params: Promise<{ pkImmeuble: string; pkLogement: string }>;
 }): Promise<Metadata> {
-  const { pkLogement } = params;
+  const { pkLogement } = await params;
 
   return {
     title: `Logement ${pkLogement} | TECHEM - Espace client`,
@@ -43,12 +43,12 @@ export const revalidate = 7200;
  * optimiser les performances. La page est générée à la demande
  * et mise en cache pendant 6 heures.
  */
-export default function LogementDetailsPage({
+export default async function LogementDetailsPage({
   params,
 }: {
-  params: { pkImmeuble: string; pkLogement: string };
+  params: Promise<{ pkImmeuble: string; pkLogement: string }>;
 }) {
-  const { pkLogement, pkImmeuble } = params;
+  const { pkLogement, pkImmeuble } = await params;
 
   return (
     <div className="grid grid-cols-12 gap-4 md:gap-6">

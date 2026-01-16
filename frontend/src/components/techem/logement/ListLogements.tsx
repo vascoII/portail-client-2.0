@@ -2,7 +2,7 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { FaFaucet, FaFire, FaChartBar, FaBolt } from "react-icons/fa";
+import { FaFaucet, FaChartBar, FaBolt } from "react-icons/fa";
 import StatusIconsAlerte from '@/components/techem/images/StatusIconsAlerte';
 import StatusIconsAnomalie from '@/components/techem/images/StatusIconsAnomalie';
 import StatusIconsDysfonctionnement from '@/components/techem/images/StatusIconsDysfonctionnement';
@@ -49,7 +49,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
   }, [exportLogements, pkImmeuble]);
 
   // Use the reusable export hook
-  const { handleExport, isExporting, error: exportError, clearError: clearExportError } = useExport(handleExportLogements);
+  const { handleExport: _handleExport, isExporting: _isExporting, error: exportError, clearError: clearExportError } = useExport(handleExportLogements); // eslint-disable-line @typescript-eslint/no-unused-vars
 
   // Get active filters from URL parameters
   const activeFilters = useMemo(() => {

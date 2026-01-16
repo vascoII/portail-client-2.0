@@ -3,14 +3,12 @@ import { api, extractApiData, handleApiError } from "@/lib/api/client";
 import { getStaleTimeUntilMidnight } from "@/lib/utils/cache";
 import type {
   Building,
-  BuildingDetailsResponse,
   BuildingListResponse,
   InterventionDetails,
   AnomalyListResponse,
   LeakListResponse,
   DysfunctionListResponse,
   FilterParams,
-  ReportParams,
   ApiResponse,
   DashboardData,
   ChantierData,
@@ -33,7 +31,7 @@ export interface FilterGestionParcParams extends FilterParams {
  */
 export interface GestionParcIndexResponse {
   board: DashboardData;
-  filters: any;
+  filters: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 /**
@@ -41,10 +39,10 @@ export interface GestionParcIndexResponse {
  */
 export interface GestionParcBuildingDetailsResponse {
   immeuble: Building;
-  evolution_charts?: any;
-  comparative_chart?: any;
-  tabs_top_consos?: any;
-  tabs_evo_consos?: any;
+  evolution_charts?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  comparative_chart?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  tabs_top_consos?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  tabs_evo_consos?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   chantier?: ChantierData;
 }
 
@@ -85,7 +83,7 @@ export function useGestionParc() {
   const getGestionParcIndexQuery = useQuery<GestionParcIndexResponse, Error>({
     queryKey: ["gestion-parc", "index"],
     queryFn: async () => {
-      const response = await api.get<ApiResponse<GestionParcIndexResponse>>(
+      const response = await api.get<GestionParcIndexResponse>(
         "/gestion-parc"
       );
       return extractApiData<GestionParcIndexResponse>(response);
@@ -98,11 +96,11 @@ export function useGestionParc() {
    * Fetches details for a specific building in gestion parc.
    * GET /api/gestion-parc/{pkImmeuble}
    */
-  const getGestionParcBuildingQuery = (pkImmeuble: string | number) =>
+  const useGestionParcBuildingQuery = (pkImmeuble: string | number) =>
     useQuery<GestionParcBuildingDetailsResponse, Error>({
       queryKey: ["gestion-parc", pkImmeuble],
       queryFn: async () => {
-        const response = await api.get<ApiResponse<GestionParcBuildingDetailsResponse>>(
+        const response = await api.get<GestionParcBuildingDetailsResponse>(
           `/gestion-parc/${pkImmeuble}`
         );
         return extractApiData<GestionParcBuildingDetailsResponse>(response);
@@ -116,17 +114,17 @@ export function useGestionParc() {
    * Fetches details for a specific intervention within a building.
    * GET /api/gestion-parc/{pkImmeuble}/interventions/{pkIntervention}
    */
-  const getGestionParcInterventionQuery = (
+  const useGestionParcInterventionQuery = (
     pkImmeuble: string | number,
     pkIntervention: string | number
   ) =>
     useQuery<InterventionDetails, Error>({
       queryKey: ["gestion-parc", pkImmeuble, "interventions", pkIntervention],
       queryFn: async () => {
-        const response = await api.get<ApiResponse<{
+        const response = await api.get<{
           immeuble: Building;
           depannage: InterventionDetails;
-        }>>(
+        }>(
           `/gestion-parc/${pkImmeuble}/interventions/${pkIntervention}`
         );
         const data = extractApiData<{
@@ -144,18 +142,18 @@ export function useGestionParc() {
    * Fetches the list of interventions for a specific building.
    * GET /api/gestion-parc/{pkImmeuble}/interventions
    */
-  const getGestionParcInterventionsQuery = (pkImmeuble: string | number) =>
+  const useGestionParcInterventionsQuery = (pkImmeuble: string | number) =>
     useQuery<
-      ApiResponse<{ immeuble: Building; depannages: InterventionDetails[]; filters: any }>,
+      ApiResponse<{ immeuble: Building; depannages: InterventionDetails[]; filters: any }>, // eslint-disable-line @typescript-eslint/no-explicit-any
       Error
     >({
       queryKey: ["gestion-parc", pkImmeuble, "interventions"],
       queryFn: async () => {
         const response = await api.get<
-          ApiResponse<{ immeuble: Building; depannages: InterventionDetails[]; filters: any }>
+          ApiResponse<{ immeuble: Building; depannages: InterventionDetails[]; filters: any }> // eslint-disable-line @typescript-eslint/no-explicit-any
         >(`/gestion-parc/${pkImmeuble}/interventions`);
         return extractApiData<
-          ApiResponse<{ immeuble: Building; depannages: InterventionDetails[]; filters: any }>
+          ApiResponse<{ immeuble: Building; depannages: InterventionDetails[]; filters: any }> // eslint-disable-line @typescript-eslint/no-explicit-any
         >(response);
       },
       enabled: !!pkImmeuble,
@@ -167,11 +165,11 @@ export function useGestionParc() {
    * Fetches the list of leaks for a specific building.
    * GET /api/gestion-parc/{pkImmeuble}/fuites
    */
-  const getGestionParcFuitesQuery = (pkImmeuble: string | number) =>
+  const useGestionParcFuitesQuery = (pkImmeuble: string | number) =>
     useQuery<LeakListResponse, Error>({
       queryKey: ["gestion-parc", pkImmeuble, "fuites"],
       queryFn: async () => {
-        const response = await api.get<ApiResponse<LeakListResponse>>(
+        const response = await api.get<LeakListResponse>(
           `/gestion-parc/${pkImmeuble}/fuites`
         );
         return extractApiData<LeakListResponse>(response);
@@ -185,11 +183,11 @@ export function useGestionParc() {
    * Fetches the list of anomalies for a specific building.
    * GET /api/gestion-parc/{pkImmeuble}/anomalies
    */
-  const getGestionParcAnomaliesQuery = (pkImmeuble: string | number) =>
+  const useGestionParcAnomaliesQuery = (pkImmeuble: string | number) =>
     useQuery<AnomalyListResponse, Error>({
       queryKey: ["gestion-parc", pkImmeuble, "anomalies"],
       queryFn: async () => {
-        const response = await api.get<ApiResponse<AnomalyListResponse>>(
+        const response = await api.get<AnomalyListResponse>(
           `/gestion-parc/${pkImmeuble}/anomalies`
         );
         return extractApiData<AnomalyListResponse>(response);
@@ -203,11 +201,11 @@ export function useGestionParc() {
    * Fetches the list of dysfunctions for a specific building.
    * GET /api/gestion-parc/{pkImmeuble}/dysfonctionnements
    */
-  const getGestionParcDysfunctionsQuery = (pkImmeuble: string | number) =>
+  const useGestionParcDysfunctionsQuery = (pkImmeuble: string | number) =>
     useQuery<DysfunctionListResponse, Error>({
       queryKey: ["gestion-parc", pkImmeuble, "dysfonctionnements"],
       queryFn: async () => {
-        const response = await api.get<ApiResponse<DysfunctionListResponse>>(
+        const response = await api.get<DysfunctionListResponse>(
           `/gestion-parc/${pkImmeuble}/dysfonctionnements`
         );
         return extractApiData<DysfunctionListResponse>(response);
@@ -229,7 +227,7 @@ export function useGestionParc() {
     FilterGestionParcParams
   >({
     mutationFn: async (params) => {
-      const response = await api.get<ApiResponse<BuildingListResponse>>(
+      const response = await api.get<BuildingListResponse>(
         "/gestion-parc/filtre",
         { params }
       );
@@ -268,7 +266,8 @@ export function useGestionParc() {
         response.headers["content-disposition"]?.split("filename=")[1]?.replace(/['"]/g, "") ||
         `relevé-${new Date().toLocaleDateString("fr-FR").replace(/\//g, "-")}.pdf`;
 
-      downloadBlob(response.data, filename, contentType);
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
+      downloadBlob(response.data as unknown as Blob, filename, contentType);
     } catch (error) {
       throw new Error(handleApiError(error));
     }
@@ -288,8 +287,9 @@ export function useGestionParc() {
           responseType: "blob",
         }
       );
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
       downloadBlob(
-        response.data,
+        response.data as unknown as Blob,
         `export-anomalies-${pkImmeuble}.xlsx`,
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
       );
@@ -312,8 +312,9 @@ export function useGestionParc() {
           responseType: "blob",
         }
       );
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
       downloadBlob(
-        response.data,
+        response.data as unknown as Blob,
         `export-fuites-${pkImmeuble}.xlsx`,
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
       );
@@ -336,8 +337,9 @@ export function useGestionParc() {
           responseType: "blob",
         }
       );
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
       downloadBlob(
-        response.data,
+        response.data as unknown as Blob,
         `export-interventions-${pkImmeuble}.xlsx`,
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
       );
@@ -360,8 +362,9 @@ export function useGestionParc() {
           responseType: "blob",
         }
       );
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
       downloadBlob(
-        response.data,
+        response.data as unknown as Blob,
         `export-alarmestechniques-${pkImmeuble}.xlsx`,
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
       );
@@ -411,7 +414,8 @@ export function useGestionParc() {
           contentType.includes("pdf") ? "pdf" : "xlsx"
         }`;
 
-      downloadBlob(response.data, filename, contentType);
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
+      downloadBlob(response.data as unknown as Blob, filename, contentType);
     } catch (error) {
       throw new Error(handleApiError(error));
     }
@@ -420,24 +424,24 @@ export function useGestionParc() {
   return {
     // Queries
     getGestionParcIndexQuery,
-    getGestionParcBuildingQuery,
-    getGestionParcInterventionQuery,
-    getGestionParcInterventionsQuery,
-    getGestionParcFuitesQuery,
-    getGestionParcAnomaliesQuery,
-    getGestionParcDysfunctionsQuery,
+    useGestionParcBuildingQuery,
+    useGestionParcInterventionQuery,
+    useGestionParcInterventionsQuery,
+    useGestionParcFuitesQuery,
+    useGestionParcAnomaliesQuery,
+    useGestionParcDysfunctionsQuery,
 
     // Mutations
     filterGestionParcMutation,
 
     // Helper functions for direct calls/downloads
     getGestionParcIndex: getGestionParcIndexQuery.data,
-    getGestionParcBuilding: getGestionParcBuildingQuery,
-    getIntervention: getGestionParcInterventionQuery,
-    getInterventions: getGestionParcInterventionsQuery,
-    getFuites: getGestionParcFuitesQuery,
-    getAnomalies: getGestionParcAnomaliesQuery,
-    getDysfonctionnements: getGestionParcDysfunctionsQuery,
+    getGestionParcBuilding: useGestionParcBuildingQuery,
+    getIntervention: useGestionParcInterventionQuery,
+    getInterventions: useGestionParcInterventionsQuery,
+    getFuites: useGestionParcFuitesQuery,
+    getAnomalies: useGestionParcAnomaliesQuery,
+    getDysfonctionnements: useGestionParcDysfunctionsQuery,
     filterGestionParc: filterGestionParcMutation.mutateAsync,
     getGestionParcReport,
     exportGestionParcAnomalies,

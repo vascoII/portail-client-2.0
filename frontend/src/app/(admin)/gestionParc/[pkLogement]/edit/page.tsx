@@ -5,11 +5,12 @@ export const metadata: Metadata = {
   description: "Edit housing unit",
 };
 
-export default function EditLogementPage({
+export default async function EditLogementPage({
   params,
 }: {
-  params: { pkLogement: string };
+  params: Promise<{ pkLogement: string }>;
 }) {
+  await params;
   return (
     <div className="flex items-center justify-center min-h-screen">
       <h1 className="text-2xl font-bold">Hello</h1>

@@ -10,7 +10,7 @@ import type { AnomalyListResponse } from "@/lib/types/api";
 export function useAnomalies(fkUser?: string | number | null) {
   const queryClient = useQueryClient();
 
-  const getAnomaliesQuery = (appareil?: string) =>
+  const useAnomaliesQuery = (appareil?: string) =>
     useQuery({
       queryKey: ["occupant", "anomalies", fkUser, appareil],
       queryFn: async (): Promise<AnomalyListResponse> => {
@@ -84,7 +84,7 @@ export function useAnomalies(fkUser?: string | number | null) {
 
   return {
     getAnomalies,
-    getAnomaliesQuery,
+    useAnomaliesQuery,
     exportAnomalies,
   };
 }

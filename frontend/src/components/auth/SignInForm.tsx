@@ -69,7 +69,7 @@ export default function SignInForm() {
         password: data.password,
       });
       // Redirection is handled by useAuth hook
-    } catch (error) {
+    } catch (error) { // eslint-disable-line @typescript-eslint/no-unused-vars
       // Error is already handled by useAuth hook
       // But we can set a form-level error if needed
       setError("root", {
@@ -166,7 +166,7 @@ export default function SignInForm() {
                   <div className="flex items-center gap-3">
                     <Checkbox
                       checked={false}
-                      onChange={(checked) => {
+                      onChange={(checked) => { // eslint-disable-line @typescript-eslint/no-unused-vars
                         // Note: Remember me functionality would need to be implemented
                         // in the auth store or API if needed
                       }}

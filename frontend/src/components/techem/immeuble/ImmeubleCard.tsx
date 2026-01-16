@@ -56,8 +56,8 @@ interface NominatimResult {
 }
 
 export default function ImmeubleCard({ pkImmeuble }: ImmeubleCardProps) {
-  const { getImmeubleQuery } = useImmeubles();
-  const { data: immeubleData, isLoading: isImmeubleLoading } = getImmeubleQuery(pkImmeuble);
+  const { useImmeubleQuery } = useImmeubles();
+  const { data: immeubleData, isLoading: isImmeubleLoading } = useImmeubleQuery(pkImmeuble);
   const [mapCenter, setMapCenter] = useState<[number, number]>(defaultCenter);
   const [isGeocoding, setIsGeocoding] = useState(false);
   const [geocodingError, setGeocodingError] = useState(false);

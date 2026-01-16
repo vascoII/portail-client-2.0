@@ -10,19 +10,21 @@ export const revalidate = 7200;
 export async function generateMetadata({
   params,
 }: {
-  params: { pkImmeuble: string };
+  params: Promise<{ pkImmeuble: string }>;
 }): Promise<Metadata> {
+  const { pkImmeuble } = await params;
   return {
-    title: `Logements - Immeuble ${params.pkImmeuble} | TECHEM - Espace client`,
-    description: `Liste des logements pour l'immeuble ${params.pkImmeuble}`,
+    title: `Logements - Immeuble ${pkImmeuble} | TECHEM - Espace client`,
+    description: `Liste des logements pour l'immeuble ${pkImmeuble}`,
   };
 }
 
-export default function ImmeubleLogementsPage({
+export default async function ImmeubleLogementsPage({
   params,
 }: {
-  params: { pkImmeuble: string };
+  params: Promise<{ pkImmeuble: string }>;
 }) {
+  const { pkImmeuble } = await params;
   return (
     <Suspense fallback={
       <div className="flex items-center justify-center min-h-[400px]">
@@ -31,7 +33,7 @@ export default function ImmeubleLogementsPage({
         </p>
       </div>
     }>
-      <ListLogements pkImmeuble={params.pkImmeuble} />
+      <ListLogements pkImmeuble={pkImmeuble} />
     </Suspense>
   );
 }

@@ -9,8 +9,8 @@ interface ImmeubleMainCardProps {
 }
 
 export default function ImmeubleMainCard({ pkImmeuble }: ImmeubleMainCardProps) {
-  const { getImmeubleQuery } = useImmeubles();
-  const { data: immeubleData, isLoading: isImmeubleLoading } = getImmeubleQuery(pkImmeuble);
+  const { useImmeubleQuery } = useImmeubles();
+  const { data: immeubleData, isLoading: isImmeubleLoading } = useImmeubleQuery(pkImmeuble);
 
   // Extract immeuble information from API response
   const immeubleInfo = useMemo(() => {

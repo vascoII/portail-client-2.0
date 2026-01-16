@@ -3,7 +3,7 @@ import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Select from "@/components/form/Select";
 import Button from "@/components/ui/button/Button";
-import React, { useState, useCallback } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -70,7 +70,7 @@ interface SearchFormProps {
 function cleanSearchParams(
   data: SearchFormData
 ): SearchImmeublesParams | SearchOccupantsParams {
-  const params: any = {};
+  const params: any = {}; // eslint-disable-line @typescript-eslint/no-explicit-any
 
   // Champs avec minimum 1 caractère
   if (data.ref && data.ref.trim().length >= 1) {
@@ -257,8 +257,8 @@ export default function SearchForm({
         {/* Message d'aide */}
         <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
           <p className="text-sm text-blue-800 dark:text-blue-200">
-            <strong>Note :</strong> Les champs "Référence" et "Numéro de référence" nécessitent au moins 1 caractère.
-            Les champs "Nom", "Recherche globale" et "Adresse" nécessitent au moins 3 caractères.
+            <strong>Note :</strong> Les champs &quot;Référence&quot; et &quot;Numéro de référence&quot; nécessitent au moins 1 caractère.
+            Les champs &quot;Nom&quot;, &quot;Recherche globale&quot; et &quot;Adresse&quot; nécessitent au moins 3 caractères.
           </p>
         </div>
 

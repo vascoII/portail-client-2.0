@@ -7,15 +7,16 @@ export const metadata: Metadata = {
   description: "List of dysfunctions",
 };
 
-export default function ImmeubleDysfonctionnementsPage({
+export default async function ImmeubleDysfonctionnementsPage({
   params,
 }: {
-  params: { pkImmeuble: string };
+  params: Promise<{ pkImmeuble: string }>;
 }) {
+  const { pkImmeuble } = await params;
   return (
     <div className="grid grid-cols-12 gap-4 md:gap-6">
       <div className="col-span-12">
-        <ListDysfonctionnements pkImmeuble={params.pkImmeuble} />
+        <ListDysfonctionnements pkImmeuble={pkImmeuble} />
       </div>
     </div>
   );

@@ -46,12 +46,12 @@ const parseSerieConsos = (rawSerie?: string) => {
 export default function ImmeubleConsommationChart({
   pkImmeuble,
 }: ImmeubleConsommationChartProps) {
-  const { getImmeubleQuery } = useImmeubles();
+  const { useImmeubleQuery } = useImmeubles();
   const {
     data: immeubleData,
     isLoading,
     error,
-  } = getImmeubleQuery(pkImmeuble);
+  } = useImmeubleQuery(pkImmeuble);
 
   const { categories, values } = useMemo(() => {
     type SerieConsosEAUShape = {

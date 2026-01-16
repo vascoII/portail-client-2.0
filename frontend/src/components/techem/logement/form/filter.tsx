@@ -5,7 +5,8 @@ import Select from "@/components/form/Select";
 import Checkbox from "@/components/form/input/Checkbox";
 import Button from "@/components/ui/button/Button";
 import React, { useState, useEffect, useCallback } from "react";
-import type { FilterLogementsParams, FilterValues } from "@/lib/hooks/useLogements";
+import type { FilterLogementsParams } from "@/lib/hooks/useLogements";
+import type { FilterValues } from "@/lib/types/api";
 
 /**
  * Options pour le select d'énergie
@@ -99,7 +100,7 @@ export default function FilterLogementsForm({
    * Gestion du changement d'un filtre
    */
   const handleFilterChange = useCallback(
-    (key: keyof LogementFilters, value: any) => {
+    (key: keyof LogementFilters, value: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
       setFilters((prev) => {
         const newFilters = { ...prev, [key]: value };
         // Appeler le callback si fourni

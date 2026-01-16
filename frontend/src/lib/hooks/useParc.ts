@@ -111,12 +111,12 @@ const normalizeParcBoard = (board?: Record<string, unknown>): ParcBoardData => {
 const normalizeChantier = (chantier?: Partial<ChantierData> | Record<string, unknown>): ChantierData => {
   const source = chantier ?? {};
   return {
-    installed: normalizeNumber(source.installed ?? (source as any).Installed),
-    installed_percent: normalizeNumber(source.installed_percent ?? (source as any).Installed_percent ?? (source as any).InstalledPercent),
-    remaining: normalizeNumber(source.remaining ?? (source as any).Remaining),
-    remaining_percent: normalizeNumber(source.remaining_percent ?? (source as any).Remaining_percent ?? (source as any).RemainingPercent),
-    total: normalizeNumber(source.total ?? (source as any).Total),
-    date: (source.date ?? (source as any).Date ?? null) as string | null,
+    installed: normalizeNumber(source.installed ?? (source as any).Installed), // eslint-disable-line @typescript-eslint/no-explicit-any
+    installed_percent: normalizeNumber(source.installed_percent ?? (source as any).Installed_percent ?? (source as any).InstalledPercent), // eslint-disable-line @typescript-eslint/no-explicit-any
+    remaining: normalizeNumber(source.remaining ?? (source as any).Remaining), // eslint-disable-line @typescript-eslint/no-explicit-any
+    remaining_percent: normalizeNumber(source.remaining_percent ?? (source as any).Remaining_percent ?? (source as any).RemainingPercent), // eslint-disable-line @typescript-eslint/no-explicit-any
+    total: normalizeNumber(source.total ?? (source as any).Total), // eslint-disable-line @typescript-eslint/no-explicit-any
+    date: (source.date ?? (source as any).Date ?? null) as string | null, // eslint-disable-line @typescript-eslint/no-explicit-any
   };
 };
 
@@ -132,7 +132,7 @@ export function useParc() {
   const parcQuery = useQuery({
     queryKey: ["parc"],
     queryFn: async (): Promise<ParcApiResponse> => {
-      const response = await api.get<{ success: boolean; data: ParcApiRawResponse }>("/parc");
+      const response = await api.get<ParcApiRawResponse>("/parc");
       const raw = extractApiData<ParcApiRawResponse>(response);
       return normalizeParcResponse(raw);
     },

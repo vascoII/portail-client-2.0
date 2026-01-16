@@ -5,11 +5,12 @@ export const metadata: Metadata = {
   description: "Declare occupant",
 };
 
-export default function DeclareOccupantPage({
+export default async function DeclareOccupantPage({
   params,
 }: {
-  params: { pkLogement: string };
+  params: Promise<{ pkLogement: string }>;
 }) {
+  await params;
   return (
     <div className="flex items-center justify-center min-h-screen">
       <h1 className="text-2xl font-bold">Hello</h1>

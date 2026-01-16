@@ -4,29 +4,36 @@ FROM php:8.3-fpm AS builder
 WORKDIR /var/www/backend
 
 # Install PHP extensions
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
     git unzip libicu-dev libzip-dev libonig-dev zlib1g-dev libxml2-dev \
-    libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
- && docker-php-ext-configure intl \
- && docker-php-ext-configure gd --with-freetype --with-jpeg \
- && docker-php-ext-install -j"$(nproc)" intl pdo_mysql zip opcache soap gd mbstring \
- && rm -rf /var/lib/apt/lists/*
+    libpng-dev libjpeg62-turbo-dev libfreetype6-dev && \
+    docker-php-ext-configure intl && \
+    docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-install -j"$(nproc)" intl pdo_mysql zip opcache soap gd mbstring && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* /tmp/* /var/tmp/*
 
 # Copy composer from official image
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Copy composer files and install dependencies (no dev)
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+RUN composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader --no-scripts
 
 # Copy application code
 COPY . .
+
+# Exécuter les scripts post-install après avoir copié le code
+RUN composer run-script post-install-cmd || true
 
 # Optimize Symfony cache (si applicable)
 RUN php bin/console cache:warmup --env=preview || true
 
 # Stage 2: Final image
-FROM php:8.3-fpm
+FROM builder AS runtime
 
 WORKDIR /var/www/backend
 
@@ -34,7 +41,7 @@ WORKDIR /var/www/backend
 COPY --from=builder /var/www/backend /var/www/backend
 
 # Environment variables
-ENV APP_ENV=preview APP_DEBUG=0
+ENV APP_ENV=preview APP_DEBUG=1
 
 EXPOSE 9000
 CMD ["php-fpm"]

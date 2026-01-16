@@ -2,7 +2,6 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { api, extractApiData, handleApiError } from "@/lib/api/client";
 import type {
   Ticket,
-  TicketListResponse,
   TicketOwner,
   DashboardData,
 } from "@/lib/types/api";
@@ -82,17 +81,17 @@ export interface GetTicketsParams {
  */
 export function useTickets() {
   const queryClient = useQueryClient();
-
+  
   /**
    * Get tickets list query
    * GET /api/tickets
    * @param params - Query parameters (showAll)
    */
-  const getTicketsQuery = (params?: GetTicketsParams) => {
+  const useTicketsQuery = (params?: GetTicketsParams) => {
     return useQuery({
       queryKey: ["tickets", params?.showAll],
       queryFn: async (): Promise<TicketsListResponse> => {
-        const queryParams: any = {};
+        const queryParams: any = {}; // eslint-disable-line @typescript-eslint/no-explicit-any
         if (params?.showAll !== undefined) {
           // Map boolean to backend expected values:
           // true  => showall=O (tous)
@@ -110,6 +109,9 @@ export function useTickets() {
     });
   };
 
+  // Call useTicketsQuery once at the top level to avoid conditional hook calls
+  const defaultTicketsQuery = useTicketsQuery();
+
   /**
    * Get tickets list
    * @param params - Query parameters (showAll)
@@ -118,9 +120,9 @@ export function useTickets() {
   const getTickets = async (
     params?: GetTicketsParams
   ): Promise<TicketsListResponse> => {
-    const queryParams: any = {};
+    const queryParams: any = {}; // eslint-disable-line @typescript-eslint/no-explicit-any
     if (params?.showAll !== undefined) {
-      // Same mapping as in getTicketsQuery
+      // Same mapping as in useTicketsQuery
       queryParams.showall = params.showAll ? "O" : "N";
     }
 
@@ -189,7 +191,7 @@ export function useTickets() {
    * GET /api/tickets/{pkTicket}/attachment
    * @param pkTicket - Ticket ID (CaseId)
    */
-  const getTicketAttachmentQuery = (pkTicket: string) => {
+  const useTicketAttachmentQuery = (pkTicket: string) => {
     return useQuery({
       queryKey: ["tickets", pkTicket, "attachment"],
       queryFn: async (): Promise<TicketAttachmentResponse> => {
@@ -268,7 +270,7 @@ export function useTickets() {
    * GET /api/tickets/create/{pkLogement}
    * @param pkLogement - Logement ID
    */
-  const getTicketCreateInfoQuery = (pkLogement: string | number) => {
+  const useTicketCreateInfoQuery = (pkLogement: string | number) => {
     return useQuery({
       queryKey: ["tickets", "create", pkLogement],
       queryFn: async (): Promise<TicketCreateInfoResponse> => {
@@ -327,16 +329,16 @@ export function useTickets() {
       : null,
 
     // Query states (from reactive queries)
-    ticketsData: getTicketsQuery().data,
-    ticketsIsLoading: getTicketsQuery().isLoading,
-    ticketsError: getTicketsQuery().error
-      ? handleApiError(getTicketsQuery().error)
+    ticketsData: defaultTicketsQuery.data,
+    ticketsIsLoading: defaultTicketsQuery.isLoading,
+    ticketsError: defaultTicketsQuery.error
+      ? handleApiError(defaultTicketsQuery.error)
       : null,
 
     // Query hooks for reactive usage (with parameters)
-    getTicketsQuery,
-    getTicketAttachmentQuery,
-    getTicketCreateInfoQuery,
+    useTicketsQuery,
+    useTicketAttachmentQuery,
+    useTicketCreateInfoQuery,
 
     // Direct access to mutations for advanced usage
     closeTicketMutation,

@@ -308,7 +308,7 @@ export const ParcMetrics = () => {
           </label>
           <DatePicker
             selected={startDate}
-            onChange={(d) => setStartDate(d)}
+            onChange={(d: Date | null) => setStartDate(d)}
             selectsStart
             startDate={startDate}
             endDate={endDate}
@@ -332,7 +332,7 @@ export const ParcMetrics = () => {
           </label>
           <DatePicker
             selected={endDate}
-            onChange={(d) => setEndDate(d)}
+            onChange={(d: Date | null) => setEndDate(d)}
             selectsEnd
             startDate={startDate}
             endDate={endDate}

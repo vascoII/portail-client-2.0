@@ -86,12 +86,12 @@ export default function ImmeubleStatisticsConsommationChart({
   pkImmeuble,
   selectedTab,
 }: ImmeubleStatisticsConsommationChartProps) {
-  const { getImmeubleQuery } = useImmeubles();
+  const { useImmeubleQuery } = useImmeubles();
   const {
     data: immeubleData,
     isLoading,
     error,
-  } = getImmeubleQuery(pkImmeuble);
+  } = useImmeubleQuery(pkImmeuble);
 
   const isWaterTab = selectedTab === "eauFroide" || selectedTab === "eauChaude";
 

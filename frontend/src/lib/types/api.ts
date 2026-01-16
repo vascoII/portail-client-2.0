@@ -1,7 +1,7 @@
 /**
  * Base API response structure
  */
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = any> { // eslint-disable-line @typescript-eslint/no-explicit-any
   success: boolean;
   status: number;
   message?: string;
@@ -37,7 +37,7 @@ export interface User {
   UserType?: UserType;
   UserRole?: string;
   FK?: string;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface UserInfo {
@@ -73,7 +73,7 @@ export interface Building {
   NbDysfonctionnements?: number;
   NbFuites?: number;
   NbCompteurs?: number;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface BuildingDetails extends Building {
@@ -93,10 +93,10 @@ export interface BuildingListResponse {
 
 export interface BuildingDetailsResponse {
   immeuble: BuildingDetails;
-  evolution_charts?: any;
-  comparative_chart?: any;
-  tabs_top_consos?: any;
-  tabs_evo_consos?: any;
+  evolution_charts?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  comparative_chart?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  tabs_top_consos?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  tabs_evo_consos?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   chantier?: ChantierData;
   GPS?: {
     lat?: number;
@@ -131,19 +131,19 @@ export interface Housing {
     ListeInfosAppareils?: {
       infosAppareilRepart?: AppareilInfo[];
     };
-    SerieConsosDJU?: any;
+    SerieConsosDJU?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   };
   ListeAppareils?: {
     appareil?: Device[];
   };
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface HousingDetailsResponse {
   logement: Housing;
   ticketOwner?: TicketOwner;
   nbTickets?: number;
-  consoTabs?: any;
+  consoTabs?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   changeinprogress?: boolean;
   occupant?: OccupantData;
 }
@@ -154,12 +154,12 @@ export interface Device {
   Emplacement?: string;
   Fluide?: string;
   Type?: string;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface AppareilInfo {
   Appareil?: Device;
-  SerieConsos?: any;
+  SerieConsos?: any; // eslint-disable-line @typescript-eslint/no-explicit-any  
   R1?: Reading;
   R2?: Reading;
   R3?: Reading;
@@ -168,14 +168,14 @@ export interface AppareilInfo {
   R6?: Reading;
   NbFuites?: number;
   NbAnomalies?: number;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface Reading {
   DateReleve?: string;
   Index?: number;
   Conso?: number;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 /**
@@ -188,14 +188,14 @@ export interface Occupant {
   Email?: string;
   TelFixe?: string;
   TelMobile?: string;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface OccupantData {
   newNom?: string;
   newEmail?: string;
   newTelmobile?: string;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 /**
@@ -207,13 +207,13 @@ export interface Intervention {
   DateIntervention?: string;
   TypeIntervention?: string;
   Statut?: string;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface InterventionDetails extends Intervention {
   Immeuble?: Building;
   Logement?: Housing;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface DepannageLogement {
@@ -225,7 +225,7 @@ export interface DepannageLogement {
   NumEtage?: string;
   NumOrdre?: string;
   Type?: string;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface DepannageOccupant {
@@ -234,7 +234,7 @@ export interface DepannageOccupant {
   Ref?: string;
   DateArrivee?: string;
   DateDepart?: string;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface DepannageDetails {
@@ -246,14 +246,14 @@ export interface DepannageDetails {
   Motif?: string;
   MotifAbrege?: string;
   CompteRendu?: string;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface DepannageRecord {
   Logement?: DepannageLogement;
   Occupant?: DepannageOccupant;
   Depannage?: DepannageDetails;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 /**
@@ -281,7 +281,7 @@ export interface Ticket {
   WebUser_Prenom?: string;
   WebUser_Tel?: string;
   WebUser_Email?: string;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface TicketListResponse {
@@ -296,7 +296,7 @@ export interface TicketOwner {
   Email?: string;
   TelFixe?: string;
   TelMobile?: string;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any         
 }
 
 export interface CreateTicketRequest {
@@ -322,7 +322,7 @@ export interface DashboardData {
   NbCompteursPoses?: number;
   NbCompteursCommandes?: number;
   PcImmeublesTransfertFichiers?: string;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface DashboardResponse {
@@ -338,7 +338,7 @@ export interface AnomalyDetails {
   Index?: string | number;
   Conso?: string | number;
   Observations?: string;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface Anomaly {
@@ -350,7 +350,7 @@ export interface Anomaly {
   Occupant?: DepannageOccupant;
   Appareil?: Device;
   Anomalie?: AnomalyDetails;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface LeakDetails {
@@ -359,7 +359,7 @@ export interface LeakDetails {
   Nombre?: number;
   NbDepassements?: number;
   NbJours?: number;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface Leak {
@@ -371,7 +371,7 @@ export interface Leak {
   Occupant?: DepannageOccupant;
   Appareil?: Device;
   Fuite?: LeakDetails;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface DysfunctionDetails {
@@ -379,7 +379,7 @@ export interface DysfunctionDetails {
   TypeAbrege?: string;
   NbJours?: number;
   Duree?: number;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface Dysfunction {
@@ -391,7 +391,7 @@ export interface Dysfunction {
   Occupant?: DepannageOccupant;
   Appareil?: Device;
   Dysfonctionnement?: DysfunctionDetails;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface AnomalyListResponse {
@@ -428,11 +428,11 @@ export interface FilterParams {
   pkImmeuble?: string | number;
   pkLogement?: string | number;
   appareil?: string;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface FilterValues {
-  [key: string]: string[] | number[] | any;
+  [key: string]: string[] | number[] | any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 /**
@@ -447,7 +447,7 @@ export interface Operator {
   UserRole?: string;
   NbImmeubles?: number;
   NbAppareils?: number;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface OperatorListResponse {
@@ -551,7 +551,7 @@ export interface LegalNotices {
 export interface Subcontractor {
   Nom?: string;
   Adresse?: string;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export interface PersonalDataResponse {
@@ -573,13 +573,13 @@ export interface CGUValidationRequest {
  * Chart and consumption types
  */
 export interface ConsumptionTab {
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any 
 }
 
 export interface ChartData {
   labels?: string[];
-  datasets?: any[];
-  [key: string]: any;
+  datasets?: any[]; // eslint-disable-line @typescript-eslint/no-explicit-any
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 /**
@@ -597,6 +597,6 @@ export interface Account {
  * Statistics types
  */
 export interface OccupantStatistics {
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 

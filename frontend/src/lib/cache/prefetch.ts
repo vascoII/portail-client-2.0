@@ -14,9 +14,11 @@ import type {
   LeakListResponse,
   AnomalyListResponse,
   DysfunctionListResponse,
+} from "@/lib/types/api";
+import type {
   LogementInterventionsListResponse,
   LogementsByImmeubleResponse,
-} from "@/lib/types/api";
+} from "@/lib/hooks/useLogements";
 
 /**
  * Précharge les données principales d'un logement

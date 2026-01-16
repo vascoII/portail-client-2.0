@@ -30,8 +30,8 @@ interface ImmeubleMetricsProps {
  * - Depannages (nbDepannages)
  */
 export const ImmeubleMetrics = ({ pkImmeuble }: ImmeubleMetricsProps) => {
-  const { getImmeubleQuery } = useImmeubles();
-  const { data: immeubleData, isLoading: isImmeubleLoading } = getImmeubleQuery(pkImmeuble);
+  const { useImmeubleQuery } = useImmeubles();
+  const { data: immeubleData, isLoading: isImmeubleLoading } = useImmeubleQuery(pkImmeuble);
   const livretModal = useModal();
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -336,7 +336,7 @@ export const ImmeubleMetrics = ({ pkImmeuble }: ImmeubleMetricsProps) => {
           </label>
           <DatePicker
             selected={startDate}
-            onChange={(d) => setStartDate(d)}
+            onChange={(d: Date | null) => setStartDate(d)}
             selectsStart
             startDate={startDate}
             endDate={endDate}
@@ -360,7 +360,7 @@ export const ImmeubleMetrics = ({ pkImmeuble }: ImmeubleMetricsProps) => {
           </label>
           <DatePicker
             selected={endDate}
-            onChange={(d) => setEndDate(d)}
+            onChange={(d: Date | null) => setEndDate(d)}
             selectsEnd
             startDate={startDate}
             endDate={endDate}

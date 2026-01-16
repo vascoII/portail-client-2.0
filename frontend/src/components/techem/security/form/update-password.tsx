@@ -78,7 +78,7 @@ export default function UpdatePasswordForm() {
         second: data.password.second,
       });
       setIsSuccess(true);
-    } catch (error) {
+    } catch (error) { // eslint-disable-line @typescript-eslint/no-unused-vars
       // L'erreur est déjà gérée par le hook useSecurity
       // Mais on peut définir une erreur au niveau du formulaire si nécessaire
       setError("root", {
