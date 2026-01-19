@@ -1,13 +1,17 @@
 "use client";
 import React, { useMemo } from "react";
+import Link from "next/link";
 import { useLogements } from "@/lib/hooks/useLogements";
 import { LoadingCard } from "@/components/ui/loading";
+import { useAuth } from "@/lib/hooks/useAuth";
 
 interface LogementMainCardProps {
   pkLogement: string;
+  pkImmeuble?: string;
 }
 
-export default function LogementMainCard({ pkLogement }: LogementMainCardProps) {
+export default function LogementMainCard({ pkLogement, pkImmeuble }: LogementMainCardProps) {
+  const { user } = useAuth();
   const { useLogementQuery } = useLogements();
   const { data: logementData, isLoading: isLogementLoading, error: logementError } = useLogementQuery(pkLogement);
   
@@ -34,6 +38,7 @@ export default function LogementMainCard({ pkLogement }: LogementMainCardProps) 
         logementNumEscalier: "",
         logementNumEtage: "",
         logementType: "",
+        pkImmeuble: "",
         immeubleNom: "",
         immeubleAdresse1: "",
         immeubleCp: "",
@@ -93,6 +98,7 @@ export default function LogementMainCard({ pkLogement }: LogementMainCardProps) 
       logementNumEtage: logementProps?.NumEtage ?? logementProps?.numEtage ?? "",
       logementType: logementProps?.Type ?? logementProps?.type ?? "",
       // Immeuble
+      pkImmeuble: immeuble?.PkImmeuble ?? immeuble?.pkImmeuble ?? "",
       immeubleNom: immeuble?.Nom ?? immeuble?.nom ?? "",
       immeubleAdresse1: immeuble?.Adresse1 ?? immeuble?.adresse1 ?? "",
       immeubleCp: immeuble?.Cp ?? immeuble?.cp ?? "",
@@ -107,6 +113,13 @@ export default function LogementMainCard({ pkLogement }: LogementMainCardProps) 
   const formatNumber = (num: number): string => {
     return num.toLocaleString('fr-FR');
   };
+
+  const effectivePkImmeuble = pkImmeuble ?? logementInfo.pkImmeuble;
+
+  const canChangeOccupant = 
+    user?.showChgtOccupant === true ||
+    user?.showChgtOccupant === 1 ||
+    user?.showChgtOccupant === "1";
 
   return (
     <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
@@ -127,9 +140,63 @@ export default function LogementMainCard({ pkLogement }: LogementMainCardProps) 
             <div className="space-y-6">
               {/* Informations Occupant */}
               <div className="p-4 border border-gray-200 rounded-2xl dark:border-gray-800">
-                <h5 className="mb-4 text-base font-semibold text-gray-800 dark:text-white/90">
-                  Occupant
-                </h5>
+                <div className="flex items-center justify-between mb-4">
+                  <h5 className="text-base font-semibold text-gray-800 dark:text-white/90">
+                    Occupant
+                  </h5>
+                  {canChangeOccupant && effectivePkImmeuble && (
+                    <div className="flex items-center gap-2">
+                      <Link
+                        href={`/immeuble/${effectivePkImmeuble}/logements/${pkLogement}/edit`}
+                        title="Éditer occupant"
+                        className="inline-flex items-center justify-center w-8 h-8 text-blue-600 rounded-full hover:text-blue-700 hover:bg-blue-50 dark:text-blue-400 dark:hover:text-blue-300 dark:hover:bg-blue-900/20 transition-colors"
+                      >
+                        <span className="text-blue-600 dark:text-blue-400">
+                          <svg 
+                            stroke="currentColor" 
+                            fill="currentColor" 
+                            strokeWidth="0" 
+                            viewBox="0 0 21 21" 
+                            className="w-4 h-4" 
+                            height="1em" 
+                            width="1em" 
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              clipRule="evenodd"
+                              d="M17.0911 3.53206C16.2124 2.65338 14.7878 2.65338 13.9091 3.53206L5.6074 11.8337C5.29899 12.1421 5.08687 12.5335 4.99684 12.9603L4.26177 16.445C4.20943 16.6931 4.286 16.9508 4.46529 17.1301C4.64458 17.3094 4.90232 17.3859 5.15042 17.3336L8.63507 16.5985C9.06184 16.5085 9.45324 16.2964 9.76165 15.988L18.0633 7.68631C18.942 6.80763 18.942 5.38301 18.0633 4.50433L17.0911 3.53206ZM14.9697 4.59272C15.2626 4.29982 15.7375 4.29982 16.0304 4.59272L17.0027 5.56499C17.2956 5.85788 17.2956 6.33276 17.0027 6.62565L16.1043 7.52402L14.0714 5.49109L14.9697 4.59272ZM13.0107 6.55175L6.66806 12.8944C6.56526 12.9972 6.49455 13.1277 6.46454 13.2699L5.96704 15.6283L8.32547 15.1308C8.46772 15.1008 8.59819 15.0301 8.70099 14.9273L15.0436 8.58468L13.0107 6.55175Z"
+                            />
+                          </svg>
+                        </span>
+                      </Link>
+                      <Link
+                        href={`/immeuble/${effectivePkImmeuble}/logements/${pkLogement}/declare-occupant`}
+                        title="Ajouter un occupant"
+                        className="inline-flex items-center justify-center w-8 h-8 text-blue-600 rounded-full hover:text-blue-700 hover:bg-blue-50 dark:text-blue-400 dark:hover:text-blue-300 dark:hover:bg-blue-900/20 transition-colors"
+                      >
+                        <span className="text-blue-600 dark:text-blue-400">
+                          <svg 
+                            stroke="currentColor" 
+                            fill="currentColor" 
+                            strokeWidth="0" 
+                            viewBox="0 0 20 20" 
+                            className="w-4 h-4" 
+                            height="1em" 
+                            width="1em" 
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              clipRule="evenodd"
+                              d="M8.0254 6.17845C8.0254 4.90629 9.05669 3.875 10.3289 3.875C11.601 3.875 12.6323 4.90629 12.6323 6.17845C12.6323 7.45061 11.601 8.48191 10.3289 8.48191C9.05669 8.48191 8.0254 7.45061 8.0254 6.17845ZM10.3289 2.375C8.22827 2.375 6.5254 4.07786 6.5254 6.17845C6.5254 8.27904 8.22827 9.98191 10.3289 9.98191C12.4294 9.98191 14.1323 8.27904 14.1323 6.17845C14.1323 4.07786 12.4294 2.375 10.3289 2.375ZM8.92286 11.03C5.7669 11.03 3.2085 13.5884 3.2085 16.7444V17.0333C3.2085 17.4475 3.54428 17.7833 3.9585 17.7833C4.37271 17.7833 4.7085 17.4475 4.7085 17.0333V16.7444C4.7085 14.4169 6.59533 12.53 8.92286 12.53H11.736C14.0635 12.53 15.9504 14.4169 15.9504 16.7444V17.0333C15.9504 17.4475 16.2861 17.7833 16.7004 17.7833C17.1146 17.7833 17.4504 17.4475 17.4504 17.0333V16.7444C17.4504 13.5884 14.8919 11.03 11.736 11.03H8.92286Z"
+                            />
+                          </svg>
+                        </span>
+                      </Link>
+                    </div>
+                  )}
+                </div>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                   <div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Nom</p>

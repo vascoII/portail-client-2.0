@@ -81,6 +81,14 @@ export default function EditOccupantForm({ pkLogement }: EditOccupantFormProps) 
     error: logementError,
   } = useLogementQuery(pkLogement);
 
+  // Récupérer pkImmeuble à partir des données du logement
+  const pkImmeuble =
+    logementData?.logement?.Immeuble?.PkImmeuble ??
+    logementData?.logement?.Immeuble?.pkImmeuble ??
+    logementData?.logement?.immeuble?.PkImmeuble ??
+    logementData?.logement?.immeuble?.pkImmeuble ??
+    "";
+
   // Pré-remplir le formulaire avec les données de l'occupant
   useEffect(() => {
     if (logementData?.logement && logementData?.occupant) {
@@ -147,9 +155,13 @@ export default function EditOccupantForm({ pkLogement }: EditOccupantFormProps) 
 
       setIsSuccess(true);
 
-      // Rediriger vers la page de gestion du parc après 2 secondes
+      // Rediriger vers la page du logement après 2 secondes
       setTimeout(() => {
-        router.push(`/gestionParc/${pkLogement}`);
+        if (pkImmeuble) {
+          router.push(`/immeuble/${pkImmeuble}/logements/${pkLogement}`);
+        } else {
+          router.push(`/logements/${pkLogement}`);
+        }
       }, 2000);
     } catch (error) {
       const errorMessage = handleApiError(error);
@@ -172,7 +184,11 @@ export default function EditOccupantForm({ pkLogement }: EditOccupantFormProps) 
       <div className="flex flex-col flex-1 w-full">
         <div className="w-full max-w-2xl mx-auto mb-5">
           <Link
-            href={`/gestionParc/${pkLogement}`}
+            href={
+              pkImmeuble
+                ? `/immeuble/${pkImmeuble}/logements/${pkLogement}`
+                : `/logements/${pkLogement}`
+            }
             className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
           >
             <ChevronLeftIcon />
@@ -194,7 +210,7 @@ export default function EditOccupantForm({ pkLogement }: EditOccupantFormProps) 
       <div className="flex flex-col flex-1 w-full">
         <div className="w-full max-w-2xl mx-auto mb-5">
           <Link
-            href={`/gestionParc/${pkLogement}`}
+            href={`/logements/${pkLogement}`}
             className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
           >
             <ChevronLeftIcon />
@@ -216,7 +232,11 @@ export default function EditOccupantForm({ pkLogement }: EditOccupantFormProps) 
     <div className="flex flex-col flex-1 w-full">
       <div className="w-full max-w-2xl mx-auto mb-5">
         <Link
-          href={`/gestionParc/${pkLogement}`}
+          href={
+            pkImmeuble
+              ? `/immeuble/${pkImmeuble}/logements/${pkLogement}`
+              : `/logements/${pkLogement}`
+          }
           className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
           <ChevronLeftIcon />

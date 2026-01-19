@@ -67,8 +67,18 @@ export default function NewOccupantForm({ pkLogement }: NewOccupantFormProps) {
     },
   });
 
-  const { updateOccupant, isUpdatingOccupant, updateOccupantError } =
+  const { useLogementQuery, updateOccupant, isUpdatingOccupant, updateOccupantError } =
     useLogements();
+
+  // Charger les données du logement pour récupérer pkImmeuble
+  const { data: logementData } = useLogementQuery(pkLogement);
+
+  const pkImmeuble =
+    logementData?.logement?.Immeuble?.PkImmeuble ??
+    logementData?.logement?.Immeuble?.pkImmeuble ??
+    logementData?.logement?.immeuble?.PkImmeuble ??
+    logementData?.logement?.immeuble?.pkImmeuble ??
+    "";
 
   // Définir la date d'arrivée par défaut à aujourd'hui
   useEffect(() => {
@@ -110,9 +120,13 @@ export default function NewOccupantForm({ pkLogement }: NewOccupantFormProps) {
 
       setIsSuccess(true);
 
-      // Rediriger vers la page de gestion du parc après 2 secondes
+      // Rediriger vers la page du logement après 2 secondes
       setTimeout(() => {
-        router.push(`/gestionParc/${pkLogement}`);
+        if (pkImmeuble) {
+          router.push(`/immeuble/${pkImmeuble}/logements/${pkLogement}`);
+        } else {
+          router.push(`/logements/${pkLogement}`);
+        }
       }, 2000);
     } catch (error) {
       const errorMessage = handleApiError(error);
@@ -133,7 +147,11 @@ export default function NewOccupantForm({ pkLogement }: NewOccupantFormProps) {
     <div className="flex flex-col flex-1 w-full">
       <div className="w-full max-w-2xl mx-auto mb-5">
         <Link
-          href={`/gestionParc/${pkLogement}`}
+          href={
+            pkImmeuble
+              ? `/immeuble/${pkImmeuble}/logements/${pkLogement}`
+              : `/logements/${pkLogement}`
+          }
           className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
           <ChevronLeftIcon />
