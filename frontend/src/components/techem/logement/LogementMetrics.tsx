@@ -3,9 +3,7 @@ import React, { useMemo, useState, useCallback } from "react";
 import Link from "next/link";
 import { useLogements } from "@/lib/hooks/useLogements";
 import StatusIconsAlerte from '@/components/techem/images/StatusIconsAlerte';
-import StatusIconsAnomalie from '@/components/techem/images/StatusIconsAnomalie';
 import StatusIconsDysfonctionnement from '@/components/techem/images/StatusIconsDysfonctionnement';
-import StatusIconsFuite from '@/components/techem/images/StatusIconsFuite';
 import { LoadingMetrics } from "@/components/ui/loading";
 import { Modal } from "@/components/ui/modal";
 import { useModal } from "@/hooks/useModal";
@@ -19,10 +17,8 @@ interface LogementMetricsProps {
 }
 
 /**
- * Component displaying 4 logement metrics side by side:
- * - Fuites (nbFuites)
+ * Component displaying 2 logement metrics side by side:
  * - Alarmes (nbDysfonctionnements)
- * - Anomalies (nbAnomalies)
  * - Depannages (nbDepannages)
  */
 export const LogementMetrics = ({ pkLogement, pkImmeuble }: LogementMetricsProps) => {
@@ -125,9 +121,7 @@ export const LogementMetrics = ({ pkLogement, pkImmeuble }: LogementMetricsProps
     const logement = logementData?.logement;
     
     return {
-      fuites: (logement?.NbFuites ?? logement?.nbFuites ?? 0) as number,
       alarmes: (logement?.NbDysfonctionnements ?? logement?.nbDysfonctionnements ?? 0) as number,
-      anomalies: (logement?.NbAnomalies ?? logement?.nbAnomalies ?? 0) as number,
       depannages: (logement?.NbDepannages ?? logement?.nbDepannages ?? 0) as number,
     };
   }, [logementData]);
@@ -139,41 +133,17 @@ export const LogementMetrics = ({ pkLogement, pkImmeuble }: LogementMetricsProps
 
   // Show loading state
   if (isLogementLoading) {
-    return <LoadingMetrics count={4} />;
+    return <LoadingMetrics count={2} />;
   }
 
   // Determine icon colors based on values
-  const fuitesColor = metrics.fuites > 0 ? "text-blue-500 dark:text-blue-400" : "text-gray-400 dark:text-gray-500";
   const dysfonctionnementsColor = metrics.alarmes > 0 ? "text-orange-500 dark:text-orange-400" : "text-gray-400 dark:text-gray-500";
-  const anomaliesColor = metrics.anomalies > 0 ? "text-red-500 dark:text-red-400" : "text-gray-400 dark:text-gray-500";
   const depannagesColor = metrics.depannages > 0 ? "text-red-500 dark:text-red-400" : "text-gray-400 dark:text-gray-500";
 
   return (
     <>
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-4 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
-      {/* Fuites - Metric Item Start */}
-      <Link href={`/immeuble/${pkImmeuble}/logements/${pkLogement}/fuites`} className="h-full">
-      <div className="flex flex-col h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-        <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
-          <StatusIconsFuite size={24} className={fuitesColor} color="currentColor" />
-        </div>
-
-        <div className="flex items-end justify-between mt-5 flex-grow">
-          <div>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              Fuites
-            </span>
-            <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              {formatNumber(Math.max(metrics.fuites, 0))}
-            </h4>
-          </div>
-        </div>
-        <div className="mt-5 h-[33px]"></div>
-        </div>
-      </Link>
-      {/* Fuites - Metric Item End */}
-
+    <div className="grid grid-cols-2 gap-4 md:gap-6">
       {/* Alarmes (Dysfonctionnements) - Metric Item Start */}
       <Link href={`/immeuble/${pkImmeuble}/logements/${pkLogement}/dysfonctionnements`} className="h-full">
       <div className="flex flex-col h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
@@ -194,28 +164,6 @@ export const LogementMetrics = ({ pkLogement, pkImmeuble }: LogementMetricsProps
         </div>
       </Link>
       {/* Alarmes - Metric Item End */}
-
-      {/* Anomalies - Metric Item Start */}
-      <Link href={`/immeuble/${pkImmeuble}/logements/${pkLogement}/anomalies`} className="h-full">
-      <div className="flex flex-col h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-        <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
-          <StatusIconsAnomalie size={24} className={anomaliesColor} color="currentColor" />
-        </div>
-
-        <div className="flex items-end justify-between mt-5 flex-grow">
-          <div>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              Anomalies de consommation
-            </span>
-            <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              {formatNumber(Math.max(metrics.anomalies, 0))}
-            </h4>
-          </div>
-        </div>
-        <div className="mt-5 h-[33px]"></div>
-        </div>
-      </Link>
-      {/* Anomalies - Metric Item End */}
 
       {/* Depannages - Metric Item Start */}
       <Link href={`/immeuble/${pkImmeuble}/logements/${pkLogement}/interventions`} className="h-full">

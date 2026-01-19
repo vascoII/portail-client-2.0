@@ -62,7 +62,7 @@ export default async function LogementDetailsPage({
         <ImmeubleCard pkImmeuble={pkImmeuble} />
         <LogementRelevesCard pkLogement={pkLogement} />
       </div>
-      <LogementDetailsClient pkLogement={pkLogement} />
+      <LogementDetailsClient pkLogement={pkLogement} pkImmeuble={pkImmeuble} />
       
     </div>
   );

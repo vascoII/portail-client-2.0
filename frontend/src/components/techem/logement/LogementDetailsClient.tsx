@@ -1,7 +1,9 @@
 "use client";
-import { useState, lazy } from "react";
+import { useState, lazy, useMemo } from "react";
 import LogementReleves, { TabType } from "@/components/techem/logement/LogementReleves";
+import { LogementMetricsEau } from "@/components/techem/logement/LogementMetricsEau";
 import LogementConsommationChartEf from "@/components/techem/logement/releve/LogementConsommationChartEf";
+import { useLogements } from "@/lib/hooks/useLogements";
 import LogementStatisticsConsommationChartEf from "@/components/techem/logement/releve/LogementStatisticsConsommationChartEf";
 import LogementConsommationChartEc from "@/components/techem/logement/releve/LogementConsommationChartEc";
 import LogementStatisticsConsommationChartEc from "@/components/techem/logement/releve/LogementStatisticsConsommationChartEc";
@@ -38,10 +40,30 @@ const LogementStatisticsConsommationChartSerieConsosCet = lazy( // eslint-disabl
 
 interface LogementDetailsClientProps {
   pkLogement: string;
+  pkImmeuble: string;
 }
 
-export default function LogementDetailsClient({ pkLogement }: LogementDetailsClientProps) {
+export default function LogementDetailsClient({ pkLogement, pkImmeuble }: LogementDetailsClientProps) {
   const [selectedTab, setSelectedTab] = useState<TabType>("eauFroide");
+  const { useLogementQuery } = useLogements();
+  const { data: logementData } = useLogementQuery(pkLogement);
+
+  // Extract metrics for Eau Froide (EF) and Eau Chaude (EC)
+  const metricsEf = useMemo(() => {
+    const logementEF = logementData?.logement?.LogementEF ?? logementData?.logement?.logementEF;
+    return {
+      nbFuites: (logementEF?.NbFuites ?? logementEF?.nbFuites ?? 0) as number,
+      nbAnomalies: (logementEF?.NbAnomalies ?? logementEF?.nbAnomalies ?? 0) as number,
+    };
+  }, [logementData]);
+
+  const metricsEc = useMemo(() => {
+    const logementEC = logementData?.logement?.LogementEC ?? logementData?.logement?.logementEC;
+    return {
+      nbFuites: (logementEC?.NbFuites ?? logementEC?.nbFuites ?? 0) as number,
+      nbAnomalies: (logementEC?.NbAnomalies ?? logementEC?.nbAnomalies ?? 0) as number,
+    };
+  }, [logementData]);
 
   return (
     <div className="col-span-12 space-y-6 xl:col-span-12">
@@ -54,6 +76,12 @@ export default function LogementDetailsClient({ pkLogement }: LogementDetailsCli
       {/* Eau froide - Afficher uniquement les composants Ef */}
       {selectedTab === "eauFroide" && (
         <>
+          <LogementMetricsEau 
+            pkLogement={pkLogement} 
+            pkImmeuble={pkImmeuble}
+            nbFuites={metricsEf.nbFuites}
+            nbAnomalies={metricsEf.nbAnomalies}
+          />
           <LogementConsommationChartEf pkLogement={pkLogement} />
           <LogementStatisticsConsommationChartEf pkLogement={pkLogement} />
 {/*          
@@ -92,6 +120,12 @@ export default function LogementDetailsClient({ pkLogement }: LogementDetailsCli
       {/* Eau chaude - Afficher uniquement les composants Ec */}
       {selectedTab === "eauChaude" && (
         <>
+          <LogementMetricsEau 
+            pkLogement={pkLogement} 
+            pkImmeuble={pkImmeuble}
+            nbFuites={metricsEc.nbFuites}
+            nbAnomalies={metricsEc.nbAnomalies}
+          />
           <LogementConsommationChartEc pkLogement={pkLogement} />
           <LogementStatisticsConsommationChartEc pkLogement={pkLogement} />
   {/*        
