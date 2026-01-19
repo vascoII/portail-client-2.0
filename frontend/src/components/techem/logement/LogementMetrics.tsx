@@ -146,42 +146,38 @@ export const LogementMetrics = ({ pkLogement, pkImmeuble }: LogementMetricsProps
     <div className="grid grid-cols-2 gap-4 md:gap-6">
       {/* Alarmes (Dysfonctionnements) - Metric Item Start */}
       <Link href={`/immeuble/${pkImmeuble}/logements/${pkLogement}/dysfonctionnements`} className="h-full">
-      <div className="flex flex-col h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-        <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
+      <div className="flex items-center gap-3 h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+        <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800 flex-shrink-0">
           <StatusIconsDysfonctionnement size={24} className={dysfonctionnementsColor} color="currentColor" />
         </div>
-        <div className="flex items-end justify-between mt-5 flex-grow">
-          <div>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
-              Alarmes techniques
-            </span>
-            <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              {formatNumber(Math.max(metrics.alarmes, 0))}
-            </h4>
-          </div>
+        <div className="flex items-center gap-2 flex-grow">
+          <span className="text-sm text-gray-500 dark:text-gray-400">
+            Alarmes techniques
+          </span>
+          <h4 className="font-bold text-gray-800 text-title-sm dark:text-white/90">
+            {formatNumber(Math.max(metrics.alarmes, 0))}
+          </h4>
         </div>
-        <div className="mt-5 h-[33px]"></div>
         </div>
       </Link>
       {/* Alarmes - Metric Item End */}
 
       {/* Depannages - Metric Item Start */}
-      <Link href={`/immeuble/${pkImmeuble}/logements/${pkLogement}/interventions`} className="h-full">
-      <div className="flex flex-col h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-        <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
-          <StatusIconsAlerte size={24} className={depannagesColor} color="currentColor" />
-        </div>
-        <div className="flex items-end justify-between mt-5 flex-grow">
-          <div>
+      <div className="h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800 flex-shrink-0">
+            <StatusIconsAlerte size={24} className={depannagesColor} color="currentColor" />
+          </div>
+          <Link href={`/immeuble/${pkImmeuble}/logements/${pkLogement}/interventions`} className="flex items-center gap-2 flex-grow">
             <span className="text-sm text-gray-500 dark:text-gray-400">
               Depannages en cours
             </span>
-            <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
+            <h4 className="font-bold text-gray-800 text-title-sm dark:text-white/90">
               {formatNumber(Math.max(metrics.depannages, 0))}
             </h4>
-          </div>
+          </Link>
         </div>
-        <div className="mt-5 flex justify-end">
+        <div className="flex justify-end">
           <button
             className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 shadow-theme-xs transition hover:bg-gray-50 hover:text-gray-900 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-white/[0.05]"
             onClick={(event) => {
@@ -193,8 +189,7 @@ export const LogementMetrics = ({ pkLogement, pkImmeuble }: LogementMetricsProps
             Livret d&apos;intervention
           </button>
         </div>
-        </div>
-        </Link>
+      </div>
       {/* Depannages - Metric Item End */}
     </div>
     </div>
