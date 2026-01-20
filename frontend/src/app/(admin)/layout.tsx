@@ -79,6 +79,18 @@ export default function AdminLayout({
     ? "lg:ml-[290px]"
     : "lg:ml-[90px]";
 
+  // Routes where content should NOT be horizontally centered (no mx-auto)
+  const noCenterPrefixes = [
+    "/immeuble",
+    "/tickets",
+    "/gestionnaire",
+    "/factures",
+  ];
+
+  const shouldCenterContent = !noCenterPrefixes.some((prefix) =>
+    pathname.startsWith(prefix)
+  );
+
   return (
     <div className="min-h-screen xl:flex">
       {/* Sidebar and Backdrop */}
@@ -92,7 +104,12 @@ export default function AdminLayout({
         <AppHeader />
         {/* Page Content */}
         <div className="flex flex-col min-h-[calc(100vh-4rem)]">
-          <div className="flex-1 p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
+          <div
+            className={
+              "flex-1 p-4 max-w-(--breakpoint-2xl) md:p-6" +
+              (shouldCenterContent ? " mx-auto" : "")
+            }
+          >
             {children}
           </div>
           {/* Footer */}
