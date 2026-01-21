@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useLogements } from "@/lib/hooks/useLogements";
 import { LoadingCard } from "@/components/ui/loading";
 import { useAuth } from "@/lib/hooks/useAuth";
+import { useModal } from "@/hooks/useModal";
+import DemandeInterventionModal from "./form/demande-intervention";
 
 interface LogementMainCardProps {
   pkLogement: string;
@@ -14,6 +16,7 @@ export default function LogementMainCard({ pkLogement, pkImmeuble }: LogementMai
   const { user } = useAuth();
   const { useLogementQuery } = useLogements();
   const { data: logementData, isLoading: isLogementLoading, error: logementError } = useLogementQuery(pkLogement);
+  const demandeInterventionModal = useModal();
   
   // Debug: Log loading state and errors
   console.log("[LogementMainCard] pkLogement:", pkLogement);
@@ -121,6 +124,11 @@ export default function LogementMainCard({ pkLogement, pkImmeuble }: LogementMai
     user?.showChgtOccupant === 1 ||
     user?.showChgtOccupant === "1";
 
+  const hasTicketPermission =
+    user?.hasTicketPermission === true ||
+    user?.hasTicketPermission === 1 ||
+    user?.hasTicketPermission === "1";
+
   return (
     <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
@@ -221,9 +229,24 @@ export default function LogementMainCard({ pkLogement, pkImmeuble }: LogementMai
 
               {/* Informations Logement */}
               <div className="p-4 border border-gray-200 rounded-2xl dark:border-gray-800">
-                <h5 className="mb-4 text-base font-semibold text-gray-800 dark:text-white/90">
-                  Logement
-                </h5>
+                <div className="flex items-center justify-between mb-4">
+                  <h5 className="text-base font-semibold text-gray-800 dark:text-white/90">
+                    Logement
+                  </h5>
+                  {hasTicketPermission && (
+                    <button
+                      type="button"
+                      className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 shadow-theme-xs transition hover:bg-gray-50 hover:text-gray-900 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-white/[0.05]"
+                      onClick={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        demandeInterventionModal.openModal();
+                      }}
+                    >
+                      Demande d&apos;intervention
+                    </button>
+                  )}
+                </div>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
                   <div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">Adresse bâtiment</p>
@@ -355,6 +378,15 @@ export default function LogementMainCard({ pkLogement, pkImmeuble }: LogementMai
           )}
         </div>
       </div>
+
+      {hasTicketPermission && (
+        <DemandeInterventionModal
+          isOpen={demandeInterventionModal.isOpen}
+          onClose={demandeInterventionModal.closeModal}
+          pkLogement={pkLogement}
+          occupantNom={logementInfo.occupantNom}
+        />
+      )}
     </div>
   );
 }
