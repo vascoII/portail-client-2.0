@@ -1,8 +1,6 @@
 "use client";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
-import Button from "@/components/ui/button/Button";
-import Alert from "@/components/ui/alert/Alert";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -172,47 +170,45 @@ export default function ReleveCompteursForm() {
       <div className="flex flex-col justify-center flex-1 w-full max-w-4xl mx-auto">
         <div>
           <div className="mb-5 sm:mb-8">
-            <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
+            <h1 className="mb-2 font-normal text-[#1d1914] text-title-sm sm:text-title-md">
               Transmettre votre relevé de compteurs
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-base text-[#1d1914]">
               Le releveur s&apos;est présenté à votre résidence mais n&apos;a pas pu accéder à votre logement pour le relevé de vos compteurs d&apos;eau. Vous avez la possibilité de relever et nous transmettre via le formulaire ci-dessous votre consommation d&apos;eau.
             </p>
           </div>
           <div>
             {/* Message de succès */}
             {isSuccess && (
-              <div className="mb-6">
-                <Alert
-                  variant="success"
-                  title="Relevé envoyé"
-                  message="Votre relevé de compteurs a été transmis avec succès. Merci pour votre collaboration."
-                />
+              <div className="mb-9">
+                <div className="p-4 bg-[#417232] text-[#e9ecef] rounded-lg">
+                  <p className="font-medium mb-1">Relevé envoyé</p>
+                  <p className="text-sm">Votre relevé de compteurs a été transmis avec succès. Merci pour votre collaboration.</p>
+                </div>
               </div>
             )}
 
             {/* Alerte d'erreur */}
             {displayError && !isSuccess && (
-              <div className="mb-6">
-                <Alert
-                  variant="error"
-                  title="Erreur"
-                  message={displayError}
-                />
+              <div className="mb-9">
+                <div className="p-4 bg-[#b00511] text-[#e9ecef] rounded-lg">
+                  <p className="font-medium mb-1">Erreur</p>
+                  <p className="text-sm">{displayError}</p>
+                </div>
               </div>
             )}
 
             {!isSuccess && (
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
                 {/* Section 1 : Informations Immeuble */}
-                <fieldset className="space-y-4 p-6 border border-gray-200 rounded-lg dark:border-gray-700">
-                  <legend className="font-bold text-lg text-gray-800 dark:text-white/90 px-2">
+                <fieldset className="space-y-4 p-6 border border-[#1d1914] rounded-xl">
+                  <legend className="font-normal text-xl text-[#1d1914] px-2">
                     Informations Immeuble
                   </legend>
                   
                   <div>
-                    <Label htmlFor="numeroImmeuble">
-                      N° Immeuble <span className="text-error-500">*</span>
+                    <Label htmlFor="numeroImmeuble" className="text-base text-[#1d1914] mb-2 block">
+                      N° Immeuble <span className="text-[#b00511]">*</span>
                     </Label>
                     <Input
                       id="numeroImmeuble"
@@ -387,18 +383,19 @@ export default function ReleveCompteursForm() {
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="cuisine_ef_num">Cuisine - N° compteur</Label>
-                      <Input
-                        id="cuisine_ef_num"
-                        type="text"
-                        placeholder="N° compteur"
-                        {...register("cuisine_ef_num")}
-                        error={!!errors.cuisine_ef_num}
-                        hint={errors.cuisine_ef_num?.message}
-                      />
+                    <Label htmlFor="cuisine_ef_num" className="text-base text-[#1d1914] mb-2 block">Cuisine - N° compteur</Label>
+                    <Input
+                      id="cuisine_ef_num"
+                      type="text"
+                      placeholder="N° compteur"
+                      {...register("cuisine_ef_num")}
+                      error={!!errors.cuisine_ef_num}
+                      hint={errors.cuisine_ef_num?.message}
+                      className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
+                    />
                     </div>
                     <div>
-                      <Label htmlFor="cuisine_ef">Cuisine - m³</Label>
+                      <Label htmlFor="cuisine_ef" className="text-base text-[#1d1914] mb-2 block">Cuisine - m³</Label>
                       <Input
                         id="cuisine_ef"
                         type="number"
@@ -408,13 +405,14 @@ export default function ReleveCompteursForm() {
                         {...register("cuisine_ef", { valueAsNumber: true })}
                         error={!!errors.cuisine_ef}
                         hint={errors.cuisine_ef?.message}
+                        className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="salleDeBains_ef_num">Salle de bains - N° compteur</Label>
+                      <Label htmlFor="salleDeBains_ef_num" className="text-base text-[#1d1914] mb-2 block">Salle de bains - N° compteur</Label>
                       <Input
                         id="salleDeBains_ef_num"
                         type="text"
@@ -422,10 +420,11 @@ export default function ReleveCompteursForm() {
                         {...register("salleDeBains_ef_num")}
                         error={!!errors.salleDeBains_ef_num}
                         hint={errors.salleDeBains_ef_num?.message}
+                        className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="salleDeBains_ef">Salle de bains - m³</Label>
+                      <Label htmlFor="salleDeBains_ef" className="text-base text-[#1d1914] mb-2 block">Salle de bains - m³</Label>
                       <Input
                         id="salleDeBains_ef"
                         type="number"
@@ -435,13 +434,14 @@ export default function ReleveCompteursForm() {
                         {...register("salleDeBains_ef", { valueAsNumber: true })}
                         error={!!errors.salleDeBains_ef}
                         hint={errors.salleDeBains_ef?.message}
+                        className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="wc_ef_num">WC - N° compteur</Label>
+                      <Label htmlFor="wc_ef_num" className="text-base text-[#1d1914] mb-2 block">WC - N° compteur</Label>
                       <Input
                         id="wc_ef_num"
                         type="text"
@@ -449,10 +449,11 @@ export default function ReleveCompteursForm() {
                         {...register("wc_ef_num")}
                         error={!!errors.wc_ef_num}
                         hint={errors.wc_ef_num?.message}
+                        className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="wc_ef">WC - m³</Label>
+                      <Label htmlFor="wc_ef" className="text-base text-[#1d1914] mb-2 block">WC - m³</Label>
                       <Input
                         id="wc_ef"
                         type="number"
@@ -462,13 +463,14 @@ export default function ReleveCompteursForm() {
                         {...register("wc_ef", { valueAsNumber: true })}
                         error={!!errors.wc_ef}
                         hint={errors.wc_ef?.message}
+                        className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <Label htmlFor="autreEmplacement_ef_loc">Autre emplacement - Localisation</Label>
+                      <Label htmlFor="autreEmplacement_ef_loc" className="text-base text-[#1d1914] mb-2 block">Autre emplacement - Localisation</Label>
                       <Input
                         id="autreEmplacement_ef_loc"
                         type="text"
@@ -476,10 +478,11 @@ export default function ReleveCompteursForm() {
                         {...register("autreEmplacement_ef_loc")}
                         error={!!errors.autreEmplacement_ef_loc}
                         hint={errors.autreEmplacement_ef_loc?.message}
+                        className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="autreEmplacement_ef_num">Autre emplacement - N° compteur</Label>
+                      <Label htmlFor="autreEmplacement_ef_num" className="text-base text-[#1d1914] mb-2 block">Autre emplacement - N° compteur</Label>
                       <Input
                         id="autreEmplacement_ef_num"
                         type="text"
@@ -487,10 +490,11 @@ export default function ReleveCompteursForm() {
                         {...register("autreEmplacement_ef_num")}
                         error={!!errors.autreEmplacement_ef_num}
                         hint={errors.autreEmplacement_ef_num?.message}
+                        className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="autreEmplacement_ef">Autre emplacement - m³</Label>
+                      <Label htmlFor="autreEmplacement_ef" className="text-base text-[#1d1914] mb-2 block">Autre emplacement - m³</Label>
                       <Input
                         id="autreEmplacement_ef"
                         type="number"
@@ -500,20 +504,21 @@ export default function ReleveCompteursForm() {
                         {...register("autreEmplacement_ef", { valueAsNumber: true })}
                         error={!!errors.autreEmplacement_ef}
                         hint={errors.autreEmplacement_ef?.message}
+                        className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                       />
                     </div>
                   </div>
                 </fieldset>
 
                 {/* Section 4 : Compteurs Eau Chaude */}
-                <fieldset className="space-y-4 p-6 border border-gray-200 rounded-lg dark:border-gray-700">
-                  <legend className="font-bold text-lg text-gray-800 dark:text-white/90 px-2">
+                <fieldset className="space-y-4 p-6 border border-[#1d1914] rounded-xl">
+                  <legend className="font-normal text-xl text-[#1d1914] px-2">
                     Compteurs Eau Chaude
                   </legend>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="cuisine_ec_num">Cuisine - N° compteur</Label>
+                      <Label htmlFor="cuisine_ec_num" className="text-base text-[#1d1914] mb-2 block">Cuisine - N° compteur</Label>
                       <Input
                         id="cuisine_ec_num"
                         type="text"
@@ -521,10 +526,11 @@ export default function ReleveCompteursForm() {
                         {...register("cuisine_ec_num")}
                         error={!!errors.cuisine_ec_num}
                         hint={errors.cuisine_ec_num?.message}
+                        className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="cuisine_ec">Cuisine - m³</Label>
+                      <Label htmlFor="cuisine_ec" className="text-base text-[#1d1914] mb-2 block">Cuisine - m³</Label>
                       <Input
                         id="cuisine_ec"
                         type="number"
@@ -534,13 +540,14 @@ export default function ReleveCompteursForm() {
                         {...register("cuisine_ec", { valueAsNumber: true })}
                         error={!!errors.cuisine_ec}
                         hint={errors.cuisine_ec?.message}
+                        className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="salleDeBains_ec_num">Salle de bains - N° compteur</Label>
+                      <Label htmlFor="salleDeBains_ec_num" className="text-base text-[#1d1914] mb-2 block">Salle de bains - N° compteur</Label>
                       <Input
                         id="salleDeBains_ec_num"
                         type="text"
@@ -548,10 +555,11 @@ export default function ReleveCompteursForm() {
                         {...register("salleDeBains_ec_num")}
                         error={!!errors.salleDeBains_ec_num}
                         hint={errors.salleDeBains_ec_num?.message}
+                        className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="salleDeBains_ec">Salle de bains - m³</Label>
+                      <Label htmlFor="salleDeBains_ec" className="text-base text-[#1d1914] mb-2 block">Salle de bains - m³</Label>
                       <Input
                         id="salleDeBains_ec"
                         type="number"
@@ -561,13 +569,14 @@ export default function ReleveCompteursForm() {
                         {...register("salleDeBains_ec", { valueAsNumber: true })}
                         error={!!errors.salleDeBains_ec}
                         hint={errors.salleDeBains_ec?.message}
+                        className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="wc_ec_num">WC - N° compteur</Label>
+                      <Label htmlFor="wc_ec_num" className="text-base text-[#1d1914] mb-2 block">WC - N° compteur</Label>
                       <Input
                         id="wc_ec_num"
                         type="text"
@@ -575,10 +584,11 @@ export default function ReleveCompteursForm() {
                         {...register("wc_ec_num")}
                         error={!!errors.wc_ec_num}
                         hint={errors.wc_ec_num?.message}
+                        className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="wc_ec">WC - m³</Label>
+                      <Label htmlFor="wc_ec" className="text-base text-[#1d1914] mb-2 block">WC - m³</Label>
                       <Input
                         id="wc_ec"
                         type="number"
@@ -588,13 +598,14 @@ export default function ReleveCompteursForm() {
                         {...register("wc_ec", { valueAsNumber: true })}
                         error={!!errors.wc_ec}
                         hint={errors.wc_ec?.message}
+                        className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                      <Label htmlFor="autreEmplacement_ec_loc">Autre emplacement - Localisation</Label>
+                      <Label htmlFor="autreEmplacement_ec_loc" className="text-base text-[#1d1914] mb-2 block">Autre emplacement - Localisation</Label>
                       <Input
                         id="autreEmplacement_ec_loc"
                         type="text"
@@ -602,10 +613,11 @@ export default function ReleveCompteursForm() {
                         {...register("autreEmplacement_ec_loc")}
                         error={!!errors.autreEmplacement_ec_loc}
                         hint={errors.autreEmplacement_ec_loc?.message}
+                        className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="autreEmplacement_ec_num">Autre emplacement - N° compteur</Label>
+                      <Label htmlFor="autreEmplacement_ec_num" className="text-base text-[#1d1914] mb-2 block">Autre emplacement - N° compteur</Label>
                       <Input
                         id="autreEmplacement_ec_num"
                         type="text"
@@ -613,10 +625,11 @@ export default function ReleveCompteursForm() {
                         {...register("autreEmplacement_ec_num")}
                         error={!!errors.autreEmplacement_ec_num}
                         hint={errors.autreEmplacement_ec_num?.message}
+                        className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="autreEmplacement_ec">Autre emplacement - m³</Label>
+                      <Label htmlFor="autreEmplacement_ec" className="text-base text-[#1d1914] mb-2 block">Autre emplacement - m³</Label>
                       <Input
                         id="autreEmplacement_ec"
                         type="number"
@@ -626,6 +639,7 @@ export default function ReleveCompteursForm() {
                         {...register("autreEmplacement_ec", { valueAsNumber: true })}
                         error={!!errors.autreEmplacement_ec}
                         hint={errors.autreEmplacement_ec?.message}
+                        className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                       />
                     </div>
                   </div>
@@ -633,14 +647,13 @@ export default function ReleveCompteursForm() {
 
                 {/* Bouton de soumission */}
                 <div>
-                  <Button
-                    className="w-full"
-                    size="sm"
+                  <button
+                    className="w-full bg-[#e20613] text-white hover:bg-[#b4050f] border border-[#e20613] hover:border-[#b4050f] rounded-lg px-4 py-1.5 min-w-[5.5rem] max-w-[17rem] transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe] disabled:bg-[#ffa7ac] disabled:pointer-events-none text-sm font-normal"
                     type="submit"
                     disabled={isLoading}
                   >
                     {isLoading ? "Envoi en cours..." : "Envoyer le relevé"}
-                  </Button>
+                  </button>
                 </div>
               </form>
             )}

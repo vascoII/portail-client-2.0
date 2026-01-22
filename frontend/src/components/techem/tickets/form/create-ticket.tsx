@@ -6,8 +6,6 @@ import { z } from "zod";
 import { Modal } from "@/components/ui/modal";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
-import Button from "@/components/ui/button/Button";
-import Alert from "@/components/ui/alert/Alert";
 import TextArea from "@/components/form/input/TextArea";
 import FileInput from "@/components/form/input/FileInput";
 import { useLogements } from "@/lib/hooks/useLogements";
@@ -181,25 +179,27 @@ export default function CreateTicketModal({
       className="max-w-[600px] p-5 lg:p-10"
     >
       <div>
-        <h4 className="mb-6 text-lg font-semibold text-gray-800 dark:text-white/90">
+        <h4 className="mb-6 text-xl font-normal text-[#1d1914]">
           Demande d&apos;intervention
         </h4>
 
         {/* Message de succès */}
         {isSuccess && (
-          <div className="mb-6">
-            <Alert
-              variant="success"
-              title="Demande envoyée"
-              message="Votre demande d'intervention a été envoyée avec succès."
-            />
+          <div className="mb-9">
+            <div className="p-4 bg-[#417232] text-[#e9ecef] rounded-lg">
+              <p className="font-medium mb-1">Demande envoyée</p>
+              <p className="text-sm">Votre demande d&apos;intervention a été envoyée avec succès.</p>
+            </div>
           </div>
         )}
 
         {/* Alerte d'erreur */}
         {displayError && !isSuccess && (
-          <div className="mb-6">
-            <Alert variant="error" title="Erreur" message={displayError} />
+          <div className="mb-9">
+            <div className="p-4 bg-[#b00511] text-[#e9ecef] rounded-lg">
+              <p className="font-medium mb-1">Erreur</p>
+              <p className="text-sm">{displayError}</p>
+            </div>
           </div>
         )}
 
@@ -208,8 +208,8 @@ export default function CreateTicketModal({
             <div className="space-y-5">
               {/* Champ Nom */}
               <div>
-                <Label htmlFor="name">
-                  Nom <span className="text-error-500">*</span>
+                <Label htmlFor="name" className="text-base text-[#1d1914] mb-2 block">
+                  Nom <span className="text-[#b00511]">*</span>
                 </Label>
                 <Input
                   id="name"
@@ -218,13 +218,14 @@ export default function CreateTicketModal({
                   {...register("name")}
                   error={!!errors.name}
                   hint={errors.name?.message}
+                  className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                 />
               </div>
 
               {/* Champ Email */}
               <div>
-                <Label htmlFor="email">
-                  Email <span className="text-error-500">*</span>
+                <Label htmlFor="email" className="text-base text-[#1d1914] mb-2 block">
+                  Email <span className="text-[#b00511]">*</span>
                 </Label>
                 <Input
                   id="email"
@@ -233,13 +234,14 @@ export default function CreateTicketModal({
                   {...register("email")}
                   error={!!errors.email}
                   hint={errors.email?.message}
+                  className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                 />
               </div>
 
               {/* Champs Téléphone */}
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <div>
-                  <Label htmlFor="phone">Téléphone fixe</Label>
+                  <Label htmlFor="phone" className="text-base text-[#1d1914] mb-2 block">Téléphone fixe</Label>
                   <Input
                     id="phone"
                     type="tel"
@@ -247,10 +249,11 @@ export default function CreateTicketModal({
                     {...register("phone")}
                     error={!!errors.phone}
                     hint={errors.phone?.message}
+                    className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="mobile">Téléphone mobile</Label>
+                  <Label htmlFor="mobile" className="text-base text-[#1d1914] mb-2 block">Téléphone mobile</Label>
                   <Input
                     id="mobile"
                     type="tel"
@@ -258,19 +261,20 @@ export default function CreateTicketModal({
                     {...register("mobile")}
                     error={!!errors.mobile}
                     hint={errors.mobile?.message}
+                    className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                   />
                 </div>
               </div>
               {(!phone && !mobile) && errors.phone && (
-                <p className="text-xs text-error-500">
+                <p className="text-xs text-[#b00511]">
                   * Remplir au moins un des deux champs téléphone
                 </p>
               )}
 
               {/* Champ Objet */}
               <div>
-                <Label htmlFor="objet">
-                  Objet <span className="text-error-500">*</span>
+                <Label htmlFor="objet" className="text-base text-[#1d1914] mb-2 block">
+                  Objet <span className="text-[#b00511]">*</span>
                 </Label>
                 <Input
                   id="objet"
@@ -279,13 +283,14 @@ export default function CreateTicketModal({
                   {...register("objet")}
                   error={!!errors.objet}
                   hint={errors.objet?.message}
+                  className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                 />
               </div>
 
               {/* Champ Message */}
               <div>
-                <Label htmlFor="message">
-                  Demande <span className="text-error-500">*</span>
+                <Label htmlFor="message" className="text-base text-[#1d1914] mb-2 block">
+                  Demande <span className="text-[#b00511]">*</span>
                 </Label>
                 <Controller
                   name="message"
@@ -298,6 +303,7 @@ export default function CreateTicketModal({
                       onChange={field.onChange}
                       error={!!errors.message}
                       hint={errors.message?.message}
+                      className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                     />
                   )}
                 />
@@ -305,7 +311,7 @@ export default function CreateTicketModal({
 
               {/* Champ Pièce jointe */}
               <div>
-                <Label htmlFor="attachment">Pièce jointe (optionnel)</Label>
+                <Label htmlFor="attachment" className="text-base text-[#1d1914] mb-2 block">Pièce jointe (optionnel)</Label>
                 <Controller
                   name="attachment"
                   control={control}
@@ -320,16 +326,16 @@ export default function CreateTicketModal({
                         }}
                       />
                       {selectedFile && (
-                        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                        <p className="mt-2 text-sm text-[#1d1914]">
                           Fichier sélectionné : {selectedFile.name}
                         </p>
                       )}
                       {errors.attachment && (
-                        <p className="mt-1.5 text-xs text-error-500">
+                        <p className="mt-1.5 text-xs text-[#b00511]">
                           {errors.attachment.message}
                         </p>
                       )}
-                      <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                      <p className="mt-2 text-xs text-[#1d1914]">
                         * Formats supportés : docx | xlsx | pdf | png | jpg | gif,
                         taille maximale : 2 MB
                       </p>
@@ -340,18 +346,21 @@ export default function CreateTicketModal({
 
               {/* Boutons */}
               <div className="flex items-center justify-end gap-3 pt-4">
-                <Button
+                <button
                   type="button"
-                  variant="outline"
-                  size="sm"
                   onClick={onClose}
                   disabled={isLoading}
+                  className="bg-transparent text-[#1d1914] border-2 border-[#1d1914] hover:border-[#b4050f] hover:text-[#b4050f] rounded-lg px-4 py-1.5 transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe] disabled:border-[#adb5bd] disabled:text-[#adb5bd] disabled:pointer-events-none text-sm font-normal"
                 >
                   Annuler
-                </Button>
-                <Button type="submit" size="sm" disabled={isLoading}>
+                </button>
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="bg-[#e20613] text-white hover:bg-[#b4050f] border border-[#e20613] hover:border-[#b4050f] rounded-lg px-4 py-1.5 min-w-[5.5rem] max-w-[17rem] transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe] disabled:bg-[#ffa7ac] disabled:pointer-events-none text-sm font-normal"
+                >
                   {isLoading ? "Envoi en cours..." : "Envoyer"}
-                </Button>
+                </button>
               </div>
             </div>
           </form>

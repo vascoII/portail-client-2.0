@@ -5,10 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
 import { Modal } from "@/components/ui/modal";
-import Input from "@/components/form/input/InputField";
-import Label from "@/components/form/Label";
-import Button from "@/components/ui/button/Button";
-import Alert from "@/components/ui/alert/Alert";
 import TextArea from "@/components/form/input/TextArea";
 import { api, handleApiError } from "@/lib/api/client";
 
@@ -143,25 +139,23 @@ export default function DemandeInterventionModal({
       className="max-w-[600px] p-5 lg:p-10"
     >
       <div>
-        <h4 className="mb-6 text-lg font-semibold text-gray-800 dark:text-white/90">
+        <h4 className="mb-6 text-xl font-normal text-[#1d1914]">
           Demande d&apos;intervention
         </h4>
 
         {/* Message de succès */}
         {isSuccess && (
-          <div className="mb-6">
-            <Alert
-              variant="success"
-              title="Demande envoyée"
-              message="Votre demande d'intervention a été envoyée avec succès."
-            />
+          <div className="mb-6 p-4 bg-[#417232] text-white rounded-lg">
+            <p className="font-medium mb-1">Demande envoyée</p>
+            <p className="text-sm">Votre demande d&apos;intervention a été envoyée avec succès.</p>
           </div>
         )}
 
         {/* Alerte d'erreur */}
         {displayError && !isSuccess && (
-          <div className="mb-6">
-            <Alert variant="error" title="Erreur" message={displayError} />
+          <div className="mb-6 p-4 bg-[#b00511] text-white rounded-lg">
+            <p className="font-medium mb-1">Erreur</p>
+            <p className="text-sm">{displayError}</p>
           </div>
         )}
 
@@ -170,100 +164,129 @@ export default function DemandeInterventionModal({
             <div className="space-y-5">
               {/* Champ Nom */}
               <div>
-                <Label htmlFor="name">
-                  Nom <span className="text-error-500">*</span>
-                </Label>
-                <Input
+                <label htmlFor="name" className="block text-sm font-normal text-[#1d1914] mb-2">
+                  Nom <span className="text-[#b00511]">*</span>
+                </label>
+                <input
                   id="name"
                   type="text"
                   placeholder="Nom"
                   {...register("name")}
                   disabled={true}
-                  error={!!errors.name}
-                  hint={errors.name?.message}
+                  className={`w-full px-4 py-2 border rounded-lg text-sm text-[#1d1914] bg-[#e9ecef] cursor-not-allowed ${
+                    errors.name ? "border-[#b00511]" : "border-[#1d1914]"
+                  } focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent`}
                 />
+                {errors.name && (
+                  <p className="mt-1 text-xs text-[#b00511]">{errors.name.message}</p>
+                )}
               </div>
 
               {/* Champ Email */}
               <div>
-                <Label htmlFor="email">
-                  Email <span className="text-error-500">*</span>
-                </Label>
-                <Input
+                <label htmlFor="email" className="block text-sm font-normal text-[#1d1914] mb-2">
+                  Email <span className="text-[#b00511]">*</span>
+                </label>
+                <input
                   id="email"
                   type="email"
                   placeholder="Email"
                   {...register("email")}
-                  error={!!errors.email}
-                  hint={errors.email?.message}
+                  className={`w-full px-4 py-2 border rounded-lg text-sm text-[#1d1914] bg-white ${
+                    errors.email ? "border-[#b00511]" : "border-[#1d1914]"
+                  } focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent`}
                 />
+                {errors.email && (
+                  <p className="mt-1 text-xs text-[#b00511]">{errors.email.message}</p>
+                )}
               </div>
 
               {/* Champ Téléphone */}
               <div>
-                <Label htmlFor="phone">
-                  Téléphone <span className="text-error-500">*</span>
-                </Label>
-                <Input
+                <label htmlFor="phone" className="block text-sm font-normal text-[#1d1914] mb-2">
+                  Téléphone <span className="text-[#b00511]">*</span>
+                </label>
+                <input
                   id="phone"
                   type="tel"
                   placeholder="Téléphone"
                   {...register("phone")}
-                  error={!!errors.phone}
-                  hint={errors.phone?.message}
+                  className={`w-full px-4 py-2 border rounded-lg text-sm text-[#1d1914] bg-white ${
+                    errors.phone ? "border-[#b00511]" : "border-[#1d1914]"
+                  } focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent`}
                 />
+                {errors.phone && (
+                  <p className="mt-1 text-xs text-[#b00511]">{errors.phone.message}</p>
+                )}
               </div>
 
               {/* Champ Objet */}
               <div>
-                <Label htmlFor="objet">
-                  Objet <span className="text-error-500">*</span>
-                </Label>
-                <Input
+                <label htmlFor="objet" className="block text-sm font-normal text-[#1d1914] mb-2">
+                  Objet <span className="text-[#b00511]">*</span>
+                </label>
+                <input
                   id="objet"
                   type="text"
                   placeholder="Objet"
                   {...register("objet")}
-                  error={!!errors.objet}
-                  hint={errors.objet?.message}
+                  className={`w-full px-4 py-2 border rounded-lg text-sm text-[#1d1914] bg-white ${
+                    errors.objet ? "border-[#b00511]" : "border-[#1d1914]"
+                  } focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent`}
                 />
+                {errors.objet && (
+                  <p className="mt-1 text-xs text-[#b00511]">{errors.objet.message}</p>
+                )}
               </div>
 
               {/* Champ Demande */}
               <div>
-                <Label htmlFor="message">
-                  Demande <span className="text-error-500">*</span>
-                </Label>
+                <label htmlFor="message" className="block text-sm font-normal text-[#1d1914] mb-2">
+                  Demande <span className="text-[#b00511]">*</span>
+                </label>
                 <Controller
                   name="message"
                   control={control}
                   render={({ field }) => (
-                    <TextArea
-                      placeholder="Demande"
-                      rows={5}
-                      value={field.value}
-                      onChange={field.onChange}
-                      error={!!errors.message}
-                      hint={errors.message?.message}
-                    />
+                    <>
+                      <TextArea
+                        placeholder="Demande"
+                        rows={5}
+                        value={field.value}
+                        onChange={field.onChange}
+                        error={!!errors.message}
+                        hint={errors.message?.message}
+                      />
+                    </>
                   )}
                 />
               </div>
 
               {/* Boutons */}
               <div className="flex items-center justify-end gap-3 pt-4">
-                <Button
+                <button
                   type="button"
-                  variant="outline"
-                  size="sm"
                   onClick={handleClose}
                   disabled={isLoading}
+                  className={`px-4 py-2 rounded-lg border border-[#1d1914] text-sm font-normal transition-all duration-300 ${
+                    isLoading
+                      ? "bg-[#e9ecef] text-[#6a6a6a] cursor-not-allowed"
+                      : "bg-white text-[#1d1914] hover:bg-[#ffe5e6] hover:text-[#e20613]"
+                  }`}
                 >
                   Annuler
-                </Button>
-                <Button type="submit" size="sm" disabled={isLoading}>
+                </button>
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className={`px-4 py-2 rounded-lg text-sm font-normal text-white transition-all duration-300 ${
+                    isLoading
+                      ? "bg-[#6a6a6a] cursor-not-allowed"
+                      : "bg-[#1d1914] hover:bg-[#e20613]"
+                  }`}
+                >
                   {isLoading ? "Envoi en cours..." : "Envoyer"}
-                </Button>
+                </button>
               </div>
             </div>
           </form>

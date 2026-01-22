@@ -1,8 +1,4 @@
 "use client";
-import Input from "@/components/form/input/InputField";
-import Label from "@/components/form/Label";
-import Button from "@/components/ui/button/Button";
-import Alert from "@/components/ui/alert/Alert";
 import { ChevronLeftIcon } from "@/icons";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
@@ -152,7 +148,7 @@ export default function NewOccupantForm({ pkLogement }: NewOccupantFormProps) {
               ? `/immeuble/${pkImmeuble}/logements/${pkLogement}`
               : `/logements/${pkLogement}`
           }
-          className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+            className="inline-flex items-center text-sm text-[#1d1914] transition-all duration-300 hover:text-[#e20613]"
         >
           <ChevronLeftIcon />
           Retour au logement
@@ -171,19 +167,17 @@ export default function NewOccupantForm({ pkLogement }: NewOccupantFormProps) {
           <div>
             {/* Message de succès */}
             {isSuccess && (
-              <div className="mb-6">
-                <Alert
-                  variant="success"
-                  title="Occupant déclaré"
-                  message="L'occupant a été déclaré avec succès. Redirection en cours..."
-                />
+              <div className="mb-6 p-4 bg-[#417232] text-white rounded-lg">
+                <p className="font-medium mb-1">Occupant déclaré</p>
+                <p className="text-sm">L&apos;occupant a été déclaré avec succès. Redirection en cours...</p>
               </div>
             )}
 
             {/* Alerte d'erreur */}
             {displayError && !isSuccess && (
-              <div className="mb-6">
-                <Alert variant="error" title="Erreur" message={displayError} />
+              <div className="mb-6 p-4 bg-[#b00511] text-white rounded-lg">
+                <p className="font-medium mb-1">Erreur</p>
+                <p className="text-sm">{displayError}</p>
               </div>
             )}
 
@@ -192,101 +186,128 @@ export default function NewOccupantForm({ pkLogement }: NewOccupantFormProps) {
                 <div className="space-y-6">
                   {/* Champ Nom de l'occupant */}
                   <div>
-                    <Label htmlFor="nameOccupant">
+                    <label htmlFor="nameOccupant" className="block text-sm font-normal text-[#1d1914] mb-2">
                       Nom de l&apos;occupant{" "}
-                      <span className="text-error-500">*</span>
-                    </Label>
-                    <Input
+                      <span className="text-[#b00511]">*</span>
+                    </label>
+                    <input
                       id="nameOccupant"
                       type="text"
                       placeholder="Saisir le nom de l'occupant"
                       {...register("nameOccupant")}
-                      error={!!errors.nameOccupant}
-                      hint={errors.nameOccupant?.message}
+                      className={`w-full px-4 py-2 border rounded-lg text-sm text-[#1d1914] bg-white ${
+                        errors.nameOccupant ? "border-[#b00511]" : "border-[#1d1914]"
+                      } focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent`}
                     />
+                    {errors.nameOccupant && (
+                      <p className="mt-1 text-xs text-[#b00511]">{errors.nameOccupant.message}</p>
+                    )}
                   </div>
 
                   {/* Champ Email */}
                   <div>
-                    <Label htmlFor="email">Email</Label>
-                    <Input
+                    <label htmlFor="email" className="block text-sm font-normal text-[#1d1914] mb-2">Email</label>
+                    <input
                       id="email"
                       type="email"
                       placeholder="Saisir une adresse mail"
                       {...register("email")}
-                      error={!!errors.email}
-                      hint={errors.email?.message}
+                      className={`w-full px-4 py-2 border rounded-lg text-sm text-[#1d1914] bg-white ${
+                        errors.email ? "border-[#b00511]" : "border-[#1d1914]"
+                      } focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent`}
                     />
+                    {errors.email && (
+                      <p className="mt-1 text-xs text-[#b00511]">{errors.email.message}</p>
+                    )}
                   </div>
 
                   {/* Champ Téléphone */}
                   <div>
-                    <Label htmlFor="phone">
-                      Téléphone <span className="text-error-500">*</span>
-                    </Label>
-                    <Input
+                    <label htmlFor="phone" className="block text-sm font-normal text-[#1d1914] mb-2">
+                      Téléphone <span className="text-[#b00511]">*</span>
+                    </label>
+                    <input
                       id="phone"
                       type="tel"
                       placeholder="Saisir un numéro de téléphone (10 chiffres)"
                       {...register("phone")}
-                      error={!!errors.phone}
-                      hint={errors.phone?.message || "10 chiffres requis"}
                       maxLength={10}
+                      className={`w-full px-4 py-2 border rounded-lg text-sm text-[#1d1914] bg-white ${
+                        errors.phone ? "border-[#b00511]" : "border-[#1d1914]"
+                      } focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent`}
                     />
+                    {errors.phone && (
+                      <p className="mt-1 text-xs text-[#b00511]">{errors.phone.message || "10 chiffres requis"}</p>
+                    )}
                   </div>
 
                   {/* Champ CodeLogeGestio */}
                   <div>
-                    <Label htmlFor="CodeLogeGestio">
+                    <label htmlFor="CodeLogeGestio" className="block text-sm font-normal text-[#1d1914] mb-2">
                       Numéro de logement unique
-                    </Label>
-                    <Input
+                    </label>
+                    <input
                       id="CodeLogeGestio"
                       type="text"
                       placeholder="Saisir un numéro de logement unique"
                       {...register("CodeLogeGestio")}
-                      error={!!errors.CodeLogeGestio}
-                      hint={errors.CodeLogeGestio?.message}
+                      className={`w-full px-4 py-2 border rounded-lg text-sm text-[#1d1914] bg-white ${
+                        errors.CodeLogeGestio ? "border-[#b00511]" : "border-[#1d1914]"
+                      } focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent`}
                     />
+                    {errors.CodeLogeGestio && (
+                      <p className="mt-1 text-xs text-[#b00511]">{errors.CodeLogeGestio.message}</p>
+                    )}
                   </div>
 
                   {/* Champ numBail */}
                   <div>
-                    <Label htmlFor="numBail">Numéro de bail</Label>
-                    <Input
+                    <label htmlFor="numBail" className="block text-sm font-normal text-[#1d1914] mb-2">Numéro de bail</label>
+                    <input
                       id="numBail"
                       type="text"
                       placeholder="Saisir un numéro de Bail"
                       {...register("numBail")}
-                      error={!!errors.numBail}
-                      hint={errors.numBail?.message}
+                      className={`w-full px-4 py-2 border rounded-lg text-sm text-[#1d1914] bg-white ${
+                        errors.numBail ? "border-[#b00511]" : "border-[#1d1914]"
+                      } focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent`}
                     />
+                    {errors.numBail && (
+                      <p className="mt-1 text-xs text-[#b00511]">{errors.numBail.message}</p>
+                    )}
                   </div>
 
                   {/* Champ Date d'arrivée */}
                   <div>
-                    <Label htmlFor="dateArrivee">Date d&apos;arrivée</Label>
-                    <Input
+                    <label htmlFor="dateArrivee" className="block text-sm font-normal text-[#1d1914] mb-2">Date d&apos;arrivée</label>
+                    <input
                       id="dateArrivee"
                       type="date"
                       {...register("dateArrivee")}
-                      error={!!errors.dateArrivee}
-                      hint={errors.dateArrivee?.message}
+                      className={`w-full px-4 py-2 border rounded-lg text-sm text-[#1d1914] bg-white ${
+                        errors.dateArrivee ? "border-[#b00511]" : "border-[#1d1914]"
+                      } focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent`}
                     />
+                    {errors.dateArrivee && (
+                      <p className="mt-1 text-xs text-[#b00511]">{errors.dateArrivee.message}</p>
+                    )}
                   </div>
 
                   {/* Bouton de soumission */}
                   <div className="pt-4">
-                    <Button
-                      className="w-full sm:w-auto"
-                      size="sm"
+                    <button
+                      className={`w-full sm:w-auto px-4 py-2 rounded-lg text-sm font-normal text-white transition-all duration-300 ${
+                        isLoading
+                          ? "bg-[#6a6a6a] cursor-not-allowed"
+                          : "bg-[#1d1914] hover:bg-[#e20613]"
+                      }`}
                       type="submit"
                       disabled={isLoading}
                     >
                       {isLoading ? "Validation en cours..." : "Valider"}
-                    </Button>
-                    <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                      <span className="text-error-500">*</span> champs obligatoires
+                    </button>
+                    <p className="mt-2 text-xs text-[#1d1914]">
+                      <span className="text-[#b00511]">*</span> champs obligatoires
                     </p>
                   </div>
                 </div>

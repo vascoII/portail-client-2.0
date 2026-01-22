@@ -27,14 +27,14 @@ export default function LogementReleves({
   };
 
   const getButtonClass = (tab: TabType) => {
-    const baseClasses = "px-3 py-2 font-medium w-full rounded-md text-theme-sm transition-all duration-200 flex items-center justify-center gap-2";
+    const baseClasses = "px-3 py-2 font-normal w-full rounded-md text-sm transition-all duration-300 flex items-center justify-center gap-2";
     const isActive = selectedTab === tab;
     
     if (isActive) {
-      return `${baseClasses} shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-2 border-blue-500 dark:border-blue-400`;
+      return `${baseClasses} shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] text-[#1d1914] bg-white border-2 border-[#1d1914]`;
     }
     
-    return `${baseClasses} text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50`;
+    return `${baseClasses} text-[#1d1914] hover:text-[#e20613] hover:bg-[#ffe5e6]`;
   };
 
   // Get icon and color for each tab
@@ -64,21 +64,21 @@ export default function LogementReleves({
   };
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-gray-100 dark:border-gray-800 dark:bg-white/[0.03]">
-      <div className="px-5 pt-5 bg-white shadow-default rounded-2xl pb-11 dark:bg-gray-900 sm:px-6 sm:pt-6">
+    <div className="rounded-xl border border-[#1d1914] bg-[#e9ecef] shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)]">
+      <div className="px-5 pt-5 bg-white rounded-xl pb-11 sm:px-6 sm:pt-6">
         <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+          <h3 className="text-xl font-normal text-[#1d1914]">
             Relevés
           </h3>
         </div>
 
         {/* Tabs */}
-        <div className="flex items-center gap-0.5 rounded-lg bg-gray-100 p-0.5 dark:bg-gray-900">
+        <div className="flex items-center gap-0.5 rounded-lg bg-[#e9ecef] p-0.5">
           <button
             onClick={() => handleTabChange("eauFroide")}
             className={getButtonClass("eauFroide")}
           >
-            <span className={selectedTab === "eauFroide" ? "text-blue-600 dark:text-blue-400" : "text-gray-500 dark:text-gray-400"}>
+            <span className={selectedTab === "eauFroide" ? "text-[#009bb4]" : "text-[#1d1914]"}>
               {getTabConfig("eauFroide").icon}
             </span>
             <span>Eau froide</span>
@@ -87,7 +87,7 @@ export default function LogementReleves({
             onClick={() => handleTabChange("eauChaude")}
             className={getButtonClass("eauChaude")}
           >
-            <span className={selectedTab === "eauChaude" ? "text-orange-600 dark:text-orange-400" : "text-gray-500 dark:text-gray-400"}>
+            <span className={selectedTab === "eauChaude" ? "text-[#e20613]" : "text-[#1d1914]"}>
               {getTabConfig("eauChaude").icon}
             </span>
             <span>Eau chaude</span>
@@ -96,7 +96,7 @@ export default function LogementReleves({
             onClick={() => handleTabChange("repartiteur")}
             className={getButtonClass("repartiteur")}
           >
-            <span className={selectedTab === "repartiteur" ? "text-purple-600 dark:text-purple-400" : "text-gray-500 dark:text-gray-400"}>
+            <span className={selectedTab === "repartiteur" ? "text-[#6a6a6a]" : "text-[#1d1914]"}>
               {getTabConfig("repartiteur").icon}
             </span>
             <span>Répartiteur</span>
@@ -105,7 +105,7 @@ export default function LogementReleves({
             onClick={() => handleTabChange("compteurEnergie")}
             className={getButtonClass("compteurEnergie")}
           >
-            <span className={selectedTab === "compteurEnergie" ? "text-green-600 dark:text-green-400" : "text-gray-500 dark:text-gray-400"}>
+            <span className={selectedTab === "compteurEnergie" ? "text-[#417232]" : "text-[#1d1914]"}>
               {getTabConfig("compteurEnergie").icon}
             </span>
             <span>Compteur d&apos;énergie</span>

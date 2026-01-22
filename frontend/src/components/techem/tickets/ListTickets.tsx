@@ -8,8 +8,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Button from "@/components/ui/button/Button";
-import Alert from "@/components/ui/alert/Alert";
 import { useTickets } from "@/lib/hooks/useTickets";
 import type { Ticket } from "@/lib/types/api";
 import { useExport } from "@/lib/hooks/useExport";
@@ -218,9 +216,9 @@ export default function ListTickets() {
   // Show loading state
   if (isLoading) {
     return (
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
+      <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-4 pb-3 pt-4 sm:px-6 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)]">
         <div className="flex items-center justify-center min-h-[400px]">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-base text-[#1d1914]">
             Chargement des tickets...
           </p>
         </div>
@@ -237,25 +235,24 @@ export default function ListTickets() {
         : (currentTicketsError as any)?.message) || // eslint-disable-line @typescript-eslint/no-explicit-any
       "Impossible de charger les tickets.";
     return (
-      <div className="overflow-hidden rounded-2xl border border-red-200 bg-red-50 px-4 py-6 dark:border-red-900/60 dark:bg-red-950/40 sm:px-6">
-        <Alert
-          variant="error"
-          title="Erreur"
-          message={errorMsg}
-        />
+      <div className="overflow-hidden rounded-xl border border-[#b00511] bg-[#b00511] px-4 py-6 sm:px-6">
+        <div className="p-4 bg-[#b00511] text-[#e9ecef] rounded-lg">
+          <p className="font-medium mb-1">Erreur</p>
+          <p className="text-sm">{errorMsg}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
+    <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-4 pb-3 pt-4 sm:px-6 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)]">
       <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+          <h3 className="text-xl font-normal text-[#1d1914]">
             Liste des Tickets
           </h3>
           {displayedTickets.length > 0 && (
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-base text-[#1d1914] mt-1">
               {displayedTickets.length} ticket
               {displayedTickets.length > 1 ? "s" : ""}
             </p>
@@ -268,49 +265,46 @@ export default function ListTickets() {
               value={filterText}
               onChange={(e) => setFilterText(e.target.value)}
               placeholder="Filtrer (statut, n° ticket, logement...)"
-              className="h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+              className="h-10 w-full rounded-lg border border-[#1d1914] bg-white px-3 py-2 text-sm text-[#1d1914] placeholder:text-[#6a6a6a] focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] transition-all duration-300"
             />
           </div>
           <div className="flex items-center gap-2">
-            <Button
-              size="sm"
-              variant="outline"
+            <button
               type="button"
               onClick={() => setFilterText("")}
+              className="bg-transparent text-[#1d1914] border-2 border-[#1d1914] hover:border-[#b4050f] hover:text-[#b4050f] rounded-lg px-4 py-1.5 transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe] text-sm font-normal"
             >
               Réinitialiser filtre
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
+            </button>
+            <button
               type="button"
               onClick={handleExportExcel}
               disabled={isExporting || displayedTickets.length === 0}
+              className="bg-transparent text-[#1d1914] border-2 border-[#1d1914] hover:border-[#b4050f] hover:text-[#b4050f] rounded-lg px-4 py-1.5 transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe] disabled:border-[#adb5bd] disabled:text-[#adb5bd] disabled:pointer-events-none text-sm font-normal"
             >
               {isExporting ? "Export en cours..." : "Export Excel"}
-            </Button>
+            </button>
           </div>
         </div>
       </div>
 
       {/* Error message */}
       {(errorMessage || exportError || closeError) && (
-        <div className="mb-4">
-          <Alert
-            variant="error"
-            title="Erreur"
-            message={
-              errorMessage ??
+        <div className="mb-9">
+          <div className="p-4 bg-[#b00511] text-[#e9ecef] rounded-lg">
+            <p className="font-medium mb-1">Erreur</p>
+            <p className="text-sm">
+              {errorMessage ??
               exportError?.message ??
               (typeof closeError === "string" ? closeError : "") ??
-              ""
-            }
-          />
+              ""}
+            </p>
+          </div>
           {exportError && (
             <button
               type="button"
               onClick={clearExportError}
-              className="mt-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              className="mt-2 text-xs text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
             >
               Fermer
             </button>
@@ -320,16 +314,16 @@ export default function ListTickets() {
 
       {/* Onglets par statut */}
       {allStatuses.length > 1 && (
-        <div className="mb-4 flex flex-wrap gap-2 border-b border-gray-100 pb-2 dark:border-gray-800">
+        <div className="mb-4 flex flex-wrap gap-2 border-b border-[#1d1914] pb-2">
           {allStatuses.map((status) => (
             <button
               key={status}
               type="button"
               onClick={() => setSelectedStatus(status)}
-              className={`rounded-full px-3 py-1 text-xs font-medium border ${
+              className={`rounded-full px-3 py-1 text-xs font-medium border transition-all duration-300 ${
                 selectedStatus === status
-                  ? "bg-brand-500 text-white border-brand-500"
-                  : "bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-800"
+                  ? "bg-[#e20613] text-white border-[#e20613]"
+                  : "bg-[#e9ecef] text-[#1d1914] border-[#1d1914] hover:bg-[#ffe5e6] hover:border-[#e20613] hover:text-[#e20613]"
               }`}
             >
               {status}
@@ -349,8 +343,8 @@ export default function ListTickets() {
 
         if (totalItems === 0) {
           return (
-            <div className="flex items-center justify-center min-h-[200px] rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+            <div className="flex items-center justify-center min-h-[200px] rounded-xl border border-dashed border-[#1d1914]">
+              <p className="text-base text-[#1d1914]">
                 Aucun ticket disponible.
               </p>
             </div>
@@ -360,16 +354,16 @@ export default function ListTickets() {
         return (
           <>
             <Table>
-              <TableHeader className="border-y border-gray-100 dark:border-gray-800">
+              <TableHeader className="border-y border-[#1d1914]">
                 <TableRow>
                   <TableCell
                     isHeader
-                    className="py-3 text-start text-theme-xs font-medium text-gray-500 dark:text-gray-400 select-none"
+                    className="py-3 text-start text-xs font-medium text-[#1d1914] select-none"
                   >
                     <button
                       type="button"
                       onClick={() => handleSort("caseNumber")}
-                      className="inline-flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200"
+                      className="inline-flex items-center gap-1 text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
                     >
                       <span>Numéro de ticket</span>
                       {sortConfig?.key === "caseNumber" && (
@@ -381,12 +375,12 @@ export default function ListTickets() {
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="py-3 text-start text-theme-xs font-medium text-gray-500 dark:text-gray-400 select-none"
+                    className="py-3 text-start text-xs font-medium text-[#1d1914] select-none"
                   >
                     <button
                       type="button"
                       onClick={() => handleSort("dateDemande")}
-                      className="inline-flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200"
+                      className="inline-flex items-center gap-1 text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
                     >
                       <span>Date de demande</span>
                       {sortConfig?.key === "dateDemande" && (
@@ -398,12 +392,12 @@ export default function ListTickets() {
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="py-3 text-start text-theme-xs font-medium text-gray-500 dark:text-gray-400 select-none"
+                    className="py-3 text-start text-xs font-medium text-[#1d1914] select-none"
                   >
                     <button
                       type="button"
                       onClick={() => handleSort("demandeur")}
-                      className="inline-flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200"
+                      className="inline-flex items-center gap-1 text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
                     >
                       <span>Demandeur</span>
                       {sortConfig?.key === "demandeur" && (
@@ -415,12 +409,12 @@ export default function ListTickets() {
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="py-3 text-start text-theme-xs font-medium text-gray-500 dark:text-gray-400 select-none"
+                    className="py-3 text-start text-xs font-medium text-[#1d1914] select-none"
                   >
                     <button
                       type="button"
                       onClick={() => handleSort("objet")}
-                      className="inline-flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200"
+                      className="inline-flex items-center gap-1 text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
                     >
                       <span>Objet</span>
                       {sortConfig?.key === "objet" && (
@@ -432,12 +426,12 @@ export default function ListTickets() {
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="py-3 text-start text-theme-xs font-medium text-gray-500 dark:text-gray-400 select-none"
+                    className="py-3 text-start text-xs font-medium text-[#1d1914] select-none"
                   >
                     <button
                       type="button"
                       onClick={() => handleSort("immeuble")}
-                      className="inline-flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200"
+                      className="inline-flex items-center gap-1 text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
                     >
                       <span>Immeuble</span>
                       {sortConfig?.key === "immeuble" && (
@@ -449,12 +443,12 @@ export default function ListTickets() {
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="py-3 text-start text-theme-xs font-medium text-gray-500 dark:text-gray-400 select-none"
+                    className="py-3 text-start text-xs font-medium text-[#1d1914] select-none"
                   >
                     <button
                       type="button"
                       onClick={() => handleSort("occupant")}
-                      className="inline-flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200"
+                      className="inline-flex items-center gap-1 text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
                     >
                       <span>Nom occupant</span>
                       {sortConfig?.key === "occupant" && (
@@ -466,12 +460,12 @@ export default function ListTickets() {
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="py-3 text-start text-theme-xs font-medium text-gray-500 dark:text-gray-400 select-none"
+                    className="py-3 text-start text-xs font-medium text-[#1d1914] select-none"
                   >
                     <button
                       type="button"
                       onClick={() => handleSort("refLogement")}
-                      className="inline-flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200"
+                      className="inline-flex items-center gap-1 text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
                     >
                       <span>Réf. logement</span>
                       {sortConfig?.key === "refLogement" && (
@@ -483,12 +477,12 @@ export default function ListTickets() {
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="py-3 text-start text-theme-xs font-medium text-gray-500 dark:text-gray-400 select-none"
+                    className="py-3 text-start text-xs font-medium text-[#1d1914] select-none"
                   >
                     <button
                       type="button"
                       onClick={() => handleSort("statut")}
-                      className="inline-flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200"
+                      className="inline-flex items-center gap-1 text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
                     >
                       <span>Statut</span>
                       {sortConfig?.key === "statut" && (
@@ -500,12 +494,12 @@ export default function ListTickets() {
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="py-3 text-start text-theme-xs font-medium text-gray-500 dark:text-gray-400 select-none"
+                    className="py-3 text-start text-xs font-medium text-[#1d1914] select-none"
                   >
                     <button
                       type="button"
                       onClick={() => handleSort("lastUpdate")}
-                      className="inline-flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200"
+                      className="inline-flex items-center gap-1 text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
                     >
                       <span>Dernière modification</span>
                       {sortConfig?.key === "lastUpdate" && (
@@ -517,12 +511,12 @@ export default function ListTickets() {
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="py-3 text-start text-theme-xs font-medium text-gray-500 dark:text-gray-400 select-none"
+                    className="py-3 text-start text-xs font-medium text-[#1d1914] select-none"
                   >
                     <button
                       type="button"
                       onClick={() => handleSort("depannage")}
-                      className="inline-flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200"
+                      className="inline-flex items-center gap-1 text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
                     >
                       <span>Dépannage</span>
                       {sortConfig?.key === "depannage" && (
@@ -535,7 +529,7 @@ export default function ListTickets() {
                   {selectedStatus === "Clos" && (
                     <TableCell
                       isHeader
-                      className="py-3 text-start text-theme-xs font-medium text-gray-500 dark:text-gray-400 select-none"
+                      className="py-3 text-start text-xs font-medium text-[#1d1914] select-none"
                     >
                       Action
                     </TableCell>
@@ -543,7 +537,7 @@ export default function ListTickets() {
                 </TableRow>
               </TableHeader>
 
-              <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+              <TableBody className="divide-y divide-[#1d1914]">
                 {paginatedTickets.map((ticket) => {
                   const caseNumber = ticket.CaseNumber ?? "—";
                   const ticketDate = ticket.TicketDate
@@ -573,38 +567,38 @@ export default function ListTickets() {
                       key={caseNumber + String(ticket.CaseId)}
                       className="align-top"
                     >
-                      <TableCell className="py-4 text-sm text-gray-700 dark:text-gray-200">
+                      <TableCell className="py-4 text-sm text-[#1d1914]">
                         {caseNumber}
                       </TableCell>
-                      <TableCell className="py-4 text-sm text-gray-700 dark:text-gray-200">
+                      <TableCell className="py-4 text-sm text-[#1d1914]">
                         {ticketDate}
                       </TableCell>
-                      <TableCell className="py-4 text-sm text-gray-700 dark:text-gray-200">
+                      <TableCell className="py-4 text-sm text-[#1d1914]">
                         {demandeur}
                       </TableCell>
-                      <TableCell className="py-4 text-sm text-gray-700 dark:text-gray-200">
+                      <TableCell className="py-4 text-sm text-[#1d1914]">
                         {objet}
                       </TableCell>
-                      <TableCell className="py-4 text-sm text-gray-700 dark:text-gray-200">
+                      <TableCell className="py-4 text-sm text-[#1d1914]">
                         {immeuble}
                       </TableCell>
-                      <TableCell className="py-4 text-sm text-gray-700 dark:text-gray-200">
+                      <TableCell className="py-4 text-sm text-[#1d1914]">
                         {occupant}
                       </TableCell>
-                      <TableCell className="py-4 text-sm text-gray-700 dark:text-gray-200">
+                      <TableCell className="py-4 text-sm text-[#1d1914]">
                         {refLogement}
                       </TableCell>
-                      <TableCell className="py-4 text-sm text-gray-700 dark:text-gray-200">
+                      <TableCell className="py-4 text-sm text-[#1d1914]">
                         {statut}
                       </TableCell>
-                      <TableCell className="py-4 text-sm text-gray-700 dark:text-gray-200">
+                      <TableCell className="py-4 text-sm text-[#1d1914]">
                         {lastUpdate}
                       </TableCell>
-                      <TableCell className="py-4 text-sm text-gray-700 dark:text-gray-200">
+                      <TableCell className="py-4 text-sm text-[#1d1914]">
                         {numIntervention && fkImmeuble ? (
                           <Link
                             href={`/immeuble/${fkImmeuble}/interventions/${numIntervention}`}
-                            className="text-brand-600 hover:underline dark:text-brand-400"
+                            className="text-[#b00511] hover:text-[#e20613] hover:underline transition-all duration-300"
                           >
                             {numIntervention}
                           </Link>
@@ -613,10 +607,8 @@ export default function ListTickets() {
                         )}
                       </TableCell>
                       {selectedStatus === "Clos" && (
-                        <TableCell className="py-4 text-sm text-gray-700 dark:text-gray-200">
-                          <Button
-                            size="sm"
-                            variant="outline"
+                        <TableCell className="py-4 text-sm text-[#1d1914]">
+                          <button
                             type="button"
                             disabled={!ticket.CaseId || isClosing}
                             onClick={() => {
@@ -624,9 +616,10 @@ export default function ListTickets() {
                                 void closeTicket(String(ticket.CaseId));
                               }
                             }}
+                            className="bg-transparent text-[#1d1914] border-2 border-[#1d1914] hover:border-[#b4050f] hover:text-[#b4050f] rounded-lg px-4 py-1.5 transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe] disabled:border-[#adb5bd] disabled:text-[#adb5bd] disabled:pointer-events-none text-sm font-normal"
                           >
                             {isClosing ? "Clôture..." : "Clôture"}
-                          </Button>
+                          </button>
                         </TableCell>
                       )}
                     </TableRow>
@@ -636,7 +629,7 @@ export default function ListTickets() {
             </Table>
 
             {/* Pagination controls */}
-            <div className="mt-4 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+            <div className="mt-4 flex items-center justify-between text-xs text-[#1d1914]">
               <span>
                 Affichage{" "}
                 <span className="font-medium">
@@ -646,15 +639,14 @@ export default function ListTickets() {
                 sur <span className="font-medium">{totalItems}</span>
               </span>
               <div className="flex items-center gap-2">
-                <Button
-                  size="sm"
-                  variant="outline"
+                <button
                   type="button"
                   disabled={currentPage === 1}
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  className="bg-transparent text-[#1d1914] border-2 border-[#1d1914] hover:border-[#b4050f] hover:text-[#b4050f] rounded-lg px-4 py-1.5 transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe] disabled:border-[#adb5bd] disabled:text-[#adb5bd] disabled:pointer-events-none text-sm font-normal"
                 >
                   Précédent
-                </Button>
+                </button>
                 <span>
                   Page{" "}
                   <span className="font-medium">
@@ -662,17 +654,16 @@ export default function ListTickets() {
                   </span>{" "}
                   / {totalPages}
                 </span>
-                <Button
-                  size="sm"
-                  variant="outline"
+                <button
                   type="button"
                   disabled={currentPage === totalPages}
                   onClick={() =>
                     setPage((p) => Math.min(totalPages, p + 1))
                   }
+                  className="bg-transparent text-[#1d1914] border-2 border-[#1d1914] hover:border-[#b4050f] hover:text-[#b4050f] rounded-lg px-4 py-1.5 transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe] disabled:border-[#adb5bd] disabled:text-[#adb5bd] disabled:pointer-events-none text-sm font-normal"
                 >
                   Suivant
-                </Button>
+                </button>
               </div>
             </div>
           </>

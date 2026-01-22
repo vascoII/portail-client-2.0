@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/table";
 import { useOccupant } from "@/lib/hooks/useOccupant";
 import { useExport } from "@/lib/hooks/useExport";
-import Alert from "@/components/ui/alert/Alert";
 import { LoadingTable } from "@/components/ui/loading";
 import type { Housing, DepannageRecord } from "@/lib/types/api";
 
@@ -39,18 +38,18 @@ const formatDate = (value?: string): string => {
 
 const getStatusClasses = (statut?: string): string => {
   if (!statut) {
-    return "bg-gray-100 text-gray-600 dark:bg-white/5 dark:text-gray-300";
+    return "bg-[#e9ecef] text-[#1d1914]";
   }
 
   if (statut.toLowerCase() === "realise") {
-    return "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300";
+    return "bg-[#417232] text-[#e9ecef]";
   }
 
   if (statut.toLowerCase() === "nonrealise") {
-    return "bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300";
+    return "bg-[#e20613] text-white";
   }
 
-  return "bg-gray-100 text-gray-600 dark:bg-white/5 dark:text-gray-300";
+  return "bg-[#e9ecef] text-[#1d1914]";
 };
 
 const getInterventionNumber = (depannage: DepannageRecord): string => {
@@ -146,27 +145,27 @@ export default function ListInterventions({
     const occupant = depannage.Occupant?.Nom ?? "—";
 
     return (
-      <div className="space-y-1 text-sm text-gray-600 dark:text-gray-300">
+      <div className="space-y-1 text-sm text-[#1d1914]">
         {numero && (
-          <p className="text-gray-900 font-semibold dark:text-white">
+          <p className="text-[#1d1914] font-medium">
             N° intervention : <span>{numero}</span>
           </p>
         )}
         <p>
           Référence client :{" "}
-          <span className="text-gray-900 dark:text-white">{refClient}</span>
+          <span className="text-[#1d1914]">{refClient}</span>
         </p>
         <p>
           Étage :{" "}
-          <span className="text-gray-900 dark:text-white">{etage}</span>
+          <span className="text-[#1d1914]">{etage}</span>
         </p>
         <p>
           N° logement :{" "}
-          <span className="text-gray-900 dark:text-white">
+          <span className="text-[#1d1914]">
             {numeroLogement}
           </span>
         </p>
-        <p className="text-gray-900 font-medium dark:text-white">{occupant}</p>
+        <p className="text-[#1d1914] font-normal">{occupant}</p>
       </div>
     );
   };
@@ -185,7 +184,7 @@ export default function ListInterventions({
           {statut ?? "—"}
         </span>
         {compteRendu && (
-          <p className="text-sm text-gray-600 whitespace-pre-line dark:text-gray-300">
+          <p className="text-sm text-[#1d1914] whitespace-pre-line">
             {compteRendu}
           </p>
         )}
@@ -197,7 +196,7 @@ export default function ListInterventions({
     const motif =
       depannage.Depannage?.MotifAbrege ?? depannage.Depannage?.Motif ?? "—";
     return (
-      <p className="text-sm text-gray-600 whitespace-pre-line dark:text-gray-300">
+      <p className="text-sm text-[#1d1914] whitespace-pre-line">
         {motif}
       </p>
     );
@@ -214,28 +213,29 @@ export default function ListInterventions({
 
   if (errorMessage) {
     return (
-      <div className="overflow-hidden rounded-2xl border border-red-200 bg-red-50 px-4 py-6 dark:border-red-900/60 dark:bg-red-950/40 sm:px-6">
-        <p className="text-sm text-red-700 dark:text-red-200">{errorMessage}</p>
+      <div className="overflow-hidden rounded-xl border border-[#b00511] bg-[#b00511] px-4 py-6 sm:px-6">
+        <div className="p-4 bg-[#b00511] text-[#e9ecef] rounded-lg">
+          <p className="font-medium mb-1">Erreur</p>
+          <p className="text-sm">{errorMessage}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-4 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
+    <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-4 pb-4 pt-5 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] sm:px-6">
       {(exportExcelError || exportPdfError) && (
-        <div className="mb-4">
-          <Alert
-            variant={(exportExcelError || exportPdfError)?.variant || "error"}
-            title={(exportExcelError || exportPdfError)?.title || "Erreur"}
-            message={(exportExcelError || exportPdfError)?.message || ""}
-            showLink={false}
-          />
+        <div className="mb-9">
+          <div className="p-4 bg-[#b00511] text-[#e9ecef] rounded-lg">
+            <p className="font-medium mb-1">{(exportExcelError || exportPdfError)?.title || "Erreur"}</p>
+            <p className="text-sm">{(exportExcelError || exportPdfError)?.message || ""}</p>
+          </div>
           <button
             onClick={() => {
               if (exportExcelError) clearExportExcelError();
               if (exportPdfError) clearExportPdfError();
             }}
-            className="mt-2 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            className="mt-2 text-sm text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
           >
             Fermer
           </button>
@@ -243,7 +243,7 @@ export default function ListInterventions({
       )}
       <div className="mb-6 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+          <h3 className="text-xl font-normal text-[#1d1914]">
             Dépannages
           </h3>
           <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -293,7 +293,7 @@ export default function ListInterventions({
           <button
             onClick={handleExportExcel}
             disabled={isExportingExcel || depannages.length === 0}
-            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+            className="bg-transparent text-[#1d1914] border-2 border-[#1d1914] hover:border-[#b4050f] hover:text-[#b4050f] rounded-lg px-4 py-2.5 text-sm font-normal transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe] disabled:border-[#adb5bd] disabled:text-[#adb5bd] disabled:pointer-events-none inline-flex items-center gap-2"
           >
             <svg
               className="stroke-current"
@@ -337,7 +337,7 @@ export default function ListInterventions({
           <button
             onClick={handleExportPdf}
             disabled={isExportingPdf || depannages.length === 0}
-            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+            className="bg-transparent text-[#1d1914] border-2 border-[#1d1914] hover:border-[#b4050f] hover:text-[#b4050f] rounded-lg px-4 py-2.5 text-sm font-normal transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe] disabled:border-[#adb5bd] disabled:text-[#adb5bd] disabled:pointer-events-none inline-flex items-center gap-2"
           >
             <svg
               className="stroke-current"
@@ -382,14 +382,14 @@ export default function ListInterventions({
       </div>
 
       {depannages.length === 0 ? (
-        <div className="flex items-center justify-center min-h-[200px] rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+        <div className="flex items-center justify-center min-h-[200px] rounded-xl border border-dashed border-[#1d1914]">
+          <p className="text-base text-[#1d1914]">
             Aucun dépannage enregistré pour ce logement.
           </p>
         </div>
       ) : (
         <Table>
-          <TableHeader className="border-y border-gray-100 dark:border-gray-800">
+          <TableHeader className="border-y border-[#1d1914]">
             <TableRow>
               <TableCell
                 isHeader
@@ -418,7 +418,7 @@ export default function ListInterventions({
             </TableRow>
           </TableHeader>
 
-          <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+          <TableBody className="divide-y divide-[#1d1914]">
             {depannages.map((depannage, index) => {
               const numeroIntervention = getInterventionNumber(depannage);
               const pkLogement =

@@ -146,11 +146,11 @@ export default function Rgpd() {
 
   return (
     <div className="space-y-6">
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-6 py-5 dark:border-gray-800 dark:bg-white/[0.03]">
-        <h1 className="mb-6 text-2xl font-semibold text-gray-800 dark:text-white/90">
+      <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-6 py-5 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)]">
+        <h1 className="mb-6 text-2xl font-normal text-[#1d1914]">
           RGPD – Protection des données
         </h1>
-        <p className="mb-8 text-sm text-gray-600 dark:text-gray-400">
+        <p className="mb-8 text-base text-[#1d1914]">
           Informations relatives à la collecte et au traitement de vos données
           personnelles
         </p>
@@ -159,22 +159,26 @@ export default function Rgpd() {
           {sections.map((section, index) => (
             <div
               key={index}
-              className="overflow-hidden rounded-lg border border-gray-200 dark:border-gray-800"
+              className="overflow-hidden rounded-lg border border-[#1d1914]"
             >
               <button
                 onClick={() => toggleSection(index)}
-                className="w-full flex items-center justify-between px-4 py-3 text-left bg-gray-50 hover:bg-gray-100 dark:bg-gray-900 dark:hover:bg-gray-800 transition-colors"
+                className="w-full flex items-center justify-between px-4 py-3 text-left bg-[#e9ecef] hover:bg-[#ffe5e6] transition-all duration-300"
               >
-                <h2 className="text-base font-semibold text-gray-800 dark:text-white/90">
+                <h2 className="text-base font-normal text-[#1d1914]">
                   {section.title}
                 </h2>
-                <span className="text-lg text-gray-500 dark:text-gray-400">
+                <span className={`text-lg transition-all duration-300 ${
+                  openSections[index] 
+                    ? "text-[#e20613]" 
+                    : "text-[#1d1914]"
+                }`}>
                   {openSections[index] ? "−" : "+"}
                 </span>
               </button>
               {openSections[index] && (
-                <div className="px-4 py-3 border-t border-gray-200 dark:border-gray-800">
-                  <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-line">
+                <div className="px-4 py-3 border-t border-[#1d1914] bg-white">
+                  <p className="text-base text-[#1d1914] whitespace-pre-line">
                     {section.content}
                   </p>
                 </div>

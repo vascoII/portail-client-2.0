@@ -2,9 +2,6 @@
 import React from "react";
 import { useModal } from "../../hooks/useModal";
 import { Modal } from "../ui/modal";
-import Button from "../ui/button/Button";
-import Input from "../form/input/InputField";
-import Label from "../form/Label";
 import { useAuth } from "@/lib/hooks/useAuth";
 
 export default function UserInfoCard() {
@@ -22,37 +19,37 @@ export default function UserInfoCard() {
     closeModal();
   };
   return (
-    <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
+    <div className="p-5 border border-[#1d1914] rounded-xl shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] lg:p-6">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <h4 className="text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
+          <h4 className="text-xl font-normal text-[#1d1914] lg:mb-6">
             Informations Personnelles
           </h4>
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
             <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+              <p className="mb-2 text-xs leading-normal text-[#1d1914]">
                 Prénom
               </p>
-              <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+              <p className="text-sm font-normal text-[#1d1914]">
                 {firstName || "—"}
               </p>
             </div>
 
             <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+              <p className="mb-2 text-xs leading-normal text-[#1d1914]">
                 Nom
               </p>
-              <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+              <p className="text-sm font-normal text-[#1d1914]">
                 {lastName || "—"}
               </p>
             </div>
 
             <div>
-              <p className="mb-2 text-xs leading-normal text-gray-500 dark:text-gray-400">
+              <p className="mb-2 text-xs leading-normal text-[#1d1914]">
                 Addresse Email
               </p>
-              <p className="text-sm font-medium text-gray-800 dark:text-white/90">
+              <p className="text-sm font-normal text-[#1d1914]">
                 {email || "—"}
               </p>
             </div>
@@ -61,7 +58,7 @@ export default function UserInfoCard() {
 
         <button
           onClick={openModal}
-          className="flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200 lg:inline-flex lg:w-auto"
+          className="flex w-full items-center justify-center gap-2 rounded-full border border-[#1d1914] bg-white px-4 py-3 text-sm font-normal text-[#1d1914] transition-all duration-300 hover:bg-[#ffe5e6] hover:text-[#e20613] lg:inline-flex lg:w-auto"
         >
           <svg
             className="fill-current"
@@ -83,52 +80,84 @@ export default function UserInfoCard() {
       </div>
 
       <Modal isOpen={isOpen} onClose={closeModal} className="max-w-[700px] m-4">
-        <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+        <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-xl bg-white p-4 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] lg:p-11">
           <div className="px-2 pr-14">
-            <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
+            <h4 className="mb-2 text-2xl font-normal text-[#1d1914]">
               Editer Informations Personnelles
             </h4>
-            <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
+            <p className="mb-6 text-sm text-[#1d1914] lg:mb-7">
               Mettez à jour vos informations pour que votre profil reste à jour.
             </p>
           </div>
           <form className="flex flex-col">
             <div className="custom-scrollbar h-[450px] overflow-y-auto px-2 pb-3">
               <div className="mt-7">
-                <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
+                <h5 className="mb-5 text-xl font-normal text-[#1d1914] lg:mb-6">
                   Informations Personnelles
                 </h5>
 
                 <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>Prénom</Label>
-                    <Input type="text" defaultValue={firstName} />
+                    <label className="block text-sm font-normal text-[#1d1914] mb-2">
+                      Prénom
+                    </label>
+                    <input
+                      type="text"
+                      defaultValue={firstName}
+                      className="w-full rounded-lg border border-[#1d1914] px-3 py-2 text-sm text-[#1d1914] focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent"
+                    />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>Nom</Label>
-                    <Input type="text" defaultValue={lastName} />
+                    <label className="block text-sm font-normal text-[#1d1914] mb-2">
+                      Nom
+                    </label>
+                    <input
+                      type="text"
+                      defaultValue={lastName}
+                      className="w-full rounded-lg border border-[#1d1914] px-3 py-2 text-sm text-[#1d1914] focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent"
+                    />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>Addresse Email</Label>
-                    <Input type="email" defaultValue={email} />
+                    <label className="block text-sm font-normal text-[#1d1914] mb-2">
+                      Addresse Email
+                    </label>
+                    <input
+                      type="email"
+                      defaultValue={email}
+                      className="w-full rounded-lg border border-[#1d1914] px-3 py-2 text-sm text-[#1d1914] focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent"
+                    />
                   </div>
 
                   <div className="col-span-2 lg:col-span-1">
-                    <Label>Addresse Email Confirmation</Label>
-                    <Input type="email" defaultValue={email} />
+                    <label className="block text-sm font-normal text-[#1d1914] mb-2">
+                      Addresse Email Confirmation
+                    </label>
+                    <input
+                      type="email"
+                      defaultValue={email}
+                      className="w-full rounded-lg border border-[#1d1914] px-3 py-2 text-sm text-[#1d1914] focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent"
+                    />
                   </div>
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-              <Button size="sm" variant="outline" onClick={closeModal}>
+              <button
+                type="button"
+                onClick={closeModal}
+                className="px-4 py-2 rounded-lg border border-[#1d1914] bg-white text-[#1d1914] text-sm font-normal transition-all duration-300 hover:bg-[#ffe5e6] hover:text-[#e20613]"
+              >
                 Fermer
-              </Button>
-              <Button size="sm" onClick={handleSave}>
+              </button>
+              <button
+                type="button"
+                onClick={handleSave}
+                className="px-4 py-2 rounded-lg bg-[#1d1914] text-white text-sm font-normal transition-all duration-300 hover:bg-[#e20613]"
+              >
                 Enregistrer
-              </Button>
+              </button>
             </div>
           </form>
         </div>

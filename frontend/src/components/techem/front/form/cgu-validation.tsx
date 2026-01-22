@@ -1,9 +1,4 @@
 "use client";
-import Input from "@/components/form/input/InputField";
-import Label from "@/components/form/Label";
-import Button from "@/components/ui/button/Button";
-import Alert from "@/components/ui/alert/Alert";
-import Checkbox from "@/components/form/input/Checkbox";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -131,19 +126,19 @@ export default function CGUValidationForm({
   return (
     <div className="flex flex-col flex-1 w-full">
       <div className="flex flex-col justify-center flex-1 w-full max-w-2xl mx-auto">
-        <div>
+        <div className="rounded-xl border border-[#1d1914] bg-white p-6 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)]">
           <div className="mb-5 sm:mb-8">
-            <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
+            <h1 className="mb-2 text-xl font-normal text-[#1d1914]">
               Première connexion
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-sm text-[#1d1914]">
               Vous devez valider les CGU pour pouvoir accéder à l&apos;espace client.
             </p>
           </div>
 
           {/* Contenu CGU */}
           {cguContent && (
-            <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 max-h-96 overflow-y-auto">
+            <div className="mb-6 p-4 bg-[#e9ecef] rounded-xl border border-[#1d1914] max-h-96 overflow-y-auto">
               {cguContent}
             </div>
           )}
@@ -152,18 +147,20 @@ export default function CGUValidationForm({
             {/* Message de succès */}
             {isSuccess && (
               <div className="mb-6">
-                <Alert
-                  variant="success"
-                  title="CGU validées"
-                  message="Les Conditions Générales d'Utilisation ont été validées avec succès. Redirection en cours..."
-                />
+                <div className="p-4 bg-[#417232] text-white rounded-lg">
+                  <p className="font-medium mb-1">CGU validées</p>
+                  <p className="text-sm">Les Conditions Générales d&apos;Utilisation ont été validées avec succès. Redirection en cours...</p>
+                </div>
               </div>
             )}
 
             {/* Alerte d'erreur */}
             {displayError && !isSuccess && (
               <div className="mb-6">
-                <Alert variant="error" title="Erreur" message={displayError} />
+                <div className="p-4 bg-[#b00511] text-white rounded-lg">
+                  <p className="font-medium mb-1">Erreur</p>
+                  <p className="text-sm">{displayError}</p>
+                </div>
               </div>
             )}
 
@@ -172,38 +169,46 @@ export default function CGUValidationForm({
                 <div className="space-y-6">
                   {/* Champ Email */}
                   <div>
-                    <Label htmlFor="email">
-                      Email <span className="text-error-500">*</span>
-                    </Label>
-                    <Input
+                    <label htmlFor="email" className="block text-base text-[#1d1914] mb-2">
+                      Email <span className="text-[#b00511]">*</span>
+                    </label>
+                    <input
                       id="email"
                       type="email"
                       placeholder="Email"
                       {...register("email")}
-                      error={!!errors.email}
-                      hint={errors.email?.message}
+                      className={`w-full px-4 py-2 border rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300 ${
+                        errors.email ? "border-[#b00511]" : "border-[#1d1914]"
+                      }`}
                     />
+                    {errors.email && (
+                      <p className="mt-1 text-sm text-[#b00511]">{errors.email.message}</p>
+                    )}
                   </div>
 
                   {/* Champ Confirmation Email */}
                   <div>
-                    <Label htmlFor="email_confirm">
+                    <label htmlFor="email_confirm" className="block text-base text-[#1d1914] mb-2">
                       Confirmation de l&apos;email{" "}
-                      <span className="text-error-500">*</span>
-                    </Label>
-                    <Input
+                      <span className="text-[#b00511]">*</span>
+                    </label>
+                    <input
                       id="email_confirm"
                       type="email"
                       placeholder="Confirmation de l'email"
                       {...register("email_confirm")}
-                      error={!!errors.email_confirm}
-                      hint={errors.email_confirm?.message}
+                      className={`w-full px-4 py-2 border rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300 ${
+                        errors.email_confirm ? "border-[#b00511]" : "border-[#1d1914]"
+                      }`}
                     />
+                    {errors.email_confirm && (
+                      <p className="mt-1 text-sm text-[#b00511]">{errors.email_confirm.message}</p>
+                    )}
                     {/* Afficher une indication si les emails ne correspondent pas */}
                     {email &&
                       emailConfirm &&
                       email !== emailConfirm && (
-                        <p className="mt-1.5 text-xs text-error-500">
+                        <p className="mt-1 text-sm text-[#b00511]">
                           Les emails ne correspondent pas
                         </p>
                       )}
@@ -212,18 +217,20 @@ export default function CGUValidationForm({
                   {/* Checkbox CGU */}
                   <div>
                     <div className="flex items-start gap-3">
-                      <Checkbox
+                      <input
+                        type="checkbox"
                         id="valid_cgu"
                         checked={validCGU || false}
-                        onChange={(checked) => setValue("valid_cgu", checked)}
+                        onChange={(e) => setValue("valid_cgu", e.target.checked)}
+                        className="w-4 h-4 mt-1 text-[#e20613] border-[#1d1914] rounded focus:ring-2 focus:ring-[#c2dafe] focus:ring-offset-0"
                       />
-                      <Label htmlFor="valid_cgu" className="cursor-pointer">
+                      <label htmlFor="valid_cgu" className="cursor-pointer text-base text-[#1d1914]">
                         J&apos;accepte les Conditions Générales d&apos;Utilisation{" "}
-                        <span className="text-error-500">*</span>
-                      </Label>
+                        <span className="text-[#b00511]">*</span>
+                      </label>
                     </div>
                     {errors.valid_cgu && (
-                      <p className="mt-1.5 text-xs text-error-500">
+                      <p className="mt-1 text-sm text-[#b00511]">
                         {errors.valid_cgu.message}
                       </p>
                     )}
@@ -231,16 +238,19 @@ export default function CGUValidationForm({
 
                   {/* Bouton de soumission */}
                   <div className="pt-4">
-                    <Button
-                      className="w-full sm:w-auto"
-                      size="sm"
+                    <button
                       type="submit"
                       disabled={isLoading}
+                      className={`px-6 py-2 rounded-lg font-normal text-base transition-all duration-300 w-full sm:w-auto ${
+                        isLoading
+                          ? "bg-[#e9ecef] text-[#6a6a6a] cursor-not-allowed"
+                          : "bg-[#e20613] text-white hover:bg-[#b00511] cursor-pointer"
+                      }`}
                     >
                       {isLoading ? "Validation en cours..." : "Continuer"}
-                    </Button>
-                    <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                      <span className="text-error-500">*</span> champs obligatoires
+                    </button>
+                    <p className="mt-2 text-xs text-[#1d1914]">
+                      <span className="text-[#b00511]">*</span> champs obligatoires
                     </p>
                   </div>
                 </div>

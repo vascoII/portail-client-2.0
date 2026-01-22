@@ -11,8 +11,8 @@ export const metadata: Metadata = {
 export default function Profile() {
   return (
     <div>
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-6">
-        <h3 className="mb-5 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-7">
+      <div className="rounded-xl border border-[#1d1914] bg-white p-5 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] lg:p-6">
+        <h3 className="mb-5 text-xl font-normal text-[#1d1914] lg:mb-7">
           Profile
         </h3>
         <div className="space-y-6">

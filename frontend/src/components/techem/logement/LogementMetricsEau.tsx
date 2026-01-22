@@ -52,23 +52,23 @@ export const LogementMetricsEau = ({ pkLogement, pkImmeuble, nbFuites, nbAnomali
   }
 
   // Determine icon colors based on values
-  const fuitesColor = metrics.fuites > 0 ? "text-blue-500 dark:text-blue-400" : "text-gray-400 dark:text-gray-500";
-  const anomaliesColor = metrics.anomalies > 0 ? "text-red-500 dark:text-red-400" : "text-gray-400 dark:text-gray-500";
+  const fuitesColor = metrics.fuites > 0 ? "text-[#009bb4]" : "text-[#6a6a6a]";
+  const anomaliesColor = metrics.anomalies > 0 ? "text-[#b00511]" : "text-[#6a6a6a]";
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-4 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
+    <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-4 pb-4 pt-5 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] sm:px-6">
       <div className="grid grid-cols-2 gap-4 md:gap-6">
         {/* Fuites - Metric Item Start */}
         <Link href={`/immeuble/${pkImmeuble}/logements/${pkLogement}/fuites`} className="h-full">
-          <div className="flex items-center gap-3 h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-            <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800 flex-shrink-0">
+          <div className="flex items-center gap-3 h-full rounded-xl border border-[#1d1914] bg-white p-5 hover:bg-[#ffe5e6] transition-all duration-300 md:p-6">
+            <div className="flex items-center justify-center w-12 h-12 bg-[#e9ecef] rounded-xl flex-shrink-0">
               <StatusIconsFuite size={24} className={fuitesColor} color="currentColor" />
             </div>
             <div className="flex items-center gap-2 flex-grow">
-              <span className="text-sm text-gray-500 dark:text-gray-400">
+              <span className="text-sm text-[#1d1914]">
                 Fuites
               </span>
-              <h4 className="font-bold text-gray-800 text-title-sm dark:text-white/90">
+              <h4 className="font-normal text-[#1d1914] text-xl">
                 {formatNumber(Math.max(metrics.fuites, 0))}
               </h4>
             </div>
@@ -78,15 +78,15 @@ export const LogementMetricsEau = ({ pkLogement, pkImmeuble, nbFuites, nbAnomali
 
         {/* Anomalies - Metric Item Start */}
         <Link href={`/immeuble/${pkImmeuble}/logements/${pkLogement}/anomalies`} className="h-full">
-          <div className="flex items-center gap-3 h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-            <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800 flex-shrink-0">
+          <div className="flex items-center gap-3 h-full rounded-xl border border-[#1d1914] bg-white p-5 hover:bg-[#ffe5e6] transition-all duration-300 md:p-6">
+            <div className="flex items-center justify-center w-12 h-12 bg-[#e9ecef] rounded-xl flex-shrink-0">
               <StatusIconsAnomalie size={24} className={anomaliesColor} color="currentColor" />
             </div>
             <div className="flex items-center gap-2 flex-grow">
-              <span className="text-sm text-gray-500 dark:text-gray-400">
+              <span className="text-sm text-[#1d1914]">
                 Anomalies de consommation
               </span>
-              <h4 className="font-bold text-gray-800 text-title-sm dark:text-white/90">
+              <h4 className="font-normal text-[#1d1914] text-xl">
                 {formatNumber(Math.max(metrics.anomalies, 0))}
               </h4>
             </div>

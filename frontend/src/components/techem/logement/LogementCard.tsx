@@ -165,9 +165,9 @@ export default function LogementCard({ pkLogement }: LogementCardProps) {
 
   if (isLogementLoading) {
     return (
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
+      <div className="rounded-xl border border-[#1d1914] bg-white p-5 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] sm:p-6">
         <div className="flex justify-between mb-6">
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+          <h3 className="text-xl font-normal text-[#1d1914]">
             Informations du logement
           </h3>
         </div>
@@ -184,18 +184,18 @@ export default function LogementCard({ pkLogement }: LogementCardProps) {
   }
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] sm:p-6">
+    <div className="rounded-xl border border-[#1d1914] bg-white p-5 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] sm:p-6">
       <div className="flex justify-between mb-6">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+        <h3 className="text-xl font-normal text-[#1d1914]">
           Localisation du logement
         </h3>
       </div>
 
       {/* OpenStreetMap with Leaflet */}
-      <div className="mb-6 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800">
+      <div className="mb-6 rounded-lg overflow-hidden border border-[#1d1914]">
         {isGeocoding && (
-          <div className="w-full h-[300px] flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+          <div className="w-full h-[300px] flex items-center justify-center bg-[#e9ecef]">
+            <p className="text-sm text-[#1d1914]">
               Recherche de l&apos;adresse...
             </p>
           </div>
@@ -221,8 +221,8 @@ export default function LogementCard({ pkLogement }: LogementCardProps) {
           </div>
         )}
         {geocodingError && (
-          <div className="px-4 py-2 bg-yellow-50 dark:bg-yellow-900/20 border-t border-yellow-200 dark:border-yellow-800">
-            <p className="text-xs text-yellow-800 dark:text-yellow-200">
+          <div className="px-4 py-2 bg-[#ffe5e6] border-t border-[#1d1914]">
+            <p className="text-xs text-[#1d1914]">
               Adresse non trouvée. Affichage de l&apos;adresse de secours.
             </p>
           </div>
@@ -231,42 +231,42 @@ export default function LogementCard({ pkLogement }: LogementCardProps) {
 
       <div className="space-y-4">
         <div className="space-y-2">
-          <p className="text-xm font-medium">
-            Nom de l&apos;immeuble: <span className="text-xm font-medium text-gray-500 dark:text-gray-400">{logementInfo.nom}</span>
+          <p className="text-base font-normal text-[#1d1914]">
+            Nom de l&apos;immeuble: <span className="text-base font-normal text-[#1d1914]">{logementInfo.nom}</span>
           </p>
         </div>
 
         <div className="space-y-2">
-          <p className="text-xm font-medium">
-            Référence: <span className="text-xm font-medium text-gray-500 dark:text-gray-400">{logementInfo.ref}</span>
+          <p className="text-base font-normal text-[#1d1914]">
+            Référence: <span className="text-base font-normal text-[#1d1914]">{logementInfo.ref}</span>
           </p>
         </div>
 
         <div className="space-y-2">
-          <p className="text-xm font-medium">
-            N° d&apos;immeuble: <span className="text-xm font-medium text-gray-500 dark:text-gray-400">{logementInfo.numero}</span>
+          <p className="text-base font-normal text-[#1d1914]">
+            N° d&apos;immeuble: <span className="text-base font-normal text-[#1d1914]">{logementInfo.numero}</span>
           </p>
         </div>
 
         {logementInfo.numEtage !== "—" && (
           <div className="space-y-2">
-            <p className="text-xm font-medium">
-              Étage: <span className="text-xm font-medium text-gray-500 dark:text-gray-400">{logementInfo.numEtage}</span>
+            <p className="text-base font-normal text-[#1d1914]">
+              Étage: <span className="text-base font-normal text-[#1d1914]">{logementInfo.numEtage}</span>
             </p>
           </div>
         )}
 
         {logementInfo.numOrdre !== "—" && (
           <div className="space-y-2">
-            <p className="text-xm font-medium">
-              N° logement: <span className="text-xm font-medium text-gray-500 dark:text-gray-400">{logementInfo.numOrdre}</span>
+            <p className="text-base font-normal text-[#1d1914]">
+              N° logement: <span className="text-base font-normal text-[#1d1914]">{logementInfo.numOrdre}</span>
             </p>
           </div>
         )}
 
         <div className="space-y-2">
-          <p className="text-xm font-medium">
-            Adresse: <span className="text-xm font-medium text-gray-500 dark:text-gray-400">{fullAddress || "—"}</span>
+          <p className="text-base font-normal text-[#1d1914]">
+            Adresse: <span className="text-base font-normal text-[#1d1914]">{fullAddress || "—"}</span>
           </p>
         </div>
       </div>

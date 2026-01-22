@@ -52,7 +52,7 @@ export default function AppareilsTable({
   if (localAppareils.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-[200px]">
-        <p className="text-sm text-gray-500 dark:text-gray-400">
+        <p className="text-base text-[#1d1914]">
           Aucun appareil trouvé
         </p>
       </div>
@@ -62,35 +62,35 @@ export default function AppareilsTable({
   return (
     <div className="max-w-full overflow-x-auto">
       <Table>
-        <TableHeader className="border-gray-100 dark:border-gray-800 border-y">
+        <TableHeader className="border-[#1d1914] border-y">
           <TableRow>
             <TableCell
               isHeader
-              className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+              className="py-3 font-normal text-[#1d1914] text-start text-sm"
             >
               N° de compteur
             </TableCell>
             <TableCell
               isHeader
-              className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+              className="py-3 font-normal text-[#1d1914] text-start text-sm"
             >
               Emplacement
             </TableCell>
             <TableCell
               isHeader
-              className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+              className="py-3 font-normal text-[#1d1914] text-start text-sm"
             >
               Index
             </TableCell>
             <TableCell
               isHeader
-              className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+              className="py-3 font-normal text-[#1d1914] text-start text-sm"
             >
               Conso
             </TableCell>
           </TableRow>
         </TableHeader>
-        <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+        <TableBody className="divide-y divide-[#1d1914]">
           {localAppareils.map((appareil, index) => {
             const pkAppareil = appareil.PkAppareil ?? appareil.pkAppareil ?? "";
             const numero = appareil.Numero ?? appareil.numero ?? "";
@@ -104,37 +104,37 @@ export default function AppareilsTable({
             const consoValue = hasValidR1 ? (r1.Conso ?? r1.conso ?? "") : "";
 
             return (
-              <TableRow key={index} className="hover:bg-gray-50 dark:hover:bg-white/[0.02]">
+              <TableRow key={index} className="hover:bg-[#ffe5e6] transition-all duration-300">
                 <TableCell className="py-3">
-                  <strong className="text-gray-800 dark:text-white/90 text-theme-sm">
+                  <strong className="text-[#1d1914] text-sm font-normal">
                     {numero}
                   </strong>
                 </TableCell>
-                <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                <TableCell className="py-3 text-[#1d1914] text-sm">
                   {emplacement}
                 </TableCell>
                 <TableCell className="py-3">
                   {isLoading ? (
                     <div className="flex items-center gap-2">
                       <LoadingSpinner size="sm" color="gray" />
-                      <span className="text-xs text-gray-400">Chargement...</span>
+                      <span className="text-xs text-[#6a6a6a]">Chargement...</span>
                     </div>
                   ) : error ? (
-                    <span className="text-xs text-red-500">Erreur</span>
+                    <span className="text-xs text-[#b00511]">Erreur</span>
                   ) : (
-                    <strong className="text-gray-800 dark:text-white/90 text-theme-sm">
+                    <strong className="text-[#1d1914] text-sm font-normal">
                       {indexValue || "—"}
                     </strong>
                   )}
                 </TableCell>
-                <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                <TableCell className="py-3 text-[#1d1914] text-sm">
                   {isLoading ? (
                     <div className="flex items-center gap-2">
                       <LoadingSpinner size="sm" color="gray" />
-                      <span className="text-xs text-gray-400">Chargement...</span>
+                      <span className="text-xs text-[#6a6a6a]">Chargement...</span>
                     </div>
                   ) : error ? (
-                    <span className="text-xs text-red-500">Erreur</span>
+                    <span className="text-xs text-[#b00511]">Erreur</span>
                   ) : (
                     consoValue || "—"
                   )}

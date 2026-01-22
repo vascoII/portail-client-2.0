@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/table";
 import { useLogements } from "@/lib/hooks/useLogements";
 import { useExport } from "@/lib/hooks/useExport";
-import Alert from "@/components/ui/alert/Alert";
 import { LoadingTable } from "@/components/ui/loading";
 import type { Housing, Dysfunction } from "@/lib/types/api";
 
@@ -121,28 +120,28 @@ export default function ListDysfonctionnements({ pkLogement }: ListDysfonctionne
 
   if (errorMessage) {
     return (
-      <div className="overflow-hidden rounded-2xl border border-red-200 bg-red-50 px-4 py-6 dark:border-red-900/60 dark:bg-red-950/40 sm:px-6">
-        <p className="text-sm text-red-700 dark:text-red-200">{errorMessage}</p>
+      <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-4 py-6 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] sm:px-6">
+        <div className="p-4 bg-[#b00511] text-white rounded-lg">
+          <p className="text-sm">{errorMessage}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-4 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
+    <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-4 pb-4 pt-5 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] sm:px-6">
       {(exportExcelError || exportPdfError) && (
         <div className="mb-4">
-          <Alert
-            variant={(exportExcelError || exportPdfError)?.variant || "error"}
-            title={(exportExcelError || exportPdfError)?.title || "Erreur"}
-            message={(exportExcelError || exportPdfError)?.message || ""}
-            showLink={false}
-          />
+          <div className="p-4 bg-[#b00511] text-white rounded-lg">
+            <p className="font-medium mb-1">{(exportExcelError || exportPdfError)?.title || "Erreur"}</p>
+            <p className="text-sm">{(exportExcelError || exportPdfError)?.message || ""}</p>
+          </div>
           <button
             onClick={() => {
               if (exportExcelError) clearExportExcelError();
               if (exportPdfError) clearExportPdfError();
             }}
-            className="mt-2 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            className="mt-2 text-sm text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
           >
             Fermer
           </button>
@@ -150,16 +149,16 @@ export default function ListDysfonctionnements({ pkLogement }: ListDysfonctionne
       )}
       <div className="mb-6 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+          <h3 className="text-xl font-normal text-[#1d1914]">
             Alarmes techniques
           </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-[#1d1914]">
             {totalDysfonctionnements} alarme{totalDysfonctionnements > 1 ? "s" : ""} technique{totalDysfonctionnements > 1 ? "s" : ""}
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <button className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+          <button className="inline-flex items-center gap-2 rounded-lg border border-[#1d1914] bg-white px-4 py-2.5 text-sm font-normal text-[#1d1914] hover:bg-[#ffe5e6] hover:text-[#e20613] transition-all duration-300">
             <svg
               className="stroke-current fill-white dark:fill-gray-800"
               width="20"
@@ -200,7 +199,11 @@ export default function ListDysfonctionnements({ pkLogement }: ListDysfonctionne
           <button
             onClick={handleExportExcel}
             disabled={isExportingExcel || dysfonctionnements.length === 0}
-            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+            className={`inline-flex items-center gap-2 rounded-lg border border-[#1d1914] px-4 py-2.5 text-sm font-normal transition-all duration-300 ${
+              isExportingExcel || dysfonctionnements.length === 0
+                ? "bg-[#e9ecef] text-[#6a6a6a] cursor-not-allowed"
+                : "bg-white text-[#1d1914] hover:bg-[#ffe5e6] hover:text-[#e20613]"
+            }`}
           >
             <svg
               className="stroke-current"
@@ -244,7 +247,11 @@ export default function ListDysfonctionnements({ pkLogement }: ListDysfonctionne
           <button
             onClick={handleExportPdf}
             disabled={isExportingPdf || dysfonctionnements.length === 0}
-            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+            className={`inline-flex items-center gap-2 rounded-lg border border-[#1d1914] px-4 py-2.5 text-sm font-normal transition-all duration-300 ${
+              isExportingPdf || dysfonctionnements.length === 0
+                ? "bg-[#e9ecef] text-[#6a6a6a] cursor-not-allowed"
+                : "bg-white text-[#1d1914] hover:bg-[#ffe5e6] hover:text-[#e20613]"
+            }`}
           >
             <svg
               className="stroke-current"
@@ -289,55 +296,55 @@ export default function ListDysfonctionnements({ pkLogement }: ListDysfonctionne
       </div>
 
       {dysfonctionnements.length === 0 ? (
-        <div className="flex items-center justify-center min-h-[200px] rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+        <div className="flex items-center justify-center min-h-[200px] rounded-xl border border-dashed border-[#1d1914]">
+          <p className="text-base text-[#1d1914]">
             Aucune alarme technique signalée pour ce logement.
           </p>
         </div>
       ) : (
         <Table>
-          <TableHeader className="border-y border-gray-100 dark:border-gray-800">
+          <TableHeader className="border-y border-[#1d1914]">
             <TableRow>
               <TableCell
                 isHeader
-                className="py-3 text-start text-theme-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                className="py-3 text-start text-sm font-normal text-[#1d1914]"
               >
                 Nombre d&apos;Alarmes techniques
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 text-start text-theme-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                className="py-3 text-start text-sm font-normal text-[#1d1914]"
               >
                 N°COMPTEUR
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 text-start text-theme-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                className="py-3 text-start text-sm font-normal text-[#1d1914]"
               >
                 EMPLAÇEMENT
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 text-start text-theme-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                className="py-3 text-start text-sm font-normal text-[#1d1914]"
               >
                 FLUIDE
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 text-start text-theme-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                className="py-3 text-start text-sm font-normal text-[#1d1914]"
               >
                 TYPE D&apos;ALARME
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 text-start text-theme-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                className="py-3 text-start text-sm font-normal text-[#1d1914]"
               >
                 NB DE JOURS
               </TableCell>
             </TableRow>
           </TableHeader>
 
-          <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+          <TableBody className="divide-y divide-[#1d1914]">
             {dysfonctionnements.map((dysfonctionnement, index) => {
               const key = dysfonctionnement.PkDysfonctionnement ?? dysfonctionnement.Appareil?.Numero ?? `dysfonctionnement-${index}`;
               const compteur = dysfonctionnement.Appareil?.Numero ?? "—";
@@ -356,43 +363,43 @@ export default function ListDysfonctionnements({ pkLogement }: ListDysfonctionne
                 <TableRow key={key} className="align-top">
                   <TableCell className="py-4">
                     <div className="flex gap-3">
-                      <div className="flex-shrink-0 rounded-xl bg-red-50 p-3 dark:bg-red-500/10">
+                      <div className="flex-shrink-0 rounded-xl bg-[#e9ecef] p-3">
                         <StatusIconsDysfonctionnement
                           size={22}
-                          className="text-red-600 dark:text-red-300"
+                          className="text-[#e20613]"
                         />
                       </div>
                       <div className="space-y-1">
-                        <p className="text-2xl font-semibold text-gray-900 dark:text-white">
+                        <p className="text-2xl font-normal text-[#1d1914]">
                           {getDysfunctionCount(dysfonctionnement)}
                         </p>
-                        <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                        <p className="text-xs uppercase tracking-wide text-[#1d1914]">
                           {dysfonctionnement.Occupant?.Ref ?? "Réf. client inconnue"}
                         </p>
-                        <p className="text-sm text-gray-600 dark:text-gray-300">
+                        <p className="text-sm text-[#1d1914]">
                           Logement {dysfonctionnement.Logement?.NumOrdre ?? "—"} –{" "}
                           {dysfonctionnement.Occupant?.Nom ?? "Occupant inconnu"}
                         </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                        <p className="text-sm text-[#1d1914]">
                           Étage {dysfonctionnement.Logement?.NumEtage ?? "—"} | Bât.{" "}
                           {dysfonctionnement.Logement?.NumBatiment ?? "—"}
                         </p>
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="py-4 align-top text-sm text-gray-700 dark:text-gray-200">
+                  <TableCell className="py-4 align-top text-sm text-[#1d1914]">
                     {compteur}
                   </TableCell>
-                  <TableCell className="py-4 align-top text-sm text-gray-700 dark:text-gray-200">
+                  <TableCell className="py-4 align-top text-sm text-[#1d1914]">
                     {emplacement}
                   </TableCell>
-                  <TableCell className="py-4 align-top text-sm text-gray-700 dark:text-gray-200">
+                  <TableCell className="py-4 align-top text-sm text-[#1d1914]">
                     {fluide}
                   </TableCell>
-                  <TableCell className="py-4 align-top text-sm text-gray-700 dark:text-gray-200">
+                  <TableCell className="py-4 align-top text-sm text-[#1d1914]">
                     {typeAlarme}
                   </TableCell>
-                  <TableCell className="py-4 align-top text-sm text-gray-700 dark:text-gray-200">
+                  <TableCell className="py-4 align-top text-sm text-[#1d1914]">
                     {formatDays(nbJours)}
                   </TableCell>
                 </TableRow>

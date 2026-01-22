@@ -1,6 +1,4 @@
 "use client";
-import Button from "@/components/ui/button/Button";
-import Alert from "@/components/ui/alert/Alert";
 import Checkbox from "@/components/form/input/Checkbox";
 import Label from "@/components/form/Label";
 import React, { useState, useEffect } from "react";
@@ -116,11 +114,10 @@ export default function RGPDConsentForm() {
   if (accountLoadingError) {
     return (
       <div className="flex flex-col flex-1 w-full items-center justify-center">
-        <Alert
-          variant="error"
-          title="Erreur de chargement"
-          message={handleApiError(accountLoadingError)}
-        />
+        <div className="p-4 bg-[#b00511] text-[#e9ecef] rounded-lg">
+          <p className="font-medium mb-1">Erreur de chargement</p>
+          <p className="text-sm">{handleApiError(accountLoadingError)}</p>
+        </div>
       </div>
     );
   }
@@ -130,34 +127,32 @@ export default function RGPDConsentForm() {
       <div className="flex flex-col justify-center flex-1 w-full max-w-2xl mx-auto">
         <div>
           <div className="mb-5 sm:mb-8">
-            <h2 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
+            <h2 className="mb-2 font-normal text-[#1d1914] text-title-sm sm:text-title-md">
               RGPD
             </h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-base text-[#1d1914]">
               Gestion de votre consentement pour l&apos;accès aux données de consommation
             </p>
           </div>
 
-          <div className="bg-white p-6 shadow-md rounded-lg dark:bg-gray-800">
+          <div className="bg-white p-6 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] rounded-xl border border-[#1d1914]">
             {/* Message de succès */}
             {isSuccess && (
-              <div className="mb-6">
-                <Alert
-                  variant="success"
-                  title="Consentement enregistré"
-                  message="Votre consentement a été enregistré avec succès."
-                />
+              <div className="mb-9">
+                <div className="p-4 bg-[#417232] text-[#e9ecef] rounded-lg">
+                  <p className="font-medium mb-1">Consentement enregistré</p>
+                  <p className="text-sm">Votre consentement a été enregistré avec succès.</p>
+                </div>
               </div>
             )}
 
             {/* Alerte d'erreur */}
             {displayError && !isSuccess && (
-              <div className="mb-6">
-                <Alert 
-                  variant="error" 
-                  title="Erreur" 
-                  message={typeof displayError === 'string' ? displayError : handleApiError(displayError)} 
-                />
+              <div className="mb-9">
+                <div className="p-4 bg-[#b00511] text-[#e9ecef] rounded-lg">
+                  <p className="font-medium mb-1">Erreur</p>
+                  <p className="text-sm">{typeof displayError === 'string' ? displayError : handleApiError(displayError)}</p>
+                </div>
               </div>
             )}
 
@@ -170,7 +165,7 @@ export default function RGPDConsentForm() {
                     checked={rgpdCheckbox || false}
                     onChange={(checked) => setValue("rgpd_checkbox", checked)}
                   />
-                  <Label htmlFor="rgpd_checkbox" className="cursor-pointer">
+                  <Label htmlFor="rgpd_checkbox" className="cursor-pointer text-base text-[#1d1914]">
                     <strong>
                       J&apos;autorise mon gestionnaire à accéder à mes données de consommation.
                     </strong>
@@ -179,14 +174,13 @@ export default function RGPDConsentForm() {
 
                 {/* Bouton de soumission */}
                 <div className="pt-4">
-                  <Button
-                    className="w-full sm:w-auto"
-                    size="sm"
+                  <button
+                    className="w-full sm:w-auto bg-[#e20613] text-white hover:bg-[#b4050f] border border-[#e20613] hover:border-[#b4050f] rounded-lg px-4 py-1.5 min-w-[5.5rem] max-w-[17rem] transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe] disabled:bg-[#ffa7ac] disabled:pointer-events-none text-sm font-normal"
                     type="submit"
                     disabled={isLoading}
                   >
                     {isLoading ? "Enregistrement en cours..." : "Enregistrer"}
-                  </Button>
+                  </button>
                 </div>
               </div>
             </form>

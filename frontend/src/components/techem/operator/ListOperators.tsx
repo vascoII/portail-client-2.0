@@ -12,8 +12,6 @@ import { Modal } from "@/components/ui/modal";
 import { useModal } from "@/hooks/useModal";
 import { useOperators } from "@/lib/hooks/useOperators";
 import type { Operator, Building } from "@/lib/types/api";
-import Button from "@/components/ui/button/Button";
-import Alert from "@/components/ui/alert/Alert";
 import { handleApiError } from "@/lib/api/client";
 import Checkbox from "@/components/form/input/Checkbox";
 import { LoadingSpinner } from "@/components/ui/loading";
@@ -104,9 +102,9 @@ export default function ListOperators() {
   // Show loading state
   if (isLoadingQuery) {
     return (
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
+      <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-4 pb-3 pt-4 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] sm:px-6">
         <div className="flex items-center justify-center min-h-[400px]">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-base text-[#1d1914]">
             Chargement des gestionnaires...
           </p>
         </div>
@@ -118,26 +116,25 @@ export default function ListOperators() {
   if (errorMessage || operatorsError) {
     const errorMsg = errorMessage || (typeof operatorsError === 'string' ? operatorsError : operatorsError?.message) || "Impossible de charger les gestionnaires.";
     return (
-      <div className="overflow-hidden rounded-2xl border border-red-200 bg-red-50 px-4 py-6 dark:border-red-900/60 dark:bg-red-950/40 sm:px-6">
-        <Alert
-          variant="error"
-          title="Erreur"
-          message={errorMsg}
-        />
+      <div className="overflow-hidden rounded-xl border border-[#b00511] bg-[#b00511] px-4 py-6 sm:px-6">
+        <div className="p-4 bg-[#b00511] text-[#e9ecef] rounded-lg">
+          <p className="font-medium mb-1">Erreur</p>
+          <p className="text-sm">{errorMsg}</p>
+        </div>
       </div>
     );
   }
 
   return (
     <>
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
+      <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-4 pb-3 pt-4 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] sm:px-6">
         <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+            <h3 className="text-xl font-normal text-[#1d1914]">
               Liste des Gestionnaires
             </h3>
             {operators.length > 0 && (
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              <p className="text-base text-[#1d1914] mt-1">
                 {operators.length} gestionnaire{operators.length > 1 ? 's' : ''}
               </p>
             )}
@@ -145,10 +142,8 @@ export default function ListOperators() {
 
           <div className="flex items-center gap-3">
             <Link href="/gestionnaire/nouveau">
-              <Button
-                size="sm"
-                variant="primary"
-                className="inline-flex items-center gap-2"
+              <button
+                className="bg-[#e20613] text-white hover:bg-[#b4050f] border border-[#e20613] hover:border-[#b4050f] rounded-lg px-4 py-1.5 min-w-[5.5rem] max-w-[17rem] transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe] text-sm font-normal inline-flex items-center gap-2"
               >
                 <svg
                   className="stroke-current fill-white"
@@ -174,62 +169,65 @@ export default function ListOperators() {
                   />
                 </svg>
                 Nouveau gestionnaire
-              </Button>
+              </button>
             </Link>
           </div>
         </div>
 
         {/* Error message */}
         {errorMessage && (
-          <div className="mb-4">
-            <Alert variant="error" title="Erreur" message={errorMessage} />
+          <div className="mb-9">
+            <div className="p-4 bg-[#b00511] text-[#e9ecef] rounded-lg">
+              <p className="font-medium mb-1">Erreur</p>
+              <p className="text-sm">{errorMessage}</p>
+            </div>
           </div>
         )}
 
         {operators.length === 0 ? (
-          <div className="flex items-center justify-center min-h-[200px] rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+          <div className="flex items-center justify-center min-h-[200px] rounded-xl border border-dashed border-[#1d1914]">
+            <p className="text-base text-[#1d1914]">
               Aucun gestionnaire enregistré.
             </p>
           </div>
         ) : (
           <Table>
-            <TableHeader className="border-y border-gray-100 dark:border-gray-800">
+            <TableHeader className="border-y border-[#1d1914]">
               <TableRow>
                 <TableCell
                   isHeader
-                  className="py-3 text-start text-theme-xs font-medium text-gray-500 dark:text-gray-400"
+                  className="py-3 text-start text-xs font-medium text-[#1d1914]"
                 >
                   Nom
                 </TableCell>
                 <TableCell
                   isHeader
-                  className="py-3 text-start text-theme-xs font-medium text-gray-500 dark:text-gray-400"
+                  className="py-3 text-start text-xs font-medium text-[#1d1914]"
                 >
                   Prénom
                 </TableCell>
                 <TableCell
                   isHeader
-                  className="py-3 text-start text-theme-xs font-medium text-gray-500 dark:text-gray-400"
+                  className="py-3 text-start text-xs font-medium text-[#1d1914]"
                 >
                   Email
                 </TableCell>
                 <TableCell
                   isHeader
-                  className="py-3 text-start text-theme-xs font-medium text-gray-500 dark:text-gray-400"
+                  className="py-3 text-start text-xs font-medium text-[#1d1914]"
                 >
                   Nombre d&apos;immeubles
                 </TableCell>
                 <TableCell
                   isHeader
-                  className="py-3 text-center text-theme-xs font-medium text-gray-500 dark:text-gray-400"
+                  className="py-3 text-center text-xs font-medium text-[#1d1914]"
                 >
                   Actions
                 </TableCell>
               </TableRow>
             </TableHeader>
 
-            <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+            <TableBody className="divide-y divide-[#1d1914]">
               {operators.map((operator) => {
                 const pkUser = operator.PKUser;
                 const userName = operator.UserName ?? "";
@@ -239,25 +237,23 @@ export default function ListOperators() {
 
                 return (
                   <TableRow key={pkUser} className="align-top">
-                    <TableCell className="py-4 text-sm text-gray-700 dark:text-gray-200">
+                    <TableCell className="py-4 text-sm text-[#1d1914]">
                       {userName || "—"}
                     </TableCell>
-                    <TableCell className="py-4 text-sm text-gray-700 dark:text-gray-200">
+                    <TableCell className="py-4 text-sm text-[#1d1914]">
                       {firstName || "—"}
                     </TableCell>
-                    <TableCell className="py-4 text-sm text-gray-700 dark:text-gray-200">
+                    <TableCell className="py-4 text-sm text-[#1d1914]">
                       {email || "—"}
                     </TableCell>
-                    <TableCell className="py-4 text-sm text-gray-700 dark:text-gray-200">
+                    <TableCell className="py-4 text-sm text-[#1d1914]">
                       {formatNumber(nbImmeubles)}
                     </TableCell>
                     <TableCell className="py-4">
                       <div className="flex items-center justify-center gap-2">
                         <Link href={`/gestionnaire/${pkUser}/edit`}>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="inline-flex items-center gap-2"
+                          <button
+                            className="bg-transparent text-[#1d1914] border-2 border-[#1d1914] hover:border-[#b4050f] hover:text-[#b4050f] rounded-lg px-4 py-1.5 transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe] text-sm font-normal inline-flex items-center gap-2"
                           >
                             <svg
                               className="stroke-current"
@@ -283,13 +279,11 @@ export default function ListOperators() {
                               />
                             </svg>
                             Editer
-                          </Button>
+                          </button>
                         </Link>
-                        <Button
-                          size="sm"
-                          variant="outline"
+                        <button
                           onClick={() => handleShareClick(operator)}
-                          className="inline-flex items-center gap-2"
+                          className="bg-transparent text-[#1d1914] border-2 border-[#1d1914] hover:border-[#b4050f] hover:text-[#b4050f] rounded-lg px-4 py-1.5 transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe] text-sm font-normal inline-flex items-center gap-2"
                         >
                           <svg
                             className="stroke-current"
@@ -336,13 +330,11 @@ export default function ListOperators() {
                             />
                           </svg>
                           Editer partage immeuble
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
+                        </button>
+                        <button
                           onClick={() => handleDeleteClick(operator)}
                           disabled={isDeleting}
-                          className="inline-flex items-center gap-2 text-error-600 hover:text-error-700 hover:border-error-500 dark:text-error-400 dark:hover:text-error-300"
+                          className="bg-transparent text-[#b00511] border-2 border-[#b00511] hover:border-[#e20613] hover:text-[#e20613] rounded-lg px-4 py-1.5 transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe] disabled:border-[#adb5bd] disabled:text-[#adb5bd] disabled:pointer-events-none text-sm font-normal inline-flex items-center gap-2"
                         >
                           <svg
                             className="stroke-current"
@@ -382,7 +374,7 @@ export default function ListOperators() {
                             />
                           </svg>
                           Supprimer
-                        </Button>
+                        </button>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -401,12 +393,12 @@ export default function ListOperators() {
       >
         <div className="space-y-4">
           <div>
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+            <h3 className="text-xl font-normal text-[#1d1914]">
               Confirmer la suppression
             </h3>
-            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+            <p className="mt-2 text-base text-[#1d1914]">
               Êtes-vous sûr de vouloir supprimer le gestionnaire{" "}
-              <span className="font-medium text-gray-800 dark:text-white/90">
+              <span className="font-medium text-[#1d1914]">
                 {operatorToDelete?.FirstName} {operatorToDelete?.UserName}
               </span>
               ? Cette action est irréversible.
@@ -416,28 +408,28 @@ export default function ListOperators() {
           {/* Error message in modal */}
           {errorMessage && (
             <div className="mt-4">
-              <Alert variant="error" title="Erreur" message={errorMessage} />
+              <div className="p-4 bg-[#b00511] text-[#e9ecef] rounded-lg">
+                <p className="font-medium mb-1">Erreur</p>
+                <p className="text-sm">{errorMessage}</p>
+              </div>
             </div>
           )}
 
           <div className="flex items-center justify-end gap-3 pt-4">
-            <Button
-              size="sm"
-              variant="outline"
+            <button
               onClick={handleCancelDelete}
               disabled={isDeleting}
+              className="bg-transparent text-[#1d1914] border-2 border-[#1d1914] hover:border-[#b4050f] hover:text-[#b4050f] rounded-lg px-4 py-1.5 transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe] disabled:border-[#adb5bd] disabled:text-[#adb5bd] disabled:pointer-events-none text-sm font-normal"
             >
               Annuler
-            </Button>
-            <Button
-              size="sm"
-              variant="primary"
+            </button>
+            <button
               onClick={handleConfirmDelete}
               disabled={isDeleting}
-              className="bg-error-500 hover:bg-error-600"
+              className="bg-[#b00511] text-white hover:bg-[#e20613] border border-[#b00511] hover:border-[#e20613] rounded-lg px-4 py-1.5 transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe] disabled:bg-[#ffa7ac] disabled:pointer-events-none text-sm font-normal"
             >
               {isDeleting ? "Suppression..." : "Supprimer"}
-            </Button>
+            </button>
           </div>
         </div>
       </Modal>
@@ -602,19 +594,19 @@ function ShareBuildingsModal({
     >
       <div className="space-y-4">
         <div>
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+          <h3 className="text-xl font-normal text-[#1d1914]">
             Editer partage immeuble
           </h3>
-          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+          <p className="mt-2 text-base text-[#1d1914]">
             Gérer les immeubles assignés au gestionnaire{" "}
-            <span className="font-medium text-gray-800 dark:text-white/90">
+            <span className="font-medium text-[#1d1914]">
               {operator.FirstName} {operator.UserName}
             </span>
           </p>
           {operatorData?.user && (
-          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+          <p className="mt-2 text-base text-[#1d1914]">
             Nombre actuel d&apos;immeubles: 
-            <span className="font-medium text-gray-800 dark:text-white/90">
+            <span className="font-medium text-[#1d1914]">
               {assignedImmeubles.length}
             </span>
           </p>
@@ -624,17 +616,16 @@ function ShareBuildingsModal({
         {/* Error message */}
         {(shareError || operatorError) && (
           <div className="mt-4">
-            <Alert
-              variant="error"
-              title="Erreur"
-              message={
-                shareError ||
+            <div className="p-4 bg-[#b00511] text-[#e9ecef] rounded-lg">
+              <p className="font-medium mb-1">Erreur</p>
+              <p className="text-sm">
+                {shareError ||
                 (typeof operatorError === "string"
                   ? operatorError
                   : operatorError?.message) ||
-                "Impossible de charger les immeubles."
-              }
-            />
+                "Impossible de charger les immeubles."}
+              </p>
+            </div>
           </div>
         )}
 
@@ -646,12 +637,12 @@ function ShareBuildingsModal({
           <div className="space-y-6">
             {/* Assigned Buildings */}
             <div>
-              <h4 className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              <h4 className="mb-3 text-sm font-medium text-[#1d1914]">
                 Immeubles assignés ({assignedImmeubles.length})
               </h4>
-              <div className="max-h-[200px] overflow-y-auto rounded-lg border border-gray-200 dark:border-gray-700 p-3">
+              <div className="max-h-[200px] overflow-y-auto rounded-lg border border-[#1d1914] p-3">
                 {assignedImmeubles.length === 0 ? (
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-sm text-[#1d1914]">
                     Aucun immeuble assigné
                   </p>
                 ) : (
@@ -667,7 +658,7 @@ function ShareBuildingsModal({
                       return (
                         <div
                           key={pkImmeuble}
-                          className="flex items-center gap-2 rounded-md p-2 hover:bg-gray-50 dark:hover:bg-gray-800"
+                          className="flex items-center gap-2 rounded-md p-2 hover:bg-[#ffe5e6] transition-all duration-300"
                         >
                           <Checkbox
                             id={`remove-${pkImmeuble}`}
@@ -686,12 +677,12 @@ function ShareBuildingsModal({
 
             {/* Available Buildings */}
             <div>
-              <h4 className="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
+              <h4 className="mb-3 text-sm font-medium text-[#1d1914]">
                 Immeubles disponibles ({availableImmeubles.length})
               </h4>
-              <div className="max-h-[200px] overflow-y-auto rounded-lg border border-gray-200 dark:border-gray-700 p-3">
+              <div className="max-h-[200px] overflow-y-auto rounded-lg border border-[#1d1914] p-3">
                 {availableImmeubles.length === 0 ? (
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                  <p className="text-sm text-[#1d1914]">
                     Aucun immeuble disponible
                   </p>
                 ) : (
@@ -705,7 +696,7 @@ function ShareBuildingsModal({
                       return (
                         <div
                           key={pkImmeuble}
-                          className="flex items-center gap-2 rounded-md p-2 hover:bg-gray-50 dark:hover:bg-gray-800"
+                          className="flex items-center gap-2 rounded-md p-2 hover:bg-[#ffe5e6] transition-all duration-300"
                         >
                           <Checkbox
                             id={`add-${pkImmeuble}`}
@@ -724,27 +715,25 @@ function ShareBuildingsModal({
           </div>
         )}
 
-        <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-          <Button
-            size="sm"
-            variant="outline"
+        <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#1d1914]">
+          <button
             onClick={onClose}
             disabled={isLoadingData}
+            className="bg-transparent text-[#1d1914] border-2 border-[#1d1914] hover:border-[#b4050f] hover:text-[#b4050f] rounded-lg px-4 py-1.5 transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe] disabled:border-[#adb5bd] disabled:text-[#adb5bd] disabled:pointer-events-none text-sm font-normal"
           >
             Annuler
-          </Button>
-          <Button
-            size="sm"
-            variant="primary"
+          </button>
+          <button
             onClick={handleSave}
             disabled={isLoadingData || !hasChanges}
+            className="bg-[#e20613] text-white hover:bg-[#b4050f] border border-[#e20613] hover:border-[#b4050f] rounded-lg px-4 py-1.5 transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe] disabled:bg-[#ffa7ac] disabled:pointer-events-none text-sm font-normal"
           >
             {isLoadingData
               ? "Enregistrement..."
               : hasChanges
               ? `Enregistrer (${selectedToAdd.length + selectedToRemove.length} modification${selectedToAdd.length + selectedToRemove.length > 1 ? "s" : ""})`
               : "Enregistrer"}
-          </Button>
+          </button>
         </div>
       </div>
     </Modal>

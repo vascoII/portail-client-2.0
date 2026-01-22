@@ -10,7 +10,6 @@ import { LoadingMetrics } from "@/components/ui/loading";
 import { Modal } from "@/components/ui/modal";
 import { useModal } from "@/hooks/useModal";
 import { useExport } from "@/lib/hooks/useExport";
-import Alert from "@/components/ui/alert/Alert";
 import apiClient from "@/lib/api/client";
 // + NEW
 import DatePicker from 'react-datepicker';
@@ -209,25 +208,25 @@ export const ImmeubleMetrics = ({ pkImmeuble }: ImmeubleMetricsProps) => {
   }
 
   // Determine icon colors based on values
-  const fuitesColor = metrics.fuites > 0 ? "text-blue-500 dark:text-blue-400" : "text-gray-400 dark:text-gray-500";
-  const dysfonctionnementsColor = metrics.alarmes > 0 ? "text-orange-500 dark:text-orange-400" : "text-gray-400 dark:text-gray-500";
-  const anomaliesColor = metrics.anomalies > 0 ? "text-red-500 dark:text-red-400" : "text-gray-400 dark:text-gray-500";
-  const depannagesColor = metrics.depannages > 0 ? "text-red-500 dark:text-red-400" : "text-gray-400 dark:text-gray-500";
+  const fuitesColor = metrics.fuites > 0 ? "text-[#009bb4]" : "text-[#6a6a6a]";
+  const dysfonctionnementsColor = metrics.alarmes > 0 ? "text-[#e20613]" : "text-[#6a6a6a]";
+  const anomaliesColor = metrics.anomalies > 0 ? "text-[#b00511]" : "text-[#6a6a6a]";
+  const depannagesColor = metrics.depannages > 0 ? "text-[#e20613]" : "text-[#6a6a6a]";
 
   return (
     <>
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-4 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
+      <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-4 pb-4 pt-5 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] sm:px-6">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
         <Link href={`/immeuble/${pkImmeuble}/fuites`} className="h-full">
-          <div className="flex flex-col h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-            <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
+          <div className="flex flex-col h-full rounded-xl border border-[#1d1914] bg-white p-5 hover:bg-[#ffe5e6] transition-all duration-300 md:p-6">
+            <div className="flex items-center justify-center w-12 h-12 bg-[#e9ecef] rounded-xl">
               <StatusIconsFuite size={24} className={fuitesColor} color="currentColor" />
             </div>
 
             <div className="flex items-end justify-between mt-5 flex-grow">
               <div>
-                <span className="text-sm text-gray-500 dark:text-gray-400">Fuites</span>
-                <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
+                <span className="text-sm text-[#1d1914]">Fuites</span>
+                <h4 className="mt-2 font-normal text-[#1d1914] text-xl">
                   {formatNumber(metrics.fuites)}
                 </h4>
               </div>
@@ -237,14 +236,14 @@ export const ImmeubleMetrics = ({ pkImmeuble }: ImmeubleMetricsProps) => {
         </Link>
 
         <Link href={`/immeuble/${pkImmeuble}/dysfonctionnements`} className="h-full">
-          <div className="flex flex-col h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-            <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
+          <div className="flex flex-col h-full rounded-xl border border-[#1d1914] bg-white p-5 hover:bg-[#ffe5e6] transition-all duration-300 md:p-6">
+            <div className="flex items-center justify-center w-12 h-12 bg-[#e9ecef] rounded-xl">
               <StatusIconsDysfonctionnement size={24} className={dysfonctionnementsColor} color="currentColor" />
             </div>
             <div className="flex items-end justify-between mt-5 flex-grow">
               <div>
-                <span className="text-sm text-gray-500 dark:text-gray-400">Alarmes techniques</span>
-                <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
+                <span className="text-sm text-[#1d1914]">Alarmes techniques</span>
+                <h4 className="mt-2 font-normal text-[#1d1914] text-xl">
                   {formatNumber(metrics.alarmes)}
                 </h4>
               </div>
@@ -254,15 +253,15 @@ export const ImmeubleMetrics = ({ pkImmeuble }: ImmeubleMetricsProps) => {
         </Link>
 
         <Link href={`/immeuble/${pkImmeuble}/anomalies`} className="h-full">
-          <div className="flex flex-col h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-            <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
+          <div className="flex flex-col h-full rounded-xl border border-[#1d1914] bg-white p-5 hover:bg-[#ffe5e6] transition-all duration-300 md:p-6">
+            <div className="flex items-center justify-center w-12 h-12 bg-[#e9ecef] rounded-xl">
               <StatusIconsAnomalie size={24} className={anomaliesColor} color="currentColor" />
             </div>
 
             <div className="flex items-end justify-between mt-5 flex-grow">
               <div>
-                <span className="text-sm text-gray-500 dark:text-gray-400">Anomalies de consommation</span>
-                <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
+                <span className="text-sm text-[#1d1914]">Anomalies de consommation</span>
+                <h4 className="mt-2 font-normal text-[#1d1914] text-xl">
                   {formatNumber(metrics.anomalies)}
                 </h4>
               </div>
@@ -272,21 +271,21 @@ export const ImmeubleMetrics = ({ pkImmeuble }: ImmeubleMetricsProps) => {
         </Link>
 
         <Link href={`/immeuble/${pkImmeuble}/interventions`} className="h-full">
-          <div className="flex flex-col h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-            <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
+          <div className="flex flex-col h-full rounded-xl border border-[#1d1914] bg-white p-5 hover:bg-[#ffe5e6] transition-all duration-300 md:p-6">
+            <div className="flex items-center justify-center w-12 h-12 bg-[#e9ecef] rounded-xl">
               <StatusIconsAlerte size={24} className={depannagesColor} color="currentColor" />
             </div>
             <div className="flex items-end justify-between mt-5 flex-grow">
               <div>
-                <span className="text-sm text-gray-500 dark:text-gray-400">Depannages en cours</span>
-                <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
+                <span className="text-sm text-[#1d1914]">Depannages en cours</span>
+                <h4 className="mt-2 font-normal text-[#1d1914] text-xl">
                   {formatNumber(metrics.depannages)}
                 </h4>
               </div>
             </div>
             <div className="mt-5 flex justify-end">
               <button
-                className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 shadow-theme-xs transition hover:bg-gray-50 hover:text-gray-900 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-white/[0.05]"
+                className="rounded-lg border border-[#1d1914] px-3 py-1.5 text-xs font-normal text-[#1d1914] transition-all duration-300 hover:bg-[#ffe5e6] hover:text-[#e20613]"
                 onClick={(event) => {
                   event.preventDefault();
                   event.stopPropagation();
@@ -309,20 +308,18 @@ export const ImmeubleMetrics = ({ pkImmeuble }: ImmeubleMetricsProps) => {
       className="max-w-[520px] p-6"
     >
       <div className="space-y-6">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
+        <h3 className="text-xl font-normal text-[#1d1914]">
           Livret d&apos;intervention
         </h3>
         {anyExportError && (
           <div>
-            <Alert
-              variant={anyExportError.variant || "error"}
-              title={anyExportError.title}
-              message={anyExportError.message}
-              showLink={false}
-            />
+            <div className="p-4 bg-[#b00511] text-white rounded-lg">
+              <p className="font-medium mb-1">{anyExportError.title}</p>
+              <p className="text-sm">{anyExportError.message}</p>
+            </div>
             <button
               onClick={clearAllExportErrors}
-              className="mt-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              className="mt-2 text-xs text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
             >
               Fermer l&apos;alerte
             </button>
@@ -331,7 +328,7 @@ export const ImmeubleMetrics = ({ pkImmeuble }: ImmeubleMetricsProps) => {
         
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+          <label className="text-xs font-normal text-[#1d1914]">
             Date de début
           </label>
           <DatePicker
@@ -344,18 +341,16 @@ export const ImmeubleMetrics = ({ pkImmeuble }: ImmeubleMetricsProps) => {
             dateFormat="dd/MM/yyyy"
             locale={fr}
             placeholderText="JJ/MM/AAAA"
-            // options UX
             isClearable
             showMonthDropdown
             showYearDropdown
             dropdownMode="select"
-            // styling: on laisse la classe Tailwind sur l'input interne
-            className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 focus:border-brand-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
+            className="w-full rounded-lg border border-[#1d1914] px-3 py-2 text-sm text-[#1d1914] focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent"
           />
         </div>
 
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+          <label className="text-xs font-normal text-[#1d1914]">
             Date de fin
           </label>
           <DatePicker
@@ -372,7 +367,7 @@ export const ImmeubleMetrics = ({ pkImmeuble }: ImmeubleMetricsProps) => {
             showMonthDropdown
             showYearDropdown
             dropdownMode="select"
-            className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 focus:border-brand-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
+            className="w-full rounded-lg border border-[#1d1914] px-3 py-2 text-sm text-[#1d1914] focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent"
           />
         </div>
       </div>
@@ -383,13 +378,17 @@ export const ImmeubleMetrics = ({ pkImmeuble }: ImmeubleMetricsProps) => {
             type="button"
             onClick={handleSyntheseExport}
             disabled={isSyntheseExporting || !isRangeValid}
-            className="flex w-full items-center justify-between rounded-lg border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-white/[0.05]"
+            className={`flex w-full items-center justify-between rounded-lg border border-[#1d1914] px-4 py-3 text-sm font-normal transition-all duration-300 ${
+              isSyntheseExporting || !isRangeValid
+                ? "bg-[#e9ecef] text-[#6a6a6a] cursor-not-allowed"
+                : "bg-white text-[#1d1914] hover:bg-[#ffe5e6] hover:text-[#e20613]"
+            }`}
           >
             <span>
               {isSyntheseExporting ? "Export en cours..." : "Synthèse des Interventions (format Pdf)"}
             </span>
             <svg
-              className="h-4 w-4 text-red-500"
+              className="h-4 w-4 text-[#b00511]"
               viewBox="0 0 24 24"
               fill="currentColor"
               xmlns="http://www.w3.org/2000/svg"
@@ -403,13 +402,17 @@ export const ImmeubleMetrics = ({ pkImmeuble }: ImmeubleMetricsProps) => {
             type="button"
             onClick={handleDetailPdfExport}
             disabled={isDetailPdfExporting || !isRangeValid}
-            className="flex w-full items-center justify-between rounded-lg border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-white/[0.05]"
+            className={`flex w-full items-center justify-between rounded-lg border border-[#1d1914] px-4 py-3 text-sm font-normal transition-all duration-300 ${
+              isDetailPdfExporting || !isRangeValid
+                ? "bg-[#e9ecef] text-[#6a6a6a] cursor-not-allowed"
+                : "bg-white text-[#1d1914] hover:bg-[#ffe5e6] hover:text-[#e20613]"
+            }`}
           >
             <span>
               {isDetailPdfExporting ? "Export en cours..." : "Détails des Interventions (format Pdf)"}
             </span>
             <svg
-              className="h-4 w-4 text-red-500"
+              className="h-4 w-4 text-[#b00511]"
               viewBox="0 0 24 24"
               fill="currentColor"
               xmlns="http://www.w3.org/2000/svg"
@@ -423,13 +426,17 @@ export const ImmeubleMetrics = ({ pkImmeuble }: ImmeubleMetricsProps) => {
             type="button"
             onClick={handleDetailExcelExport}
             disabled={isDetailExcelExporting || !isRangeValid}
-            className="flex w-full items-center justify-between rounded-lg border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-white/[0.05]"
+            className={`flex w-full items-center justify-between rounded-lg border border-[#1d1914] px-4 py-3 text-sm font-normal transition-all duration-300 ${
+              isDetailExcelExporting || !isRangeValid
+                ? "bg-[#e9ecef] text-[#6a6a6a] cursor-not-allowed"
+                : "bg-white text-[#1d1914] hover:bg-[#ffe5e6] hover:text-[#e20613]"
+            }`}
           >
             <span>
               {isDetailExcelExporting ? "Export en cours..." : "Détails des Interventions (format Excel)"}
             </span>
             <svg
-              className="h-4 w-4 text-green-500"
+              className="h-4 w-4 text-[#417232]"
               viewBox="0 0 24 24"
               fill="currentColor"
               xmlns="http://www.w3.org/2000/svg"
@@ -446,7 +453,7 @@ export const ImmeubleMetrics = ({ pkImmeuble }: ImmeubleMetricsProps) => {
               clearAllExportErrors();
               livretModal.closeModal();
             }}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-white/[0.05]"
+            className="rounded-lg border border-[#1d1914] px-4 py-2 text-sm font-normal text-[#1d1914] transition-all duration-300 hover:bg-[#ffe5e6] hover:text-[#e20613]"
           >
             Fermer
           </button>

@@ -3,7 +3,6 @@ import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Select from "@/components/form/Select";
 import Checkbox from "@/components/form/input/Checkbox";
-import Button from "@/components/ui/button/Button";
 import React, { useState, useEffect, useCallback } from "react";
 import type { FilterImmeublesParams } from "@/lib/hooks/useImmeubles";
 
@@ -158,8 +157,8 @@ export default function FilterImmeublesForm({
   };
 
   return (
-    <div className="w-full bg-white p-4 shadow-md rounded-lg dark:bg-gray-800 mb-6">
-      <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90 mb-4">
+    <div className="w-full bg-white p-4 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] rounded-xl border border-[#1d1914] mb-6">
+      <h3 className="text-xl font-normal text-[#1d1914] mb-4">
         Filtré par :
       </h3>
 
@@ -249,18 +248,21 @@ export default function FilterImmeublesForm({
 
       {/* Boutons d'action */}
       <div className="flex justify-end space-x-4 mt-6">
-        <Button
+        <button
           type="button"
-          variant="outline"
           onClick={handleReset}
-          size="sm"
+          className="bg-transparent text-[#1d1914] border-2 border-[#1d1914] hover:border-[#b4050f] hover:text-[#b4050f] rounded-lg px-4 py-1.5 text-sm font-normal transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe]"
         >
           Réinitialiser
-        </Button>
+        </button>
         {showSearchButton && (
-          <Button type="button" onClick={handleSearch} size="sm">
+          <button
+            type="button"
+            onClick={handleSearch}
+            className="bg-[#e20613] text-white hover:bg-[#b4050f] border border-[#e20613] hover:border-[#b4050f] rounded-lg px-4 py-1.5 text-sm font-normal transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe]"
+          >
             Rechercher
-          </Button>
+          </button>
         )}
       </div>
     </div>

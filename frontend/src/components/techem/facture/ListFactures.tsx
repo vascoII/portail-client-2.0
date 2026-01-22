@@ -9,8 +9,6 @@ import {
 } from "@/components/ui/table";
 import { useFactures } from "@/lib/hooks/useFactures";
 import type { Invoice } from "@/lib/types/api";
-import Button from "@/components/ui/button/Button";
-import Alert from "@/components/ui/alert/Alert";
 import { handleApiError } from "@/lib/api/client";
 
 export default function ListFactures() {
@@ -191,9 +189,9 @@ export default function ListFactures() {
   // Show loading state
   if (isLoadingQuery) {
     return (
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
+      <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-4 pb-3 pt-4 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] sm:px-6">
         <div className="flex items-center justify-center min-h-[400px]">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-[#1d1914]">
             Chargement des factures...
           </p>
         </div>
@@ -205,25 +203,24 @@ export default function ListFactures() {
   if (errorMessage || facturesError) {
     const errorMsg = errorMessage || (typeof facturesError === 'string' ? facturesError : facturesError?.message) || "Impossible de charger les factures.";
     return (
-      <div className="overflow-hidden rounded-2xl border border-red-200 bg-red-50 px-4 py-6 dark:border-red-900/60 dark:bg-red-950/40 sm:px-6">
-        <Alert
-          variant="error"
-          title="Erreur"
-          message={errorMsg}
-        />
+      <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-4 py-6 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] sm:px-6">
+        <div className="p-4 bg-[#b00511] text-white rounded-lg">
+          <p className="font-medium mb-1">Erreur</p>
+          <p className="text-sm">{errorMsg}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
+    <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-4 pb-3 pt-4 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] sm:px-6">
       <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+          <h3 className="text-xl font-normal text-[#1d1914]">
             Liste des Factures
           </h3>
           {displayedFactures.length > 0 && (
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-sm text-[#1d1914] mt-1">
               {displayedFactures.length} facture
               {displayedFactures.length > 1 ? "s" : ""}
             </p>
@@ -235,7 +232,7 @@ export default function ListFactures() {
             value={filterText}
             onChange={(e) => setFilterText(e.target.value)}
             placeholder="Filtrer (n° facture, ville, adresse...)"
-            className="h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800"
+            className="h-10 w-full rounded-lg border border-[#1d1914] bg-white px-3 py-2 text-sm text-[#1d1914] placeholder:text-[#6a6a6a] focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] transition-all duration-300"
           />
         </div>
       </div>
@@ -243,7 +240,10 @@ export default function ListFactures() {
       {/* Error message */}
       {errorMessage && (
         <div className="mb-4">
-          <Alert variant="error" title="Erreur" message={errorMessage} />
+          <div className="p-4 bg-[#b00511] text-white rounded-lg">
+            <p className="font-medium mb-1">Erreur</p>
+            <p className="text-sm">{errorMessage}</p>
+          </div>
         </div>
       )}
 
@@ -258,8 +258,8 @@ export default function ListFactures() {
 
         if (totalItems === 0) {
           return (
-            <div className="flex items-center justify-center min-h-[200px] rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+            <div className="flex items-center justify-center min-h-[200px] rounded-xl border border-dashed border-[#1d1914]">
+              <p className="text-base text-[#1d1914]">
                 Aucune facture disponible.
               </p>
             </div>
@@ -269,16 +269,16 @@ export default function ListFactures() {
         return (
           <>
             <Table>
-              <TableHeader className="border-y border-gray-100 dark:border-gray-800">
+              <TableHeader className="border-y border-[#1d1914]">
                 <TableRow>
                   <TableCell
                     isHeader
-                    className="py-3 text-start text-theme-xs font-medium text-gray-500 dark:text-gray-400 select-none"
+                    className="py-3 text-start text-sm font-normal text-[#1d1914] select-none"
                   >
                     <button
                       type="button"
                       onClick={() => handleSort("numero")}
-                      className="inline-flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200"
+                      className="inline-flex items-center gap-1 hover:text-[#e20613] transition-all duration-300"
                     >
                       <span>Numéro de facture</span>
                       {sortConfig?.key === "numero" && (
@@ -290,12 +290,12 @@ export default function ListFactures() {
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="py-3 text-start text-theme-xs font-medium text-gray-500 dark:text-gray-400 select-none"
+                    className="py-3 text-start text-sm font-normal text-[#1d1914] select-none"
                   >
                     <button
                       type="button"
                       onClick={() => handleSort("codeGestio")}
-                      className="inline-flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200"
+                      className="inline-flex items-center gap-1 hover:text-[#e20613] transition-all duration-300"
                     >
                       <span>Code gestionnaire</span>
                       {sortConfig?.key === "codeGestio" && (
@@ -307,12 +307,12 @@ export default function ListFactures() {
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="py-3 text-start text-theme-xs font-medium text-gray-500 dark:text-gray-400 select-none"
+                    className="py-3 text-start text-sm font-normal text-[#1d1914] select-none"
                   >
                     <button
                       type="button"
                       onClick={() => handleSort("adresse")}
-                      className="inline-flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200"
+                      className="inline-flex items-center gap-1 hover:text-[#e20613] transition-all duration-300"
                     >
                       <span>Adresse</span>
                       {sortConfig?.key === "adresse" && (
@@ -324,12 +324,12 @@ export default function ListFactures() {
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="py-3 text-start text-theme-xs font-medium text-gray-500 dark:text-gray-400 select-none"
+                    className="py-3 text-start text-sm font-normal text-[#1d1914] select-none"
                   >
                     <button
                       type="button"
                       onClick={() => handleSort("ville")}
-                      className="inline-flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200"
+                      className="inline-flex items-center gap-1 hover:text-[#e20613] transition-all duration-300"
                     >
                       <span>Ville</span>
                       {sortConfig?.key === "ville" && (
@@ -341,12 +341,12 @@ export default function ListFactures() {
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="py-3 text-start text-theme-xs font-medium text-gray-500 dark:text-gray-400 select-none"
+                    className="py-3 text-start text-sm font-normal text-[#1d1914] select-none"
                   >
                     <button
                       type="button"
                       onClick={() => handleSort("cp")}
-                      className="inline-flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200"
+                      className="inline-flex items-center gap-1 hover:text-[#e20613] transition-all duration-300"
                     >
                       <span>Code postal</span>
                       {sortConfig?.key === "cp" && (
@@ -358,12 +358,12 @@ export default function ListFactures() {
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="py-3 text-start text-theme-xs font-medium text-gray-500 dark:text-gray-400 select-none"
+                    className="py-3 text-start text-sm font-normal text-[#1d1914] select-none"
                   >
                     <button
                       type="button"
                       onClick={() => handleSort("dateEdition")}
-                      className="inline-flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200"
+                      className="inline-flex items-center gap-1 hover:text-[#e20613] transition-all duration-300"
                     >
                       <span>Date d&apos;émission</span>
                       {sortConfig?.key === "dateEdition" && (
@@ -375,12 +375,12 @@ export default function ListFactures() {
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="py-3 text-start text-theme-xs font-medium text-gray-500 dark:text-gray-400 select-none"
+                    className="py-3 text-start text-sm font-normal text-[#1d1914] select-none"
                   >
                     <button
                       type="button"
                       onClick={() => handleSort("montantHT")}
-                      className="inline-flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200"
+                      className="inline-flex items-center gap-1 hover:text-[#e20613] transition-all duration-300"
                     >
                       <span>Montant total HT</span>
                       {sortConfig?.key === "montantHT" && (
@@ -392,12 +392,12 @@ export default function ListFactures() {
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="py-3 text-start text-theme-xs font-medium text-gray-500 dark:text-gray-400 select-none"
+                    className="py-3 text-start text-sm font-normal text-[#1d1914] select-none"
                   >
                     <button
                       type="button"
                       onClick={() => handleSort("montantTTC")}
-                      className="inline-flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200"
+                      className="inline-flex items-center gap-1 hover:text-[#e20613] transition-all duration-300"
                     >
                       <span>Montant total TTC</span>
                       {sortConfig?.key === "montantTTC" && (
@@ -409,12 +409,12 @@ export default function ListFactures() {
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="py-3 text-start text-theme-xs font-medium text-gray-500 dark:text-gray-400 select-none"
+                    className="py-3 text-start text-sm font-normal text-[#1d1914] select-none"
                   >
                     <button
                       type="button"
                       onClick={() => handleSort("montantAPayer")}
-                      className="inline-flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200"
+                      className="inline-flex items-center gap-1 hover:text-[#e20613] transition-all duration-300"
                     >
                       <span>Montant total à payer</span>
                       {sortConfig?.key === "montantAPayer" && (
@@ -426,14 +426,14 @@ export default function ListFactures() {
                   </TableCell>
                   <TableCell
                     isHeader
-                    className="py-3 text-center text-theme-xs font-medium text-gray-500 dark:text-gray-400"
+                    className="py-3 text-center text-sm font-normal text-[#1d1914]"
                   >
                     Télécharger
                   </TableCell>
                 </TableRow>
               </TableHeader>
 
-              <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+              <TableBody className="divide-y divide-[#1d1914]">
                 {paginatedFactures.map((facture) => {
                   const pkFacture = facture.pkFacture;
                   const numero = facture.numero ?? "—";
@@ -451,41 +451,44 @@ export default function ListFactures() {
 
                   return (
                     <TableRow key={pkFacture} className="align-top">
-                      <TableCell className="py-4 text-sm text-gray-700 dark:text-gray-200">
+                      <TableCell className="py-4 text-sm text-[#1d1914]">
                         {numero}
                       </TableCell>
-                      <TableCell className="py-4 text-sm text-gray-700 dark:text-gray-200">
+                      <TableCell className="py-4 text-sm text-[#1d1914]">
                         {codeGestio}
                       </TableCell>
-                      <TableCell className="py-4 text-sm text-gray-700 dark:text-gray-200">
+                      <TableCell className="py-4 text-sm text-[#1d1914]">
                         {adresse}
                       </TableCell>
-                      <TableCell className="py-4 text-sm text-gray-700 dark:text-gray-200">
+                      <TableCell className="py-4 text-sm text-[#1d1914]">
                         {ville}
                       </TableCell>
-                      <TableCell className="py-4 text-sm text-gray-700 dark:text-gray-200">
+                      <TableCell className="py-4 text-sm text-[#1d1914]">
                         {cp}
                       </TableCell>
-                      <TableCell className="py-4 text-sm text-gray-700 dark:text-gray-200">
+                      <TableCell className="py-4 text-sm text-[#1d1914]">
                         {dateEdition}
                       </TableCell>
-                      <TableCell className="py-4 text-sm text-gray-700 dark:text-gray-200">
+                      <TableCell className="py-4 text-sm text-[#1d1914]">
                         {montantHT}
                       </TableCell>
-                      <TableCell className="py-4 text-sm text-gray-700 dark:text-gray-200">
+                      <TableCell className="py-4 text-sm text-[#1d1914]">
                         {montantTTC}
                       </TableCell>
-                      <TableCell className="py-4 text-sm text-gray-700 dark:text-gray-200">
+                      <TableCell className="py-4 text-sm text-[#1d1914]">
                         {montantAPayer}
                       </TableCell>
                       <TableCell className="py-4">
                         <div className="flex items-center justify-center">
-                          <Button
-                            size="sm"
-                            variant="outline"
+                          <button
+                            type="button"
                             onClick={() => handleDownload(pkFacture)}
                             disabled={isDownloading}
-                            className="inline-flex items-center gap-2"
+                            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[#1d1914] text-sm font-normal transition-all duration-300 ${
+                              isDownloading
+                                ? "bg-[#e9ecef] text-[#6a6a6a] cursor-not-allowed"
+                                : "bg-white text-[#1d1914] hover:bg-[#ffe5e6] hover:text-[#e20613] cursor-pointer"
+                            }`}
                           >
                             <svg
                               className="stroke-current"
@@ -520,7 +523,7 @@ export default function ListFactures() {
                             {isDownloading
                               ? "Téléchargement..."
                               : "Télécharger"}
-                          </Button>
+                          </button>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -530,43 +533,49 @@ export default function ListFactures() {
             </Table>
 
             {/* Pagination controls */}
-            <div className="mt-4 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+            <div className="mt-4 flex items-center justify-between text-sm text-[#1d1914]">
               <span>
                 Affichage{" "}
-                <span className="font-medium">
+                <span className="font-normal">
                   {startIndex + 1}-
                   {Math.min(endIndex, totalItems)}
                 </span>{" "}
-                sur <span className="font-medium">{totalItems}</span>
+                sur <span className="font-normal">{totalItems}</span>
               </span>
               <div className="flex items-center gap-2">
-                <Button
-                  size="sm"
-                  variant="outline"
+                <button
                   type="button"
                   disabled={currentPage === 1}
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  className={`px-4 py-2 rounded-lg border border-[#1d1914] text-sm font-normal transition-all duration-300 ${
+                    currentPage === 1
+                      ? "bg-[#e9ecef] text-[#6a6a6a] cursor-not-allowed"
+                      : "bg-white text-[#1d1914] hover:bg-[#ffe5e6] hover:text-[#e20613] cursor-pointer"
+                  }`}
                 >
                   Précédent
-                </Button>
+                </button>
                 <span>
                   Page{" "}
-                  <span className="font-medium">
+                  <span className="font-normal">
                     {currentPage}
                   </span>{" "}
                   / {totalPages}
                 </span>
-                <Button
-                  size="sm"
-                  variant="outline"
+                <button
                   type="button"
                   disabled={currentPage === totalPages}
                   onClick={() =>
                     setPage((p) => Math.min(totalPages, p + 1))
                   }
+                  className={`px-4 py-2 rounded-lg border border-[#1d1914] text-sm font-normal transition-all duration-300 ${
+                    currentPage === totalPages
+                      ? "bg-[#e9ecef] text-[#6a6a6a] cursor-not-allowed"
+                      : "bg-white text-[#1d1914] hover:bg-[#ffe5e6] hover:text-[#e20613] cursor-pointer"
+                  }`}
                 >
                   Suivant
-                </Button>
+                </button>
               </div>
             </div>
           </>

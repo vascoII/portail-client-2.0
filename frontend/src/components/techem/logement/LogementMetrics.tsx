@@ -8,7 +8,6 @@ import { LoadingMetrics } from "@/components/ui/loading";
 import { Modal } from "@/components/ui/modal";
 import { useModal } from "@/hooks/useModal";
 import { useExport } from "@/lib/hooks/useExport";
-import Alert from "@/components/ui/alert/Alert";
 import apiClient from "@/lib/api/client";
 
 interface LogementMetricsProps {
@@ -137,24 +136,24 @@ export const LogementMetrics = ({ pkLogement, pkImmeuble }: LogementMetricsProps
   }
 
   // Determine icon colors based on values
-  const dysfonctionnementsColor = metrics.alarmes > 0 ? "text-orange-500 dark:text-orange-400" : "text-gray-400 dark:text-gray-500";
-  const depannagesColor = metrics.depannages > 0 ? "text-red-500 dark:text-red-400" : "text-gray-400 dark:text-gray-500";
+  const dysfonctionnementsColor = metrics.alarmes > 0 ? "text-[#e20613]" : "text-[#6a6a6a]";
+  const depannagesColor = metrics.depannages > 0 ? "text-[#e20613]" : "text-[#6a6a6a]";
 
   return (
     <>
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-4 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
+    <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-4 pb-4 pt-5 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] sm:px-6">
     <div className="grid grid-cols-2 gap-4 md:gap-6">
       {/* Alarmes (Dysfonctionnements) - Metric Item Start */}
       <Link href={`/immeuble/${pkImmeuble}/logements/${pkLogement}/dysfonctionnements`} className="h-full">
-      <div className="flex items-center gap-3 h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-        <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800 flex-shrink-0">
+      <div className="flex items-center gap-3 h-full rounded-xl border border-[#1d1914] bg-white p-5 hover:bg-[#ffe5e6] transition-all duration-300 md:p-6">
+        <div className="flex items-center justify-center w-12 h-12 bg-[#e9ecef] rounded-xl flex-shrink-0">
           <StatusIconsDysfonctionnement size={24} className={dysfonctionnementsColor} color="currentColor" />
         </div>
         <div className="flex items-center gap-2 flex-grow">
-          <span className="text-sm text-gray-500 dark:text-gray-400">
+          <span className="text-sm text-[#1d1914]">
             Alarmes techniques
           </span>
-          <h4 className="font-bold text-gray-800 text-title-sm dark:text-white/90">
+          <h4 className="font-normal text-[#1d1914] text-xl">
             {formatNumber(Math.max(metrics.alarmes, 0))}
           </h4>
         </div>
@@ -163,23 +162,23 @@ export const LogementMetrics = ({ pkLogement, pkImmeuble }: LogementMetricsProps
       {/* Alarmes - Metric Item End */}
 
       {/* Depannages - Metric Item Start */}
-      <div className="h-full rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+      <div className="h-full rounded-xl border border-[#1d1914] bg-white p-5 md:p-6">
         <div className="flex items-center gap-3 mb-3">
-          <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800 flex-shrink-0">
+          <div className="flex items-center justify-center w-12 h-12 bg-[#e9ecef] rounded-xl flex-shrink-0">
             <StatusIconsAlerte size={24} className={depannagesColor} color="currentColor" />
           </div>
           <Link href={`/immeuble/${pkImmeuble}/logements/${pkLogement}/interventions`} className="flex items-center gap-2 flex-grow">
-            <span className="text-sm text-gray-500 dark:text-gray-400">
+            <span className="text-sm text-[#1d1914]">
               Depannages en cours
             </span>
-            <h4 className="font-bold text-gray-800 text-title-sm dark:text-white/90">
+            <h4 className="font-normal text-[#1d1914] text-xl">
               {formatNumber(Math.max(metrics.depannages, 0))}
             </h4>
           </Link>
         </div>
         <div className="flex justify-end">
           <button
-            className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 shadow-theme-xs transition hover:bg-gray-50 hover:text-gray-900 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-white/[0.05]"
+            className="rounded-lg border border-[#1d1914] px-3 py-1.5 text-xs font-normal text-[#1d1914] transition-all duration-300 hover:bg-[#ffe5e6] hover:text-[#e20613]"
             onClick={(event) => {
               event.preventDefault();
               event.stopPropagation();
@@ -202,20 +201,18 @@ export const LogementMetrics = ({ pkLogement, pkImmeuble }: LogementMetricsProps
       className="max-w-[520px] p-6"
     >
       <div className="space-y-6">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
+        <h3 className="text-xl font-normal text-[#1d1914]">
           Livret d&apos;intervention
         </h3>
         {anyExportError && (
           <div>
-            <Alert
-              variant={anyExportError.variant || "error"}
-              title={anyExportError.title}
-              message={anyExportError.message}
-              showLink={false}
-            />
+            <div className="p-4 bg-[#b00511] text-white rounded-lg">
+              <p className="font-medium mb-1">{anyExportError.title}</p>
+              <p className="text-sm">{anyExportError.message}</p>
+            </div>
             <button
               onClick={clearAllExportErrors}
-              className="mt-2 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              className="mt-2 text-xs text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
             >
               Fermer l&apos;alerte
             </button>
@@ -223,25 +220,25 @@ export const LogementMetrics = ({ pkLogement, pkImmeuble }: LogementMetricsProps
         )}
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+            <label className="text-xs font-normal uppercase tracking-wide text-[#1d1914]">
               Date de début
             </label>
             <input
               type="date"
               value={dateStart}
               onChange={(event) => setDateStart(event.target.value)}
-              className="rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 focus:border-brand-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
+              className="rounded-lg border border-[#1d1914] px-3 py-2 text-sm text-[#1d1914] focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] transition-all duration-300"
             />
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
+            <label className="text-xs font-normal uppercase tracking-wide text-[#1d1914]">
               Date de fin
             </label>
             <input
               type="date"
               value={dateEnd}
               onChange={(event) => setDateEnd(event.target.value)}
-              className="rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 focus:border-brand-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
+              className="rounded-lg border border-[#1d1914] px-3 py-2 text-sm text-[#1d1914] focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] transition-all duration-300"
             />
           </div>
         </div>
@@ -250,7 +247,11 @@ export const LogementMetrics = ({ pkLogement, pkImmeuble }: LogementMetricsProps
             type="button"
             onClick={handleSyntheseExport}
             disabled={isSyntheseExporting || !dateStart || !dateEnd}
-            className="flex w-full items-center justify-between rounded-lg border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-white/[0.05]"
+            className={`flex w-full items-center justify-between rounded-lg border border-[#1d1914] px-4 py-3 text-sm font-normal text-[#1d1914] transition-all duration-300 ${
+              isSyntheseExporting || !dateStart || !dateEnd
+                ? "bg-[#e9ecef] text-[#6a6a6a] cursor-not-allowed"
+                : "bg-white hover:bg-[#ffe5e6] hover:text-[#e20613]"
+            }`}
           >
             <span>
               {isSyntheseExporting ? "Export en cours..." : "Synthèse des Interventions (format Pdf)"}
@@ -270,7 +271,11 @@ export const LogementMetrics = ({ pkLogement, pkImmeuble }: LogementMetricsProps
             type="button"
             onClick={handleDetailPdfExport}
             disabled={isDetailPdfExporting || !dateStart || !dateEnd}
-            className="flex w-full items-center justify-between rounded-lg border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-white/[0.05]"
+            className={`flex w-full items-center justify-between rounded-lg border border-[#1d1914] px-4 py-3 text-sm font-normal text-[#1d1914] transition-all duration-300 ${
+              isDetailPdfExporting || !dateStart || !dateEnd
+                ? "bg-[#e9ecef] text-[#6a6a6a] cursor-not-allowed"
+                : "bg-white hover:bg-[#ffe5e6] hover:text-[#e20613]"
+            }`}
           >
             <span>
               {isDetailPdfExporting ? "Export en cours..." : "Détails des Interventions (format Pdf)"}
@@ -290,7 +295,11 @@ export const LogementMetrics = ({ pkLogement, pkImmeuble }: LogementMetricsProps
             type="button"
             onClick={handleDetailExcelExport}
             disabled={isDetailExcelExporting || !dateStart || !dateEnd}
-            className="flex w-full items-center justify-between rounded-lg border border-gray-200 px-4 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-white/[0.05]"
+            className={`flex w-full items-center justify-between rounded-lg border border-[#1d1914] px-4 py-3 text-sm font-normal text-[#1d1914] transition-all duration-300 ${
+              isDetailExcelExporting || !dateStart || !dateEnd
+                ? "bg-[#e9ecef] text-[#6a6a6a] cursor-not-allowed"
+                : "bg-white hover:bg-[#ffe5e6] hover:text-[#e20613]"
+            }`}
           >
             <span>
               {isDetailExcelExporting ? "Export en cours..." : "Détails des Interventions (format Excel)"}
@@ -313,7 +322,7 @@ export const LogementMetrics = ({ pkLogement, pkImmeuble }: LogementMetricsProps
               clearAllExportErrors();
               livretModal.closeModal();
             }}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-white/[0.05]"
+            className="rounded-lg border border-[#1d1914] px-4 py-2 text-sm font-normal text-[#1d1914] hover:bg-[#ffe5e6] hover:text-[#e20613] transition-all duration-300"
           >
             Fermer
           </button>

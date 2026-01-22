@@ -4,7 +4,6 @@ import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 import { useLogements } from "@/lib/hooks/useLogements";
 import { LoadingChart } from "@/components/ui/loading";
-import Alert from "@/components/ui/alert/Alert";
 import { api, handleApiError } from "@/lib/api/client";
 import { useExport } from "@/lib/hooks/useExport";
 
@@ -144,7 +143,7 @@ export default function LogementConsommationChartEf({ pkLogement }: LogementCons
 
   const options: ApexOptions = useMemo(() => {
     return {
-      colors: ["#465fff"],
+      colors: ["#009bb4"], // Techem blue for cold water
       chart: {
         fontFamily: "Outfit, sans-serif",
         type: "bar",
@@ -242,42 +241,38 @@ export default function LogementConsommationChartEf({ pkLogement }: LogementCons
 
   if (error) {
     return (
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
-        <Alert
-          variant="error"
-          title="Erreur de chargement"
-          message="Impossible de récupérer les données de consommation."
-          showLink={false}
-        />
+      <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-5 pt-5 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] sm:px-6 sm:pt-6">
+        <div className="p-4 bg-[#b00511] text-white rounded-lg">
+          <p className="font-medium mb-1">Erreur de chargement</p>
+          <p className="text-sm">Impossible de récupérer les données de consommation.</p>
+        </div>
       </div>
     );
   }
 
   if (!hasData) {
     return (
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
+      <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-5 pt-5 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] sm:px-6 sm:pt-6">
         {releveError && (
           <div className="mb-3">
-            <Alert
-              variant={releveError.variant || "error"}
-              title={releveError.title}
-              message={releveError.message}
-              showLink={false}
-            />
+            <div className="p-4 bg-[#b00511] text-white rounded-lg">
+              <p className="font-medium mb-1">{releveError.title}</p>
+              <p className="text-sm">{releveError.message}</p>
+            </div>
             <button
               type="button"
               onClick={clearReleveError}
-              className="mt-1 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              className="mt-1 text-xs text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
             >
               Fermer
             </button>
           </div>
         )}
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+        <h3 className="text-xl font-normal text-[#1d1914]">
           Compteur Eau froide
         </h3>
-        <div className="flex items-center justify-center min-h-[160px] rounded-xl border border-dashed border-gray-200 dark:border-gray-800 mt-4">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+        <div className="flex items-center justify-center min-h-[160px] rounded-xl border border-dashed border-[#1d1914] mt-4">
+          <p className="text-base text-[#1d1914]">
             Aucune donnée de consommation disponible.
           </p>
         </div>
@@ -286,19 +281,17 @@ export default function LogementConsommationChartEf({ pkLogement }: LogementCons
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
+    <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-5 pt-5 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] sm:px-6 sm:pt-6">
       {releveError && (
         <div className="mb-3">
-          <Alert
-            variant={releveError.variant || "error"}
-            title={releveError.title}
-            message={releveError.message}
-            showLink={false}
-          />
+          <div className="p-4 bg-[#b00511] text-white rounded-lg">
+            <p className="font-medium mb-1">{releveError.title}</p>
+            <p className="text-sm">{releveError.message}</p>
+          </div>
           <button
             type="button"
             onClick={clearReleveError}
-            className="mt-1 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            className="mt-1 text-xs text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
           >
             Fermer
           </button>
@@ -306,10 +299,10 @@ export default function LogementConsommationChartEf({ pkLogement }: LogementCons
       )}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+          <h3 className="text-xl font-normal text-[#1d1914]">
             Compteur Eau froide
           </h3>
-          <p className="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
+          <p className="mt-1 text-sm text-[#1d1914]">
             Information consommation + variation entre deux relevés
           </p>
         </div>
@@ -318,7 +311,11 @@ export default function LogementConsommationChartEf({ pkLogement }: LogementCons
             type="button"
             onClick={handleReleveExport}
             disabled={isReleveExporting}
-            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-theme-xs transition hover:bg-gray-50 hover:text-gray-900 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-white/[0.05]"
+            className={`inline-flex items-center gap-2 rounded-lg border border-[#1d1914] px-3 py-1.5 text-xs font-normal text-[#1d1914] transition-all duration-300 ${
+              isReleveExporting
+                ? "bg-[#e9ecef] text-[#6a6a6a] cursor-not-allowed"
+                : "bg-white hover:bg-[#ffe5e6] hover:text-[#e20613]"
+            }`}
           >
             <span>{isReleveExporting ? "Export en cours..." : "Export PDF"}</span>
           </button>

@@ -1,9 +1,4 @@
 "use client";
-import Input from "@/components/form/input/InputField";
-import Label from "@/components/form/Label";
-import Select from "@/components/form/Select";
-import Checkbox from "@/components/form/input/Checkbox";
-import Button from "@/components/ui/button/Button";
 import React, { useState, useEffect, useCallback } from "react";
 import type { FilterLogementsParams } from "@/lib/hooks/useLogements";
 import type { FilterValues } from "@/lib/types/api";
@@ -155,7 +150,7 @@ export default function FilterLogementsForm({
   return (
     <div className="w-full space-y-6">
       <div>
-        <h3 className="mb-4 text-lg font-semibold text-gray-800 dark:text-white/90">
+        <h3 className="mb-4 text-xl font-normal text-[#1d1914]">
           Filtré par
         </h3>
       </div>
@@ -163,69 +158,90 @@ export default function FilterLogementsForm({
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {/* Select Type d'énergie */}
         <div>
-          <Label htmlFor="EnergieSelect">Type d&apos;énergie</Label>
-          <Select
+          <label htmlFor="EnergieSelect" className="block text-sm font-normal text-[#1d1914] mb-2">Type d&apos;énergie</label>
+          <select
             id="EnergieSelect"
-            options={energieOptions}
-            placeholder="Toutes les énergies"
-            defaultValue={filters.EnergieSelect || ""}
-            onChange={(value) => handleFilterChange("EnergieSelect", value)}
-          />
+            value={filters.EnergieSelect || ""}
+            onChange={(e) => handleFilterChange("EnergieSelect", e.target.value)}
+            className="w-full px-4 py-2 border border-[#1d1914] rounded-lg text-sm text-[#1d1914] bg-white focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent"
+          >
+            {energieOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Checkboxes */}
         <div className="space-y-3">
-          <Label>Filtres</Label>
+          <label className="block text-sm font-normal text-[#1d1914] mb-2">Filtres</label>
           <div className="space-y-2">
-            <Checkbox
-              id="fuites"
-              label="Fuites"
-              checked={filters.fuites || false}
-              onChange={(checked) => handleFilterChange("fuites", checked)}
-            />
-            <Checkbox
-              id="anomalies"
-              label="Anomalies"
-              checked={filters.anomalies || false}
-              onChange={(checked) => handleFilterChange("anomalies", checked)}
-            />
-            <Checkbox
-              id="dysfonctionnements"
-              label="Alarmes techniques"
-              checked={filters.dysfonctionnements || false}
-              onChange={(checked) =>
-                handleFilterChange("dysfonctionnements", checked)
-              }
-            />
-            <Checkbox
-              id="depannages"
-              label="Dépannages en cours"
-              checked={filters.depannages || false}
-              onChange={(checked) => handleFilterChange("depannages", checked)}
-            />
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                id="fuites"
+                checked={filters.fuites || false}
+                onChange={(e) => handleFilterChange("fuites", e.target.checked)}
+                className="w-4 h-4 border-[#1d1914] rounded text-[#1d1914] focus:ring-2 focus:ring-[#1d1914] focus:ring-offset-0"
+              />
+              <span className="text-sm text-[#1d1914]">Fuites</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                id="anomalies"
+                checked={filters.anomalies || false}
+                onChange={(e) => handleFilterChange("anomalies", e.target.checked)}
+                className="w-4 h-4 border-[#1d1914] rounded text-[#1d1914] focus:ring-2 focus:ring-[#1d1914] focus:ring-offset-0"
+              />
+              <span className="text-sm text-[#1d1914]">Anomalies</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                id="dysfonctionnements"
+                checked={filters.dysfonctionnements || false}
+                onChange={(e) => handleFilterChange("dysfonctionnements", e.target.checked)}
+                className="w-4 h-4 border-[#1d1914] rounded text-[#1d1914] focus:ring-2 focus:ring-[#1d1914] focus:ring-offset-0"
+              />
+              <span className="text-sm text-[#1d1914]">Alarmes techniques</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                id="depannages"
+                checked={filters.depannages || false}
+                onChange={(e) => handleFilterChange("depannages", e.target.checked)}
+                className="w-4 h-4 border-[#1d1914] rounded text-[#1d1914] focus:ring-2 focus:ring-[#1d1914] focus:ring-offset-0"
+              />
+              <span className="text-sm text-[#1d1914]">Dépannages en cours</span>
+            </label>
           </div>
         </div>
 
         {/* Inputs texte */}
         <div className="space-y-4">
           <div>
-            <Label htmlFor="reference">Référence / Numéro</Label>
-            <Input
+            <label htmlFor="reference" className="block text-sm font-normal text-[#1d1914] mb-2">Référence / Numéro</label>
+            <input
               id="reference"
               type="text"
               placeholder="Référence / Numéro"
-              defaultValue={filters.reference || ""}
+              value={filters.reference || ""}
               onChange={(e) => handleFilterChange("reference", e.target.value)}
+              className="w-full px-4 py-2 border border-[#1d1914] rounded-lg text-sm text-[#1d1914] bg-white focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent"
             />
           </div>
           <div>
-            <Label htmlFor="location">Code postal / Ville</Label>
-            <Input
+            <label htmlFor="location" className="block text-sm font-normal text-[#1d1914] mb-2">Code postal / Ville</label>
+            <input
               id="location"
               type="text"
               placeholder="Code postal / Ville"
-              defaultValue={filters.location || ""}
+              value={filters.location || ""}
               onChange={(e) => handleFilterChange("location", e.target.value)}
+              className="w-full px-4 py-2 border border-[#1d1914] rounded-lg text-sm text-[#1d1914] bg-white focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent"
             />
           </div>
         </div>
@@ -239,60 +255,60 @@ export default function FilterLogementsForm({
           {/* Filtre Batiment */}
           {availableFilters?.batiment && (
             <div>
-              <Label htmlFor="batiment">Batiment</Label>
-              <Select
+              <label htmlFor="batiment" className="block text-sm font-normal text-[#1d1914] mb-2">Batiment</label>
+              <select
                 id="batiment"
-                options={[
-                  { value: "", label: "Aucun" },
-                  ...(availableFilters.batiment as string[]).map((b) => ({
-                    value: String(b),
-                    label: `Batiment ${b}`,
-                  })),
-                ]}
-                placeholder="Aucun"
-                defaultValue={filters.batiment || ""}
-                onChange={(value) => handleFilterChange("batiment", value)}
-              />
+                value={filters.batiment || ""}
+                onChange={(e) => handleFilterChange("batiment", e.target.value)}
+                className="w-full px-4 py-2 border border-[#1d1914] rounded-lg text-sm text-[#1d1914] bg-white focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent"
+              >
+                <option value="">Aucun</option>
+                {(availableFilters.batiment as string[]).map((b) => (
+                  <option key={String(b)} value={String(b)}>
+                    Batiment {b}
+                  </option>
+                ))}
+              </select>
             </div>
           )}
 
           {/* Filtre Escalier */}
           {availableFilters?.escalier && (
             <div>
-              <Label htmlFor="escalier">Escalier</Label>
-              <Select
+              <label htmlFor="escalier" className="block text-sm font-normal text-[#1d1914] mb-2">Escalier</label>
+              <select
                 id="escalier"
-                options={[
-                  { value: "", label: "Aucun" },
-                  ...(availableFilters.escalier as string[]).map((e) => ({
-                    value: String(e),
-                    label: `Escalier ${e}`,
-                  })),
-                ]}
-                placeholder="Aucun"
-                defaultValue={filters.escalier || ""}
-                onChange={(value) => handleFilterChange("escalier", value)}
-              />
+                value={filters.escalier || ""}
+                onChange={(e) => handleFilterChange("escalier", e.target.value)}
+                className="w-full px-4 py-2 border border-[#1d1914] rounded-lg text-sm text-[#1d1914] bg-white focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent"
+              >
+                <option value="">Aucun</option>
+                {(availableFilters.escalier as string[]).map((e) => (
+                  <option key={String(e)} value={String(e)}>
+                    Escalier {e}
+                  </option>
+                ))}
+              </select>
             </div>
           )}
 
           {/* Filtre Etage */}
           {availableFilters?.etage && (
             <div>
-              <Label htmlFor="etage">Etage</Label>
-              <Select
+              <label htmlFor="etage" className="block text-sm font-normal text-[#1d1914] mb-2">Etage</label>
+              <select
                 id="etage"
-                options={[
-                  { value: "", label: "Aucun" },
-                  ...(availableFilters.etage as string[]).map((e) => ({
-                    value: String(e),
-                    label: `Etage ${e}`,
-                  })),
-                ]}
-                placeholder="Aucun"
-                defaultValue={filters.etage || ""}
-                onChange={(value) => handleFilterChange("etage", value)}
-              />
+                value={filters.etage || ""}
+                onChange={(e) => handleFilterChange("etage", e.target.value)}
+                className="w-full px-4 py-2 border border-[#1d1914] rounded-lg text-sm text-[#1d1914] bg-white focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent"
+              >
+                <option value="">Aucun</option>
+                {(availableFilters.etage as string[]).map((e) => (
+                  <option key={String(e)} value={String(e)}>
+                    Etage {e}
+                  </option>
+                ))}
+              </select>
             </div>
           )}
         </div>
@@ -301,13 +317,21 @@ export default function FilterLogementsForm({
       {/* Boutons d'action */}
       <div className="flex items-center gap-3">
         {showSearchButton && (
-          <Button size="sm" onClick={handleSearch}>
+          <button
+            type="button"
+            onClick={handleSearch}
+            className="px-4 py-2 rounded-lg text-sm font-normal text-white bg-[#1d1914] hover:bg-[#e20613] transition-all duration-300"
+          >
             Rechercher
-          </Button>
+          </button>
         )}
-        <Button size="sm" variant="outline" onClick={handleReset}>
+        <button
+          type="button"
+          onClick={handleReset}
+          className="px-4 py-2 rounded-lg border border-[#1d1914] text-sm font-normal text-[#1d1914] bg-white hover:bg-[#ffe5e6] hover:text-[#e20613] transition-all duration-300"
+        >
           Réinitialiser
-        </Button>
+        </button>
       </div>
     </div>
   );

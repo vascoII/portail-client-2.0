@@ -4,7 +4,6 @@ import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 import { useImmeubles } from "@/lib/hooks/useImmeubles";
 import { LoadingChart } from "@/components/ui/loading";
-import Alert from "@/components/ui/alert/Alert";
 import type { TabType } from "@/components/techem/immeuble/ImmeubleReleves";
 
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
@@ -165,7 +164,7 @@ export default function ImmeubleStatisticsConsommationChart({
         position: "top",
         horizontalAlign: "left",
       },
-      colors: ["#465FFF", "#9CB9FF"],
+      colors: selectedTab === "eauFroide" ? ["#009bb4"] : ["#e20613"], // Techem blue for cold water, red for hot water
       chart: {
         fontFamily: "Outfit, sans-serif",
         height: 310,
@@ -238,7 +237,7 @@ export default function ImmeubleStatisticsConsommationChart({
         labels: {
           style: {
             fontSize: "12px",
-            colors: ["#6B7280"],
+            colors: ["#1d1914"], // Techem dark
           },
           formatter: (val) => val.toFixed(0),
         },
@@ -250,7 +249,7 @@ export default function ImmeubleStatisticsConsommationChart({
         },
       },
     };
-  }, [categories]);
+  }, [categories, selectedTab]);
 
   if (!isWaterTab) {
     return null;
@@ -269,29 +268,27 @@ export default function ImmeubleStatisticsConsommationChart({
 
   if (error) {
     return (
-      <div className="rounded-2xl border border-gray-200 bg-white px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
-        <Alert
-          variant="error"
-          title="Erreur de chargement"
-          message="Impossible de récupérer l'évolution des consommations."
-          showLink={false}
-        />
+      <div className="rounded-xl border border-[#1d1914] bg-white px-5 pb-5 pt-5 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] sm:px-6 sm:pt-6">
+        <div className="p-4 bg-[#b00511] text-white rounded-lg">
+          <p className="font-medium mb-1">Erreur de chargement</p>
+          <p className="text-sm">Impossible de récupérer l&apos;évolution des consommations.</p>
+        </div>
       </div>
     );
   }
 
   if (!hasData) {
     return (
-      <div className="rounded-2xl border border-gray-200 bg-white px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
+      <div className="rounded-xl border border-[#1d1914] bg-white px-5 pb-5 pt-5 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] sm:px-6 sm:pt-6">
         <div className="flex flex-col gap-5 mb-6 sm:flex-row sm:justify-between">
           <div className="w-full">
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+            <h3 className="text-xl font-normal text-[#1d1914]">
               Evolution des consommations
             </h3>
           </div>
         </div>
-        <div className="flex items-center justify-center min-h-[200px] rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+        <div className="flex items-center justify-center min-h-[200px] rounded-xl border border-dashed border-[#1d1914]">
+          <p className="text-base text-[#1d1914]">
             Aucune donnée de série disponible pour cet immeuble.
           </p>
         </div>
@@ -300,10 +297,10 @@ export default function ImmeubleStatisticsConsommationChart({
   }
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
+    <div className="rounded-xl border border-[#1d1914] bg-white px-5 pb-5 pt-5 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] sm:px-6 sm:pt-6">
       <div className="flex flex-col gap-5 mb-6 sm:flex-row sm:justify-between">
         <div className="w-full">
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+          <h3 className="text-xl font-normal text-[#1d1914]">
             Evolution des consommations
           </h3>
         </div>

@@ -1,10 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Input from "@/components/form/input/InputField";
-import Label from "@/components/form/Label";
-import Checkbox from "@/components/form/input/Checkbox";
-import Button from "@/components/ui/button/Button";
 
 const CGU_CONTENT = `
 Objet
@@ -290,35 +286,35 @@ export default function CGUPageClient() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-2xl font-semibold text-gray-800 dark:text-white/90">
+      <h1 className="text-xl font-normal text-[#1d1914]">
         Première connexion: Vous devez valider les CGU pour pouvoir accéder à l&apos;espace client.
       </h1>
 
       {/* Contenu des CGU */}
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-6 py-5 dark:border-gray-800 dark:bg-white/[0.03]">
+      <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-6 py-5 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)]">
         <div className="space-y-8">
           {sections.map((section, sectionIndex) => (
             <section key={sectionIndex} className="space-y-4">
-              <h2 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+              <h2 className="text-lg font-normal text-[#1d1914]">
                 {section.title}
               </h2>
               {section.subsections.length > 0 ? (
                 section.subsections.map((subsection, subsectionIndex) => (
                   <div key={subsectionIndex} className="space-y-2">
                     {subsection.subtitle && (
-                      <h3 className="text-base font-medium text-gray-700 dark:text-gray-200">
+                      <h3 className="text-base font-normal text-[#1d1914]">
                         {subsection.subtitle}
                       </h3>
                     )}
                     {subsection.content.trim() && (
-                      <div className="whitespace-pre-line text-sm text-gray-600 dark:text-gray-300">
+                      <div className="whitespace-pre-line text-sm text-[#1d1914]">
                         {subsection.content.trim()}
                       </div>
                     )}
                   </div>
                 ))
               ) : (
-                <div className="text-sm text-gray-600 dark:text-gray-300">
+                <div className="text-sm text-[#1d1914]">
                   Aucun contenu disponible pour cette section.
                 </div>
               )}
@@ -328,59 +324,76 @@ export default function CGUPageClient() {
       </div>
 
       {/* Formulaire */}
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-6 py-5 dark:border-gray-800 dark:bg-white/[0.03]">
-        <h2 className="mb-6 text-lg font-semibold text-gray-800 dark:text-white/90">
+      <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-6 py-5 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)]">
+        <h2 className="mb-6 text-lg font-normal text-[#1d1914]">
           Formulaire d&apos;acceptation
         </h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <Label htmlFor="email">
-              Email <span className="text-error-500">*</span>
-            </Label>
-            <Input
+            <label htmlFor="email" className="block text-base text-[#1d1914] mb-2">
+              Email <span className="text-[#b00511]">*</span>
+            </label>
+            <input
               id="email"
               type="email"
               placeholder="Votre adresse email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              error={!!emailError}
-              hint={emailError}
+              className={`w-full px-4 py-2 border rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300 ${
+                emailError ? "border-[#b00511]" : "border-[#1d1914]"
+              }`}
             />
+            {emailError && (
+              <p className="mt-1 text-sm text-[#b00511]">{emailError}</p>
+            )}
           </div>
 
           <div>
-            <Label htmlFor="confirmEmail">
-              Confirmation Email <span className="text-error-500">*</span>
-            </Label>
-            <Input
+            <label htmlFor="confirmEmail" className="block text-base text-[#1d1914] mb-2">
+              Confirmation Email <span className="text-[#b00511]">*</span>
+            </label>
+            <input
               id="confirmEmail"
               type="email"
               placeholder="Confirmez votre adresse email"
               value={confirmEmail}
               onChange={(e) => setConfirmEmail(e.target.value)}
-              error={!!confirmEmailError}
-              hint={confirmEmailError}
+              className={`w-full px-4 py-2 border rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300 ${
+                confirmEmailError ? "border-[#b00511]" : "border-[#1d1914]"
+              }`}
             />
+            {confirmEmailError && (
+              <p className="mt-1 text-sm text-[#b00511]">{confirmEmailError}</p>
+            )}
           </div>
 
           <div>
-            <Checkbox
-              id="acceptCGU"
-              checked={acceptCGU}
-              onChange={setAcceptCGU}
-              label="J'accepte les Conditions Générales d'Utilisation"
-            />
+            <label className="flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                id="acceptCGU"
+                checked={acceptCGU}
+                onChange={(e) => setAcceptCGU(e.target.checked)}
+                className="w-4 h-4 text-[#e20613] border-[#1d1914] rounded focus:ring-2 focus:ring-[#c2dafe] focus:ring-offset-0"
+              />
+              <span className="ml-2 text-base text-[#1d1914]">
+                J&apos;accepte les Conditions Générales d&apos;Utilisation
+              </span>
+            </label>
           </div>
 
           <div>
-            <Button 
-              type="submit" 
-              size="sm" 
-              className="w-full sm:w-auto"
+            <button
+              type="submit"
               disabled={!isFormValid}
+              className={`px-6 py-2 rounded-lg font-normal text-base transition-all duration-300 ${
+                isFormValid
+                  ? "bg-[#e20613] text-white hover:bg-[#b00511] cursor-pointer"
+                  : "bg-[#e9ecef] text-[#6a6a6a] cursor-not-allowed"
+              }`}
             >
               Valider
-            </Button>
+            </button>
           </div>
         </form>
       </div>

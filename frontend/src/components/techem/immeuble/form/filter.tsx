@@ -1,9 +1,4 @@
 "use client";
-import Input from "@/components/form/input/InputField";
-import Label from "@/components/form/Label";
-import Select from "@/components/form/Select";
-import Checkbox from "@/components/form/input/Checkbox";
-import Button from "@/components/ui/button/Button";
 import React, { useState, useEffect, useCallback } from "react";
 import type { FilterImmeublesParams } from "@/lib/hooks/useImmeubles";
 
@@ -158,90 +153,123 @@ export default function FilterImmeublesForm({
   };
 
   return (
-    <div className="w-full bg-white p-4 shadow-md rounded-lg dark:bg-gray-800 mb-6">
-      <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90 mb-4">
+    <div className="w-full bg-white p-4 rounded-xl border border-[#1d1914] shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] mb-6">
+      <h3 className="text-xl font-normal text-[#1d1914] mb-4">
         Filtré par :
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Select Type d'énergie */}
         <div>
-          <Label htmlFor="EnergieSelect">Type d&apos;énergie</Label>
-          <Select
+          <label htmlFor="EnergieSelect" className="block text-sm font-normal text-[#1d1914] mb-2">
+            Type d&apos;énergie
+          </label>
+          <select
             id="EnergieSelect"
-            options={energieOptions}
-            placeholder="Toutes les énergies"
-            defaultValue={filters.EnergieSelect || ""}
-            onChange={(value) => handleFilterChange("EnergieSelect", value)}
-          />
+            value={filters.EnergieSelect || ""}
+            onChange={(e) => handleFilterChange("EnergieSelect", e.target.value)}
+            className="w-full rounded-lg border border-[#1d1914] px-3 py-2 text-sm text-[#1d1914] focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent"
+          >
+            {energieOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Checkboxes - Colonne 1 */}
         <div className="space-y-3">
-          <Label>Filtres</Label>
+          <label className="block text-sm font-normal text-[#1d1914] mb-2">Filtres</label>
           <div className="space-y-2">
-            <Checkbox
-              id="fuites"
-              label="Fuites"
-              checked={filters.fuites || false}
-              onChange={(checked) => handleFilterChange("fuites", checked)}
-            />
-            <Checkbox
-              id="anomalies"
-              label="Anomalies"
-              checked={filters.anomalies || false}
-              onChange={(checked) => handleFilterChange("anomalies", checked)}
-            />
-            <Checkbox
-              id="dysfonctionnements"
-              label="Alarmes techniques"
-              checked={filters.dysfonctionnements || false}
-              onChange={(checked) =>
-                handleFilterChange("dysfonctionnements", checked)
-              }
-            />
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                id="fuites"
+                checked={filters.fuites || false}
+                onChange={(e) => handleFilterChange("fuites", e.target.checked)}
+                className="w-4 h-4 rounded border-[#1d1914] text-[#1d1914] focus:ring-2 focus:ring-[#1d1914] focus:ring-offset-0"
+              />
+              <span className="text-sm text-[#1d1914]">Fuites</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                id="anomalies"
+                checked={filters.anomalies || false}
+                onChange={(e) => handleFilterChange("anomalies", e.target.checked)}
+                className="w-4 h-4 rounded border-[#1d1914] text-[#1d1914] focus:ring-2 focus:ring-[#1d1914] focus:ring-offset-0"
+              />
+              <span className="text-sm text-[#1d1914]">Anomalies</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                id="dysfonctionnements"
+                checked={filters.dysfonctionnements || false}
+                onChange={(e) =>
+                  handleFilterChange("dysfonctionnements", e.target.checked)
+                }
+                className="w-4 h-4 rounded border-[#1d1914] text-[#1d1914] focus:ring-2 focus:ring-[#1d1914] focus:ring-offset-0"
+              />
+              <span className="text-sm text-[#1d1914]">Alarmes techniques</span>
+            </label>
           </div>
         </div>
 
         {/* Checkboxes - Colonne 2 */}
         <div className="space-y-3">
-          <Label>Filtres (suite)</Label>
+          <label className="block text-sm font-normal text-[#1d1914] mb-2">Filtres (suite)</label>
           <div className="space-y-2">
-            <Checkbox
-              id="depannages"
-              label="Dépannages en cours"
-              checked={filters.depannages || false}
-              onChange={(checked) => handleFilterChange("depannages", checked)}
-            />
-            <Checkbox
-              id="chantiers"
-              label="Chantiers en cours"
-              checked={filters.chantiers || false}
-              onChange={(checked) => handleFilterChange("chantiers", checked)}
-            />
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                id="depannages"
+                checked={filters.depannages || false}
+                onChange={(e) => handleFilterChange("depannages", e.target.checked)}
+                className="w-4 h-4 rounded border-[#1d1914] text-[#1d1914] focus:ring-2 focus:ring-[#1d1914] focus:ring-offset-0"
+              />
+              <span className="text-sm text-[#1d1914]">Dépannages en cours</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                id="chantiers"
+                checked={filters.chantiers || false}
+                onChange={(e) => handleFilterChange("chantiers", e.target.checked)}
+                className="w-4 h-4 rounded border-[#1d1914] text-[#1d1914] focus:ring-2 focus:ring-[#1d1914] focus:ring-offset-0"
+              />
+              <span className="text-sm text-[#1d1914]">Chantiers en cours</span>
+            </label>
           </div>
         </div>
 
         {/* Inputs texte */}
         <div className="space-y-4">
           <div>
-            <Label htmlFor="reference">Référence / Numéro</Label>
-            <Input
+            <label htmlFor="reference" className="block text-sm font-normal text-[#1d1914] mb-2">
+              Référence / Numéro
+            </label>
+            <input
               id="reference"
               type="text"
               placeholder="Référence / Numéro"
-              defaultValue={filters.reference || ""}
+              value={filters.reference || ""}
               onChange={(e) => handleFilterChange("reference", e.target.value)}
+              className="w-full rounded-lg border border-[#1d1914] px-3 py-2 text-sm text-[#1d1914] placeholder:text-[#6a6a6a] focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent"
             />
           </div>
           <div>
-            <Label htmlFor="location">Code postal / Ville</Label>
-            <Input
+            <label htmlFor="location" className="block text-sm font-normal text-[#1d1914] mb-2">
+              Code postal / Ville
+            </label>
+            <input
               id="location"
               type="text"
               placeholder="Code postal / Ville"
-              defaultValue={filters.location || ""}
+              value={filters.location || ""}
               onChange={(e) => handleFilterChange("location", e.target.value)}
+              className="w-full rounded-lg border border-[#1d1914] px-3 py-2 text-sm text-[#1d1914] placeholder:text-[#6a6a6a] focus:outline-none focus:ring-2 focus:ring-[#1d1914] focus:border-transparent"
             />
           </div>
         </div>
@@ -249,18 +277,21 @@ export default function FilterImmeublesForm({
 
       {/* Boutons d'action */}
       <div className="flex justify-end space-x-4 mt-6">
-        <Button
+        <button
           type="button"
-          variant="outline"
           onClick={handleReset}
-          size="sm"
+          className="px-4 py-2 rounded-lg border border-[#1d1914] bg-white text-[#1d1914] text-sm font-normal transition-all duration-300 hover:bg-[#ffe5e6] hover:text-[#e20613]"
         >
           Réinitialiser
-        </Button>
+        </button>
         {showSearchButton && (
-          <Button type="button" onClick={handleSearch} size="sm">
+          <button
+            type="button"
+            onClick={handleSearch}
+            className="px-4 py-2 rounded-lg bg-[#1d1914] text-white text-sm font-normal transition-all duration-300 hover:bg-[#e20613]"
+          >
             Rechercher
-          </Button>
+          </button>
         )}
       </div>
     </div>

@@ -95,11 +95,11 @@ export default function VosReleves() {
   }
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-gray-100 dark:border-gray-800 dark:bg-white/[0.03]">
-      <div className="px-5 pt-5 bg-white shadow-default rounded-2xl pb-11 dark:bg-gray-900 sm:px-6 sm:pt-6">
+    <div className="rounded-xl border border-[#1d1914] shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)]">
+      <div className="px-5 pt-5 bg-white rounded-xl pb-11 sm:px-6 sm:pt-6">
         <div className="flex justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+            <h3 className="text-xl font-normal text-[#1d1914]">
               Vos Relevés
             </h3>
           </div>
@@ -115,14 +115,14 @@ export default function VosReleves() {
           </div>
 
         </div>
-        <p className="mx-auto mt-10 w-full max-w-[380px] text-center text-sm text-gray-500 sm:text-base">
+        <p className="mx-auto mt-10 w-full max-w-[380px] text-center text-base text-[#1d1914]">
           des appareils relevés 
         </p>
       </div>
 
       <div className="flex items-center justify-center gap-5 px-6 py-3.5 sm:gap-8 sm:py-5">
-        <div className="w-px bg-gray-200 h-7 dark:bg-gray-800"></div>
-        <div className="w-px bg-gray-200 h-7 dark:bg-gray-800"></div>
+        <div className="w-px bg-[#1d1914] h-7"></div>
+        <div className="w-px bg-[#1d1914] h-7"></div>
       </div>
     </div>
   );

@@ -8,8 +8,6 @@ import { useRouter } from "next/navigation";
 import { handleApiError } from "@/lib/api/client";
 import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
-import Button from "@/components/ui/button/Button";
-import Alert from "@/components/ui/alert/Alert";
 import { ChevronLeftIcon } from "@/icons";
 import Link from "next/link";
 
@@ -124,7 +122,7 @@ export default function OperatorCreateForm() {
       <div className="w-full max-w-2xl mx-auto mb-5">
         <Link
           href="/gestionnaire"
-          className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+          className="inline-flex items-center text-sm text-[#1d1914] transition-colors hover:text-[#e20613]"
         >
           <ChevronLeftIcon />
           Retour à la liste des gestionnaires
@@ -133,29 +131,31 @@ export default function OperatorCreateForm() {
       <div className="flex flex-col justify-center flex-1 w-full max-w-2xl mx-auto">
         <div>
           <div className="mb-5 sm:mb-8">
-            <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
+            <h1 className="mb-2 font-normal text-[#1d1914] text-title-sm sm:text-title-md">
               Création d&apos;un compte gestionnaire
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-base text-[#1d1914]">
               Remplissez les informations pour créer un nouveau compte gestionnaire
             </p>
           </div>
           <div>
             {/* Message de succès */}
             {isSuccess && (
-              <div className="mb-6">
-                <Alert
-                  variant="success"
-                  title="Compte créé"
-                  message="Le compte a été créé avec succès. Redirection en cours..."
-                />
+              <div className="mb-9">
+                <div className="p-4 bg-[#417232] text-[#e9ecef] rounded-lg">
+                  <p className="font-medium mb-1">Compte créé</p>
+                  <p className="text-sm">Le compte a été créé avec succès. Redirection en cours...</p>
+                </div>
               </div>
             )}
 
             {/* Alerte d'erreur */}
             {displayError && !isSuccess && (
-              <div className="mb-6">
-                <Alert variant="error" title="Erreur" message={displayError} />
+              <div className="mb-9">
+                <div className="p-4 bg-[#b00511] text-[#e9ecef] rounded-lg">
+                  <p className="font-medium mb-1">Erreur</p>
+                  <p className="text-sm">{displayError}</p>
+                </div>
               </div>
             )}
 
@@ -164,8 +164,8 @@ export default function OperatorCreateForm() {
                 <div className="space-y-6">
                   {/* Champ Fonction */}
                   <div>
-                    <Label htmlFor="job">
-                      Fonction <span className="text-error-500">*</span>
+                    <Label htmlFor="job" className="text-base text-[#1d1914] mb-2 block">
+                      Fonction <span className="text-[#b00511]">*</span>
                     </Label>
                     <Input
                       id="job"
@@ -178,9 +178,10 @@ export default function OperatorCreateForm() {
                       })()}
                       error={!!errors.job}
                       hint={errors.job?.message}
+                      className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                     />
                     {errors.job && (
-                      <p className="mt-1.5 text-xs text-error-500">
+                      <p className="mt-1.5 text-xs text-[#b00511]">
                         {errors.job.message}
                       </p>
                     )}
@@ -189,8 +190,8 @@ export default function OperatorCreateForm() {
                   {/* Champs Nom et Prénom */}
                   <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                     <div>
-                      <Label htmlFor="lastname">
-                        Nom <span className="text-error-500">*</span>
+                      <Label htmlFor="lastname" className="text-base text-[#1d1914] mb-2 block">
+                        Nom <span className="text-[#b00511]">*</span>
                       </Label>
                       <Input
                         id="lastname"
@@ -203,11 +204,12 @@ export default function OperatorCreateForm() {
                         })()}
                         error={!!errors.lastname}
                         hint={errors.lastname?.message}
+                        className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                       />
                     </div>
                     <div>
-                      <Label htmlFor="firstname">
-                        Prénom <span className="text-error-500">*</span>
+                      <Label htmlFor="firstname" className="text-base text-[#1d1914] mb-2 block">
+                        Prénom <span className="text-[#b00511]">*</span>
                       </Label>
                       <Input
                         id="firstname"
@@ -220,14 +222,15 @@ export default function OperatorCreateForm() {
                         })()}
                         error={!!errors.firstname}
                         hint={errors.firstname?.message}
+                        className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                       />
                     </div>
                   </div>
 
                   {/* Champ Téléphone */}
                   <div>
-                    <Label htmlFor="phone">
-                      Téléphone <span className="text-error-500">*</span>
+                    <Label htmlFor="phone" className="text-base text-[#1d1914] mb-2 block">
+                      Téléphone <span className="text-[#b00511]">*</span>
                     </Label>
                     <Input
                       id="phone"
@@ -240,13 +243,14 @@ export default function OperatorCreateForm() {
                       })()}
                       error={!!errors.phone}
                       hint={errors.phone?.message}
+                      className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                     />
                   </div>
 
                   {/* Champs Email */}
                   <div>
-                    <Label htmlFor="email.first">
-                      Email <span className="text-error-500">*</span>
+                    <Label htmlFor="email.first" className="text-base text-[#1d1914] mb-2 block">
+                      Email <span className="text-[#b00511]">*</span>
                     </Label>
                     <Input
                       id="email.first"
@@ -259,12 +263,13 @@ export default function OperatorCreateForm() {
                       })()}
                       error={!!errors.email?.first}
                       hint={errors.email?.first?.message}
+                      className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                     />
                   </div>
 
                   <div>
-                    <Label htmlFor="email.second">
-                      Confirmation Email <span className="text-error-500">*</span>
+                    <Label htmlFor="email.second" className="text-base text-[#1d1914] mb-2 block">
+                      Confirmation Email <span className="text-[#b00511]">*</span>
                     </Label>
                     <Input
                       id="email.second"
@@ -277,12 +282,13 @@ export default function OperatorCreateForm() {
                       })()}
                       error={!!errors.email?.second}
                       hint={errors.email?.second?.message}
+                      className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                     />
                     {/* Afficher une indication si les emails ne correspondent pas */}
                     {emailFirst &&
                       emailSecond &&
                       emailFirst !== emailSecond && (
-                        <p className="mt-1.5 text-xs text-error-500">
+                        <p className="mt-1.5 text-xs text-[#b00511]">
                           Les emails ne correspondent pas
                         </p>
                       )}
@@ -290,16 +296,15 @@ export default function OperatorCreateForm() {
 
                   {/* Bouton de soumission */}
                   <div className="pt-4">
-                    <Button
-                      className="w-full sm:w-auto"
-                      size="sm"
+                    <button
+                      className="w-full sm:w-auto bg-[#e20613] text-white hover:bg-[#b4050f] border border-[#e20613] hover:border-[#b4050f] rounded-lg px-4 py-1.5 min-w-[5.5rem] max-w-[17rem] transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe] disabled:bg-[#ffa7ac] disabled:pointer-events-none text-sm font-normal"
                       type="submit"
                       disabled={isLoading}
                     >
                       {isLoading ? "Création en cours..." : "Créer le compte"}
-                    </Button>
-                    <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                      <span className="text-error-500">*</span> champs obligatoires
+                    </button>
+                    <p className="mt-2 text-xs text-[#1d1914]">
+                      <span className="text-[#b00511]">*</span> champs obligatoires
                     </p>
                   </div>
                 </div>

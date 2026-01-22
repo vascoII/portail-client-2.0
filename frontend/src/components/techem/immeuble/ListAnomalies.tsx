@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/table";
 import { useImmeubles } from "@/lib/hooks/useImmeubles";
 import { useExport } from "@/lib/hooks/useExport";
-import Alert from "@/components/ui/alert/Alert";
 import { LoadingTable } from "@/components/ui/loading";
 import type { Building, Anomaly } from "@/lib/types/api";
 
@@ -114,21 +113,19 @@ export default function ListAnomalies({ pkImmeuble }: ListAnomaliesProps) {
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-4 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
+    <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-4 pb-4 pt-5 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] sm:px-6">
       {(exportExcelError || exportPdfError) && (
         <div className="mb-4">
-          <Alert
-            variant={(exportExcelError || exportPdfError)?.variant || "error"}
-            title={(exportExcelError || exportPdfError)?.title || "Erreur"}
-            message={(exportExcelError || exportPdfError)?.message || ""}
-            showLink={false}
-          />
+          <div className="p-4 bg-[#b00511] text-white rounded-lg">
+            <p className="font-medium mb-1">{(exportExcelError || exportPdfError)?.title || "Erreur"}</p>
+            <p className="text-sm">{(exportExcelError || exportPdfError)?.message || ""}</p>
+          </div>
           <button
             onClick={() => {
               if (exportExcelError) clearExportExcelError();
               if (exportPdfError) clearExportPdfError();
             }}
-            className="mt-2 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            className="mt-2 text-sm text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
           >
             Fermer
           </button>
@@ -136,10 +133,10 @@ export default function ListAnomalies({ pkImmeuble }: ListAnomaliesProps) {
       )}
       <div className="mb-6 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+          <h3 className="text-xl font-normal text-[#1d1914]">
             {immeuble?.Nom ? `Anomalies de consommation – ${immeuble.Nom}` : "Anomalies de consommation"}
           </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-sm text-[#1d1914]">
             {totalAnomalies} anomalie{totalAnomalies > 1 ? "s" : ""}
           </p>
         </div>
@@ -186,7 +183,11 @@ export default function ListAnomalies({ pkImmeuble }: ListAnomaliesProps) {
           <button
             onClick={handleExportExcel}
             disabled={isExportingExcel || anomalies.length === 0}
-            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+            className={`inline-flex items-center gap-2 rounded-lg border border-[#1d1914] px-4 py-2.5 text-sm font-normal transition-all duration-300 ${
+              isExportingExcel || anomalies.length === 0
+                ? "bg-[#e9ecef] text-[#6a6a6a] cursor-not-allowed"
+                : "bg-white text-[#1d1914] hover:bg-[#ffe5e6] hover:text-[#e20613]"
+            }`}
           >
             <svg
               className="stroke-current"
@@ -230,7 +231,11 @@ export default function ListAnomalies({ pkImmeuble }: ListAnomaliesProps) {
           <button
             onClick={handleExportPdf}
             disabled={isExportingPdf || anomalies.length === 0}
-            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+            className={`inline-flex items-center gap-2 rounded-lg border border-[#1d1914] px-4 py-2.5 text-sm font-normal transition-all duration-300 ${
+              isExportingExcel || anomalies.length === 0
+                ? "bg-[#e9ecef] text-[#6a6a6a] cursor-not-allowed"
+                : "bg-white text-[#1d1914] hover:bg-[#ffe5e6] hover:text-[#e20613]"
+            }`}
           >
             <svg
               className="stroke-current"
@@ -275,43 +280,43 @@ export default function ListAnomalies({ pkImmeuble }: ListAnomaliesProps) {
       </div>
 
       {anomalies.length === 0 ? (
-        <div className="flex items-center justify-center min-h-[200px] rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+        <div className="flex items-center justify-center min-h-[200px] rounded-xl border border-dashed border-[#1d1914]">
+          <p className="text-base text-[#1d1914]">
             Aucune anomalie de consommation signalée pour cet immeuble.
           </p>
         </div>
       ) : (
         <Table>
-          <TableHeader className="border-y border-gray-100 dark:border-gray-800">
+          <TableHeader className="border-y border-[#1d1914]">
             <TableRow>
               <TableCell
                 isHeader
-                className="py-3 text-start text-theme-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                className="py-3 text-start text-sm font-normal text-[#1d1914]"
               >
                 Nombre Anomalies de consommation
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 text-start text-theme-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                className="py-3 text-start text-sm font-normal text-[#1d1914]"
               >
                 Index
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 text-start text-theme-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                className="py-3 text-start text-sm font-normal text-[#1d1914]"
               >
                 Conso
               </TableCell>
               <TableCell
                 isHeader
-                className="py-3 text-start text-theme-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                className="py-3 text-start text-sm font-normal text-[#1d1914]"
               >
                 OBSERVATION
               </TableCell>
             </TableRow>
           </TableHeader>
 
-          <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+          <TableBody className="divide-y divide-[#1d1914]">
             {anomalies.map((anomalie, index) => {
               const key = anomalie.PkAnomalie ?? anomalie.Appareil?.Numero ?? `anomalie-${index}`;
               const pkLogement = anomalie.Logement?.PkLogement;
@@ -329,7 +334,7 @@ export default function ListAnomalies({ pkImmeuble }: ListAnomaliesProps) {
               return (
                 <TableRow
                   key={key}
-                  className="align-top cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-900/40"
+                  className="align-top cursor-pointer hover:bg-[#ffe5e6] transition-all duration-300"
                   onClick={() => {
                     if (pkLogement) {
                       router.push(`/immeuble/${pkImmeuble}/logements/${pkLogement}`);
@@ -338,43 +343,43 @@ export default function ListAnomalies({ pkImmeuble }: ListAnomaliesProps) {
                 >
                   <TableCell className="py-4">
                     <div className="flex gap-3">
-                      <div className="flex-shrink-0 rounded-xl bg-amber-50 p-3 dark:bg-amber-500/10">
+                      <div className="flex-shrink-0 rounded-xl bg-[#e9ecef] p-3">
                         <StatusIconsAnomalie
                           size={22}
-                          className="text-amber-600 dark:text-amber-300"
+                          className="text-[#b00511]"
                         />
                       </div>
                       <div className="space-y-1">
-                        <p className="text-2xl font-semibold text-gray-900 dark:text-white">
+                        <p className="text-2xl font-normal text-[#1d1914]">
                           1
                         </p>
-                        <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                        <p className="text-xs uppercase tracking-wide text-[#1d1914]">
                           {anomalie.Occupant?.Ref ?? "Réf. client inconnue"}
                         </p>
-                        <p className="text-sm text-gray-600 dark:text-gray-300">
+                        <p className="text-sm text-[#1d1914]">
                           Logement {anomalie.Logement?.NumOrdre ?? "—"} –{" "}
                           {anomalie.Occupant?.Nom ?? "Occupant inconnu"}
                         </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                        <p className="text-sm text-[#1d1914]">
                           Étage {anomalie.Logement?.NumEtage ?? "—"} | Bât.{" "}
                           {anomalie.Logement?.NumBatiment ?? "—"}
                         </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                        <p className="text-sm text-[#1d1914]">
                           N° compteur: {anomalie.Appareil?.Numero ?? "—"} | {fluide}
                         </p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                        <p className="text-sm text-[#1d1914]">
                           Emplacement: {anomalie.Appareil?.Emplacement ?? "—"}
                         </p>
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className="py-4 align-top text-sm text-gray-700 dark:text-gray-200">
+                  <TableCell className="py-4 align-top text-sm text-[#1d1914]">
                     {indexValue}
                   </TableCell>
-                  <TableCell className="py-4 align-top text-sm text-gray-700 dark:text-gray-200">
+                  <TableCell className="py-4 align-top text-sm text-[#1d1914]">
                     {conso}
                   </TableCell>
-                  <TableCell className="py-4 align-top text-sm text-gray-700 dark:text-gray-200 whitespace-pre-line">
+                  <TableCell className="py-4 align-top text-sm text-[#1d1914] whitespace-pre-line">
                     {observations}
                   </TableCell>
                 </TableRow>

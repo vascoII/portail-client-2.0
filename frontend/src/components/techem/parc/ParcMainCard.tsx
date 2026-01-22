@@ -26,10 +26,10 @@ export default function ParcMainCard() {
   };
 
   return (
-    <div className="p-5 border border-gray-200 rounded-2xl dark:border-gray-800 lg:p-6">
+    <div className="p-5 border border-[#1d1914] rounded-xl shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] lg:p-6">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <h4 className="text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-6">
+          <h4 className="text-xl font-normal text-[#1d1914] lg:mb-6">
             Informations du parc
           </h4>
 
@@ -46,13 +46,13 @@ export default function ParcMainCard() {
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
                 <Link
                   href="/immeuble"
-                  className="p-4 border border-gray-200 rounded-2xl dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-white/[0.05] transition-colors cursor-pointer"
-                  style={{ backgroundColor: "#f0f0f0" }}
+                  className="p-4 border border-[#1d1914] rounded-xl hover:bg-[#ffe5e6] transition-all duration-300 cursor-pointer"
+                  style={{ backgroundColor: "#e9ecef" }}
                 >
                   <center>
-                    <p className="mb-2 text-2xl leading-normal text-gray-500 dark:text-gray-400 flex items-center justify-center gap-3">
+                    <p className="mb-2 text-2xl leading-normal text-[#1d1914] flex items-center justify-center gap-3">
                       <svg
-                          className="w-6 h-6 text-gray-400"
+                          className="w-6 h-6 text-[#1d1914]"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -69,14 +69,14 @@ export default function ParcMainCard() {
                   </center>
                 </Link>
 
-                <div className="p-4 border border-gray-200 rounded-2xl dark:border-gray-800">
+                <div className="p-4 border border-[#1d1914] rounded-xl">
                   <center>
-                    <p className="mb-2 text-2xl  leading-normal text-gray-500 dark:text-gray-400">
+                    <p className="mb-2 text-2xl leading-normal text-[#1d1914]">
                     Nombres d&apos;appareils
                     </p>
                   </center>
                   <center>
-                  <p className="text-2xl font-semibold text-gray-800 dark:text-white/90">
+                  <p className="text-2xl font-normal text-[#1d1914]">
                     {formatNumber(parcInfo.nbCompteurs)}
                 </p>  
                   </center>
@@ -87,12 +87,12 @@ export default function ParcMainCard() {
               <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
                   <div>
                   <center>
-                  <p className="mb-2 text-xl leading-normal text-gray-500 dark:text-gray-400">
+                  <p className="mb-2 text-xl leading-normal text-[#1d1914]">
                     Eau froide
                   </p>
                   </center>
                   <center>
-                  <p className="text-2xl font-semibold text-gray-800 dark:text-white/90">
+                  <p className="text-2xl font-normal text-[#1d1914]">
                     {formatNumber(parcInfo.nbCompteursEf)}
                   </p>
                   </center>
@@ -100,12 +100,12 @@ export default function ParcMainCard() {
 
                   <div>
                   <center>
-                  <p className="mb-2 text-xl leading-normal text-gray-500 dark:text-gray-400">
+                  <p className="mb-2 text-xl leading-normal text-[#1d1914]">
                     Eau chaude
                   </p>
                   </center>
                   <center>
-                  <p className="text-2xl font-semibold text-gray-800 dark:text-white/90">
+                  <p className="text-2xl font-normal text-[#1d1914]">
                     {formatNumber(parcInfo.nbCompteursEc)}
                       </p>
                   </center>
@@ -113,10 +113,10 @@ export default function ParcMainCard() {
 
                 <div>
                   <center>
-                  <p className="mb-2 text-xl leading-normal text-gray-500 dark:text-gray-400">
+                  <p className="mb-2 text-xl leading-normal text-[#1d1914]">
                     Répartiteurs
                   </p>
-                  <p className="text-2xl font-semibold text-gray-800 dark:text-white/90">
+                  <p className="text-2xl font-normal text-[#1d1914]">
                     {formatNumber(parcInfo.nbCompteursRepart)}
                       </p>
                   </center>
@@ -124,10 +124,10 @@ export default function ParcMainCard() {
 
                 <div>
                   <center>
-                  <p className="mb-2 text-xl leading-normal text-gray-500 dark:text-gray-400">
+                  <p className="mb-2 text-xl leading-normal text-[#1d1914]">
                     Compteur d&apos;énergie
                   </p>
-                  <p className="text-2xl font-semibold text-gray-800 dark:text-white/90">
+                  <p className="text-2xl font-normal text-[#1d1914]">
                     {formatNumber(parcInfo.nbCompteursCet)}
                   </p>
                   </center>

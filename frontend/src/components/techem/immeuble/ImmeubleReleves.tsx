@@ -6,7 +6,6 @@ import { FaFaucet, FaFire, FaChartBar, FaBolt } from "react-icons/fa";
 import { useImmeubles } from "@/lib/hooks/useImmeubles";
 import { useExport } from "@/lib/hooks/useExport";
 import { useModal } from "@/hooks/useModal";
-import Alert from "@/components/ui/alert/Alert";
 import { Modal } from "@/components/ui/modal";
 import { Table, TableHeader, TableBody, TableRow, TableCell } from "@/components/ui/table";
 import { LoadingChart } from "@/components/ui/loading";
@@ -334,13 +333,13 @@ export default function ImmeubleReleves({
   const getTabColor = (tab: TabType): string => {
     switch (tab) {
       case "eauFroide":
-        return "#2563EB"; // blue-600
+        return "#009bb4"; // Techem blue
       case "eauChaude":
-        return "#EA580C"; // orange-600
+        return "#e20613"; // Techem red
       case "repartiteur":
-        return "#9333EA"; // purple-600
+        return "#6a6a6a"; // Techem gray
       case "compteurEnergie":
-        return "#16A34A"; // green-600
+        return "#417232"; // Techem green
     }
   };
 
@@ -398,14 +397,14 @@ export default function ImmeubleReleves({
   const series = [currentData.percentage];
 
   const getButtonClass = (tab: TabType) => {
-    const baseClasses = "px-3 py-2 font-medium w-full rounded-md text-theme-sm transition-all duration-200 flex items-center justify-center gap-2";
+    const baseClasses = "px-3 py-2 font-normal w-full rounded-md text-sm transition-all duration-300 flex items-center justify-center gap-2";
     const isActive = selectedTab === tab;
     
     if (isActive) {
-      return `${baseClasses} shadow-theme-xs text-gray-900 dark:text-white bg-white dark:bg-gray-800 border-2 border-blue-500 dark:border-blue-400`;
+      return `${baseClasses} shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] text-[#1d1914] bg-white border-2 border-[#1d1914]`;
     }
     
-    return `${baseClasses} text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50`;
+    return `${baseClasses} text-[#1d1914] hover:text-[#e20613] hover:bg-[#ffe5e6]`;
   };
 
   // Get icon and color for each tab
@@ -414,22 +413,22 @@ export default function ImmeubleReleves({
       case "eauFroide":
         return {
           icon: <FaFaucet className="w-4 h-4" />,
-          color: "text-blue-600 dark:text-blue-400",
+          color: "text-[#009bb4]",
         };
       case "eauChaude":
         return {
           icon: <FaFire className="w-4 h-4" />,
-          color: "text-orange-600 dark:text-orange-400",
+          color: "text-[#e20613]",
         };
       case "repartiteur":
         return {
           icon: <FaChartBar className="w-4 h-4" />,
-          color: "text-purple-600 dark:text-purple-400",
+          color: "text-[#6a6a6a]",
         };
       case "compteurEnergie":
         return {
           icon: <FaBolt className="w-4 h-4" />,
-          color: "text-green-600 dark:text-green-400",
+          color: "text-[#417232]",
         };
     }
   };
@@ -446,22 +445,20 @@ export default function ImmeubleReleves({
   }
 
   return (
-    <div className="rounded-2xl border border-gray-200 bg-gray-100 dark:border-gray-800 dark:bg-white/[0.03]">
-      <div className="px-5 pt-5 bg-white shadow-default rounded-2xl pb-11 dark:bg-gray-900 sm:px-6 sm:pt-6">
+    <div className="rounded-xl border border-[#1d1914] bg-[#e9ecef] shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)]">
+      <div className="px-5 pt-5 bg-white rounded-xl pb-11 sm:px-6 sm:pt-6">
         {(exportPdfError || exportExcelError) && (
           <div className="mb-4">
-            <Alert
-              variant={(exportPdfError || exportExcelError)?.variant || "error"}
-              title={(exportPdfError || exportExcelError)?.title || "Erreur"}
-              message={(exportPdfError || exportExcelError)?.message || ""}
-              showLink={false}
-            />
+            <div className="p-4 bg-[#b00511] text-white rounded-lg">
+              <p className="font-medium mb-1">{(exportPdfError || exportExcelError)?.title || "Erreur"}</p>
+              <p className="text-sm">{(exportPdfError || exportExcelError)?.message || ""}</p>
+            </div>
             <button
               onClick={() => {
                 if (exportPdfError) clearExportPdfError();
                 if (exportExcelError) clearExportExcelError();
               }}
-              className="mt-2 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              className="mt-2 text-sm text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
             >
               Fermer
             </button>
@@ -469,7 +466,7 @@ export default function ImmeubleReleves({
         )}
         <div className="flex justify-between mb-6">
           <div>
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+            <h3 className="text-xl font-normal text-[#1d1914]">
               Relevés
             </h3>
           </div>
@@ -477,7 +474,11 @@ export default function ImmeubleReleves({
             <button
               onClick={handleExportExcelClick}
               disabled={!isExcelExportAvailable || relevesOptions.length === 0 || isExportingExcel || isImmeubleLoading}
-              className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+              className={`inline-flex items-center gap-2 rounded-lg border border-[#1d1914] px-4 py-2.5 text-sm font-normal transition-all duration-300 ${
+                !isExcelExportAvailable || relevesOptions.length === 0 || isExportingExcel || isImmeubleLoading
+                  ? "bg-[#e9ecef] text-[#6a6a6a] cursor-not-allowed"
+                  : "bg-white text-[#1d1914] hover:bg-[#ffe5e6] hover:text-[#e20613]"
+              }`}
             >
               <svg
                 className="stroke-current"
@@ -521,7 +522,11 @@ export default function ImmeubleReleves({
             <button
               onClick={handleExportPdfClick}
               disabled={isExportingPdf || isImmeubleLoading}
-              className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+              className={`inline-flex items-center gap-2 rounded-lg border border-[#1d1914] px-4 py-2.5 text-sm font-normal transition-all duration-300 ${
+                isExportingPdf || isImmeubleLoading
+                  ? "bg-[#e9ecef] text-[#6a6a6a] cursor-not-allowed"
+                  : "bg-white text-[#1d1914] hover:bg-[#ffe5e6] hover:text-[#e20613]"
+              }`}
             >
               <svg
                 className="stroke-current"
@@ -566,12 +571,12 @@ export default function ImmeubleReleves({
         </div>
 
         {/* Tabs */}
-        <div className="flex items-center gap-0.5 rounded-lg bg-gray-100 p-0.5 dark:bg-gray-900 mb-6">
+        <div className="flex items-center gap-0.5 rounded-lg bg-[#e9ecef] p-0.5 mb-6">
           <button
             onClick={() => handleTabChange("eauFroide")}
             className={getButtonClass("eauFroide")}
           >
-            <span className={selectedTab === "eauFroide" ? "text-blue-600 dark:text-blue-400" : "text-gray-500 dark:text-gray-400"}>
+            <span className={selectedTab === "eauFroide" ? "text-[#009bb4]" : "text-[#1d1914]"}>
               {getTabConfig("eauFroide").icon}
             </span>
             <span>Eau froide</span>
@@ -580,7 +585,7 @@ export default function ImmeubleReleves({
             onClick={() => handleTabChange("eauChaude")}
             className={getButtonClass("eauChaude")}
           >
-            <span className={selectedTab === "eauChaude" ? "text-orange-600 dark:text-orange-400" : "text-gray-500 dark:text-gray-400"}>
+            <span className={selectedTab === "eauChaude" ? "text-[#e20613]" : "text-[#1d1914]"}>
               {getTabConfig("eauChaude").icon}
             </span>
             <span>Eau chaude</span>
@@ -589,7 +594,7 @@ export default function ImmeubleReleves({
             onClick={() => handleTabChange("repartiteur")}
             className={getButtonClass("repartiteur")}
           >
-            <span className={selectedTab === "repartiteur" ? "text-purple-600 dark:text-purple-400" : "text-gray-500 dark:text-gray-400"}>
+            <span className={selectedTab === "repartiteur" ? "text-[#6a6a6a]" : "text-[#1d1914]"}>
               {getTabConfig("repartiteur").icon}
             </span>
             <span>Répartiteur</span>
@@ -598,7 +603,7 @@ export default function ImmeubleReleves({
             onClick={() => handleTabChange("compteurEnergie")}
             className={getButtonClass("compteurEnergie")}
           >
-            <span className={selectedTab === "compteurEnergie" ? "text-green-600 dark:text-green-400" : "text-gray-500 dark:text-gray-400"}>
+            <span className={selectedTab === "compteurEnergie" ? "text-[#417232]" : "text-[#1d1914]"}>
               {getTabConfig("compteurEnergie").icon}
             </span>
             <span>Compteur d&apos;énergie</span>
@@ -617,7 +622,7 @@ export default function ImmeubleReleves({
             />
           </div>
         </div>
-        <p className="mx-auto mt-10 w-full max-w-[380px] text-center text-sm text-gray-500 sm:text-base">
+        <p className="mx-auto mt-10 w-full max-w-[380px] text-center text-sm text-[#1d1914] sm:text-base">
           des appareils relevés
         </p>
 
@@ -625,43 +630,43 @@ export default function ImmeubleReleves({
         <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
           {/* Table: Les 5 plus fortes consommations */}
           <div>
-            <h4 className="mb-4 text-sm font-semibold text-gray-800 dark:text-white/90">
+            <h4 className="mb-4 text-xl font-normal text-[#1d1914]">
               Les 5 plus fortes consommations
             </h4>
             {currentData.consosGrandes.length > 0 ? (
               <Table>
-                <TableHeader className="border-y border-gray-100 dark:border-gray-800">
+                <TableHeader className="border-y border-[#1d1914]">
                   <TableRow>
                     <TableCell
                       isHeader
-                      className="py-3 text-start text-theme-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                      className="py-3 text-start text-sm font-normal text-[#1d1914]"
                     >
                       Réf client
                     </TableCell>
                     <TableCell
                       isHeader
-                      className="py-3 text-start text-theme-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                      className="py-3 text-start text-sm font-normal text-[#1d1914]"
                     >
                       Occupant
                     </TableCell>
                     <TableCell
                       isHeader
-                      className="py-3 text-start text-theme-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                      className="py-3 text-start text-sm font-normal text-[#1d1914]"
                     >
                       Conso
                     </TableCell>
                   </TableRow>
                 </TableHeader>
-                <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+                <TableBody className="divide-y divide-[#1d1914]">
                   {currentData.consosGrandes.map((conso, index) => (
                     <TableRow key={index}>
-                      <TableCell className="py-3 text-sm text-gray-800 dark:text-white/90">
+                      <TableCell className="py-3 text-sm text-[#1d1914]">
                         {conso.RefOcc ?? "—"}
                       </TableCell>
-                      <TableCell className="py-3 text-sm text-gray-800 dark:text-white/90">
+                      <TableCell className="py-3 text-sm text-[#1d1914]">
                         {conso.NomOcc ?? "—"}
                       </TableCell>
-                      <TableCell className="py-3 text-sm text-gray-800 dark:text-white/90">
+                      <TableCell className="py-3 text-sm text-[#1d1914]">
                         {conso.Conso ?? "—"}
                       </TableCell>
                     </TableRow>
@@ -669,8 +674,8 @@ export default function ImmeubleReleves({
                 </TableBody>
               </Table>
             ) : (
-              <div className="rounded-xl border border-dashed border-gray-200 p-4 dark:border-gray-800">
-                <p className="text-center text-sm text-gray-500 dark:text-gray-400">
+              <div className="rounded-xl border border-dashed border-[#1d1914] p-4">
+                <p className="text-center text-base text-[#1d1914]">
                   Aucune donnée disponible
                 </p>
               </div>
@@ -679,43 +684,43 @@ export default function ImmeubleReleves({
 
           {/* Table: Les 5 plus faibles consommations */}
           <div>
-            <h4 className="mb-4 text-sm font-semibold text-gray-800 dark:text-white/90">
+            <h4 className="mb-4 text-xl font-normal text-[#1d1914]">
               Les 5 plus faibles consommations
             </h4>
             {currentData.consosPetites.length > 0 ? (
               <Table>
-                <TableHeader className="border-y border-gray-100 dark:border-gray-800">
+                <TableHeader className="border-y border-[#1d1914]">
                   <TableRow>
                     <TableCell
                       isHeader
-                      className="py-3 text-start text-theme-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                      className="py-3 text-start text-sm font-normal text-[#1d1914]"
                     >
                       Réf client
                     </TableCell>
                     <TableCell
                       isHeader
-                      className="py-3 text-start text-theme-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                      className="py-3 text-start text-sm font-normal text-[#1d1914]"
                     >
                       Occupant
                     </TableCell>
                     <TableCell
                       isHeader
-                      className="py-3 text-start text-theme-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400"
+                      className="py-3 text-start text-sm font-normal text-[#1d1914]"
                     >
                       Conso
                     </TableCell>
                   </TableRow>
                 </TableHeader>
-                <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+                <TableBody className="divide-y divide-[#1d1914]">
                   {currentData.consosPetites.map((conso, index) => (
                     <TableRow key={index}>
-                      <TableCell className="py-3 text-sm text-gray-800 dark:text-white/90">
+                      <TableCell className="py-3 text-sm text-[#1d1914]">
                         {conso.RefOcc ?? "—"}
                       </TableCell>
-                      <TableCell className="py-3 text-sm text-gray-800 dark:text-white/90">
+                      <TableCell className="py-3 text-sm text-[#1d1914]">
                         {conso.NomOcc ?? "—"}
                       </TableCell>
-                      <TableCell className="py-3 text-sm text-gray-800 dark:text-white/90">
+                      <TableCell className="py-3 text-sm text-[#1d1914]">
                         {conso.Conso ?? "—"}
                       </TableCell>
                     </TableRow>
@@ -723,8 +728,8 @@ export default function ImmeubleReleves({
                 </TableBody>
               </Table>
             ) : (
-              <div className="rounded-xl border border-dashed border-gray-200 p-4 dark:border-gray-800">
-                <p className="text-center text-sm text-gray-500 dark:text-gray-400">
+              <div className="rounded-xl border border-dashed border-[#1d1914] p-4">
+                <p className="text-center text-base text-[#1d1914]">
                   Aucune donnée disponible
                 </p>
               </div>
@@ -734,8 +739,8 @@ export default function ImmeubleReleves({
       </div>
 
       <div className="flex items-center justify-center gap-5 px-6 py-3.5 sm:gap-8 sm:py-5">
-        <div className="w-px bg-gray-200 h-7 dark:bg-gray-800"></div>
-        <div className="w-px bg-gray-200 h-7 dark:bg-gray-800"></div>
+        <div className="w-px bg-[#1d1914] h-7"></div>
+        <div className="w-px bg-[#1d1914] h-7"></div>
       </div>
 
       {/* Modal for Excel export date selection */}
@@ -744,29 +749,29 @@ export default function ImmeubleReleves({
         onClose={closeModal}
         className="max-w-[500px] p-6 lg:p-8"
       >
-        <h4 className="font-semibold text-gray-800 mb-6 text-title-sm dark:text-white/90 text-center">
+        <h4 className="text-xl font-normal text-[#1d1914] mb-6 text-center">
           Sélectionner une date
         </h4>
         
         {relevesOptions.length === 0 ? (
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+          <p className="text-sm text-[#1d1914] mb-6">
             Aucun relevé disponible pour cet onglet.
           </p>
         ) : (
           <>
             <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-normal text-[#1d1914] mb-2">
                 Date de relevé
               </label>
-              <div className="max-h-[300px] overflow-y-auto border border-gray-200 rounded-lg dark:border-gray-700">
+              <div className="max-h-[300px] overflow-y-auto border border-[#1d1914] rounded-lg">
                 {relevesOptions.map((option) => (
                   <button
                     key={option.pkReleve}
                     onClick={() => setSelectedPkReleve(option.pkReleve)}
-                    className={`w-full px-4 py-3 text-left text-sm transition-colors border-b border-gray-100 last:border-b-0 dark:border-gray-800 ${
+                    className={`w-full px-4 py-3 text-left text-sm transition-all duration-300 border-b border-[#1d1914] last:border-b-0 ${
                       selectedPkReleve === option.pkReleve
-                        ? "bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400"
-                        : "text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800"
+                        ? "bg-[#ffe5e6] text-[#1d1914]"
+                        : "text-[#1d1914] hover:bg-[#ffe5e6]"
                     }`}
                   >
                     {option.formattedDate}
@@ -778,14 +783,18 @@ export default function ImmeubleReleves({
             <div className="flex items-center justify-end gap-3">
               <button
                 onClick={closeModal}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700"
+                className="px-4 py-2 text-sm font-normal text-[#1d1914] bg-white border border-[#1d1914] rounded-lg transition-all duration-300 hover:bg-[#ffe5e6] hover:text-[#e20613]"
               >
                 Annuler
               </button>
               <button
                 onClick={handleModalValidate}
                 disabled={!selectedPkReleve || isExportingExcel}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`px-4 py-2 text-sm font-normal text-white rounded-lg transition-all duration-300 ${
+                  !selectedPkReleve || isExportingExcel
+                    ? "bg-[#6a6a6a] cursor-not-allowed"
+                    : "bg-[#1d1914] hover:bg-[#e20613]"
+                }`}
               >
                 {isExportingExcel ? "Export en cours..." : "Valider"}
               </button>

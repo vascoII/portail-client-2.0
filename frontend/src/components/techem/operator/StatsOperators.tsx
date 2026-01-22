@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
 
 import { LoadingChart } from "@/components/ui/loading";
-import Alert from "@/components/ui/alert/Alert";
 import { api, handleApiError } from "@/lib/api/client";
 
 // Dynamically import the ReactApexChart component
@@ -222,25 +221,23 @@ export default function StatsOperators() {
 
   if (errorMessage) {
     return (
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
-        <Alert
-          variant="error"
-          title="Erreur de chargement"
-          message={errorMessage}
-          showLink={false}
-        />
+      <div className="overflow-hidden rounded-xl border border-[#b00511] bg-[#b00511] px-5 pt-5 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] sm:px-6 sm:pt-6">
+        <div className="p-4 bg-[#b00511] text-[#e9ecef] rounded-lg">
+          <p className="font-medium mb-1">Erreur de chargement</p>
+          <p className="text-sm">{errorMessage}</p>
+        </div>
       </div>
     );
   }
 
   if (!hasData) {
     return (
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+      <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-5 pt-5 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] sm:px-6 sm:pt-6">
+        <h3 className="text-xl font-normal text-[#1d1914]">
           Statistiques gestionnaires
         </h3>
-        <div className="mt-4 flex min-h-[160px] items-center justify-center rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+        <div className="mt-4 flex min-h-[160px] items-center justify-center rounded-xl border border-dashed border-[#1d1914]">
+          <p className="text-base text-[#1d1914]">
             Aucune donnée de statistiques disponible pour les gestionnaires.
           </p>
         </div>
@@ -249,9 +246,9 @@ export default function StatsOperators() {
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
+    <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-5 pt-5 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] sm:px-6 sm:pt-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+        <h3 className="text-xl font-normal text-[#1d1914]">
           Statistiques gestionnaires
         </h3>
       </div>

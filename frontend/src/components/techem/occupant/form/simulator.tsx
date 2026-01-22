@@ -3,7 +3,6 @@ import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Select from "@/components/form/Select";
 import Radio from "@/components/form/input/Radio";
-import Button from "@/components/ui/button/Button";
 import Checkbox from "@/components/form/input/Checkbox";
 import React, { useState, useMemo } from "react";
 import { useForm, Controller } from "react-hook-form";
@@ -273,19 +272,19 @@ export default function SimulatorForm() {
       <div className="flex flex-col justify-center flex-1 w-full max-w-4xl mx-auto">
         <div>
           <div className="mb-5 sm:mb-8">
-            <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
+            <h1 className="mb-2 font-normal text-[#1d1914] text-title-sm sm:text-title-md">
               Simulateur de consommation
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-base text-[#1d1914]">
               Calculez votre consommation d&apos;eau estimée en fonction de vos habitudes
             </p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Nombre d'occupants */}
-            <div className="bg-white p-6 shadow-md rounded-lg dark:bg-gray-800">
-              <Label htmlFor="occupants">
-                Nombre d&apos;occupants <span className="text-error-500">*</span>
+            <div className="bg-white p-6 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] rounded-xl border border-[#1d1914]">
+              <Label htmlFor="occupants" className="text-base text-[#1d1914] mb-2 block">
+                Nombre d&apos;occupants <span className="text-[#b00511]">*</span>
               </Label>
               <Input
                 id="occupants"
@@ -294,13 +293,14 @@ export default function SimulatorForm() {
                 {...register("occupants", { valueAsNumber: true })}
                 error={!!errors.occupants}
                 hint={errors.occupants?.message}
+                className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
               />
             </div>
 
             {/* Lave-vaisselle */}
-            <div className="bg-white p-6 shadow-md rounded-lg dark:bg-gray-800">
+            <div className="bg-white p-6 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] rounded-xl border border-[#1d1914]">
               <div className="flex items-center gap-4 mb-4">
-                <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+                <h3 className="text-xl font-normal text-[#1d1914]">
                   Lave-vaisselle
                 </h3>
                 <div className="flex gap-4">
@@ -331,9 +331,9 @@ export default function SimulatorForm() {
                 </div>
               </div>
               {dishwasher === "yes" && (
-                <div className="space-y-4 mt-4 pl-4 border-l-2 border-gray-200 dark:border-gray-700">
+                <div className="space-y-4 mt-4 pl-4 border-l-2 border-[#1d1914]">
                   <div>
-                    <Label htmlFor="dishwasherPerf">Performance</Label>
+                    <Label htmlFor="dishwasherPerf" className="text-base text-[#1d1914] mb-2 block">Performance</Label>
                     <Controller
                       name="dishwasherPerf"
                       control={control}
@@ -350,13 +350,13 @@ export default function SimulatorForm() {
                       )}
                     />
                     {errors.dishwasherPerf && (
-                      <p className="mt-1.5 text-xs text-error-500">
+                      <p className="mt-1.5 text-xs text-[#b00511]">
                         {errors.dishwasherPerf.message}
                       </p>
                     )}
                   </div>
                   <div>
-                    <Label htmlFor="dishwasherCycles">
+                    <Label htmlFor="dishwasherCycles" className="text-base text-[#1d1914] mb-2 block">
                       Nombre de cycles par semaine
                     </Label>
                     <Input
@@ -366,6 +366,7 @@ export default function SimulatorForm() {
                       {...register("dishwasherCycles", { valueAsNumber: true })}
                       error={!!errors.dishwasherCycles}
                       hint={errors.dishwasherCycles?.message}
+                      className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                     />
                   </div>
                 </div>
@@ -373,9 +374,9 @@ export default function SimulatorForm() {
             </div>
 
             {/* Lave-linge */}
-            <div className="bg-white p-6 shadow-md rounded-lg dark:bg-gray-800">
+            <div className="bg-white p-6 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] rounded-xl border border-[#1d1914]">
               <div className="flex items-center gap-4 mb-4">
-                <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+                <h3 className="text-xl font-normal text-[#1d1914]">
                   Lave-linge
                 </h3>
                 <div className="flex gap-4">
@@ -406,9 +407,9 @@ export default function SimulatorForm() {
                 </div>
               </div>
               {washingMachine === "yes" && (
-                <div className="space-y-4 mt-4 pl-4 border-l-2 border-gray-200 dark:border-gray-700">
+                <div className="space-y-4 mt-4 pl-4 border-l-2 border-[#1d1914]">
                   <div>
-                    <Label htmlFor="washingPerf">Performance</Label>
+                    <Label htmlFor="washingPerf" className="text-base text-[#1d1914] mb-2 block">Performance</Label>
                     <Controller
                       name="washingPerf"
                       control={control}
@@ -425,13 +426,13 @@ export default function SimulatorForm() {
                       )}
                     />
                     {errors.washingPerf && (
-                      <p className="mt-1.5 text-xs text-error-500">
+                      <p className="mt-1.5 text-xs text-[#b00511]">
                         {errors.washingPerf.message}
                       </p>
                     )}
                   </div>
                   <div>
-                    <Label htmlFor="washingCycles">
+                    <Label htmlFor="washingCycles" className="text-base text-[#1d1914] mb-2 block">
                       Nombre de cycles par semaine
                     </Label>
                     <Input
@@ -441,6 +442,7 @@ export default function SimulatorForm() {
                       {...register("washingCycles", { valueAsNumber: true })}
                       error={!!errors.washingCycles}
                       hint={errors.washingCycles?.message}
+                      className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                     />
                   </div>
                 </div>
@@ -448,12 +450,12 @@ export default function SimulatorForm() {
             </div>
 
             {/* Douches et bains */}
-            <div className="bg-white p-6 shadow-md rounded-lg dark:bg-gray-800">
+            <div className="bg-white p-6 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] rounded-xl border border-[#1d1914]">
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="showers">
+                  <Label htmlFor="showers" className="text-base text-[#1d1914] mb-2 block">
                     Nombre de douches hebdomadaires par occupant{" "}
-                    <span className="text-error-500">*</span>
+                    <span className="text-[#b00511]">*</span>
                   </Label>
                   <Input
                     id="showers"
@@ -462,12 +464,13 @@ export default function SimulatorForm() {
                     {...register("showers", { valueAsNumber: true })}
                     error={!!errors.showers}
                     hint={errors.showers?.message}
+                    className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="baths">
+                  <Label htmlFor="baths" className="text-base text-[#1d1914] mb-2 block">
                     Nombre de bains hebdomadaires par occupant{" "}
-                    <span className="text-error-500">*</span>
+                    <span className="text-[#b00511]">*</span>
                   </Label>
                   <Input
                     id="baths"
@@ -476,15 +479,16 @@ export default function SimulatorForm() {
                     {...register("baths", { valueAsNumber: true })}
                     error={!!errors.baths}
                     hint={errors.baths?.message}
+                    className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                   />
                 </div>
               </div>
             </div>
 
             {/* WC */}
-            <div className="bg-white p-6 shadow-md rounded-lg dark:bg-gray-800">
+            <div className="bg-white p-6 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] rounded-xl border border-[#1d1914]">
               <div className="flex items-center gap-4 mb-4">
-                <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+                <h3 className="text-xl font-normal text-[#1d1914]">
                   WC
                 </h3>
                 <div className="flex gap-4">
@@ -579,9 +583,12 @@ export default function SimulatorForm() {
 
             {/* Bouton de calcul */}
             <div className="flex justify-center">
-              <Button type="submit" size="sm">
+              <button
+                type="submit"
+                className="px-4 py-2 rounded-lg bg-[#1d1914] text-white text-sm font-normal transition-all duration-300 hover:bg-[#e20613]"
+              >
                 Calculer
-              </Button>
+              </button>
             </div>
           </form>
 

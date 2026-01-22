@@ -1,8 +1,6 @@
 "use client";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
-import Button from "@/components/ui/button/Button";
-import Alert from "@/components/ui/alert/Alert";
 import Checkbox from "@/components/form/input/Checkbox";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -160,11 +158,10 @@ export default function AlertsSettingsForm() {
   if (alertesLoadingError) {
     return (
       <div className="flex flex-col flex-1 w-full items-center justify-center">
-        <Alert
-          variant="error"
-          title="Erreur de chargement"
-          message={handleApiError(alertesLoadingError)}
-        />
+        <div className="p-4 bg-[#b00511] text-[#e9ecef] rounded-lg">
+          <p className="font-medium mb-1">Erreur de chargement</p>
+          <p className="text-sm">{handleApiError(alertesLoadingError)}</p>
+        </div>
       </div>
     );
   }
@@ -174,10 +171,10 @@ export default function AlertsSettingsForm() {
       <div className="flex flex-col justify-center flex-1 w-full max-w-4xl mx-auto">
         <div>
           <div className="mb-5 sm:mb-8">
-            <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
+            <h1 className="mb-2 font-normal text-[#1d1914] text-title-sm sm:text-title-md">
               Paramètres de l&apos;alerte
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-base text-[#1d1914]">
               Configurez les alertes de consommation pour votre logement
             </p>
           </div>
@@ -185,19 +182,21 @@ export default function AlertsSettingsForm() {
           <div>
             {/* Message de succès */}
             {isSuccess && (
-              <div className="mb-6">
-                <Alert
-                  variant="success"
-                  title="Paramètres enregistrés"
-                  message="Vos paramètres d'alerte ont été enregistrés avec succès."
-                />
+              <div className="mb-9">
+                <div className="p-4 bg-[#417232] text-[#e9ecef] rounded-lg">
+                  <p className="font-medium mb-1">Paramètres enregistrés</p>
+                  <p className="text-sm">Vos paramètres d&apos;alerte ont été enregistrés avec succès.</p>
+                </div>
               </div>
             )}
 
             {/* Alerte d'erreur */}
             {displayErrorString && !isSuccess && (
-              <div className="mb-6">
-                <Alert variant="error" title="Erreur" message={displayErrorString} />
+              <div className="mb-9">
+                <div className="p-4 bg-[#b00511] text-[#e9ecef] rounded-lg">
+                  <p className="font-medium mb-1">Erreur</p>
+                  <p className="text-sm">{displayErrorString}</p>
+                </div>
               </div>
             )}
 
@@ -217,7 +216,7 @@ export default function AlertsSettingsForm() {
 
                 {/* Champ Email */}
                 <div>
-                  <Label htmlFor="SEUIL_CONSO_EMAIL">E-mail de réception</Label>
+                  <Label htmlFor="SEUIL_CONSO_EMAIL" className="text-base text-[#1d1914] mb-2 block">E-mail de réception</Label>
                   <Input
                     id="SEUIL_CONSO_EMAIL"
                     type="email"
@@ -225,17 +224,18 @@ export default function AlertsSettingsForm() {
                     {...register("SEUIL_CONSO_EMAIL")}
                     error={!!errors.SEUIL_CONSO_EMAIL}
                     hint={errors.SEUIL_CONSO_EMAIL?.message}
+                    className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                   />
                 </div>
 
                 {/* Seuils d'alerte */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Seuil Eau Froide */}
-                  <div className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center gap-4 p-4 bg-[#e9ecef] rounded-xl border border-[#1d1914]">
                     <div className="flex-shrink-0">
-                      <div className="w-12 h-12 flex items-center justify-center bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                      <div className="w-12 h-12 flex items-center justify-center bg-[#009bb4] rounded-lg">
                         <svg
-                          className="w-6 h-6 text-blue-600 dark:text-blue-400"
+                          className="w-6 h-6 text-white"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -250,7 +250,7 @@ export default function AlertsSettingsForm() {
                       </div>
                     </div>
                     <div className="flex-1">
-                      <Label htmlFor="SEUIL_CONSO_EF">Seuil d&apos;alerte en m³</Label>
+                      <Label htmlFor="SEUIL_CONSO_EF" className="text-base text-[#1d1914] mb-2 block">Seuil d&apos;alerte en m³</Label>
                       <Input
                         id="SEUIL_CONSO_EF"
                         type="text"
@@ -258,19 +258,20 @@ export default function AlertsSettingsForm() {
                         {...register("SEUIL_CONSO_EF")}
                         error={!!errors.SEUIL_CONSO_EF}
                         hint={errors.SEUIL_CONSO_EF?.message}
+                        className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                       />
-                      <div className="mt-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                      <div className="mt-2 text-sm font-medium text-[#1d1914]">
                         Eau froide
                       </div>
                     </div>
                   </div>
 
                   {/* Seuil Eau Chaude */}
-                  <div className="flex items-center gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center gap-4 p-4 bg-[#e9ecef] rounded-xl border border-[#1d1914]">
                     <div className="flex-shrink-0">
-                      <div className="w-12 h-12 flex items-center justify-center bg-red-100 dark:bg-red-900/30 rounded-lg">
+                      <div className="w-12 h-12 flex items-center justify-center bg-[#e20613] rounded-lg">
                         <svg
-                          className="w-6 h-6 text-red-600 dark:text-red-400"
+                          className="w-6 h-6 text-white"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -285,7 +286,7 @@ export default function AlertsSettingsForm() {
                       </div>
                     </div>
                     <div className="flex-1">
-                      <Label htmlFor="SEUIL_CONSO_EC">Seuil d&apos;alerte en m³</Label>
+                      <Label htmlFor="SEUIL_CONSO_EC" className="text-base text-[#1d1914] mb-2 block">Seuil d&apos;alerte en m³</Label>
                       <Input
                         id="SEUIL_CONSO_EC"
                         type="text"
@@ -293,8 +294,9 @@ export default function AlertsSettingsForm() {
                         {...register("SEUIL_CONSO_EC")}
                         error={!!errors.SEUIL_CONSO_EC}
                         hint={errors.SEUIL_CONSO_EC?.message}
+                        className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                       />
-                      <div className="mt-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                      <div className="mt-2 text-sm font-medium text-[#1d1914]">
                         Eau chaude
                       </div>
                     </div>
@@ -303,14 +305,13 @@ export default function AlertsSettingsForm() {
 
                 {/* Bouton de soumission */}
                 <div className="pt-4">
-                  <Button
-                    className="w-full sm:w-auto"
-                    size="sm"
+                  <button
+                    className="w-full sm:w-auto bg-[#e20613] text-white hover:bg-[#b4050f] border border-[#e20613] hover:border-[#b4050f] rounded-lg px-4 py-1.5 min-w-[5.5rem] max-w-[17rem] transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe] disabled:bg-[#ffa7ac] disabled:pointer-events-none text-sm font-normal"
                     type="submit"
                     disabled={isLoading}
                   >
                     {isLoading ? "Enregistrement en cours..." : "Enregistrer"}
-                  </Button>
+                  </button>
                 </div>
               </div>
             </form>

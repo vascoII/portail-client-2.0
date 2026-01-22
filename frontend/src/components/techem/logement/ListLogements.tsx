@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/table";
 import { useLogements, FilterLogementsResponse } from "@/lib/hooks/useLogements";
 import { useExport } from "@/lib/hooks/useExport";
-import Alert from "@/components/ui/alert/Alert";
 import type { Housing, Device } from "@/lib/types/api";
 import { Modal } from "@/components/ui/modal";
 import { useModal } from "@/hooks/useModal";
@@ -334,18 +333,16 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-4 pb-3 pt-4 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6">
+    <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-4 pb-3 pt-4 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)] sm:px-6">
       {loadingError && (
         <div className="mb-4">
-          <Alert
-            variant="error"
-            title={loadingError.title}
-            message={loadingError.message}
-            showLink={false}
-          />
+          <div className="p-4 bg-[#b00511] text-white rounded-lg">
+            <p className="font-medium mb-1">{loadingError.title}</p>
+            <p className="text-sm">{loadingError.message}</p>
+          </div>
           <button
             onClick={() => setLoadingError(null)}
-            className="mt-2 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            className="mt-2 text-sm text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
           >
             Fermer
           </button>
@@ -353,15 +350,13 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
       )}
       {exportError && (
         <div className="mb-4">
-          <Alert
-            variant={exportError.variant || "error"}
-            title={exportError.title}
-            message={exportError.message}
-            showLink={false}
-          />
+          <div className="p-4 bg-[#b00511] text-white rounded-lg">
+            <p className="font-medium mb-1">{exportError.title}</p>
+            <p className="text-sm">{exportError.message}</p>
+          </div>
           <button
             onClick={clearExportError}
-            className="mt-2 text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            className="mt-2 text-sm text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
           >
             Fermer
           </button>
@@ -369,11 +364,11 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
       )}
       <div className="flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+          <h3 className="text-xl font-normal text-[#1d1914]">
             Liste des Logements
           </h3>
           {filteredLogements.length > 0 && (
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            <p className="text-sm text-[#1d1914] mt-1">
               {filteredLogements.length} logement{filteredLogements.length > 1 ? 's' : ''}
               {filterType && filterType !== 'multiple' && (
                 <span className="ml-2">
@@ -395,7 +390,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
         <div className="flex items-center gap-3">
           <button 
             onClick={filterModal.openModal}
-            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
+            className="inline-flex items-center gap-2 rounded-lg border border-[#1d1914] bg-white px-4 py-2.5 text-sm font-normal text-[#1d1914] hover:bg-[#ffe5e6] hover:text-[#e20613] transition-all duration-300"
           >
             <svg
               className="stroke-current fill-white dark:fill-gray-800"
@@ -446,7 +441,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
       <div className="max-w-full overflow-x-auto">
         {filteredLogements.length === 0 ? (
           <div className="flex items-center justify-center min-h-[200px]">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-base text-[#1d1914]">
               {filterType 
                 ? filterType === 'multiple'
                   ? 'Aucun logement ne correspond aux filtres sélectionnés'
@@ -458,44 +453,44 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
         ) : (
           <Table>
             {/* Table Header */}
-            <TableHeader className="border-gray-100 dark:border-gray-800 border-y">
+            <TableHeader className="border-[#1d1914] border-y">
               <TableRow>
                 <TableCell
                   isHeader
-                  className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  className="py-3 font-normal text-[#1d1914] text-start text-sm"
                 >
                   Logement
                 </TableCell>
                 <TableCell
                   isHeader
-                  className="py-3 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400"
+                  className="py-3 font-normal text-[#1d1914] text-center text-sm"
                 >
                   <div className="flex items-center justify-center gap-2">
-                    <FaFaucet className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                    <FaFaucet className="w-4 h-4 text-[#009bb4]" />
                     <span>Eau</span>
                   </div>
                 </TableCell>
                 <TableCell
                   isHeader
-                  className="py-3 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400"
+                  className="py-3 font-normal text-[#1d1914] text-center text-sm"
                 >
                   <div className="flex items-center justify-center gap-2">
-                    <FaChartBar className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                    <FaChartBar className="w-4 h-4 text-[#6a6a6a]" />
                     <span>Répartiteurs</span>
                   </div>
                 </TableCell>
                 <TableCell
                   isHeader
-                  className="py-3 font-medium text-gray-500 text-center text-theme-xs dark:text-gray-400"
+                  className="py-3 font-normal text-[#1d1914] text-center text-sm"
                 >
                   <div className="flex items-center justify-center gap-2">
-                    <FaBolt className="w-4 h-4 text-green-600 dark:text-green-400" />
+                    <FaBolt className="w-4 h-4 text-[#417232]" />
                     <span>Compteurs d&apos;énergie</span>
                   </div>
                 </TableCell>
                 <TableCell
                   isHeader
-                  className="py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                  className="py-3 font-normal text-[#1d1914] text-start text-sm"
                 >
                   Statut
                 </TableCell>
@@ -503,7 +498,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
             </TableHeader>
 
             {/* Table Body */}
-            <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
+            <TableBody className="divide-y divide-[#1d1914]">
               {filteredLogements.map((item, index) => {
                 const logement = item.infosLogement;
                 const logementObj = logement.Logement ?? logement;
@@ -535,7 +530,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                 return (
                   <TableRow 
                     key={uniqueKey} 
-                    className="hover:bg-gray-50 dark:hover:bg-white/[0.02] cursor-pointer"
+                    className="hover:bg-[#ffe5e6] transition-all duration-300 cursor-pointer"
                     onClick={handleRowClick}
                     onMouseEnter={() => {
                       // Précharger les données au survol de la ligne
@@ -546,9 +541,9 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                   >
                     <TableCell className="py-3">
                       <div className="flex items-start gap-3">
-                        <div className="h-[50px] w-[50px] overflow-hidden rounded-md bg-gray-100 dark:bg-gray-800 flex items-center justify-center flex-shrink-0">
+                        <div className="h-[50px] w-[50px] overflow-hidden rounded-md bg-[#e9ecef] flex items-center justify-center flex-shrink-0">
                           <svg
-                            className="w-6 h-6 text-gray-400"
+                            className="w-6 h-6 text-[#1d1914]"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -564,19 +559,19 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                         <div className="flex-1 min-w-0">
                           <div className="space-y-1">
                             {occupantRef && (
-                              <p className="text-gray-800 text-theme-sm font-medium dark:text-white/90">
+                              <p className="text-[#1d1914] text-sm font-normal">
                                 Référence client: <span className="font-normal">{occupantRef}</span>
                               </p>
                             )}
                             {(logementEtage || logementNumOrdre) && (
-                              <p className="text-gray-800 text-theme-sm font-medium dark:text-white/90">
+                              <p className="text-[#1d1914] text-sm font-normal">
                                 {logementEtage && <span>Etage: <span className="font-normal">{logementEtage}</span></span>}
                                 {logementEtage && logementNumOrdre && " "}
                                 {logementNumOrdre && <span>N° logement: <span className="font-normal">{logementNumOrdre}</span></span>}
                               </p>
                             )}
                             {occupantName && occupantName !== "—" && (
-                              <p className="text-gray-600 text-theme-sm dark:text-gray-400">
+                              <p className="text-[#1d1914] text-sm">
                                 {occupantName}
                               </p>
                             )}
@@ -587,7 +582,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                     <TableCell className="py-3 text-center">
                       <div className="flex items-center justify-center gap-2">
                         <span
-                          className={`text-theme-sm ${nbCompteursEF + nbCompteursEC > 0 ? "text-blue-600 dark:text-blue-400 cursor-pointer hover:underline" : "text-gray-500 dark:text-gray-400"}`}
+                          className={`text-sm ${nbCompteursEF + nbCompteursEC > 0 ? "text-[#009bb4] cursor-pointer hover:underline" : "text-[#1d1914]"}`}
                           onClick={(e) => {
                             if (nbCompteursEF + nbCompteursEC > 0) {
                               handleOpenAppareilsModal(e, pkLogement, "eau", logement);
@@ -601,7 +596,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                             className="cursor-pointer"
                             onClick={(e) => handleOpenAppareilsModal(e, pkLogement, "eau", logement)}
                           >
-                            <FaFaucet className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                            <FaFaucet className="w-4 h-4 text-[#009bb4]" />
                           </div>
                         )}
                       </div>
@@ -609,7 +604,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                     <TableCell className="py-3 text-center">
                       <div className="flex items-center justify-center gap-2">
                         <span
-                          className={`text-theme-sm ${nbCompteursRepart > 0 ? "text-purple-600 dark:text-purple-400 cursor-pointer hover:underline" : "text-gray-500 dark:text-gray-400"}`}
+                          className={`text-sm ${nbCompteursRepart > 0 ? "text-[#6a6a6a] cursor-pointer hover:underline" : "text-[#1d1914]"}`}
                           onClick={(e) => {
                             if (nbCompteursRepart > 0) {
                               handleOpenAppareilsModal(e, pkLogement, "chauffage", logement);
@@ -623,7 +618,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                             className="cursor-pointer"
                             onClick={(e) => handleOpenAppareilsModal(e, pkLogement, "chauffage", logement)}
                           >
-                            <FaChartBar className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                            <FaChartBar className="w-4 h-4 text-[#6a6a6a]" />
                           </div>
                         )}
                       </div>
@@ -631,7 +626,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                     <TableCell className="py-3 text-center">
                       <div className="flex items-center justify-center gap-2">
                         <span
-                          className={`text-theme-sm ${nbCompteursCET > 0 ? "text-green-600 dark:text-green-400cursor-pointer hover:underline" : "text-gray-500 dark:text-gray-400"}`}
+                          className={`text-sm ${nbCompteursCET > 0 ? "text-[#417232] cursor-pointer hover:underline" : "text-[#1d1914]"}`}
                           onClick={(e) => {
                             if (nbCompteursCET > 0) {
                               handleOpenAppareilsModal(e, pkLogement, "chauffage", logement);
@@ -645,15 +640,15 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                             className="cursor-pointer"
                             onClick={(e) => handleOpenAppareilsModal(e, pkLogement, "chauffage", logement)}
                           >
-                            <FaBolt className="w-4 h-4 text-green-600 dark:text-green-400" />
+                            <FaBolt className="w-4 h-4 text-[#417232]" />
                           </div>
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className="py-3 text-gray-500 text-theme-sm dark:text-gray-400">
+                    <TableCell className="py-3 text-[#1d1914] text-sm">
                       {issues.nbAnomalies === 0 && issues.nbFuites === 0 && 
                        issues.nbDepannages === 0 && issues.nbDysfonctionnements === 0 ? (
-                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-normal bg-[#417232] text-white">
                           OK
                         </span>
                       ) : (
@@ -668,7 +663,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                             >
                               <StatusIconsDysfonctionnement 
                                 size={20} 
-                                className="text-error-500 dark:text-error-400" 
+                                className="text-[#e20613]" 
                                 color="currentColor"
                               />
                             </Link>
@@ -676,7 +671,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                             <div className="flex items-center justify-center p-1">
                               <StatusIconsDysfonctionnement 
                                 size={20} 
-                                className="text-gray-400 dark:text-gray-500" 
+                                className="text-[#6a6a6a]" 
                                 color="currentColor"
                               />
                             </div>
@@ -692,7 +687,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                             >
                               <StatusIconsAlerte 
                                 size={20} 
-                                className="text-warning-500 dark:text-warning-400" 
+                                className="text-[#e20613]" 
                                 color="currentColor"
                               />
                             </Link>
@@ -700,7 +695,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                             <div className="flex items-center justify-center p-1">
                               <StatusIconsAlerte 
                                 size={20} 
-                                className="text-gray-400 dark:text-gray-500" 
+                                className="text-[#6a6a6a]" 
                                 color="currentColor"
                               />
                             </div>
@@ -715,7 +710,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                             >
                               <StatusIconsFuite 
                                 size={20} 
-                                className="text-blue-500 dark:text-blue-400" 
+                                className="text-[#009bb4]" 
                                 color="currentColor"
                               />
                             </Link>
@@ -723,7 +718,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                             <div className="flex items-center justify-center p-1">
                               <StatusIconsFuite 
                                 size={20} 
-                                className="text-gray-400 dark:text-gray-500" 
+                                className="text-[#6a6a6a]" 
                                 color="currentColor"
                               />
                             </div>
@@ -739,7 +734,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                             >
                               <StatusIconsAnomalie 
                                 size={20} 
-                                className="text-warning-500 dark:text-warning-400" 
+                                className="text-[#b00511]" 
                                 color="currentColor"
                               />
                             </Link>
@@ -747,7 +742,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                             <div className="flex items-center justify-center p-1">
                               <StatusIconsAnomalie 
                                 size={20} 
-                                className="text-gray-400 dark:text-gray-500" 
+                                className="text-[#6a6a6a]" 
                                 color="currentColor"
                               />
                             </div>
@@ -783,12 +778,12 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
         onClose={appareilsModal.closeModal}
         className="max-w-[700px] m-4"
       >
-        <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+        <div className="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-xl bg-white p-4 lg:p-11">
           <div className="px-2 pr-14">
-            <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
+            <h4 className="mb-2 text-xl font-normal text-[#1d1914]">
               {selectedType === "eau" ? "Appareils Eau" : "Appareils Chauffage"}
             </h4>
-            <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
+            <p className="mb-6 text-sm text-[#1d1914] lg:mb-7">
               Liste des appareils pour ce logement
             </p>
           </div>

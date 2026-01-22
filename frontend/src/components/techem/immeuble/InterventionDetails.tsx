@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { api, handleApiError } from "@/lib/api/client";
-import Alert from "@/components/ui/alert/Alert";
-import Button from "@/components/ui/button/Button";
 import { useInterventions } from "@/lib/hooks/useInterventions";
 
 interface InterventionDetailsProps {
@@ -109,8 +107,8 @@ export default function InterventionDetails({
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[200px] rounded-2xl border border-gray-200 bg-white px-6 py-8 dark:border-gray-800 dark:bg-white/[0.03]">
-        <p className="text-sm text-gray-500 dark:text-gray-400">
+      <div className="flex items-center justify-center min-h-[200px] rounded-xl border border-[#1d1914] bg-white px-6 py-8 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)]">
+        <p className="text-sm text-[#1d1914]">
           Chargement des détails de l&apos;intervention...
         </p>
       </div>
@@ -119,21 +117,19 @@ export default function InterventionDetails({
 
   if (error) {
     return (
-      <Alert
-        variant="error"
-        title="Erreur"
-        message={error || "Impossible de charger les détails de l'intervention."}
-      />
+      <div className="p-4 bg-[#b00511] text-white rounded-lg">
+        <p className="font-medium mb-1">Erreur</p>
+        <p className="text-sm">{error || "Impossible de charger les détails de l'intervention."}</p>
+      </div>
     );
   }
 
   if (!data) {
     return (
-      <Alert
-        variant="warning"
-        title="Aucune donnée"
-        message="Aucune information d'intervention n'a été trouvée pour cette référence."
-      />
+      <div className="p-4 bg-[#ffe5e6] border border-[#1d1914] text-[#1d1914] rounded-lg">
+        <p className="font-medium mb-1">Aucune donnée</p>
+        <p className="text-sm">Aucune information d&apos;intervention n&apos;a été trouvée pour cette référence.</p>
+      </div>
     );
   }
 
@@ -163,59 +159,67 @@ export default function InterventionDetails({
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-6 py-5 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
+      <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-6 py-5 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)]">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-xl font-semibold text-gray-800 dark:text-white/90">
+            <h1 className="text-xl font-normal text-[#1d1914]">
               Détail de l&apos;intervention
             </h1>
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            <p className="mt-1 text-sm text-[#1d1914]">
               Numéro d&apos;intervention&nbsp;:&nbsp;
-              <span className="font-medium text-gray-800 dark:text-white/90">
+              <span className="font-normal text-[#1d1914]">
                 {workOrderNumber}
               </span>
             </p>
           </div>
           <div className="flex flex-col items-end gap-3">
             {statut && (
-              <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 dark:bg-blue-500/10 dark:text-blue-200">
+              <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-normal ${
+                statut.toLowerCase() === "realise" 
+                  ? "bg-[#417232] text-white"
+                  : statut.toLowerCase() === "nonrealise"
+                  ? "bg-[#e20613] text-white"
+                  : "bg-[#e9ecef] text-[#1d1914]"
+              }`}>
                 Statut&nbsp;:&nbsp;{statut}
               </span>
             )}
-            <Button
-              size="sm"
-              variant="outline"
+            <button
               type="button"
               onClick={handleExportPdf}
               disabled={isExporting}
-              className="mt-1"
+              className={`px-4 py-2 rounded-lg border border-[#1d1914] text-sm font-normal transition-all duration-300 ${
+                isExporting
+                  ? "bg-[#e9ecef] text-[#6a6a6a] cursor-not-allowed"
+                  : "bg-white text-[#1d1914] hover:bg-[#ffe5e6] hover:text-[#e20613]"
+              }`}
             >
               {isExporting ? "Export en cours..." : "Export PDF"}
-            </Button>
+            </button>
           </div>
         </div>
 
         <div className="mt-5 grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
+            <h2 className="text-sm font-normal text-[#1d1914]">
               Référence client
             </h2>
-            <p className="text-sm text-gray-800 dark:text-gray-100">
+            <p className="text-sm text-[#1d1914]">
               {clientRef || "—"}
             </p>
           </div>
 
           <div className="space-y-2">
-            <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
+            <h2 className="text-sm font-normal text-[#1d1914]">
               Immeuble
             </h2>
-            <p className="text-sm text-gray-800 dark:text-gray-100">
+            <p className="text-sm text-[#1d1914]">
               {immeubleNom || "—"}
             </p>
-            <p className="text-sm text-gray-600 dark:text-gray-300">
+            <p className="text-sm text-[#1d1914]">
               {immeubleAdresse1 || "—"}
             </p>
-            <p className="text-sm text-gray-600 dark:text-gray-300">
+            <p className="text-sm text-[#1d1914]">
               {[immeubleCp, immeubleVille].filter(Boolean).join(" ")}
             </p>
           </div>
@@ -223,27 +227,26 @@ export default function InterventionDetails({
       </div>
 
       {exportError && (
-        <Alert
-          variant="error"
-          title="Erreur d'export PDF"
-          message={exportError}
-        />
+        <div className="p-4 bg-[#b00511] text-white rounded-lg">
+          <p className="font-medium mb-1">Erreur d&apos;export PDF</p>
+          <p className="text-sm">{exportError}</p>
+        </div>
       )}
 
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-6 py-5 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
-        <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
+      <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-6 py-5 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)]">
+        <h2 className="text-sm font-normal text-[#1d1914]">
           Motif
         </h2>
-        <p className="mt-2 whitespace-pre-line text-sm text-gray-700 dark:text-gray-100">
+        <p className="mt-2 whitespace-pre-line text-sm text-[#1d1914]">
           {motif || "—"}
         </p>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-6 py-5 shadow-sm dark:border-gray-800 dark:bg-white/[0.03]">
-        <h2 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
+      <div className="overflow-hidden rounded-xl border border-[#1d1914] bg-white px-6 py-5 shadow-[0_0.625rem_0.938rem_0_rgba(0,0,0,0.2)]">
+        <h2 className="text-sm font-normal text-[#1d1914]">
           Compte rendu
         </h2>
-        <p className="mt-2 whitespace-pre-line text-sm text-gray-700 dark:text-gray-100">
+        <p className="mt-2 whitespace-pre-line text-sm text-[#1d1914]">
           {compteRendu || "—"}
         </p>
       </div>
