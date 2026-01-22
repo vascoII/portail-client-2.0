@@ -55,13 +55,12 @@ const getNavItems = (
   const dashboardSubItems: { name: string; path: string; pro?: boolean; new?: boolean }[] = [];
   const dashboardSubItemsOcupant: { name: string; path: string; pro?: boolean; new?: boolean }[] = [];
 
-  // Pattern 1: /parc → ParcDashboard
-  // Pattern 2: /immeuble → Parc et Immeubles
-  // Pattern 3: /immeuble/{pkImmeuble} → Parc et Immeubles et Immeuble
-  // Pattern 4: /immeuble/{pkImmeuble}/(fuites|anomalies|...) → Parc et Immeubles et Immeuble et les 4 types
+  // Pattern 1: /parc ou /immeubles → Parc et Liste Immeubles
+  // Pattern 2: /immeuble/{pkImmeuble} → Parc et Immeubles et Immeuble
+  // Pattern 4: /immeuble/{pkImmeuble}/(fuites|anomalies|...) → Parc et Immeubles et Immeuble et les 4 types (au niveau 1, même deep que Parc)
   // Pattern 5: /immeuble/{pkImmeuble}/logements → Parc et Immeubles et Immeuble et Logements
   // Pattern 6: /immeuble/{pkImmeuble}/logements/{pkLogement} → Parc et Immeubles et Immeuble et Logements et Logement
-  // Pattern 7: /immeuble/{pkImmeuble}/logements/{pkLogement}/(fuites|...) → Parc et Immeubles et Immeuble et Logements et Logement et les 4 types
+  // Pattern 7: /immeuble/{pkImmeuble}/logements/{pkLogement}/(fuites|...) → Parc et Immeubles et Immeuble et Logements et Logement et les 4 types (au niveau 1, même deep que Parc)
 
   // Always show Parc (all patterns) - for non-occupant users
   dashboardSubItems.push({ name: "Parc", path: "/parc", pro: false });
@@ -69,16 +68,16 @@ const getNavItems = (
   // Always show Occupant (all patterns) - for occupant users
   dashboardSubItemsOcupant.push({ name: "Occupant", path: "/occupant", pro: false });
 
-  // Show Immeubles if we're on /immeuble or /logement (patterns 2-7)
-  if (pathname.startsWith("/immeuble") || pathname.startsWith("/logement")) {
-    dashboardSubItems.push({ name: "Immeubles", path: "/immeuble", pro: false });
+  // Show Liste Immeubles if we're on /parc, /immeuble or /logement (patterns 1-7)
+  if (pathname.startsWith("/parc") || pathname.startsWith("/immeuble") || pathname.startsWith("/logement")) {
+    dashboardSubItems.push({ name: "Liste Immeubles", path: "/immeuble", pro: false });
   }
 
-  // Show Immeuble if we have pkImmeuble (patterns 3-7)
+  // Show Immeuble if we have pkImmeuble (patterns 2-7)
   if (pkImmeuble) {
     dashboardSubItems.push({ name: "Immeuble", path: `/immeuble/${pkImmeuble}`, pro: false });
-
-    // Show all 4 types if we're on an immeuble type page (pattern 4)
+    
+    // Show all 4 types if we're on an immeuble type page (pattern 4) - at level 1 (same deep as Parc)
     if (pathname.startsWith(`/immeuble/${pkImmeuble}/`) && currentSection && IMMEUBLE_SECTION_SLUGS.some(s => s.slug === currentSection)) {
       IMMEUBLE_SECTION_SLUGS.forEach(({ slug, label }) => {
         dashboardSubItems.push({
@@ -97,7 +96,8 @@ const getNavItems = (
       if (pkLogement) {
         const logementPath = `${logementsPath}/${pkLogement}`;
         dashboardSubItems.push({ name: "Logement", path: logementPath, pro: false });
-
+        
+        // Show all 4 types if we're on a logement type page (pattern 7) - at level 1 (same deep as Parc)
         if (
           pathname.startsWith(`${logementPath}/`) &&
           currentSection &&
@@ -416,23 +416,22 @@ const AppSidebar: React.FC = () => {
               <ul className="mt-2 space-y-1 ml-9">
                 {nav.subItems.map((subItem) => {
                   // Determine indentation level based on path hierarchy
-                  // Pattern: Parc (0) -> Immeubles (1) -> Immeuble (2) -> Sections/Logements (3) -> Logement (4) -> Sections (5)
+                  // Pattern: Parc (0) -> Liste Immeubles (1) -> Immeuble (2) -> Logements (3) -> Logement (4)
+                  // Types (fuites, anomalies, etc.) are at level 1 (same deep as Parc)
                   // Pattern: Occupant (0)
                   let indentLevel = 0;
                   if (subItem.path === "/parc" || subItem.path === "/occupant") {
                     indentLevel = 0; // Parc or Occupant - no indent
                   } else if (subItem.path === "/immeuble") {
-                    indentLevel = 1; // Immeubles - level 1
+                    indentLevel = 1; // Liste Immeubles - level 1
+                  } else if (IMMEUBLE_SECTION_REGEX.test(subItem.path) || LOGEMENT_SECTION_REGEX.test(subItem.path)) {
+                    indentLevel = 1; // Types (fuites, anomalies, etc.) - level 1 (same deep as Parc)
                   } else if (IMMEUBLE_DETAIL_REGEX.test(subItem.path)) {
                     indentLevel = 2; // Specific immeuble
-                  } else if (IMMEUBLE_SECTION_REGEX.test(subItem.path)) {
-                    indentLevel = 3; // Immeuble sections
                   } else if (LOGEMENTS_REGEX.test(subItem.path)) {
                     indentLevel = 3; // Logements listing
                   } else if (LOGEMENT_DETAIL_REGEX.test(subItem.path)) {
                     indentLevel = 4; // Specific logement
-                  } else if (LOGEMENT_SECTION_REGEX.test(subItem.path)) {
-                    indentLevel = 5; // Logement sections
                   }
                   
                   return (
