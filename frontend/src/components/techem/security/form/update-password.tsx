@@ -1,8 +1,6 @@
 "use client";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
-import Button from "@/components/ui/button/Button";
-import Alert from "@/components/ui/alert/Alert";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -96,52 +94,46 @@ export default function UpdatePasswordForm() {
 
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">
-      <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
+      <div className="w-full max-w-[49.63rem] sm:pt-10 mx-auto mb-5 px-8">
         <Link
           href="/login"
-          className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+          className="inline-flex items-center text-base text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
         >
-          <ChevronLeftIcon />
+          <ChevronLeftIcon className="text-[#1d1914]" />
           Retour à la connexion
         </Link>
       </div>
-      <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
+      <div className="flex flex-col justify-center flex-1 w-full max-w-[49.63rem] mx-auto px-8">
         <div>
-          <div className="mb-5 sm:mb-8">
-            <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
+          <div className="mb-6 sm:mb-8">
+            <h1 className="mb-2 text-[#1d1914] text-2xl sm:text-[2.5rem] leading-[2.5rem] sm:leading-[3rem] font-normal">
               Modification du mot de passe
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-base text-[#1d1914]">
               Définissez un nouveau mot de passe pour votre compte
             </p>
           </div>
           <div>
             {/* Message de succès */}
             {isSuccess && (
-              <div className="mb-6">
-                <Alert
-                  variant="success"
-                  title="Mot de passe modifié"
-                  message="Votre mot de passe a été modifié avec succès."
-                />
+              <div className="mb-9 p-4 bg-[#417232] text-[#e9ecef] rounded-lg">
+                <p className="font-medium mb-1">Mot de passe modifié</p>
+                <p className="text-sm">Votre mot de passe a été modifié avec succès.</p>
               </div>
             )}
 
             {/* Alerte d'erreur */}
             {displayError && !isSuccess && (
-              <div className="mb-6">
-                <Alert
-                  variant="error"
-                  title="Erreur"
-                  message={displayError}
-                />
+              <div className="mb-9 p-4 bg-[#b00511] text-[#e9ecef] rounded-lg">
+                <p className="font-medium mb-1">Erreur</p>
+                <p className="text-sm">{displayError}</p>
               </div>
             )}
 
             {/* Rappel des règles */}
             {!isSuccess && (
-              <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-                <p className="text-sm text-blue-800 dark:text-blue-200">
+              <div className="mb-6 p-4 bg-[#009bb4] text-[#00344e] rounded-lg">
+                <p className="text-sm">
                   <strong>Rappel :</strong> Votre mot de passe doit être composé
                   d&apos;au moins 8 caractères et contenir au moins une majuscule,
                   une minuscule et un chiffre.
@@ -154,9 +146,9 @@ export default function UpdatePasswordForm() {
                 <div className="space-y-6">
                   {/* Champ Nouveau mot de passe */}
                   <div>
-                    <Label htmlFor="password.first">
+                    <Label htmlFor="password.first" className="text-base text-[#1d1914] mb-2 block">
                       Nouveau mot de passe{" "}
-                      <span className="text-error-500">*</span>
+                      <span className="text-[#b00511]">*</span>
                     </Label>
                     <div className="relative">
                       <Input
@@ -166,11 +158,12 @@ export default function UpdatePasswordForm() {
                         {...register("password.first")}
                         error={!!errors.password?.first}
                         hint={errors.password?.first?.message}
+                        className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                        className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2 text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
                         aria-label={
                           showPassword
                             ? "Masquer le mot de passe"
@@ -178,9 +171,9 @@ export default function UpdatePasswordForm() {
                         }
                       >
                         {showPassword ? (
-                          <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
+                          <EyeIcon className="fill-[#1d1914]" />
                         ) : (
-                          <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
+                          <EyeCloseIcon className="fill-[#1d1914]" />
                         )}
                       </button>
                     </div>
@@ -188,9 +181,9 @@ export default function UpdatePasswordForm() {
 
                   {/* Champ Confirmation mot de passe */}
                   <div>
-                    <Label htmlFor="password.second">
+                    <Label htmlFor="password.second" className="text-base text-[#1d1914] mb-2 block">
                       Confirmation du mot de passe{" "}
-                      <span className="text-error-500">*</span>
+                      <span className="text-[#b00511]">*</span>
                     </Label>
                     <div className="relative">
                       <Input
@@ -200,13 +193,14 @@ export default function UpdatePasswordForm() {
                         {...register("password.second")}
                         error={!!errors.password?.second}
                         hint={errors.password?.second?.message}
+                        className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                       />
                       <button
                         type="button"
                         onClick={() =>
                           setShowPasswordConfirm(!showPasswordConfirm)
                         }
-                        className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                        className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2 text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
                         aria-label={
                           showPasswordConfirm
                             ? "Masquer le mot de passe"
@@ -214,9 +208,9 @@ export default function UpdatePasswordForm() {
                         }
                       >
                         {showPasswordConfirm ? (
-                          <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
+                          <EyeIcon className="fill-[#1d1914]" />
                         ) : (
-                          <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
+                          <EyeCloseIcon className="fill-[#1d1914]" />
                         )}
                       </button>
                     </div>
@@ -224,7 +218,7 @@ export default function UpdatePasswordForm() {
                     {passwordFirst &&
                       passwordSecond &&
                       passwordFirst !== passwordSecond && (
-                        <p className="mt-1.5 text-xs text-error-500">
+                        <p className="mt-1.5 text-xs text-[#b00511]">
                           Les mots de passe ne correspondent pas
                         </p>
                       )}
@@ -232,16 +226,15 @@ export default function UpdatePasswordForm() {
 
                   {/* Bouton de soumission */}
                   <div>
-                    <Button
-                      className="w-full"
-                      size="sm"
+                    <button
                       type="submit"
                       disabled={isLoading}
+                      className="w-full bg-[#e20613] text-white hover:bg-[#b4050f] border border-[#e20613] hover:border-[#b4050f] rounded-lg px-4 py-1.5 min-w-[5.5rem] max-w-[17rem] transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe] disabled:bg-[#ffa7ac] disabled:pointer-events-none text-base font-normal"
                     >
                       {isLoading ? "Modification en cours..." : "Modifier"}
-                    </Button>
-                    <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                      <span className="text-error-500">*</span> champs obligatoires
+                    </button>
+                    <p className="mt-2 text-xs text-[#1d1914]">
+                      <span className="text-[#b00511]">*</span> champs obligatoires
                     </p>
                   </div>
                 </div>
@@ -251,11 +244,11 @@ export default function UpdatePasswordForm() {
             {/* Lien vers la connexion */}
             {!isSuccess && (
               <div className="mt-5">
-                <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
+                <p className="text-base font-normal text-center text-[#1d1914] sm:text-start">
                   Vous vous souvenez de votre mot de passe ? {""}
                   <Link
                     href="/login"
-                    className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
+                    className="text-[#b00511] hover:text-[#e20613] hover:underline transition-all duration-300"
                   >
                     Se connecter
                   </Link>

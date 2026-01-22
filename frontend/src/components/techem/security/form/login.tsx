@@ -2,8 +2,6 @@
 import Checkbox from "@/components/form/input/Checkbox";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
-import Button from "@/components/ui/button/Button";
-import Alert from "@/components/ui/alert/Alert";
 import { EyeCloseIcon, EyeIcon } from "@/icons";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
@@ -135,9 +133,9 @@ export default function LoginForm() {
   if (isCheckingSession) {
     return (
       <div className="flex flex-col flex-1 lg:w-1/2 w-full">
-        <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
+        <div className="flex flex-col justify-center flex-1 w-full max-w-[49.63rem] mx-auto px-8">
           <div className="text-center">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-base text-[#1d1914]">
               Vérification de la session...
             </p>
           </div>
@@ -148,25 +146,22 @@ export default function LoginForm() {
 
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">
-      <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
+      <div className="flex flex-col justify-center flex-1 w-full max-w-[49.63rem] mx-auto px-8">
         <div>
-          <div className="mb-5 sm:mb-8">
-            <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
+          <div className="mb-6 sm:mb-8">
+            <h1 className="mb-2 text-[#1d1914] text-2xl sm:text-[2.5rem] leading-[2.5rem] sm:leading-[3rem] font-normal">
               Connexion
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+            <p className="text-base text-[#1d1914]">
               Entrez votre email ou login et votre mot de passe pour vous connecter !
             </p>
           </div>
           <div>
             {/* Alerte d'erreur */}
             {displayError && (
-              <div className="mb-6">
-                <Alert
-                  variant="error"
-                  title="Erreur de connexion"
-                  message={displayError}
-                />
+              <div className="mb-9 p-4 bg-[#b00511] text-[#e9ecef] rounded-lg">
+                <p className="font-medium mb-1">Erreur de connexion</p>
+                <p className="text-sm">{displayError}</p>
               </div>
             )}
 
@@ -174,8 +169,8 @@ export default function LoginForm() {
               <div className="space-y-6">
                 {/* Champ Email/Nom d'utilisateur */}
                 <div>
-                  <Label htmlFor="username">
-                    Email ou Login <span className="text-error-500">*</span>
+                  <Label htmlFor="username" className="text-base text-[#1d1914] mb-2 block">
+                    Email ou Login <span className="text-[#b00511]">*</span>
                   </Label>
                   <Input
                     id="username"
@@ -184,13 +179,14 @@ export default function LoginForm() {
                     {...register("username")}
                     error={!!errors.username}
                     hint={errors.username?.message}
+                    className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                   />
                 </div>
 
                 {/* Champ Mot de passe */}
                 <div>
-                  <Label htmlFor="password">
-                    Mot de passe <span className="text-error-500">*</span>
+                  <Label htmlFor="password" className="text-base text-[#1d1914] mb-2 block">
+                    Mot de passe <span className="text-[#b00511]">*</span>
                   </Label>
                   <div className="relative">
                     <Input
@@ -200,17 +196,18 @@ export default function LoginForm() {
                       {...register("password")}
                       error={!!errors.password}
                       hint={errors.password?.message}
+                      className="border border-[#1d1914] rounded-lg focus:outline-4 focus:outline-[#c2dafe] focus:border-[#1d1914] text-[#1d1914] placeholder:text-[#6a6a6a] transition-all duration-300"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                      className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2 text-[#1d1914] hover:text-[#e20613] transition-all duration-300"
                       aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
                     >
                       {showPassword ? (
-                        <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
+                        <EyeIcon className="fill-[#1d1914]" />
                       ) : (
-                        <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
+                        <EyeCloseIcon className="fill-[#1d1914]" />
                       )}
                     </button>
                   </div>
@@ -227,13 +224,13 @@ export default function LoginForm() {
                         // dans le store auth ou l'API si nécessaire
                       }}
                     />
-                    <span className="block font-normal text-gray-700 text-theme-sm dark:text-gray-400">
+                    <span className="block font-normal text-base text-[#1d1914]">
                       Se souvenir de moi
                     </span>
                   </div>
                   <Link
                     href="/reset-password"
-                    className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
+                    className="text-base text-[#b00511] hover:text-[#e20613] hover:underline transition-all duration-300"
                   >
                     Mot de passe oublié ?
                   </Link>
@@ -241,14 +238,13 @@ export default function LoginForm() {
 
                 {/* Bouton de soumission */}
                 <div>
-                  <Button
-                    className="w-full"
-                    size="sm"
+                  <button
                     type="submit"
                     disabled={isSubmitting || isLoggingIn}
+                    className="w-full bg-[#e20613] text-white hover:bg-[#b4050f] border border-[#e20613] hover:border-[#b4050f] rounded-lg px-4 py-1.5 min-w-[5.5rem] max-w-[17rem] transition-all duration-300 focus-visible:outline-4 focus-visible:outline-[#c2dafe] disabled:bg-[#ffa7ac] disabled:pointer-events-none text-base font-normal"
                   >
                     {isSubmitting || isLoggingIn ? "Connexion en cours..." : "Se connecter"}
-                  </Button>
+                  </button>
                 </div>
               </div>
             </form>

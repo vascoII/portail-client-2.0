@@ -5,14 +5,14 @@ import React from "react";
 
 const AppFooter: React.FC = () => {
   return (
-    <footer className="border-t border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
-      <div className="mx-auto max-w-(--breakpoint-2xl) px-4 py-4 md:px-6">
+    <footer className="border-t border-[#1d1914] bg-[#1d1914] text-white text-sm py-6">
+      <div className="mx-auto max-w-[77rem] px-6">
         <nav>
-          <ul className="flex flex-wrap items-center justify-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+          <ul className="flex flex-wrap items-center justify-center gap-6">
             <li>
               <Link
                 href="/legal-notices"
-                className="hover:text-gray-900 dark:hover:text-gray-200"
+                className="block pr-6 text-white hover:underline transition-all duration-300"
               >
                 Mentions légales
               </Link>
@@ -20,7 +20,7 @@ const AppFooter: React.FC = () => {
             <li>
               <Link
                 href="/personal-datas"
-                className="hover:text-gray-900 dark:hover:text-gray-200"
+                className="block pr-6 text-white hover:underline transition-all duration-300"
               >
                 Données personnelles
               </Link>
