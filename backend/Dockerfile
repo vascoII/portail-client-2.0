@@ -11,6 +11,7 @@ RUN apt-get clean && \
     apt-get install -y --no-install-recommends \
     git \
     unzip \
+    wget \
     libicu-dev \
     libzip-dev \
     libonig-dev \
@@ -18,19 +19,40 @@ RUN apt-get clean && \
     libxml2-dev \
     libpng-dev \
     libjpeg62-turbo-dev \
-    libfreetype6-dev && \
+    libfreetype6-dev \
+    libaio1 \
+    libaio-dev && \
     docker-php-ext-configure intl && \
     docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install -j"$(nproc)" \
-       intl \
-       pdo_mysql \
-       zip \
-       opcache \
-       soap \
-       gd \
-       mbstring && \
+    intl \
+    pdo_mysql \
+    zip \
+    opcache \
+    soap \
+    gd \
+    mbstring && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/* /tmp/* /var/tmp/*
+
+# Install Oracle Instant Client
+RUN mkdir -p /opt/oracle && \
+    cd /opt/oracle && \
+    wget -q https://download.oracle.com/otn_software/linux/instantclient/instantclient-basic-linux.x64-21.1.0.0.0.zip && \
+    unzip -q instantclient-basic-linux.x64-21.1.0.0.0.zip && \
+    rm -f instantclient-basic-linux.x64-21.1.0.0.0.zip && \
+    cd instantclient_21_1 && \
+    rm -f *jdbc* *occi* *mysql* *README* *jar uidrvci genezi adrci && \
+    echo /opt/oracle/instantclient_21_1 > /etc/ld.so.conf.d/oracle-instantclient.conf && \
+    ldconfig
+
+# Set Oracle environment variables
+ENV LD_LIBRARY_PATH=/opt/oracle/instantclient_21_1:$LD_LIBRARY_PATH
+ENV ORACLE_HOME=/opt/oracle/instantclient_21_1
+
+# Install PHP OCI8 extension via PECL
+RUN pecl install oci8-3.2.0 && \
+    docker-php-ext-enable oci8
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 

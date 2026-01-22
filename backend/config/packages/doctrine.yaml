@@ -4,8 +4,19 @@ doctrine:
 
         # IMPORTANT: You MUST configure your server version,
         # either here or in the DATABASE_URL env var (see .env file)
-        #server_version: '15'
+        # For Oracle, uncomment and set the appropriate version:
+        #server_version: '21'
 
+        # Oracle-specific configuration
+        # Driver will be auto-detected from DATABASE_URL (oci8://...)
+        # If needed, explicitly set: driver: 'oci8'
+        charset: 'AL32UTF8'  # Oracle UTF-8 encoding
+        
+        # Options spécifiques Oracle
+        options:
+            1002: 'SET NAMES UTF8'  # Pour la compatibilité
+
+        # Performance: désactiver le profiling en production
         profiling_collect_backtrace: '%kernel.debug%'
     orm:
         auto_generate_proxy_classes: true
