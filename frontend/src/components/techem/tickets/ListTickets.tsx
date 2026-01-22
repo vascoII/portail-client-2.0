@@ -27,7 +27,7 @@ type SortKey =
   | "depannage";
 
 export default function ListTickets() {
-  const { useTicketsQuery, closeTicket, isClosing, closeError } = useTickets();
+  const { useTicketsQuery, closeTicket, isClosing, closeError, exportTickets } = useTickets();
 
   // Chargement des tickets "Tous" (showall=O) et "Actif" (showall=N)
   const {
@@ -54,9 +54,9 @@ export default function ListTickets() {
   const [page, setPage] = useState<number>(1);
   const pageSize = 20;
 
-  // Excel export placeholder
+  // Excel export
   const exportExcelFn = async () => {
-    throw new Error("L'export Excel des tickets n'est pas encore disponible.");
+    await exportTickets();
   };
 
   const {

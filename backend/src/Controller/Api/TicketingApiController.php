@@ -2,9 +2,11 @@
 
 namespace App\Controller\Api;
 
+use App\Service\ExcelHelper;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 /**
@@ -287,6 +289,164 @@ class TicketingApiController extends AbstractApiController
             ]);
         } catch (\Exception $e) {
             return $this->error('Error fetching ticket owner information: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Export tickets to Excel
+     * GET /api/tickets/download
+     * Downloads the Excel file automatically
+     */
+    #[Route("/download", name: "download", methods: ["GET"])]
+    public function download(Request $request, ExcelHelper $excelHelper): StreamedResponse|JsonResponse
+    {
+        ini_set('max_execution_time', 120);
+
+        // Check if faker mode is enabled and return fake data
+        $fakeResponse = $this->sendFakeData('api.tickets.download');
+        if ($fakeResponse !== null) {
+            return $fakeResponse;
+        }
+
+        $client = $this->getAuthenticatedClientFromHeaders($request);
+        if ($client instanceof JsonResponse) {
+            return $client;
+        }
+
+        try {
+            // Check for demo/preview mode
+            if (file_exists(__DIR__ . '/../../../demo.txt') || file_exists(__DIR__ . '/../../../preview.txt')) {
+                $jsondemo = '{
+                    "Erreur": "",
+                    "Info": "",
+                    "ListeTicketsInter": {
+                        "ticketInter": [
+                            {
+                                "Nom": "M. Gethi",
+                                "Email": "test@techem.com",
+                                "TelFixe": "06.11.11.11.11",
+                                "TicketDate": "2025-05-20T19:22:34",
+                                "MotifLibre": "Pouvez-vous faire vérifier le compteur, nous avons un écart avec l\'index indiqué par l\'occupant ?",
+                                "Statut": "Nouveau",
+                                "ObjetRetour": "Pouvez-vous faire vérifier le compteur, nous avons un écart avec l\'index indiqué par l\'occupant ?",
+                                "FkLogement": "1165420",
+                                "RefLogement": "001095P0901",
+                                "NumIntervention": "00142990",
+                                "WebUser_Nom": "Demo",
+                                "WebUser_Prenom": "Client",
+                                "WebUser_Tel": "0102030405",
+                                "WebUser_Email": "noreply@techem.fr",
+                                "Imm_Id": "070038",
+                                "FkImmeuble": "2108",
+                                "Statut_Client": "",
+                                "CaseNumber": "00105598",
+                                "CaseId": "5003X00002CuohYQAR",
+                                "LastUpdateDate": "2025-05-21T14:23:51"
+                            },
+                            {
+                                "Nom": "Mme Uajiau",
+                                "Email": "occupant2@techem.fr",
+                                "TelFixe": "06.02.03.04.05",
+                                "TicketDate": "2025-04-17T16:45:22",
+                                "MotifLibre": "Bonjour, je vous remercie de fixer un rendez-vous au locataire afin d\'effectuer la pose d\'un compteur d\'eau. Cordialement",
+                                "Statut": "En cours de traitement",
+                                "ObjetRetour": "Pose d\'un nouveau compteur",
+                                "FkLogement": "1165453",
+                                "RefLogement": "001095H0040",
+                                "NumIntervention": "00142990",
+                                "WebUser_Nom": "Demo",
+                                "WebUser_Prenom": "Client",
+                                "WebUser_Tel": "0102030405",
+                                "WebUser_Email": "noreply@techem.fr",
+                                "Imm_Id": "070038",
+                                "FkImmeuble": "2108",
+                                "Statut_Client": "",
+                                "CaseNumber": "00147278",
+                                "CaseId": "5003X00002QC8hOQAT",
+                                "LastUpdateDate": "2025-05-20T13:26:13"
+                            }
+                        ]
+                    }
+                }';
+                $tickets_array = json_decode($jsondemo, true);
+            } else {
+                // Get all tickets (showAll = null means all tickets)
+                $tickets = $client->getTicketsIntersUser(null);
+                $tickets_array = json_decode(json_encode($tickets), true);
+            }
+
+            // Extract tickets list
+            $tickets_list = [];
+            if (isset($tickets_array['ListeTicketsInter']['ticketInter'])) {
+                $tickets_list = $tickets_array['ListeTicketsInter']['ticketInter'];
+            } elseif (isset($tickets_array['ListeTicketsInter'])) {
+                $ticketData = $tickets_array['ListeTicketsInter'];
+                if (is_array($ticketData) && isset($ticketData[0])) {
+                    $tickets_list = $ticketData;
+                } else {
+                    $tickets_list = [$ticketData];
+                }
+            }
+
+            // Format data for Excel export
+            $data = [];
+            
+            // Headers
+            $headers = [
+                'Numéro de ticket',
+                'Date de demande',
+                'Demandeur',
+                'Objet',
+                'Immeuble',
+                'Nom occupant',
+                'Réf. logement',
+                'Statut',
+                'Dernière modification',
+                'Dépannage',
+            ];
+            $data[] = $headers;
+
+            // Data rows
+            foreach ($tickets_list as $ticket) {
+                $ticketDate = isset($ticket['TicketDate']) && !empty($ticket['TicketDate'])
+                    ? date('d/m/Y H:i', strtotime($ticket['TicketDate']))
+                    : '';
+                
+                $lastUpdateDate = isset($ticket['LastUpdateDate']) && !empty($ticket['LastUpdateDate'])
+                    ? date('d/m/Y H:i', strtotime($ticket['LastUpdateDate']))
+                    : '';
+
+                $demandeur = trim(($ticket['WebUser_Nom'] ?? '') . ' ' . ($ticket['WebUser_Prenom'] ?? ''));
+
+                $row = [
+                    $ticket['CaseNumber'] ?? '',
+                    $ticketDate,
+                    $demandeur,
+                    $ticket['ObjetRetour'] ?? '',
+                    $ticket['Imm_Id'] ?? '',
+                    $ticket['Nom'] ?? '',
+                    $ticket['RefLogement'] ?? '',
+                    $ticket['Statut'] ?? '',
+                    $lastUpdateDate,
+                    $ticket['NumIntervention'] ?? '',
+                ];
+                $data[] = $row;
+            }
+
+            ob_end_clean();
+
+            $response = new StreamedResponse(
+                function () use ($data, $excelHelper) {
+                    $path = 'php://output';
+                    $excelHelper->write($path, $data);
+                }
+            );
+            $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            $response->headers->set('Content-Disposition', 'attachment; filename=export-tickets.xlsx;');
+
+            return $response;
+        } catch (\Exception $e) {
+            return $this->error('Error exporting tickets: ' . $e->getMessage(), 500);
         }
     }
 }

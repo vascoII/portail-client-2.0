@@ -307,6 +307,47 @@ export function useTickets() {
     return result;
   };
 
+  /**
+   * Helper function to download blob
+   */
+  function downloadBlob(blob: Blob, filename: string): void {
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  }
+
+  /**
+   * Export tickets to Excel
+   * GET /api/tickets/download
+   * Downloads the file automatically
+   * @returns Promise that resolves when download is complete
+   */
+  const exportTickets = async (): Promise<void> => {
+    try {
+      const response = await api.get(
+        `/tickets/download`,
+        {
+          responseType: "blob",
+        }
+      );
+
+      // When responseType is "blob", response.data is a Blob, but TypeScript doesn't infer it
+      const blob = new Blob([response.data as unknown as BlobPart], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      downloadBlob(blob, "export-tickets.xlsx");
+    } catch (error) {
+      const errorMessage = handleApiError(error);
+      throw new Error(`Failed to export tickets: ${errorMessage}`);
+    }
+  };
+
   return {
     // Query functions (async functions that refetch)
     getTickets,
@@ -316,6 +357,9 @@ export function useTickets() {
 
     // Helper functions
     downloadTicketAttachment,
+
+    // Export functions
+    exportTickets,
 
     // Mutation functions
     closeTicket,
