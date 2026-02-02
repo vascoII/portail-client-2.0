@@ -4,8 +4,7 @@ doctrine:
 
         # IMPORTANT: You MUST configure your server version,
         # either here or in the DATABASE_URL env var (see .env file)
-        # For Oracle, uncomment and set the appropriate version:
-        #server_version: '21'
+        # For Oracle, set server_version in when@preview / when@prod
 
         # Oracle-specific configuration
         # Driver will be auto-detected from DATABASE_URL (oci8://...)
@@ -32,6 +31,11 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
+
+when@preview:
+    doctrine:
+        dbal:
+            server_version: '21'
 
 when@test:
     doctrine:

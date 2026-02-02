@@ -23,7 +23,8 @@ services:
     environment:
       - APP_ENV=preview
       - APP_DEBUG=0
-      # Ajoute DB_HOST, DB_NAME, etc. spécifiques à preview
+      # Connexion Oracle (format: oci8://user:password@host:1521/service_name)
+      - DATABASE_URL=${DATABASE_URL:-oci8://user:password@oracle-host:1521/XE}
     expose:
       - "9000" # PHP-FPM port
     networks:
