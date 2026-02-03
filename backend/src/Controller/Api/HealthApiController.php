@@ -22,8 +22,7 @@ class HealthApiController extends AbstractController
     public function __construct(
         private Connection $connection,
         private ?LoggerInterface $logger = null
-    ) {
-    }
+    ) {}
 
     /**
      * Health check endpoint for database connection
@@ -39,21 +38,31 @@ class HealthApiController extends AbstractController
     #[Route("/database", name: "database", methods: ["GET"])]
     public function databaseHealth(Request $request): JsonResponse
     {
+        if (!\extension_loaded('oci8')) {
+            return new JsonResponse([
+                'success' => false,
+                'status' => 'unhealthy',
+                'message' => 'PHP OCI8 extension is not loaded. Check that the extension is enabled in the PHP-FPM image.',
+                'error' => 'OCI8 extension not loaded',
+                'timestamp' => (new \DateTime())->format('c'),
+            ], 503);
+        }
+
         try {
             // Test de connexion avec SELECT 1 FROM DUAL (requête Oracle standard pour ping)
             $result = $this->connection->executeQuery('SELECT 1 FROM DUAL')->fetchOne();
-            
+
             if ($result != 1) {
                 throw new \RuntimeException('Unexpected query result');
             }
-            
+
             // Récupérer des informations sur la connexion
             $serverVersion = $this->connection->getServerVersion();
             $databaseName = $this->connection->getDatabase();
             $params = $this->connection->getParams();
             // Extraire le nom du driver depuis les paramètres de connexion
             $driverName = $params['driver'] ?? 'unknown';
-            
+
             return new JsonResponse([
                 'success' => true,
                 'status' => 'healthy',
@@ -67,7 +76,6 @@ class HealthApiController extends AbstractController
                     'timestamp' => (new \DateTime())->format('c'),
                 ],
             ], 200);
-            
         } catch (Exception $e) {
             if ($this->logger) {
                 $this->logger->error('Database health check failed', [
@@ -75,7 +83,7 @@ class HealthApiController extends AbstractController
                     'trace' => $e->getTraceAsString(),
                 ]);
             }
-            
+
             return new JsonResponse([
                 'success' => false,
                 'status' => 'unhealthy',
@@ -91,7 +99,7 @@ class HealthApiController extends AbstractController
                     'trace' => $e->getTraceAsString(),
                 ]);
             }
-            
+
             return new JsonResponse([
                 'success' => false,
                 'status' => 'unhealthy',

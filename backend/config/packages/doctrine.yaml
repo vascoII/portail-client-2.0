@@ -8,9 +8,10 @@ doctrine:
 
         # Oracle-specific configuration
         # Driver will be auto-detected from DATABASE_URL (oci8://...)
-        # If needed, explicitly set: driver: 'oci8'
         charset: 'AL32UTF8'  # Oracle UTF-8 encoding
-        
+        # Évite de référencer la constante OCI_NO_AUTO_COMMIT (0) si l'extension est chargée plus tard
+        sessionMode: 0  # 0 = OCI_NO_AUTO_COMMIT
+
         # Options spécifiques Oracle
         options:
             1002: 'SET NAMES UTF8'  # Pour la compatibilité
