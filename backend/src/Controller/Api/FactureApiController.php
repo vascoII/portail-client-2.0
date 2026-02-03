@@ -3,17 +3,31 @@
 namespace App\Controller\Api;
 
 use App\Service\Client;
+use App\Service\DataSource\FactureListProviderInterface;
+use App\Service\FakeDataService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
- * API Controller for Factures (Invoices)
+ * API Controller for Factures (Invoices).
+ *
+ * GET list/show utilisent FactureListProviderInterface (SOAP ou Oracle selon DATA_SOURCE_FACTURES).
+ * GET download reste en SOAP (getReportFacture).
  */
 #[Route("/api/factures", name: "api_facture_", priority: 10)]
 class FactureApiController extends AbstractApiController
 {
+    public function __construct(
+        Client $client,
+        SerializerInterface $serializer,
+        ?FakeDataService $fakeDataService,
+        private readonly FactureListProviderInterface $factureListProvider
+    ) {
+        parent::__construct($client, $serializer, $fakeDataService);
+    }
   /**
    * Normalize a single invoice object/array to API format
    * 
@@ -101,9 +115,9 @@ class FactureApiController extends AbstractApiController
     }
 
     try {
-      $factures = $client->getFactures();
+      $factures = $this->factureListProvider->getFactures($client);
 
-      if (empty($factures)) {
+      if (empty($factures) || !isset($factures->ListeFactures)) {
         return $this->success([
           'factures' => [],
           'count' => 0,
@@ -185,9 +199,9 @@ class FactureApiController extends AbstractApiController
     }
 
     try {
-      $factures = $client->getFactures();
+      $factures = $this->factureListProvider->getFactures($client);
 
-      if (empty($factures)) {
+      if (empty($factures) || !isset($factures->ListeFactures)) {
         return $this->notFound('Invoice not found');
       }
 
@@ -199,8 +213,9 @@ class FactureApiController extends AbstractApiController
       // Find the specific invoice
       $facture = null;
       foreach ($listFactures as $f) {
-        if (isset($f->PKFacture) && $f->PKFacture == $pkFacture) {
-          $facture = $f;
+        $pk = is_object($f) ? ($f->PKFacture ?? null) : ($f['PKFacture'] ?? null);
+        if ($pk != null && (string) $pk === (string) $pkFacture) {
+          $facture = is_object($f) ? $f : (object) $f;
           break;
         }
       }
