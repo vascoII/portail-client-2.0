@@ -8,6 +8,10 @@ parameters:
   debug_toolbar: true
   debug_redirects: false
   use_assetic_controller: true
+  # Paramètres de connexion Oracle bas-niveau (OCI)
+  oracle_dsn: '%env(ORACLE_DSN)%'         # ex: //host:1521/SERVICE_NAME
+  oracle_user: '%env(ORACLE_USER)%'
+  oracle_password: '%env(ORACLE_PASSWORD)%'
   # Source des données factures : soap | oracle (migration GET)
   data_source_factures: '%env(default:data_source_factures_default:DATA_SOURCE_FACTURES)%'
   data_source_factures_default: soap
@@ -51,6 +55,13 @@ services:
       $cacheNamespace: "%cache_namespace%"
       $superLoginID: "%superLoginID%"
       $superPassword: "%superPassword%"
+
+  # Façade OCI utilisée par les repositories Oracle (ex: FactureRepository)
+  App\Oracle\OciFacade:
+    arguments:
+      $dsn: '%oracle_dsn%'
+      $user: '%oracle_user%'
+      $password: '%oracle_password%'
 
   # Migration GET factures : SOAP ou Oracle (DATA_SOURCE_FACTURES=soap|oracle)
   App\Service\DataSource\FactureListProviderRouter:

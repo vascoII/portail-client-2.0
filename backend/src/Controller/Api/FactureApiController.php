@@ -2,9 +2,11 @@
 
 namespace App\Controller\Api;
 
+use App\Service\Api\FactureService;
 use App\Service\Client;
 use App\Service\DataSource\FactureListProviderInterface;
 use App\Service\FakeDataService;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,7 +26,9 @@ class FactureApiController extends AbstractApiController
         Client $client,
         SerializerInterface $serializer,
         ?FakeDataService $fakeDataService,
-        private readonly FactureListProviderInterface $factureListProvider
+        private readonly FactureListProviderInterface $factureListProvider,
+        private readonly FactureService $factureService,
+        private readonly ?LoggerInterface $logger = null,
     ) {
         parent::__construct($client, $serializer, $fakeDataService);
     }
@@ -115,24 +119,29 @@ class FactureApiController extends AbstractApiController
     }
 
     try {
+      // Source principale (router, par défaut SOAP)
       $factures = $this->factureListProvider->getFactures($client);
 
-      if (empty($factures) || !isset($factures->ListeFactures)) {
+      $normalizedFactures = [];
+      if (!empty($factures) && isset($factures->ListeFactures)) {
+        $listFactures = (array) $factures->ListeFactures;
+        if (isset($listFactures['facture'])) {
+          $listFactures = $listFactures['facture'];
+        }
+
+        foreach ($listFactures as $facture) {
+          $normalizedFactures[] = $this->normalizeFacture($facture);
+        }
+      }
+
+      // Trick de dev : comparer SOAP vs Oracle via FactureService
+      $this->compareWithOracleBackend($normalizedFactures);
+
+      if (empty($normalizedFactures)) {
         return $this->success([
           'factures' => [],
           'count' => 0,
         ], 'No invoices found');
-      }
-
-      $listFactures = (array) $factures->ListeFactures;
-      if (isset($listFactures['facture'])) {
-        $listFactures = $listFactures['facture'];
-      }
-
-      // Normalize data for API
-      $normalizedFactures = [];
-      foreach ($listFactures as $facture) {
-        $normalizedFactures[] = $this->normalizeFacture($facture);
       }
 
       return $this->success([
@@ -279,6 +288,51 @@ class FactureApiController extends AbstractApiController
       return $response;
     } catch (\Exception $e) {
       return $this->error('Error downloading invoice: ' . $e->getMessage(), 500);
+    }
+  }
+
+  /**
+   * Dev helper: compare la liste normalisée avec la sortie Oracle (FactureService)
+   * et log le résultat (égal / différent) si FACTURE_COMPARE=true.
+   *
+   * @param array<int,array<string,mixed>> $soapNormalized
+   */
+  private function compareWithOracleBackend(array $soapNormalized): void
+  {
+    $flag = $_ENV['FACTURE_COMPARE'] ?? getenv('FACTURE_COMPARE') ?? 'false';
+    if ($flag !== 'true') {
+      return;
+    }
+
+    if ($this->logger === null) {
+      return;
+    }
+
+    try {
+      $oracleResponse = $this->factureService->getFactures();
+      $oracleNormalized = [];
+
+      if (isset($oracleResponse->ListeFactures)) {
+        $list = (array) $oracleResponse->ListeFactures;
+        if (isset($list['facture'])) {
+          $list = $list['facture'];
+        }
+        foreach ($list as $facture) {
+          $oracleNormalized[] = $this->normalizeFacture($facture);
+        }
+      }
+
+      $same = json_encode($soapNormalized) === json_encode($oracleNormalized);
+
+      $this->logger->info('Factures SOAP vs Oracle comparison', [
+        'same' => $same,
+        'soap_count' => count($soapNormalized),
+        'oracle_count' => count($oracleNormalized),
+      ]);
+    } catch (\Throwable $e) {
+      $this->logger->warning('Factures Oracle comparison failed', [
+        'error' => $e->getMessage(),
+      ]);
     }
   }
 }

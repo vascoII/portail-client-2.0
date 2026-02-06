@@ -2,7 +2,8 @@
 
 namespace App\Repository\Oracle;
 
-use Doctrine\DBAL\Connection;
+use App\Oracle\OciFacade;
+use App\Repository\Oracle\UserRepository;
 
 /**
  * Lecture des factures depuis Oracle (migration SOAP → Oracle).
@@ -13,7 +14,8 @@ use Doctrine\DBAL\Connection;
 class FactureRepository
 {
     public function __construct(
-        private readonly Connection $connection
+        private readonly OciFacade $oci,
+        private readonly UserRepository $userRepository
     ) {
     }
 
@@ -24,33 +26,39 @@ class FactureRepository
      */
     public function getFacturesForUser(int $pkUser): array
     {
-        // Exemple de requête à adapter au schéma Oracle réel.
-        // Les noms de tables/colonnes sont des placeholders.
+        $fkClient = $this->userRepository->getFkClientForUser($pkUser);
+        if ($fkClient === null) {
+            return [];
+        }
+
+        return $this->getFacturesForClient($fkClient);
+    }
+
+    /**
+     * Retourne les factures pour un client top (FKCLIENTTOP),
+     * en suivant la logique du WebService C# (version simplifiée
+     * sans jointures sur immeuble/client pour l’instant).
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function getFacturesForClient(int $fkClient): array
+    {
         $sql = <<<'SQL'
             SELECT
-                PKFACTURE   AS PKFacture,
-                NUMFACTURE  AS NumFacture,
-                NUMERO      AS Numero,
-                DATEEDITION AS DateEdition,
-                MONTANTTOTALHT AS MontantTotalHT,
-                MONTANTTOTALTTC AS MontantTotalTTC,
-                MONTANTTOTALAPAYER AS MontantTotalAPayer,
-                CODEGESTIO  AS CodeGestio,
-                ADRESSE     AS Adresse,
-                VILLE       AS Ville,
-                CP          AS CP
-            FROM FACTURES
-            WHERE PKUSER = :pkUser
-            ORDER BY DATEEDITION DESC
+                PKFACTURE      AS PKFacture,
+                NUMDECOMPTE    AS NumFacture,
+                NUMDECOMPTE    AS Numero,
+                DATEEDITION    AS DateEdition,
+                HT             AS MontantTotalHT,
+                TTC            AS MontantTotalTTC,
+                TOTALAPAYER    AS MontantTotalAPayer
+            FROM FACTURE
+            WHERE FKCLIENTTOP = :fkClient
+              AND DATEEDITION > SYSDATE - 2*365
+            ORDER BY PKFACTURE DESC
+            FETCH FIRST 50 ROWS ONLY
             SQL;
 
-        try {
-            $result = $this->connection->executeQuery($sql, ['pkUser' => $pkUser]);
-            return $result->fetchAllAssociative();
-        } catch (\Throwable $e) {
-            // En cas d'erreur (table absente, schéma différent), retourner vide
-            // pour permettre le fallback ou le debug sans casser l'app.
-            throw $e;
-        }
+        return $this->oci->fetchAllAssoc($sql, ['fkClient' => $fkClient]);
     }
 }
