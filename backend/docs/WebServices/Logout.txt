@@ -1,0 +1,1 @@
+$this->sendRequest('Logout', (object) ['SessionId' => $this->sessionId, 'PkUser' => $this->pkUser, ], false)

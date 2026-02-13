@@ -79,6 +79,21 @@ export interface GetTicketsParams {
  * const attachment = await getAttachment("5003X00002CuohYQAR");
  * ```
  */
+
+export function normalizeTicketsList(data: any): TicketsListResponse {// eslint-disable-line @typescript-eslint/no-explicit-any
+  return {
+    board: data.board ?? {},
+    count: data.count ?? 0,
+    showAll: data.showAll ?? false,
+    tickets: normalizeArray(data.tickets),
+  };
+}
+
+export function normalizeArray(value: any): any[] {// eslint-disable-line @typescript-eslint/no-explicit-any
+  if (!value) return [];
+  if (Array.isArray(value)) return value;
+  return [value];
+}
 export function useTickets() {
   const queryClient = useQueryClient();
   
@@ -99,10 +114,11 @@ export function useTickets() {
           queryParams.showall = params.showAll ? "O" : "N";
         }
 
-        const response = await api.get<TicketsListResponse>("/tickets", {
-          params: queryParams,
-        });
-        return extractApiData<TicketsListResponse>(response);
+        const response = await api.get("/tickets", { params: queryParams });
+        // extraction clean
+        const rawData = extractApiData(response);
+        // normalisation clean
+        return normalizeTicketsList(rawData);
       },
       retry: false,
       staleTime: 1 * 60 * 1000, // Consider fresh for 1 minute (tickets change frequently)

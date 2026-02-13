@@ -5,6 +5,7 @@ namespace App\Controller\Api;
 use App\Controller\AbstractTechemController;
 use App\Service\Client;
 use App\Service\FakeDataService;
+use App\Service\Api\ApiSecurityService as SecurityService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
@@ -18,11 +19,13 @@ abstract class AbstractApiController extends AbstractTechemController
 {
     protected SerializerInterface $serializer;
     protected ?FakeDataService $fakeDataService;
+    protected SecurityService $securityService;
 
-    public function __construct(Client $client, SerializerInterface $serializer, ?FakeDataService $fakeDataService = null)
+    public function __construct(Client $client, SerializerInterface $serializer, SecurityService $securityService, ?FakeDataService $fakeDataService = null)
     {
         parent::__construct($client);
         $this->serializer = $serializer;
+        $this->securityService = $securityService;
         $this->fakeDataService = $fakeDataService;
     }
 
@@ -235,6 +238,30 @@ abstract class AbstractApiController extends AbstractTechemController
             // If fake data file doesn't exist, return error or continue with SOAP
             // You can choose to throw an exception or return null to continue with SOAP
             return $this->error('Fake data not available: ' . $e->getMessage(), 500);
+        }
+    }
+
+
+    /**
+     * Get authenticated client or return error
+     * Legacy method using Symfony token storage (for backward compatibility)
+     *
+     * @param Client|null $client
+     * @return bool
+     */
+    protected function validateToken(?Client $client = null)
+    {
+        try {
+            if (is_null($client)) {
+                return $this->unauthorized('Session expired or invalid');
+            }
+            
+            $pkUser = $client->getPkUser();
+            $sessionId = $client->getSessionId();
+            
+            return $this->securityService->validateToken($sessionId, $pkUser);
+        } catch (RuntimeException $e) {
+            return $this->unauthorized($e->getMessage());
         }
     }
 }

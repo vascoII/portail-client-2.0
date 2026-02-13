@@ -40,6 +40,14 @@ docker compose -f docker-compose.preview.yml build --no-cache
 echo "Démarrage des services preview..."
 docker compose -f docker-compose.preview.yml up -d
 
+docker exec -it backend_preview bash -lc '
+  mkdir -p var/log var/cache &&
+  chown -R www-data:www-data var &&
+  chmod -R 775 var &&
+  chown -R www-data:www-data /var/www &&
+  chmod -R 755 /var/www &&
+  ls -la var var/log /var/www || true'
+  
 echo "Preview démarrée."
 echo "- Nginx frontal: http://localhost:80"
 echo "- Frontend SSR: http://localhost (via Nginx)"

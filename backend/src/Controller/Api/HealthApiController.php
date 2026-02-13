@@ -2,13 +2,11 @@
 
 namespace App\Controller\Api;
 
-use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Exception;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Service\Api\ApiHealthService;
+
 
 /**
  * API Controller for Health Checks
@@ -19,94 +17,32 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route("/api/health", name: "api_health_")]
 class HealthApiController extends AbstractController
 {
+
     public function __construct(
-        private Connection $connection,
-        private ?LoggerInterface $logger = null
-    ) {}
+        private readonly ApiHealthService $apiHealthService
+    ) {
+    }
 
     /**
      * Health check endpoint for database connection
      * 
      * Effectue un "ping" de la base de données Oracle pour valider :
      * - La connexion à Oracle
-     * - La configuration Doctrine DBAL
-     * - L'extension PHP OCI8
      * 
-     * @param Request $request
      * @return JsonResponse
      */
     #[Route("/database", name: "database", methods: ["GET"])]
-    public function databaseHealth(Request $request): JsonResponse
+    public function databaseHealth(): JsonResponse
     {
-        if (!\extension_loaded('oci8')) {
-            return new JsonResponse([
-                'success' => false,
-                'status' => 'unhealthy',
-                'message' => 'PHP OCI8 extension is not loaded. Check that the extension is enabled in the PHP-FPM image.',
-                'error' => 'OCI8 extension not loaded',
-                'timestamp' => (new \DateTime())->format('c'),
-            ], 503);
-        }
-
         try {
-            // Test de connexion avec SELECT 1 FROM DUAL (requête Oracle standard pour ping)
-            $result = $this->connection->executeQuery('SELECT 1 FROM DUAL')->fetchOne();
-
-            if ($result != 1) {
-                throw new \RuntimeException('Unexpected query result');
-            }
-
-            // Récupérer des informations sur la connexion
-            $serverVersion = $this->connection->getServerVersion();
-            $databaseName = $this->connection->getDatabase();
-            $params = $this->connection->getParams();
-            // Extraire le nom du driver depuis les paramètres de connexion
-            $driverName = $params['driver'] ?? 'unknown';
-
-            return new JsonResponse([
-                'success' => true,
-                'status' => 'healthy',
-                'data' => [
-                    'database' => [
-                        'connected' => true,
-                        'server_version' => $serverVersion,
-                        'database_name' => $databaseName,
-                        'driver' => $driverName,
-                    ],
-                    'timestamp' => (new \DateTime())->format('c'),
-                ],
-            ], 200);
-        } catch (Exception $e) {
-            if ($this->logger) {
-                $this->logger->error('Database health check failed', [
-                    'exception' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString(),
-                ]);
-            }
-
-            return new JsonResponse([
-                'success' => false,
-                'status' => 'unhealthy',
-                'message' => 'Database connection failed: ' . $e->getMessage(),
-                'error' => $e->getMessage(),
-                'timestamp' => (new \DateTime())->format('c'),
-            ], 503);
-        } catch (\Exception $e) {
-            // Catch any other exception (not just DBAL exceptions)
-            if ($this->logger) {
-                $this->logger->error('Database health check failed', [
-                    'exception' => $e->getMessage(),
-                    'trace' => $e->getTraceAsString(),
-                ]);
-            }
-
-            return new JsonResponse([
-                'success' => false,
-                'status' => 'unhealthy',
-                'message' => 'Database health check error: ' . $e->getMessage(),
-                'error' => $e->getMessage(),
-                'timestamp' => (new \DateTime())->format('c'),
-            ], 503);
+            $res = $this->apiHealthService->getHealth();   
+            
+            return $this->json(['status' => $res ? 'ok' : 'error']);
+        } catch (\Throwable $e) {
+            return $this->json([
+                'status' => 'error',
+                'oracle_error' => $e->getMessage(),
+            ], 500);
         }
     }
 }

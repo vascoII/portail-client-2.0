@@ -8,13 +8,25 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
-
+use App\Service\Api\ApiTicketingService;
+use App\Service\Api\ApiSecurityService as SecurityService;
+use Symfony\Component\Serializer\SerializerInterface;
+use App\Service\Client;
+use App\Service\FakeDataService;
 /**
  * API Controller for Ticketing
  */
 #[Route("/api/tickets", name: "api_ticket_")]
 class TicketingApiController extends AbstractApiController
 {
+    private ApiTicketingService $apiTicketingService;
+
+    public function __construct(Client $client, SerializerInterface $serializer, SecurityService $securityService, ?FakeDataService $fakeDataService = null, ApiTicketingService $apiTicketingService)
+    {
+        parent::__construct($client, $serializer, $securityService, $fakeDataService);
+        $this->apiTicketingService = $apiTicketingService;
+    }
+    
     #[Route("", name: "list", methods: ["GET"])]
     public function ticketList(Request $request): JsonResponse
     {
@@ -32,6 +44,9 @@ class TicketingApiController extends AbstractApiController
         try {
             $showAll = $request->query->get('showAll');
             $board = $client->getMyTableauBordClient();
+
+            $this->validateToken($client);
+            $boardOracle = $this->apiTicketingService->getMyTableauBordClient($client->getPkUser());
 
             // Check for demo/preview mode
             if (file_exists(__DIR__ . '/../../../demo.txt') || file_exists(__DIR__ . '/../../../preview.txt')) {
@@ -135,6 +150,8 @@ class TicketingApiController extends AbstractApiController
             } else {
                 $tickets = $client->getTicketsIntersUser(null);
                 $tickets_array = json_decode(json_encode($tickets), true);
+
+                $ticketsOracle = $this->apiTicketingService->getTicketsIntersUser($client->getPkUser());
             }
 
             $tickets_list = [];
@@ -179,6 +196,9 @@ class TicketingApiController extends AbstractApiController
         try {
             $isTicketInterEnabled = $client->getTicketsInterEnabled();
             $nbTicketsInterUser = $client->getNbTicketsInterUser();
+
+            $isTicketInterEnabledOracle = $this->apiTicketingService->getTicketsInterEnabled($client->getPkUser());
+            $nbTicketsInterUserOracle = $this->apiTicketingService->getNbTicketsInterUser($client->getPkUser());
 
             return $this->success([
                 'isTicketInterEnabled' => $isTicketInterEnabled,
@@ -235,6 +255,8 @@ class TicketingApiController extends AbstractApiController
         try {
             $attachment = $client->getAttachmentTicketInter($pkTicket);
 
+            $attachmentOracle = $this->apiTicketingService->getAttachmentTicketInter($client->getPkUser(), $pkTicket);
+
             if (!$attachment) {
                 return $this->notFound('Attachment not found');
             }
@@ -274,6 +296,8 @@ class TicketingApiController extends AbstractApiController
 
         try {
             $ticketOwner = $client->getTicketInterInit($pkLogement);
+
+            $ticketOwnerOracle = $this->apiTicketingService->getTicketOwnerInter($client->getPkUser(), $pkLogement);
 
             $dataForm = [
                 'pkLogement' => (int) $pkLogement,

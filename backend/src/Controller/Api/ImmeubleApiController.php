@@ -16,6 +16,11 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Service\Api\ApiImmeubleService;
+use App\Service\Api\ApiSecurityService as SecurityService;
+use Symfony\Component\Serializer\SerializerInterface;
+use App\Service\Client;
+use App\Service\FakeDataService;
 
 /**
  * API Controller for Immeubles (Buildings)
@@ -23,6 +28,14 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route("/api/immeubles", name: "api_immeuble_")]
 class ImmeubleApiController extends AbstractApiController
 {
+    private ApiImmeubleService $apiImmeubleService;
+
+    public function __construct(Client $client, SerializerInterface $serializer, SecurityService $securityService, ?FakeDataService $fakeDataService = null, ApiImmeubleService $apiImmeubleService)
+    {
+        parent::__construct($client, $serializer, $securityService, $fakeDataService);
+        $this->apiImmeubleService = $apiImmeubleService;
+    }
+
     /**
      * Get dashboard with building list
      */
@@ -42,6 +55,9 @@ class ImmeubleApiController extends AbstractApiController
 
         try {
             $board = $client->getMyTableauBordClient();
+
+            $this->validateToken($client);
+            $boardOracle = $this->apiImmeubleService->getMyTableauBordClient($client->getPkUser());
 
             return $this->success([
                 'board' => $this->normalize($board),
@@ -103,11 +119,15 @@ class ImmeubleApiController extends AbstractApiController
                     $params->FIELD_ADRESSE_CP_VILLE = $adresse;
 
                     $immeubles = $client->getMyImmeubles($params);
+
+                    $immeublesOracle = $this->apiImmeubleService->getMyImmeubles($client->getPkUser(), $params);
                 } else {
                     $immeubles = [];
                 }
             } else {
                 $immeubles = $client->getMyImmeubles($params);
+
+                $immeublesOracle = $this->apiImmeubleService->getMyImmeubles($client->getPkUser(), $params);
             }
 
             return $this->success([
@@ -141,6 +161,8 @@ class ImmeubleApiController extends AbstractApiController
 
         try {
             $immeuble = $client->getTableauBordImmeuble($pkImmeuble);
+
+            $immeubleOracle = $this->apiImmeubleService->getTableauBordImmeuble($client->getPkUser(), $pkImmeuble);
 
             if (!$immeuble) {
                 return $this->notFound('Building not found');
@@ -222,6 +244,9 @@ class ImmeubleApiController extends AbstractApiController
             $immeuble = $client->getTableauBordImmeuble($pkImmeuble);
             $depannage = $client->getDetailDepannage($pkIntervention);
 
+            $immeubleOracle = $this->apiImmeubleService->getTableauBordImmeuble($client->getPkUser(), $pkImmeuble);
+            $depannageOracle = $this->apiImmeubleService->getDetailDepannage($client->getPkUser(), $pkIntervention);
+
             if (!$depannage) {
                 return $this->notFound('Intervention not found');
             }
@@ -260,6 +285,9 @@ class ImmeubleApiController extends AbstractApiController
             $immeuble = $client->getTableauBordImmeuble($pkImmeuble);
             $depannages = $client->getInterventionsImmeuble($pkImmeuble);
 
+            $immeubleOracle = $this->apiImmeubleService->getTableauBordImmeuble($client->getPkUser(), $pkImmeuble);
+            $depannagesOracle = $this->apiImmeubleService->getInterventionsImmeuble($client->getPkUser(), $pkImmeuble);
+
             return $this->success([
                 'immeuble' => $this->normalize($immeuble),
                 'depannages' => $this->normalize($depannages),
@@ -294,6 +322,9 @@ class ImmeubleApiController extends AbstractApiController
         try {
             $immeuble = $client->getTableauBordImmeuble($pkImmeuble);
             $fuites = $client->getFuitesImmeuble($pkImmeuble);
+
+            $immeubleOracle = $this->apiImmeubleService->getTableauBordImmeuble($client->getPkUser(), $pkImmeuble);
+            $fuitesOracle = $this->apiImmeubleService->getFuitesImmeuble($client->getPkUser(), $pkImmeuble);
 
             return $this->success([
                 'immeuble' => $this->normalize($immeuble),
@@ -330,6 +361,9 @@ class ImmeubleApiController extends AbstractApiController
             $immeuble = $client->getTableauBordImmeuble($pkImmeuble);
             $anomalies = $client->getAnomaliesImmeuble($pkImmeuble);
 
+            $immeubleOracle = $this->apiImmeubleService->getTableauBordImmeuble($client->getPkUser(), $pkImmeuble);
+            $anomaliesOracle = $this->apiImmeubleService->getAnomaliesImmeuble($client->getPkUser(), $pkImmeuble);
+
             return $this->success([
                 'immeuble' => $this->normalize($immeuble),
                 'anomalies' => $this->normalize($anomalies),
@@ -364,6 +398,9 @@ class ImmeubleApiController extends AbstractApiController
         try {
             $immeuble = $client->getTableauBordImmeuble($pkImmeuble);
             $dysfonctionnements = $client->getDysfonctionnementsImmeuble($pkImmeuble);
+
+            $immeubleOracle = $this->apiImmeubleService->getTableauBordImmeuble($client->getPkUser(), $pkImmeuble);
+            $dysfonctionnementsOracle = $this->apiImmeubleService->getDysfonctionnementsImmeuble($client->getPkUser(), $pkImmeuble);
 
             return $this->success([
                 'immeuble' => $this->normalize($immeuble),

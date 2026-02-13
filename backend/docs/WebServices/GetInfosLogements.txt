@@ -1,0 +1,1 @@
+$this->sendRequest('GetInfosLogements', (object) $request)

@@ -19,6 +19,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Service\Api\ApiLogementService;
+use App\Service\Api\ApiSecurityService as SecurityService;
+use Symfony\Component\Serializer\SerializerInterface;
+use App\Service\Client;
+use App\Service\FakeDataService;
 
 /**
  * API Controller for Logements (Housing Units)
@@ -26,6 +31,14 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route("/api/logements", name: "api_logement_")]
 class LogementApiController extends AbstractApiController
 {
+
+    private ApiLogementService $apiLogementService;
+
+    public function __construct(Client $client, SerializerInterface $serializer, SecurityService $securityService, ?FakeDataService $fakeDataService = null, ApiLogementService $apiLogementService)
+    {
+        parent::__construct($client, $serializer, $securityService, $fakeDataService);
+        $this->apiLogementService = $apiLogementService;
+    }
 
     #[Route("/immeuble/{pkImmeuble}", name: "index", methods: ["GET"])]
     public function index(int $pkImmeuble, Request $request): JsonResponse
@@ -43,6 +56,8 @@ class LogementApiController extends AbstractApiController
 
         try {
             $immeuble = $client->getTableauBordImmeuble($pkImmeuble);
+
+            $immeubleOracle = $this->apiLogementService->getTableauBordImmeuble($client->getPkUser(), $pkImmeuble);
             return $this->success([
                 'immeuble' => $this->normalize($immeuble),
             ]);
@@ -124,6 +139,8 @@ class LogementApiController extends AbstractApiController
 
         try {
             $ticketOwner = $client->getTicketInterInit($pkLogementParam);
+
+            $ticketOwnerOracle = $this->apiLogementService->getTicketInterInit($client->getPkUser(), $pkLogementParam);
             return $this->success($this->normalize($ticketOwner));
         } catch (\Exception $e) {
             return $this->error('Error fetching ticket owner: ' . $e->getMessage(), 500);
@@ -149,6 +166,8 @@ class LogementApiController extends AbstractApiController
 
         try {
             $board = $client->getMyTableauBordClient();
+
+            $boardOracle = $this->apiLogementService->getMyTableauBordClient($client->getPkUser());
             return $this->success($this->normalize($board));
         } catch (\Exception $e) {
             return $this->error('Error fetching dashboard: ' . $e->getMessage(), 500);
@@ -189,6 +208,9 @@ class LogementApiController extends AbstractApiController
 
         try {
             $appareils = $client->getInfosAppareilsType($pkLogement, $types[$type]);
+
+            $appareilsOracle = $this->apiLogementService->getInfosAppareilsType($client->getPkUser(), $pkLogement, $types[$type]);
+
             return $this->success([
                 'pkLogement' => $pkLogement,
                 'type' => $type,
@@ -226,6 +248,11 @@ class LogementApiController extends AbstractApiController
             $nbTickets = $client->getNbTicketsInterByLogement($pkLogement);
             $consoTabs = $logementService->generateTabConsos($logement);
 
+            $logementOracle = $this->apiLogementService->getTableauBordLogement($client->getPkUser(), $pkLogement);
+            $ticketOwnerOracle = $this->apiLogementService->getTicketInterInit($client->getPkUser(), $pkLogement);
+            $nbTicketsOracle = $this->apiLogementService->getNbTicketsInterByLogement($client->getPkUser(), $pkLogement);
+            $dataOccupantOracle = $this->apiLogementService->getOccupants($client->getPkUser(), $logement->Immeuble->PkImmeuble, $logement->Occupant->PkOccupant, true);
+
             $isnew = true;
             $dataOccupant = $client->getOccupants($logement->Immeuble->PkImmeuble, $logement->Occupant->PkOccupant, $isnew);
             $changeinprogress = isset($dataOccupant['newNom']);
@@ -262,17 +289,6 @@ class LogementApiController extends AbstractApiController
     #[Route("/{pkLogement}/occupant", name: "update_occupant", methods: ["PUT", "PATCH"])]
     public function updateOccupant(int $pkLogement, Request $request): JsonResponse
     {
-        // Check if faker mode is enabled and return fake data
-        if ($this->isFakerMode()) {
-            try {
-                // JSON file: public/data/api/api.logements.pkLogement.occupant.json
-                $fakeData = $this->fakeDataService->get('api.logements.pkLogement.occupant', []);
-                return new JsonResponse($fakeData);
-            } catch (\Exception $e) {
-                return $this->error('Fake data not available: ' . $e->getMessage(), 500);
-            }
-        }
-
         $client = $this->getAuthenticatedClientFromHeaders($request);
         if ($client instanceof JsonResponse) {
             return $client;
@@ -287,6 +303,9 @@ class LogementApiController extends AbstractApiController
             $logement = $client->getTableauBordLogement($pkLogement);
             $isnew = false;
             $occu = $client->setOccupants4Chgt($logement->Occupant->PkOccupant, $data, $isnew);
+
+            $logementOracle = $this->apiLogementService->getTableauBordLogement($client->getPkUser(), $pkLogement);
+            
             return $this->success($this->normalize($occu), 'Occupant updated successfully');
         } catch (\Exception $e) {
             return $this->error('Error updating occupant: ' . $e->getMessage(), 500);
@@ -365,6 +384,9 @@ class LogementApiController extends AbstractApiController
             $logement = $client->getTableauBordLogement($pkLogement);
             $depannage = $client->getDetailDepannage($pkIntervention);
 
+            $logementOracle = $this->apiLogementService->getTableauBordLogement($client->getPkUser(), $pkLogement);
+            $depannageOracle = $this->apiLogementService->getDetailDepannage($client->getPkUser(), $pkIntervention);
+
             return $this->success([
                 'logement' => $this->normalize($logement),
                 'depannage' => $this->normalize($depannage),
@@ -395,8 +417,13 @@ class LogementApiController extends AbstractApiController
             $logement = $client->getTableauBordLogement($pkLogement);
             $pkImmeuble = $logement->Immeuble->PkImmeuble ?? null;
 
+            $logementOracle = $this->apiLogementService->getTableauBordLogement($client->getPkUser(), $pkLogement);
+
             if ($pkImmeuble) {
                 $depannages = $client->getInterventionsImmeuble($pkImmeuble, $pkLogement);
+
+                $depannagesOracle = $this->apiLogementService->getInterventionsImmeuble($client->getPkUser(), $pkImmeuble, $pkLogement);
+
             } else {
                 $depannages = [];
             }
@@ -467,11 +494,14 @@ class LogementApiController extends AbstractApiController
                     $params->FIELD_ADRESSE_CP_VILLE = $adresse;
 
                     $logements = $client->getLogements($pkImmeuble, $params);
+
+                    $logementsOracle = $this->apiLogementService->getLogements($client->getPkUser(), $pkImmeuble, $params);
                 } else {
                     $logements = [];
                 }
             } else {
                 $logements = $client->getLogements($pkImmeuble, $params);
+                $logementsOracle = $this->apiLogementService->getLogements($client->getPkUser(), $pkImmeuble, $params);
             }
 
             $result = [
@@ -521,8 +551,12 @@ class LogementApiController extends AbstractApiController
             $pkImmeuble = $logement->Immeuble->PkImmeuble ?? null;
             $pkAppareil = $request->query->get('appareil');
 
+            $logementsOracle = $this->apiLogementService->getTableauBordLogement($client->getPkUser(), $pkImmeuble);
+
             if ($pkImmeuble) {
                 $fuites = $client->getFuitesImmeuble($pkImmeuble, $pkLogement, $pkAppareil);
+
+                $fuitesOracle = $this->apiLogementService->getFuitesImmeuble($client->getPkUser(), $pkImmeuble, $pkLogement, $pkAppareil);
             } else {
                 $fuites = [];
             }
@@ -558,8 +592,11 @@ class LogementApiController extends AbstractApiController
             $logement = $client->getTableauBordLogement($pkLogement);
             $pkImmeuble = $logement->Immeuble->PkImmeuble ?? null;
 
+            $logementsOracle = $this->apiLogementService->getTableauBordLogement($client->getPkUser(), $pkImmeuble);
             if ($pkImmeuble) {
                 $dysfonctionnements = $client->getDysfonctionnementsImmeuble($pkImmeuble, $pkLogement);
+
+                $dysfonctionnementsOracle = $this->apiLogementService->getDysfonctionnementsImmeuble($client->getPkUser(), $pkImmeuble, $pkLogement);
             } else {
                 $dysfonctionnements = [];
             }
@@ -596,8 +633,12 @@ class LogementApiController extends AbstractApiController
             $pkImmeuble = $logement->Immeuble->PkImmeuble ?? null;
             $pkAppareil = $request->query->get('appareil');
 
+            $logementsOracle = $this->apiLogementService->getTableauBordLogement($client->getPkUser(), $pkImmeuble);
+
             if ($pkImmeuble) {
                 $anomalies = $client->getAnomaliesImmeuble($pkImmeuble, $pkLogement, $pkAppareil);
+
+                $anomaliesOracle = $this->apiLogementService->getAnomaliesImmeuble($client->getPkUser(), $pkImmeuble, $pkLogement, $pkAppareil);
             } else {
                 $anomalies = [];
             }

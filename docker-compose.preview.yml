@@ -1,6 +1,3 @@
-
-version: "3.9"
-
 services:
   nginx:
     image: nginx:stable-alpine
@@ -9,6 +6,7 @@ services:
       - "80:80"
     volumes:
       - ./nginx/conf.d.preview:/etc/nginx/conf.d:ro
+      - ./backend:/var/www/backend:ro   # 👉 nécessaire pour index.php
     depends_on:
       - backend
       - frontend
@@ -21,10 +19,8 @@ services:
       dockerfile: Dockerfile.preview
     container_name: backend_preview
     environment:
-      - APP_ENV=preview
-      - APP_DEBUG=0
-      # Connexion Oracle (format: oci8://user:password@host:1521/service_name)
-      - DATABASE_URL=${DATABASE_URL:-oci8://user:password@oracle-host:1521/XE}
+      - APP_ENV=dev
+      - APP_DEBUG=1
     expose:
       - "9000" # PHP-FPM port
     networks:

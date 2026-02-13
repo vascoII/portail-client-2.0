@@ -8,7 +8,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-
+use App\Service\Api\ApiTableauBordClientService;
+use App\Service\Api\ApiSecurityService as SecurityService;
+use Symfony\Component\Serializer\SerializerInterface;
+use App\Service\Client;
+use App\Service\FakeDataService;
 /**
  * API Controller for Client Dashboard (Tableau de bord client)
  */
@@ -16,6 +20,14 @@ use Symfony\Component\Routing\Attribute\Route;
 class TableauBordClientApiController extends AbstractApiController
 {
 
+    private ApiTableauBordClientService $apiTableauBordClientService;
+
+    public function __construct(Client $client, SerializerInterface $serializer, SecurityService $securityService, ?FakeDataService $fakeDataService = null, ApiTableauBordClientService $apiTableauBordClientService)
+    {
+        parent::__construct($client, $serializer, $securityService, $fakeDataService);
+        $this->apiTableauBordClientService = $apiTableauBordClientService;
+    }
+    
     #[Route("", name: "index", methods: ["GET"])]
     public function index(Request $request): JsonResponse
     {
@@ -36,6 +48,8 @@ class TableauBordClientApiController extends AbstractApiController
 
         try {
             $board = $client->getMyTableauBordClient();
+
+            $boardOracle = $this->apiTableauBordClientService->getMyTableauBordClient(pkUser: $client->getPkUser());
 
             // Calculate installation statistics
             $installed = $board->NbCompteursPoses ?? 0;

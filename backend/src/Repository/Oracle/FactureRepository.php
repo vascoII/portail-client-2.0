@@ -73,10 +73,10 @@ class FactureRepository
                     LISTAGG(immeuble.cp, ';')         WITHIN GROUP (ORDER BY immeuble.cp)          AS cpi,
                     LISTAGG(immeuble.ville, ';')      WITHIN GROUP (ORDER BY immeuble.ville)       AS villei,
                     facture.fkimmeuble
-                FROM facture,
-                     immeuble,
-                     client,
-                     (SELECT fkimmeuble, fkfacture FROM lignefacture GROUP BY fkfacture, fkimmeuble) l
+                FROM LER_CP_DEV.FACTURE,
+                     LER_CP_DEV.IMMEUBLE,
+                     LER_CP_DEV.CLIENT,
+                     (SELECT fkimmeuble, fkfacture FROM LER_CP_DEV.LIGNEFACTURE GROUP BY fkfacture, fkimmeuble) l
                 WHERE facture.fkclienttop = :fkClient
                   AND facture.fkclienttop = client.pkclient
                   AND l.fkfacture(+) = pkfacture
@@ -94,7 +94,7 @@ class FactureRepository
                     facture.totalapayer
                 ORDER BY facture.pkfacture DESC
             ) f,
-            immeuble
+            LER_CP_DEV.immeuble
             WHERE f.fkimmeuble = immeuble.pkimmeuble(+)
             FETCH FIRST 50 ROWS ONLY
             SQL;

@@ -9,18 +9,14 @@ parameters:
   debug_redirects: false
   use_assetic_controller: true
   # Paramètres de connexion Oracle bas-niveau (OCI)
-  oracle_dsn: '%env(ORACLE_DSN)%'         # ex: //host:1521/SERVICE_NAME
+  oracle_dsn: '%env(ORACLE_DSN)%' 
   oracle_user: '%env(ORACLE_USER)%'
   oracle_password: '%env(ORACLE_PASSWORD)%'
   # Source des données factures : soap | oracle (migration GET)
   data_source_factures: '%env(default:data_source_factures_default:DATA_SOURCE_FACTURES)%'
   data_source_factures_default: soap
-  # PREVIEW
-  sopa_url: "http://techn5292.eu.techem.corp:8083/Main.asmx?wsdl"
-  # DEMO
-  #sopa_url: "http://techn5292.eu.techem.corp:8081/Main.asmx?wsdl"
-  # PROD
-  #sopa_url: "http://techn5292.eu.techem.corp/Main.asmx?wsdl"
+  sopa_url: '%env(SOAP_URL)%'
+ 
   adminSessionId: 0v728jqy-2cc0-4724-abc5-dbm1zwab9a3d
   superLoginID: "JOHN DOE"
   superPassword: DF93RN9F-SLJ528F
@@ -62,15 +58,6 @@ services:
       $dsn: '%oracle_dsn%'
       $user: '%oracle_user%'
       $password: '%oracle_password%'
-
-  # Migration GET factures : SOAP ou Oracle (DATA_SOURCE_FACTURES=soap|oracle)
-  App\Service\DataSource\FactureListProviderRouter:
-    arguments:
-      $soapProvider: '@App\Service\DataSource\SoapFactureListProvider'
-      $oracleProvider: '@App\Service\DataSource\OracleFactureListProvider'
-      $source: '%data_source_factures%'
-
-  App\Service\DataSource\FactureListProviderInterface: '@App\Service\DataSource\FactureListProviderRouter'
 
   security.authentication.provider.soap.class:
     class: App\Security\AppCustomAuthenticator

@@ -1,9 +1,0 @@
-{
-  "success": true,
-  "status": 200,
-  "message": "Occupant updated successfully",
-  "data": {
-    "success": true,
-    "message": "Occupant updated successfully"
-  }
-}

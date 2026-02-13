@@ -11,6 +11,11 @@ import { useExport } from "@/lib/hooks/useExport";
 import Alert from "@/components/ui/alert/Alert";
 import apiClient from "@/lib/api/client";
 
+import DatePicker from 'react-datepicker';
+import { fr } from 'date-fns/locale';
+import { format } from 'date-fns';
+import 'react-datepicker/dist/react-datepicker.css'
+
 interface LogementMetricsProps {
   pkLogement: string;
   pkImmeuble: string;
@@ -25,18 +30,14 @@ export const LogementMetrics = ({ pkLogement, pkImmeuble }: LogementMetricsProps
   const { useLogementQuery } = useLogements();
   const { data: logementData, isLoading: isLogementLoading } = useLogementQuery(pkLogement);
   const livretModal = useModal();
-  const [dateStart, setDateStart] = useState("");
-  const [dateEnd, setDateEnd] = useState("");
+  const [dateStart, setDateStart] = useState<Date | null>(null);
+  const [dateEnd, setDateEnd] = useState<Date | null>(null)
 
-  const formatDateForApi = (value: string) => {
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) {
+  const formatDateForApi = (value: Date) => {
+    if (!(value instanceof Date) || isNaN(value.getTime())) {
       throw new Error("Date invalide, veuillez sélectionner une date valide.");
     }
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
+    return format(value, 'dd/MM/yyyy');
   };
 
   const downloadInterventionReport = useCallback(
@@ -226,22 +227,46 @@ export const LogementMetrics = ({ pkLogement, pkImmeuble }: LogementMetricsProps
             <label className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
               Date de début
             </label>
-            <input
-              type="date"
-              value={dateStart}
-              onChange={(event) => setDateStart(event.target.value)}
-              className="rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 focus:border-brand-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
+            <DatePicker
+              selected={dateStart}
+              onChange={(d: Date | null) => setDateStart(d)}
+              selectsStart
+              startDate={dateStart}
+              endDate={dateEnd}
+              maxDate={dateEnd ?? undefined}
+              dateFormat="dd/MM/yyyy"
+              locale={fr}
+              placeholderText="JJ/MM/AAAA"
+              isClearable
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
+              className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700
+                        focus:border-brand-500 focus:outline-none dark:border-gray-700
+                        dark:bg-gray-900 dark:text-gray-200"
             />
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">
               Date de fin
-            </label>
-            <input
-              type="date"
-              value={dateEnd}
-              onChange={(event) => setDateEnd(event.target.value)}
-              className="rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700 focus:border-brand-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
+            </label>    
+            <DatePicker
+              selected={dateEnd}
+              onChange={(d: Date | null) => setDateEnd(d)}
+              selectsEnd
+              startDate={dateStart}
+              endDate={dateEnd}
+              minDate={dateStart ?? undefined}
+              dateFormat="dd/MM/yyyy"
+              locale={fr}
+              placeholderText="JJ/MM/AAAA"
+              isClearable
+              showMonthDropdown
+              showYearDropdown
+              dropdownMode="select"
+              className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700
+                        focus:border-brand-500 focus:outline-none dark:border-gray-700
+                        dark:bg-gray-900 dark:text-gray-200"
             />
           </div>
         </div>

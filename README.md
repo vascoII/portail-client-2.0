@@ -42,10 +42,11 @@ Le script va :
 
 Par défaut, les services seront disponibles sur :
 
-- Backend : `http://localhost:${BACKEND_PORT:-8000}`
-- Frontend : `http://localhost:${FRONTEND_PORT:-3000}`
+- Nginx frontal: http://base_url:80
+- Frontend SSR: http://base_url (via Nginx)
+- Backend API: http://base_url/api
 
-Ajuster les ports via les variables `BACKEND_PORT` et `FRONTEND_PORT` dans le fichier `.env`.
+Ajuster les ports via les variables `NEXT_PUBLIC_API_BASE_URL` et `NEXT_PUBLIC_APP_URL` dans les fichiers `.env` et `docker-compose.preview.yml`.
 
 ### 2.2. Stopper la preview Docker
 
@@ -53,31 +54,3 @@ Ajuster les ports via les variables `BACKEND_PORT` et `FRONTEND_PORT` dans le fi
 ./docker-preview-stop.sh
 ```
 ---
-
-## 3. Installation manuelle (sans Docker) – optionnel
-
-Lancer le projet sans Docker, voici les grandes étapes.
-
-### 3.1. Configuration d’environnement
-
-Copier le fichier d’exemple et ajuster les valeurs :
-
-```bash
-cp .env.preview.example .env
-```
-
-### 3.2. Lancer la preview DockerLess
-
-```bash
-./dockerless-preview-starter.sh
-```
-
-L’application backend sera disponible par défaut sur `https://localhost:3000`.
-
-### 3.3. Stopper la preview DockerLess
-
-```bash
-./dockerless-preview-stop.sh
-```
-
-Les ports 8000 et 3000 seront libérés

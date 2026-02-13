@@ -25,7 +25,7 @@ export interface ApiError {
  * Create and configure Axios instance for API calls
  */
 const createApiClient = (): AxiosInstance => {
-  const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://techl5599:9000/api';
+  const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:9000/api';
 
   const client = axios.create({
     baseURL,
@@ -157,7 +157,7 @@ export const handleApiError = (error: any): string => { // eslint-disable-line @
   if (error?.message) {
     return error.message;
   }
-  return 'An unexpected error occurred';
+  return 'Une erreur inattendue s\'est produite. Veuillez réessayer.';
 };
 
 /**

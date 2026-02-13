@@ -82,7 +82,9 @@ export function useAuth() {
       setUser(data.user, data.roles, data.session_id, data.pk_user);
 
       // Redirect based on role
-      if (data.roles.includes("ROLE_OCCUPANT")) {
+      if (data.user.CGU === "N") {
+        router.push("/cgu");
+      } else if (data.roles.includes("ROLE_OCCUPANT")) {
         router.push("/occupant");
       } else if (data.roles.includes("ROLE_GESTIONNAIRE")) {
         router.push("/parc");

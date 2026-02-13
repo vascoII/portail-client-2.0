@@ -34,7 +34,7 @@
       "Seuil_Conso_Email": "",
       "showImmeublesArc": false,
       "showFactures": false,
-      "showChgtOccupant": true,
+      "showChgtOccupant": false,
       "showChantiers": false
     },
     "immeubles": [

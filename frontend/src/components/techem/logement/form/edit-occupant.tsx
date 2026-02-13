@@ -295,10 +295,13 @@ export default function EditOccupantForm({ pkLogement }: EditOccupantFormProps) 
                     <Input
                       id="nameOccupant"
                       type="text"
-                      placeholder="Saisir le nom de l'occupant"
+                      placeholder="Nom de l'occupant"
                       {...register("nameOccupant")}
                       error={!!errors.nameOccupant}
                       hint={errors.nameOccupant?.message}
+                      readOnly
+                      className="bg-gray-100 dark:bg-white/5 cursor-not-allowed"
+                      aria-readonly="true"
                     />
                   </div>
 
@@ -339,10 +342,13 @@ export default function EditOccupantForm({ pkLogement }: EditOccupantFormProps) 
                     <Input
                       id="CodeLogeGestio"
                       type="text"
-                      placeholder="Saisir un numéro de logement unique"
+                      placeholder="Numéro de logement unique"
                       {...register("CodeLogeGestio")}
                       error={!!errors.CodeLogeGestio}
                       hint={errors.CodeLogeGestio?.message}
+                      readOnly
+                      className="bg-gray-100 dark:bg-white/5 cursor-not-allowed"
+                      aria-readonly="true"
                     />
                   </div>
 
@@ -356,6 +362,9 @@ export default function EditOccupantForm({ pkLogement }: EditOccupantFormProps) 
                       {...register("numBail")}
                       error={!!errors.numBail}
                       hint={errors.numBail?.message}
+                      readOnly
+                      className="bg-gray-100 dark:bg-white/5 cursor-not-allowed"
+                      aria-readonly="true"
                     />
                   </div>
 
@@ -368,6 +377,9 @@ export default function EditOccupantForm({ pkLogement }: EditOccupantFormProps) 
                       {...register("dateArrivee")}
                       error={!!errors.dateArrivee}
                       hint={errors.dateArrivee?.message}
+                      readOnly
+                      className="bg-gray-100 dark:bg-white/5 cursor-not-allowed"
+                      aria-readonly="true"
                     />
                   </div>
 

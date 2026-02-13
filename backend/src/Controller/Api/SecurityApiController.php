@@ -214,7 +214,7 @@ class SecurityApiController extends AbstractApiController
     {
         $data = json_decode($request->getContent(), true);
         if (!$data || empty($data['email'])) {
-            return $this->error('Email is required', 400);
+            return $this->error('L\'e-mail est requis', 400);
         }
 
         $email = $data['email'];
@@ -223,14 +223,14 @@ class SecurityApiController extends AbstractApiController
         $emailConstraint = new EmailConstraint();
         $errors = $validator->validate($email, $emailConstraint);
         if (count($errors) > 0) {
-            return $this->error('Invalid email address', 400);
+            return $this->error('Adresse e-mail invalide', 400);
         }
 
         try {
             $this->client->resetPasswordFromEmail($email);
-            return $this->success(null, 'Password reset email sent successfully');
+            return $this->success(null, 'Email de réinitialisation du mot de passe envoyé avec succès');
         } catch (\Exception $e) {
-            return $this->error('An error occurred while sending the password reset email', 500);
+            return $this->error('Une erreur s\'est produite lors de l\'envoi de l\'e-mail de réinitialisation du mot de passe.', 500);
         }
     }
 

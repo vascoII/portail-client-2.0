@@ -1,0 +1,1 @@
+$this->sendRequest('Login', (object) ['LoginID' => $username, 'Password' => $password,], false)

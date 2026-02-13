@@ -63,6 +63,12 @@ export default function ListOperators() {
       setOperatorToDelete(null);
       setErrorMessage(null); // Clear any previous errors
     } catch (error) {
+      await refetchOperators();
+      // Close modal and reset state on success
+      closeModal();
+      setOperatorToDelete(null);
+      setErrorMessage(null);
+      
       console.error("Error deleting operator:", error);
       const errorMessage = handleApiError(error);
       setErrorMessage(

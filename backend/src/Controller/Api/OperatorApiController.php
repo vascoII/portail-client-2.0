@@ -10,13 +10,25 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-
+use App\Service\Api\ApiOperatorService;
+use App\Service\Api\ApiSecurityService as SecurityService;
+use Symfony\Component\Serializer\SerializerInterface;
+use App\Service\Client;
+use App\Service\FakeDataService;
 /**
  * API Controller for Operators (Gestionnaires)
  */
 #[Route("/api/operators", name: "api_operator_")]
 class OperatorApiController extends AbstractApiController
 {
+    private ApiOperatorService $apiOperatorService;
+
+    public function __construct(Client $client, SerializerInterface $serializer, SecurityService $securityService, ?FakeDataService $fakeDataService = null, ApiOperatorService $apiOperatorService)
+    {
+        parent::__construct($client, $serializer, $securityService, $fakeDataService);
+        $this->apiOperatorService = $apiOperatorService;
+    }
+
     /**
      * Get list of all operators (gestionnaires)
      */
@@ -36,11 +48,14 @@ class OperatorApiController extends AbstractApiController
 
         try {
             $users = $client->getGestionnaires();
+
+            $usersOracle = $this->apiOperatorService->getGestionnaires($client->getPkUser());
+
             return $this->success([
                 'users' => $this->normalize($users),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error fetching operators: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération des gestionnaires: ' . $e->getMessage(), 500);
         }
     }
 
@@ -57,27 +72,27 @@ class OperatorApiController extends AbstractApiController
 
         $data = json_decode($request->getContent(), true);
         if (!$data) {
-            return $this->error('Invalid JSON data', 400);
+            return $this->error('Données JSON invalides', 400);
         }
 
         // Validate required fields
         $requiredFields = ['job', 'lastname', 'firstname', 'phone', 'email'];
         foreach ($requiredFields as $field) {
             if (empty($data[$field])) {
-                return $this->error("Missing required field: $field", 400);
+                return $this->error("Champ obligatoire manquant: $field", 400);
             }
         }
 
         // Validate email confirmation
         if (isset($data['email']['first']) && isset($data['email']['second'])) {
             if ($data['email']['first'] !== $data['email']['second']) {
-                return $this->error('Email addresses do not match', 400);
+                return $this->error('Les adresses e-mail ne correspondent pas', 400);
             }
             $email = $data['email']['first'];
         } elseif (isset($data['email'])) {
             $email = is_array($data['email']) ? ($data['email']['first'] ?? $data['email'][0] ?? null) : $data['email'];
         } else {
-            return $this->error('Email is required', 400);
+            return $this->error('E-mail est requis', 400);
         }
 
         try {
@@ -94,17 +109,17 @@ class OperatorApiController extends AbstractApiController
                 foreach ($errors as $error) {
                     $errorMessages[] = $error->getMessage();
                 }
-                return $this->error('Validation failed', 400, $errorMessages);
+                return $this->error('Échec de la validation', 400, $errorMessages);
             }
 
             $success = $client->createGestionnaire($account);
             if ($success) {
-                return $this->success(null, 'Operator created successfully', 201);
+                return $this->success(null, 'Gestionnaire créé avec succès', 201);
             } else {
-                return $this->error('Failed to create operator', 500);
+                return $this->error('Échec de la création du gestionnaire', 500);
             }
         } catch (\Exception $e) {
-            return $this->error('Error creating operator: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la création du gestionnaire: ' . $e->getMessage(), 500);
         }
     }
 
@@ -127,11 +142,14 @@ class OperatorApiController extends AbstractApiController
 
         try {
             $statCoOccupants = $client->getStatOccupants();
+
+            $statCoOccupantsOracle = $this->apiOperatorService->getStatOccupants($client->getPkUser());
+            
             return $this->success([
                 'stats' => $this->normalize($statCoOccupants),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error fetching statistics: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération des statistiques: ' . $e->getMessage(), 500);
         }
     }
 
@@ -162,11 +180,15 @@ class OperatorApiController extends AbstractApiController
 
             $user = $client->getUser($id);
             if (!$user) {
-                return $this->notFound('Operator not found');
+                return $this->notFound('Gestionnaire non trouvé');
             }
 
             $myImmeubles = $client->getMyImmeubles4gestio($params);
             $immeubles = $client->getImmeubles4gestio($id, $params, false);
+
+            $myImmeublesOracle = $this->apiOperatorService->getMyImmeubles4gestio($client->getPkUser(), $params);
+            $immeublesOracle = $this->apiOperatorService->getImmeubles4gestio($id, $params, false);
+
             $diffImmeubles = array_filter($myImmeubles, function ($immeuble) use ($immeubles) {
                 return !in_array($immeuble, $immeubles);
             });
@@ -177,7 +199,7 @@ class OperatorApiController extends AbstractApiController
                 'diffImmeubles' => $this->normalize($diffImmeubles),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error fetching operator: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération du gestionnaire: ' . $e->getMessage(), 500);
         }
     }
 
@@ -194,13 +216,13 @@ class OperatorApiController extends AbstractApiController
 
         $data = json_decode($request->getContent(), true);
         if (!$data) {
-            return $this->error('Invalid JSON data', 400);
+            return $this->error('Données JSON invalides', 400);
         }
 
         try {
             $user = $client->getUser($id);
             if (!$user) {
-                return $this->notFound('Operator not found');
+                return $this->notFound('Gestionnaire non trouvé');
             }
 
             $account = new Account();
@@ -233,13 +255,13 @@ class OperatorApiController extends AbstractApiController
                 foreach ($errors as $error) {
                     $errorMessages[] = $error->getMessage();
                 }
-                return $this->error('Validation failed', 400, $errorMessages);
+                return $this->error('Échec de la validation', 400, $errorMessages);
             }
 
             $client->updateGestionnaire($id, $account);
-            return $this->success(null, 'Operator updated successfully');
+            return $this->success(null, 'Gestionnaire mis à jour avec succès');
         } catch (\Exception $e) {
-            return $this->error('Error updating operator: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la mise à jour du gestionnaire: ' . $e->getMessage(), 500);
         }
     }
 
@@ -256,11 +278,11 @@ class OperatorApiController extends AbstractApiController
 
         $data = json_decode($request->getContent(), true);
         if (!$data) {
-            return $this->error('Invalid JSON data', 400);
+            return $this->error('Données JSON invalides', 400);
         }
 
         if (empty($data['password'])) {
-            return $this->error('Password is required', 400);
+            return $this->error('Le mot de passe est requis', 400);
         }
 
         // Handle password confirmation
@@ -279,24 +301,24 @@ class OperatorApiController extends AbstractApiController
         }
 
         if (empty($password)) {
-            return $this->error('Password is required', 400);
+            return $this->error('Le mot de passe est requis', 400);
         }
 
         // Validate password length
         if (strlen($password) < 8) {
-            return $this->error('Password must be at least 8 characters long', 400);
+            return $this->error('Le mot de passe doit comporter au moins 8 caractères', 400);
         }
 
         try {
             $user = $client->getUser($id);
             if (!$user) {
-                return $this->notFound('Operator not found');
+                return $this->notFound('Gestionnaire non trouvé');
             }
 
             $client->updatePassword($id, $password);
-            return $this->success(null, 'Password updated successfully');
+            return $this->success(null, 'Mot de passe mis à jour avec succès');
         } catch (\Exception $e) {
-            return $this->error('Error updating password: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la mise à jour du mot de passe: ' . $e->getMessage(), 500);
         }
     }
 
@@ -314,7 +336,7 @@ class OperatorApiController extends AbstractApiController
         try {
             $user = $client->getUser($id);
             if (!$user) {
-                return $this->notFound('Operator not found');
+                return $this->notFound('Gestionnaire non trouvé');
             }
 
             $params = new GetImmeublesParams();
@@ -353,9 +375,9 @@ class OperatorApiController extends AbstractApiController
             $result = $client->getImmeubles($id, $params, false);
             return $this->success([
                 'immeubles' => $this->normalize($result),
-            ], 'Buildings added successfully');
+            ], 'Bâtiments ajoutés avec succès');
         } catch (\Exception $e) {
-            return $this->error('Error adding buildings: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de l ajout des bâtiments: ' . $e->getMessage(), 500);
         }
     }
 
@@ -373,7 +395,7 @@ class OperatorApiController extends AbstractApiController
         try {
             $user = $client->getUser($id);
             if (!$user) {
-                return $this->notFound('Operator not found');
+                return $this->notFound('Gestionnaire non trouvé');
             }
 
             $params = new GetImmeublesParams();
@@ -407,9 +429,9 @@ class OperatorApiController extends AbstractApiController
             return $this->success([
                 'immeubles' => $this->normalize($result),
                 'diffImmeubles' => "", 
-            ], 'Buildings removed successfully');
+            ], 'Bâtiments supprimés avec succès');
         } catch (\Exception $e) {
-            return $this->error('Error removing buildings: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la suppression des bâtiments: ' . $e->getMessage(), 500);
         }
     }
 
@@ -431,9 +453,9 @@ class OperatorApiController extends AbstractApiController
                 return $this->error($result->Erreur, 500);
             }
 
-            return $this->success(null, 'Operator deleted successfully');
+            return $this->success(null, 'Gestionnaire supprimé avec succès');
         } catch (\Exception $e) {
-            return $this->error('Error deleting operator: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la suppression du gestionnaire: ' . $e->getMessage(), 500);
         }
     }
 }

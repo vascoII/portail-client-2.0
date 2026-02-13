@@ -15,13 +15,25 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
-
+use App\Service\Api\ApiOccupantService;
+use App\Service\Api\ApiSecurityService as SecurityService;
+use Symfony\Component\Serializer\SerializerInterface;
+use App\Service\Client;
+use App\Service\FakeDataService;
 /**
  * API Controller for Occupants
  */
 #[Route("/api/occupant", name: "api_occupant_")]
 class OccupantApiController extends AbstractApiController
 {
+    private ApiOccupantService $apiOccupantService;
+
+    public function __construct(Client $client, SerializerInterface $serializer, SecurityService $securityService, ?FakeDataService $fakeDataService = null, ApiOccupantService $apiOccupantService)
+    {
+        parent::__construct($client, $serializer, $securityService, $fakeDataService);
+        $this->apiOccupantService = $apiOccupantService;
+    }
+
     /**
      * Get current occupant's logement details
      */
@@ -44,6 +56,9 @@ class OccupantApiController extends AbstractApiController
             $logement = $client->getTableauBordOccupant($userFk);
             $consoTabs = $logementService->generateTabConsos($logement);
             $soustraitants = $client->getSousTraitants();
+
+            $logementOracle = $this->apiOccupantService->getTableauBordOccupant($client->getPkUser(),$userFk);
+            $soustraitantsOracle = $this->apiOccupantService->getSousTraitants($client->getPkUser());
 
             // Handle repart appareils
             $repartAppareils = $logement->LogementRepart->ListeInfosAppareils->infosAppareilRepart ?? [];
@@ -136,6 +151,9 @@ class OccupantApiController extends AbstractApiController
             $logement = $client->getTableauBordOccupant($userFk);
             $depannage = $client->getDetailDepannage($pkIntervention);
 
+            $logementOracle = $this->apiOccupantService->getTableauBordOccupant($client->getPkUser(), $userFk);
+            $depannageOracle = $this->apiOccupantService->getDetailDepannage($client->getPkUser(), $pkIntervention);
+
             return $this->success([
                 'logement' => $this->normalize($logement),
                 'depannage' => $this->normalize($depannage),
@@ -168,8 +186,12 @@ class OccupantApiController extends AbstractApiController
             $logement = $client->getTableauBordOccupant($userFk);
             $pkImmeuble = $logement->Immeuble->PkImmeuble ?? null;
 
+            $logementOracle = $this->apiOccupantService->getTableauBordOccupant($client->getPkUser(), $userFk);
+
             if ($pkImmeuble) {
                 $depannages = $client->getInterventionsImmeuble($pkImmeuble, $logement->Logement->PkLogement, $userFk);
+
+                $depannagesOracle = $this->apiOccupantService->getInterventionsImmeuble($client->getPkUser(), $pkImmeuble, $logement->Logement->PkLogement, $userFk);
             } else {
                 $depannages = [];
             }
@@ -208,8 +230,12 @@ class OccupantApiController extends AbstractApiController
             $pkImmeuble = $logement->Immeuble->PkImmeuble ?? null;
             $pkAppareil = $request->query->get('appareil');
 
+            $logementOracle = $this->apiOccupantService->getTableauBordOccupant($client->getPkUser(), $userFk);
+
             if ($pkImmeuble) {
                 $fuites = $client->getFuitesImmeuble($pkImmeuble, $logement->Logement->PkLogement, $pkAppareil, $userFk);
+
+                $fuitesOracle = $this->apiOccupantService->getFuitesImmeuble($client->getPkUser(), $pkImmeuble, $logement->Logement->PkLogement, $pkAppareil, $userFk);
             } else {
                 $fuites = [];
             }
@@ -247,8 +273,12 @@ class OccupantApiController extends AbstractApiController
             $logement = $client->getTableauBordOccupant($userFk);
             $pkImmeuble = $logement->Immeuble->PkImmeuble ?? null;
 
+            $logementOracle = $this->apiOccupantService->getTableauBordOccupant($client->getPkUser(), $userFk);
+
             if ($pkImmeuble) {
                 $dysfonctionnements = $client->getDysfonctionnementsImmeuble($pkImmeuble, $logement->Logement->PkLogement, $userFk);
+
+                $dysfonctionnementsOracle = $this->apiOccupantService->getDysfonctionnementsImmeuble($client->getPkUser(), $pkImmeuble, $logement->Logement->PkLogement, $userFk);
             } else {
                 $dysfonctionnements = [];
             }
@@ -287,8 +317,12 @@ class OccupantApiController extends AbstractApiController
             $pkImmeuble = $logement->Immeuble->PkImmeuble ?? null;
             $pkAppareil = $request->query->get('appareil');
 
+            $logementOracle = $this->apiOccupantService->getTableauBordOccupant($client->getPkUser(), $userFk);
+
             if ($pkImmeuble) {
                 $anomalies = $client->getAnomaliesImmeuble($pkImmeuble, $logement->Logement->PkLogement, $pkAppareil, $userFk);
+
+                $anomaliesOracle = $this->apiOccupantService->getAnomaliesImmeuble($client->getPkUser(), $pkImmeuble, $logement->Logement->PkLogement, $pkAppareil, $userFk);
             } else {
                 $anomalies = [];
             }
@@ -328,8 +362,12 @@ class OccupantApiController extends AbstractApiController
             $logement = $client->getTableauBordOccupant($userFk);
             $pkImmeuble = $logement->Immeuble->PkImmeuble ?? null;
 
+            $logementOracle = $this->apiOccupantService->getTableauBordOccupant($client->getPkUser(), $userFk);
+
             if ($pkImmeuble) {
                 $anomalies = $client->getAnomaliesImmeuble($pkImmeuble, $logement->Logement->PkLogement, null, $userFk);
+
+                $anomaliesOracle = $this->apiOccupantService->getAnomaliesImmeuble($client->getPkUser(), $pkImmeuble, $logement->Logement->PkLogement, null, $userFk);
             } else {
                 $anomalies = [];
             }
@@ -685,6 +723,8 @@ class OccupantApiController extends AbstractApiController
             $logement = $client->getTableauBordOccupant($userFk);
             $consoTabs = $logementService->generateTabConsos($logement);
 
+            $logementOracle = $this->apiOccupantService->getTableauBordOccupant($client->getPkUser(), $userFk);
+
             // Handle repart appareils
             $repartAppareils = $logement->LogementRepart->ListeInfosAppareils->infosAppareilRepart ?? [];
             if (count($repartAppareils) > 1) {
@@ -742,6 +782,8 @@ class OccupantApiController extends AbstractApiController
 
             $logement = $client->getTableauBordOccupant($userFk);
             $consoTabs = $logementService->generateTabConsos($logement);
+
+            $logementOracle = $this->apiOccupantService->getTableauBordOccupant($client->getPkUser(), $userFk);
 
             // Handle repart appareils
             $repartAppareils = $logement->LogementRepart->ListeInfosAppareils->infosAppareilRepart ?? [];

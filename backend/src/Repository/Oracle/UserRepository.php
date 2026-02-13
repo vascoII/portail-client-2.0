@@ -35,7 +35,7 @@ class UserRepository
             $visited[] = $pkUser;
 
             $rows = $this->oci->fetchAllAssoc(
-                'SELECT PKWEB_USER, USERTYPE, FKCLIENT, FKPARENTUSER FROM WEB_USER WHERE PKWEB_USER = :pkUser',
+                'SELECT PKWEB_USER, USERTYPE, FKCLIENT, FKPARENTUSER FROM LER_AUTH_DEV.WEB_USER WHERE PKWEB_USER = :pkUser',
                 ['pkUser' => $pkUser]
             );
 

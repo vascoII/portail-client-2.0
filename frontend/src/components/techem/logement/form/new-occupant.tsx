@@ -1,3 +1,4 @@
+
 "use client";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
@@ -13,15 +14,14 @@ import { useLogements } from "@/lib/hooks/useLogements";
 import { useRouter } from "next/navigation";
 import { handleApiError } from "@/lib/api/client";
 
+// DatePicker
+import DatePicker from "react-datepicker";
+import { fr } from "date-fns/locale";
+import { format } from "date-fns";
+import "react-datepicker/dist/react-datepicker.css";
+
 /**
- * Schéma de validation pour le formulaire de déclaration d'occupant
- * Règles :
- * - Nom de l'occupant requis
- * - Email optionnel mais doit être valide si fourni
- * - Téléphone requis, 10 chiffres exactement
- * - CodeLogeGestio optionnel
- * - numBail optionnel
- * - dateArrivee optionnel (date)
+ * Schéma Zod
  */
 const newOccupantSchema = z.object({
   nameOccupant: z.string().min(1, "Le nom de l'occupant est requis"),
@@ -36,25 +36,25 @@ const newOccupantSchema = z.object({
     .regex(/^[0-9]{10}$/, "Le téléphone doit contenir exactement 10 chiffres"),
   CodeLogeGestio: z.string().optional(),
   numBail: z.string().optional(),
-  dateArrivee: z.string().optional(),
+  dateArrivee: z.date().nullable().optional(), // <-- Modifié pour DatePicker
 });
 
 type NewOccupantFormData = z.infer<typeof newOccupantSchema>;
 
 interface NewOccupantFormProps {
-  pkLogement: string | number;
+  pkLogement: string;
 }
 
 export default function NewOccupantForm({ pkLogement }: NewOccupantFormProps) {
   const [isSuccess, setIsSuccess] = useState(false);
   const router = useRouter();
-
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     setError,
     setValue,
+    watch,
   } = useForm<NewOccupantFormData>({
     resolver: zodResolver(newOccupantSchema),
     defaultValues: {
@@ -63,7 +63,7 @@ export default function NewOccupantForm({ pkLogement }: NewOccupantFormProps) {
       phone: "",
       CodeLogeGestio: "",
       numBail: "",
-      dateArrivee: "",
+      dateArrivee: null, // <-- par défaut null
     },
   });
 
@@ -75,52 +75,43 @@ export default function NewOccupantForm({ pkLogement }: NewOccupantFormProps) {
 
   const pkImmeuble =
     logementData?.logement?.Immeuble?.PkImmeuble ??
-    logementData?.logement?.Immeuble?.pkImmeuble ??
-    logementData?.logement?.immeuble?.PkImmeuble ??
-    logementData?.logement?.immeuble?.pkImmeuble ??
     "";
 
   // Définir la date d'arrivée par défaut à aujourd'hui
   useEffect(() => {
-    const today = new Date();
-    const formattedDate = today.toISOString().split("T")[0];
-    setValue("dateArrivee", formattedDate);
+    setValue("dateArrivee", new Date());
   }, [setValue]);
 
   /**
-   * Gestion de la soumission du formulaire
+   * Soumission
    */
   const onSubmit = async (data: NewOccupantFormData) => {
     try {
-      // Préparer les données selon le format attendu par l'API
-      const occupantData: any = { // eslint-disable-line @typescript-eslint/no-explicit-any
+      const occupantData: any = {// eslint-disable-line @typescript-eslint/no-explicit-any
         newNom: data.nameOccupant,
         newTelmobile: data.phone,
       };
 
-      // Ajouter l'email seulement s'il est fourni
-      if (data.email && data.email.trim() !== "") {
+      if (data.email?.trim()) {
         occupantData.newEmail = data.email;
       }
 
-      // Ajouter les champs optionnels s'ils sont fournis
-      if (data.CodeLogeGestio && data.CodeLogeGestio.trim() !== "") {
+      if (data.CodeLogeGestio?.trim()) {
         occupantData.CodeLogeGestio = data.CodeLogeGestio;
       }
 
-      if (data.numBail && data.numBail.trim() !== "") {
+      if (data.numBail?.trim()) {
         occupantData.numBail = data.numBail;
       }
 
-      if (data.dateArrivee && data.dateArrivee.trim() !== "") {
-        occupantData.dateArrivee = data.dateArrivee;
+      // Format API : yyyy-MM-dd
+      if (data.dateArrivee instanceof Date) {
+        occupantData.dateArrivee = format(data.dateArrivee, "yyyy-MM-dd");
       }
 
       await updateOccupant(pkLogement, occupantData);
-
       setIsSuccess(true);
 
-      // Rediriger vers la page du logement après 2 secondes
       setTimeout(() => {
         if (pkImmeuble) {
           router.push(`/immeuble/${pkImmeuble}/logements/${pkLogement}`);
@@ -133,15 +124,15 @@ export default function NewOccupantForm({ pkLogement }: NewOccupantFormProps) {
       setError("root", {
         type: "manual",
         message:
-          updateOccupantError ||
-          errorMessage ||
+          updateOccupantError ??
+          errorMessage ??
           "Une erreur s'est produite lors de la déclaration de l'occupant.",
       });
     }
   };
 
   const isLoading = isSubmitting || isUpdatingOccupant;
-  const displayError = updateOccupantError || errors.root?.message;
+  const displayError = updateOccupantError ?? errors.root?.message;
 
   return (
     <div className="flex flex-col flex-1 w-full">
@@ -158,6 +149,7 @@ export default function NewOccupantForm({ pkLogement }: NewOccupantFormProps) {
           Retour au logement
         </Link>
       </div>
+
       <div className="flex flex-col justify-center flex-1 w-full max-w-2xl mx-auto">
         <div>
           <div className="mb-5 sm:mb-8">
@@ -168,8 +160,8 @@ export default function NewOccupantForm({ pkLogement }: NewOccupantFormProps) {
               Remplissez les informations pour déclarer un nouvel occupant
             </p>
           </div>
+
           <div>
-            {/* Message de succès */}
             {isSuccess && (
               <div className="mb-6">
                 <Alert
@@ -180,7 +172,6 @@ export default function NewOccupantForm({ pkLogement }: NewOccupantFormProps) {
               </div>
             )}
 
-            {/* Alerte d'erreur */}
             {displayError && !isSuccess && (
               <div className="mb-6">
                 <Alert variant="error" title="Erreur" message={displayError} />
@@ -190,11 +181,10 @@ export default function NewOccupantForm({ pkLogement }: NewOccupantFormProps) {
             {!isSuccess && (
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="space-y-6">
-                  {/* Champ Nom de l'occupant */}
+                  {/* Nom */}
                   <div>
                     <Label htmlFor="nameOccupant">
-                      Nom de l&apos;occupant{" "}
-                      <span className="text-error-500">*</span>
+                      Nom de l&apos;occupant <span className="text-error-500">*</span>
                     </Label>
                     <Input
                       id="nameOccupant"
@@ -206,7 +196,7 @@ export default function NewOccupantForm({ pkLogement }: NewOccupantFormProps) {
                     />
                   </div>
 
-                  {/* Champ Email */}
+                  {/* Email */}
                   <div>
                     <Label htmlFor="email">Email</Label>
                     <Input
@@ -219,7 +209,7 @@ export default function NewOccupantForm({ pkLogement }: NewOccupantFormProps) {
                     />
                   </div>
 
-                  {/* Champ Téléphone */}
+                  {/* Téléphone */}
                   <div>
                     <Label htmlFor="phone">
                       Téléphone <span className="text-error-500">*</span>
@@ -227,15 +217,15 @@ export default function NewOccupantForm({ pkLogement }: NewOccupantFormProps) {
                     <Input
                       id="phone"
                       type="tel"
-                      placeholder="Saisir un numéro de téléphone (10 chiffres)"
+                      placeholder="Saisir un numéro (10 chiffres)"
                       {...register("phone")}
                       error={!!errors.phone}
-                      hint={errors.phone?.message || "10 chiffres requis"}
+                      hint={errors.phone?.message ?? "10 chiffres requis"}
                       maxLength={10}
                     />
                   </div>
 
-                  {/* Champ CodeLogeGestio */}
+                  {/* CodeLogeGestio */}
                   <div>
                     <Label htmlFor="CodeLogeGestio">
                       Numéro de logement unique
@@ -243,39 +233,54 @@ export default function NewOccupantForm({ pkLogement }: NewOccupantFormProps) {
                     <Input
                       id="CodeLogeGestio"
                       type="text"
-                      placeholder="Saisir un numéro de logement unique"
+                      placeholder="Numéro de logement unique"
                       {...register("CodeLogeGestio")}
                       error={!!errors.CodeLogeGestio}
                       hint={errors.CodeLogeGestio?.message}
                     />
                   </div>
 
-                  {/* Champ numBail */}
+                  {/* numBail */}
                   <div>
                     <Label htmlFor="numBail">Numéro de bail</Label>
                     <Input
                       id="numBail"
                       type="text"
-                      placeholder="Saisir un numéro de Bail"
+                      placeholder="Saisir un numéro de bail"
                       {...register("numBail")}
                       error={!!errors.numBail}
                       hint={errors.numBail?.message}
                     />
                   </div>
 
-                  {/* Champ Date d'arrivée */}
+                  {/* Date Picker */}
                   <div>
                     <Label htmlFor="dateArrivee">Date d&apos;arrivée</Label>
-                    <Input
+
+                    <DatePicker
                       id="dateArrivee"
-                      type="date"
-                      {...register("dateArrivee")}
-                      error={!!errors.dateArrivee}
-                      hint={errors.dateArrivee?.message}
+                      selected={watch("dateArrivee")}
+                      onChange={(d: Date | null) => setValue("dateArrivee", d)}
+                      dateFormat="dd/MM/yyyy"
+                      locale={fr}
+                      placeholderText="JJ/MM/AAAA"
+                      className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-700
+                                 focus:border-brand-500 focus:outline-none dark:border-gray-700
+                                 dark:bg-gray-900 dark:text-gray-200"
+                      maxDate={new Date()}
+                      showMonthDropdown
+                      showYearDropdown
+                      dropdownMode="select"
                     />
+
+                    {errors.dateArrivee && (
+                      <p className="text-sm text-error-500 mt-1">
+                        {errors.dateArrivee.message}
+                      </p>
+                    )}
                   </div>
 
-                  {/* Bouton de soumission */}
+                  {/* Submit */}
                   <div className="pt-4">
                     <Button
                       className="w-full sm:w-auto"
@@ -285,6 +290,7 @@ export default function NewOccupantForm({ pkLogement }: NewOccupantFormProps) {
                     >
                       {isLoading ? "Validation en cours..." : "Valider"}
                     </Button>
+
                     <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                       <span className="text-error-500">*</span> champs obligatoires
                     </p>
@@ -298,4 +304,3 @@ export default function NewOccupantForm({ pkLogement }: NewOccupantFormProps) {
     </div>
   );
 }
-

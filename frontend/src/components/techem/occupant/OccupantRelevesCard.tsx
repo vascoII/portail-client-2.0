@@ -35,18 +35,18 @@ export default function OccupantRelevesCard({ occupantData }: { occupantData: Oc
               {/* First row - 2 columns: Logement */}
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-7 2xl:gap-x-32">
                 <div className="p-4 border border-gray-200 rounded-2xl dark:border-gray-800">
-                  <p className="mb-2 text-2xl  leading-normal text-gray-500 dark:text-gray-400">
+                  <p className="mb-2 text-xl leading-normal text-gray-800 dark:text-white/90">
                     Mode de relève:
                   </p>
-                  <p className="text-2xl font-semibold text-green-800 dark:text-white/90">
+                  <p className="text-xl font-semibold text-blue-600 dark:text-white/90">
                     {logementInfo.hasTelereleve ? "Réseau fixe TSS" : "Relève planifiée (radio ou manuelle)"}
                   </p>
                 </div>
                 <div className="p-4 border border-gray-200 rounded-2xl dark:border-gray-800">
-                  <p className="mb-2 text-2xl  leading-normal text-gray-500 dark:text-gray-400">
+                  <p className="mb-2 text-xl leading-normal text-gray-800 dark:text-white/90">
                     Transfert électronique de relevés:
                   </p>
-                  <p className="text-2xl font-semibold text-green-800 dark:text-white/90">
+                  <p className="text-xl font-semibold text-blue-600 dark:text-white/90">
                     {logementInfo.hasTelereleve ? "Actif" : "Inactif"}
                   </p>  
                 </div>

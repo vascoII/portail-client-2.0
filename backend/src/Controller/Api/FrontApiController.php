@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use App\Service\Api\ApiFrontService;
+use App\Service\Api\ApiSecurityService as SecurityService;
 
 /**
  * API Controller for Front/General endpoints
@@ -16,11 +18,18 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class FrontApiController extends AbstractApiController
 {
   private ValidatorInterface $validator;
+  private ApiFrontService $apiFrontService;
 
-  public function __construct(Client $client, \Symfony\Component\Serializer\SerializerInterface $serializer, ValidatorInterface $validator)
+  public function __construct(
+    Client $client, 
+    \Symfony\Component\Serializer\SerializerInterface $serializer, 
+    SecurityService $securityService,
+    ValidatorInterface $validator,
+    ApiFrontService $apiFrontService)
   {
-    parent::__construct($client, $serializer);
+    parent::__construct($client, $serializer, $securityService);
     $this->validator = $validator;
+    $this->apiFrontService = $apiFrontService;
   }
 
   /**
@@ -121,6 +130,8 @@ class FrontApiController extends AbstractApiController
     try {
       $soustraitants = $client->getSousTraitants();
 
+      $soustraitantsOracle = $this->apiFrontService->getSousTraitants($client->getPkUser());
+
       // Normalize subcontractors data
       $normalizedSoustraitants = [];
       if (is_array($soustraitants)) {
@@ -216,7 +227,7 @@ class FrontApiController extends AbstractApiController
 
       // Validate email
       if (empty($email)) {
-        return $this->error('Email is required', 400, ['email' => 'Email is required']);
+        return $this->error('E-mail requis', 400, ['email' => 'E-mail requis']);
       }
 
       if ($email !== $emailConfirm) {
@@ -226,7 +237,7 @@ class FrontApiController extends AbstractApiController
       }
 
       $emailConstraint = new Email();
-      $emailConstraint->message = 'Invalid email address';
+      $emailConstraint->message = 'Adresse e-mail invalide';
 
       $errors = $this->validator->validate($email, $emailConstraint);
       if (count($errors) > 0) {
@@ -284,7 +295,7 @@ class FrontApiController extends AbstractApiController
       $token = $this->container->get('security.token_storage')->getToken();
 
       if (!$token || !$token->hasAttribute('soap.user')) {
-        return $this->unauthorized('User information not available');
+        return $this->unauthorized('Informations utilisateur non disponibles');
       }
 
       $user = $token->getAttribute('soap.user');
@@ -304,7 +315,7 @@ class FrontApiController extends AbstractApiController
         'dashboard' => $this->normalize($dashboard),
       ]);
     } catch (\Exception $e) {
-      return $this->error('Error retrieving dashboard: ' . $e->getMessage(), 500);
+      return $this->error('Erreur lors de la récupération du tableau de bord: ' . $e->getMessage(), 500);
     }
   }
 }
