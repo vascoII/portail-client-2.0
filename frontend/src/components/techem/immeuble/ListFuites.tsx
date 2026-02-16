@@ -43,6 +43,7 @@ export default function ListFuites({ pkImmeuble }: ListFuitesProps) {
   const [immeuble, setImmeuble] = useState<Building | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [searchNumero, setSearchNumero] = useState("");
 
   // Create wrapper function for Excel export
   const handleExportFuitesExcel = useCallback(async () => {
@@ -110,7 +111,23 @@ export default function ListFuites({ pkImmeuble }: ListFuitesProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pkImmeuble]);
 
-  const totalLeaks = useMemo(() => fuites.reduce((acc, fuite) => acc + getLeakCount(fuite), 0), [fuites]);
+  // Liste filtrée selon le N° compteur
+  const filteredFuites = useMemo(() => {
+    if (!searchNumero.trim()) {
+      return fuites;
+    }
+    const term = searchNumero.trim().toLowerCase();
+    return fuites.filter((fuite) => {
+      const numero = fuite.Appareil?.Numero;
+      if (numero === undefined || numero === null) return false;
+      return String(numero).toLowerCase().includes(term);
+    });
+  }, [fuites, searchNumero]);
+
+  const totalLeaks = useMemo(
+    () => filteredFuites.reduce((acc, fuite) => acc + getLeakCount(fuite), 0),
+    [filteredFuites]
+  );
 
   if (isLoading) {
     return (
@@ -199,6 +216,13 @@ export default function ListFuites({ pkImmeuble }: ListFuitesProps) {
             </svg>
             Filtrer
           </button>
+          <input
+            type="text"
+            value={searchNumero}
+            onChange={(e) => setSearchNumero(e.target.value)}
+            placeholder="Filtrer par N° compteur"
+            className="w-56 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm text-gray-700 shadow-theme-xs placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500"
+          />
           <button
             onClick={handleExportExcel}
             disabled={isExportingExcel || fuites.length === 0}
@@ -290,7 +314,7 @@ export default function ListFuites({ pkImmeuble }: ListFuitesProps) {
         </div>
       </div>
 
-      {fuites.length === 0 ? (
+      {filteredFuites.length === 0 ? (
         <div className="flex items-center justify-center min-h-[200px] rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Aucune fuite signalée pour cet immeuble.
@@ -334,7 +358,7 @@ export default function ListFuites({ pkImmeuble }: ListFuitesProps) {
           </TableHeader>
 
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-            {fuites.map((fuite, index) => {
+            {filteredFuites.map((fuite, index) => {
               const key = fuite.PkFuite ?? fuite.Appareil?.Numero ?? `fuite-${index}`;
               const pkLogement = fuite.Logement?.PkLogement;
               const compteur = fuite.Appareil?.Numero ?? "—";

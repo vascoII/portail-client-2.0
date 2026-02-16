@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import StatusIconsAlerte from "@/components/techem/images/StatusIconsAlerte";
 import {
   Table,
@@ -70,6 +70,7 @@ export default function ListInterventions({
   const [immeuble, setImmeuble] = useState<Building | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [searchNumero, setSearchNumero] = useState("");
 
   // Create wrapper function for Excel export
   const handleExportInterventionsExcel = useCallback(async () => {
@@ -137,6 +138,19 @@ export default function ListInterventions({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pkImmeuble]);
+
+  // Liste filtrée selon le N° intervention
+  const filteredDepannages = useMemo(() => {
+    if (!searchNumero.trim()) {
+      return depannages;
+    }
+    const term = searchNumero.trim().toLowerCase();
+    return depannages.filter((depannage) => {
+      const numero = getInterventionNumber(depannage);
+      if (!numero) return false;
+      return numero.toLowerCase().includes(term);
+    });
+  }, [depannages, searchNumero]);
 
   const renderInterventionInfo = (depannage: DepannageRecord) => {
     const numero = getInterventionNumber(depannage);
@@ -247,7 +261,7 @@ export default function ListInterventions({
             {immeuble?.Nom ? `Dépannages – ${immeuble.Nom}` : "Dépannages"}
           </h3>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            {depannages.length} dépannage{depannages.length > 1 ? "s" : ""}
+            {filteredDepannages.length} dépannage{filteredDepannages.length > 1 ? "s" : ""}
           </p>
         </div>
 
@@ -290,6 +304,13 @@ export default function ListInterventions({
             </svg>
             Filtrer
           </button>
+          <input
+            type="text"
+            value={searchNumero}
+            onChange={(e) => setSearchNumero(e.target.value)}
+            placeholder="Filtrer par N° intervention"
+            className="w-56 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm text-gray-700 shadow-theme-xs placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500"
+          />
           <button
             onClick={handleExportExcel}
             disabled={isExportingExcel || depannages.length === 0}
@@ -381,7 +402,7 @@ export default function ListInterventions({
         </div>
       </div>
 
-      {depannages.length === 0 ? (
+      {filteredDepannages.length === 0 ? (
         <div className="flex items-center justify-center min-h-[200px] rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Aucun dépannage enregistré pour cet immeuble.
@@ -419,7 +440,7 @@ export default function ListInterventions({
           </TableHeader>
 
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-            {depannages.map((depannage, index) => {
+            {filteredDepannages.map((depannage, index) => {
               const numeroIntervention = getInterventionNumber(depannage);
               const key = numeroIntervention || `depannage-${index}`;
               return (

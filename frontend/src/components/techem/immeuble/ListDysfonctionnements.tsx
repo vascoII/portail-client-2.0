@@ -40,6 +40,7 @@ export default function ListDysfonctionnements({ pkImmeuble }: ListDysfonctionne
   const [immeuble, setImmeuble] = useState<Building | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [searchNumero, setSearchNumero] = useState("");
 
   // Create wrapper function for Excel export
   const handleExportDysfonctionnementsExcel = useCallback(async () => {
@@ -107,9 +108,22 @@ export default function ListDysfonctionnements({ pkImmeuble }: ListDysfonctionne
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pkImmeuble]);
 
+  // Liste filtrée selon le N° compteur
+  const filteredDysfonctionnements = useMemo(() => {
+    if (!searchNumero.trim()) {
+      return dysfonctionnements;
+    }
+    const term = searchNumero.trim().toLowerCase();
+    return dysfonctionnements.filter((dysfonctionnement) => {
+      const numero = dysfonctionnement.Appareil?.Numero;
+      if (numero === undefined || numero === null) return false;
+      return String(numero).toLowerCase().includes(term);
+    });
+  }, [dysfonctionnements, searchNumero]);
+
   const totalDysfonctionnements = useMemo(
-    () => dysfonctionnements.reduce((acc, dys) => acc + getDysfunctionCount(dys), 0),
-    [dysfonctionnements]
+    () => filteredDysfonctionnements.reduce((acc, dys) => acc + getDysfunctionCount(dys), 0),
+    [filteredDysfonctionnements]
   );
 
   if (isLoading) {
@@ -199,6 +213,13 @@ export default function ListDysfonctionnements({ pkImmeuble }: ListDysfonctionne
             </svg>
             Filtrer
           </button>
+          <input
+            type="text"
+            value={searchNumero}
+            onChange={(e) => setSearchNumero(e.target.value)}
+            placeholder="Filtrer par N° compteur"
+            className="w-56 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm text-gray-700 shadow-theme-xs placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500"
+          />
           <button
             onClick={handleExportExcel}
             disabled={isExportingExcel || dysfonctionnements.length === 0}
@@ -290,7 +311,7 @@ export default function ListDysfonctionnements({ pkImmeuble }: ListDysfonctionne
         </div>
       </div>
 
-      {dysfonctionnements.length === 0 ? (
+      {filteredDysfonctionnements.length === 0 ? (
         <div className="flex items-center justify-center min-h-[200px] rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Aucune alarme technique signalée pour cet immeuble.
@@ -340,7 +361,7 @@ export default function ListDysfonctionnements({ pkImmeuble }: ListDysfonctionne
           </TableHeader>
 
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-            {dysfonctionnements.map((dysfonctionnement, index) => {
+            {filteredDysfonctionnements.map((dysfonctionnement, index) => {
               const key = dysfonctionnement.PkDysfonctionnement ?? dysfonctionnement.Appareil?.Numero ?? `dysfonctionnement-${index}`;
               const pkLogement = dysfonctionnement.Logement?.PkLogement;
               const compteur = dysfonctionnement.Appareil?.Numero ?? "—";
