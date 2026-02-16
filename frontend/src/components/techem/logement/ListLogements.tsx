@@ -20,8 +20,10 @@ import Alert from "@/components/ui/alert/Alert";
 import type { Housing, Device } from "@/lib/types/api";
 import { Modal } from "@/components/ui/modal";
 import { useModal } from "@/hooks/useModal";
+import { useAuth } from "@/lib/hooks/useAuth";
 import AppareilsTable from "./AppareilsTable";
 import ToggleSwitchListLogements from "./form/ToggleSwitchListLogements";
+import DemandeInterventionModal from "./form/demande-intervention";
 import { LoadingTable } from "@/components/ui/loading";
 import { usePrefetchOnHover } from "@/lib/cache/usePrefetch";
 
@@ -34,17 +36,26 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
   const searchParams = useSearchParams();
   const { filterLogements, isFiltering, exportLogements } = useLogements();
   const { prefetchOnHover } = usePrefetchOnHover();
+  const { user } = useAuth();
   const [logements, setLogements] = useState<FilterLogementsResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [loadingError, setLoadingError] = useState<{ title: string; message: string } | null>(null);
   const appareilsModal = useModal();
   const filterModal = useModal();
+  const demandeInterventionModal = useModal();
   const [selectedPkLogement, setSelectedPkLogement] = useState<string | number | null>(null);
   const [selectedType, setSelectedType] = useState<"eau" | "chauffage" | null>(null);
   const [selectedAppareils, setSelectedAppareils] = useState<Device[]>([]);
+  const [interventionPkLogement, setInterventionPkLogement] = useState<string | number | null>(null);
+  const [interventionOccupantNom, setInterventionOccupantNom] = useState<string>("");
   const [filterEtage, setFilterEtage] = useState("");
   const [filterEscalier, setFilterEscalier] = useState("");
   const [filterBatiment, setFilterBatiment] = useState("");
+
+  const hasTicketPermission =
+    user?.hasTicketPermission === true ||
+    user?.hasTicketPermission === 1 ||
+    user?.hasTicketPermission === "1";
 
   // Create wrapper function for export
   const handleExportLogements = useCallback(async () => {
@@ -634,9 +645,29 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="space-y-1">
-                            {occupantRef && (
-                              <p className="text-gray-800 text-theme-sm font-medium dark:text-white/90">
-                                Référence client: <span className="font-normal">{occupantRef}</span>
+                            {(occupantRef || (hasTicketPermission && pkLogement)) && (
+                              <p className="text-gray-800 text-theme-sm font-medium dark:text-white/90 flex flex-wrap items-center gap-2">
+                                {occupantRef && (
+                                  <>
+                                    Référence client:{" "}
+                                    <span className="font-normal">{occupantRef}</span>
+                                  </>
+                                )}
+                                {hasTicketPermission && pkLogement && (
+                                  <button
+                                    type="button"
+                                    className="rounded-lg border border-gray-300 px-2.5 py-1 text-xs font-medium text-gray-700 shadow-theme-xs transition hover:bg-gray-50 hover:text-gray-900 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-white/[0.05]"
+                                    onClick={(event) => {
+                                      event.preventDefault();
+                                      event.stopPropagation();
+                                      setInterventionPkLogement(pkLogement);
+                                      setInterventionOccupantNom(occupantName || "");
+                                      demandeInterventionModal.openModal();
+                                    }}
+                                  >
+                                    Demande d&apos;intervention
+                                  </button>
+                                )}
                               </p>
                             )}
                             {(logementEtage || logementNumOrdre || logementBatiment || logementEscalier) && (
@@ -879,6 +910,20 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
           </div>
         </div>
       </Modal>
+
+      {/* Demande d'intervention Modal */}
+      {hasTicketPermission && interventionPkLogement && (
+        <DemandeInterventionModal
+          isOpen={demandeInterventionModal.isOpen}
+          onClose={() => {
+            demandeInterventionModal.closeModal();
+            setInterventionPkLogement(null);
+            setInterventionOccupantNom("");
+          }}
+          pkLogement={String(interventionPkLogement)}
+          occupantNom={interventionOccupantNom}
+        />
+      )}
     </div>
   );
 }
