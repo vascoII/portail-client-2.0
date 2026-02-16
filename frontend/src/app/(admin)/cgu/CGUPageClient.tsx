@@ -5,6 +5,9 @@ import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import Checkbox from "@/components/form/input/Checkbox";
 import Button from "@/components/ui/button/Button";
+import Alert from "@/components/ui/alert/Alert";
+import { useFront } from "@/lib/hooks/useFront";
+import { handleApiError } from "@/lib/api/client";
 
 const CGU_CONTENT = `
 Objet
@@ -259,7 +262,10 @@ function isValidEmail(email: string): boolean {
 export default function CGUPageClient() {
   const [email, setEmail] = useState("");
   const [confirmEmail, setConfirmEmail] = useState("");
-  const [acceptCGU, setAcceptCGU] = useState(false);
+  const [validCGU, setValidCGU] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const { acceptCGU: acceptCGURequest, isAcceptingCGU, acceptCGUError } = useFront();
 
   // Validation des champs
   const isEmailValid = email ? isValidEmail(email) : false;
@@ -279,11 +285,32 @@ export default function CGUPageClient() {
   // - Confirmation Email est valide
   // - Les deux emails correspondent
   // - La case est cochée
-  const isFormValid = isEmailValid && isConfirmEmailValid && emailsMatch && acceptCGU;
+  const isFormValid = isEmailValid && isConfirmEmailValid && emailsMatch && validCGU;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Ne rien faire pour le moment
+    // Ne pas envoyer si la validation des CGU n'est pas faite
+    if (!isFormValid) {
+      return;
+    }
+
+    setSubmitError(null);
+
+    try {
+      await acceptCGURequest({
+        email,
+        email_confirm: confirmEmail,
+        valid_cgu: true,
+      });
+      // TODO: éventuellement rediriger ou afficher un message de succès
+    } catch (error) {
+      const message = handleApiError(error);
+      setSubmitError(
+        acceptCGUError ||
+          message ||
+          "Une erreur s'est produite lors de la validation des CGU."
+      );
+    }
   };
 
   const sections = parseCGUContent(CGU_CONTENT);
@@ -366,8 +393,8 @@ export default function CGUPageClient() {
           <div>
             <Checkbox
               id="acceptCGU"
-              checked={acceptCGU}
-              onChange={setAcceptCGU}
+              checked={validCGU}
+              onChange={setValidCGU}
               label="J'accepte les Conditions Générales d'Utilisation"
             />
           </div>
@@ -377,10 +404,20 @@ export default function CGUPageClient() {
               type="submit" 
               size="sm" 
               className="w-full sm:w-auto"
-              disabled={!isFormValid}
+              disabled={!isFormValid || isAcceptingCGU}
             >
-              Valider
+              {isAcceptingCGU ? "Validation en cours..." : "Valider"}
             </Button>
+            {(submitError || acceptCGUError) && (
+              <div className="mt-3">
+                <Alert
+                  variant="error"
+                  title="Erreur"
+                  message={submitError || acceptCGUError || "Une erreur s'est produite lors de la validation des CGU."}
+                  showLink={false}
+                />
+              </div>
+            )}
           </div>
         </form>
       </div>
