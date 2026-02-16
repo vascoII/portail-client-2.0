@@ -33,6 +33,7 @@ export default function ListImmeubles() {
   const [immeubles, setImmeubles] = useState<Building[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadingError, setLoadingError] = useState<{ title: string; message: string } | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const { isOpen, openModal, closeModal } = useModal();
   
   // Use the reusable export hook
@@ -116,7 +117,7 @@ export default function ListImmeubles() {
                            activeFilters.dysfonctionnements || activeFilters.depannages;
     const hasEquipmentFilters = activeFilters.equipment && activeFilters.equipment.length > 0;
     
-    if (!hasIssueFilters && !hasEquipmentFilters) {
+    if (!hasIssueFilters && !hasEquipmentFilters && !searchTerm.trim()) {
       return immeubles;
     }
 
@@ -152,10 +153,24 @@ export default function ListImmeubles() {
         if (!hasSelectedEquipment) return false;
       }
 
+      // Search filter on numero, code postal and ville
+      if (searchTerm.trim()) {
+        const term = searchTerm.toLowerCase();
+        const numero = (building.numero ?? building.Numero ?? "").toString().toLowerCase();
+        const cp = (building.cp ?? building.Cp ?? "").toString().toLowerCase();
+        const ville = (building.ville ?? building.Ville ?? "").toString().toLowerCase();
+
+        const matchesSearch = [numero, cp, ville].some((value) =>
+          value.includes(term)
+        );
+
+        if (!matchesSearch) return false;
+      }
+
       // Building matches all active filters
       return true;
     });
-  }, [immeubles, activeFilters]);
+  }, [immeubles, activeFilters, searchTerm]);
 
   useEffect(() => {
     // Load all buildings on component mount
@@ -345,6 +360,13 @@ export default function ListImmeubles() {
         </div>
 
         <div className="flex items-center gap-3">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Rechercher par n° / CP / ville"
+            className="w-64 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700 shadow-theme-xs placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500"
+          />
           <button 
             onClick={openModal}
             className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
