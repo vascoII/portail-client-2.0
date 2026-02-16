@@ -42,6 +42,9 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
   const [selectedPkLogement, setSelectedPkLogement] = useState<string | number | null>(null);
   const [selectedType, setSelectedType] = useState<"eau" | "chauffage" | null>(null);
   const [selectedAppareils, setSelectedAppareils] = useState<Device[]>([]);
+  const [filterEtage, setFilterEtage] = useState("");
+  const [filterEscalier, setFilterEscalier] = useState("");
+  const [filterBatiment, setFilterBatiment] = useState("");
 
   // Create wrapper function for export
   const handleExportLogements = useCallback(async () => {
@@ -205,6 +208,18 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
     return logementObj?.NumEtage ?? logementObj?.numEtage ?? "";
   };
 
+  // Get logement numéro batiment
+  const getLogementBatiment = (logement: Housing): string => {
+    const logementObj = logement.Logement ?? logement;
+    return logementObj?.NumBatiment ?? logementObj?.numBatiment ?? "";
+  };
+
+  // Get logement numéro escalier
+  const getLogementEscalier = (logement: Housing): string => {
+    const logementObj = logement.Logement ?? logement;
+    return logementObj?.NumEscalier ?? logementObj?.numEscalier ?? "";
+  };
+
   // Get logement num ordre
   const getLogementNumOrdre = (logement: Housing): string => {
     const logementObj = logement.Logement ?? logement;
@@ -272,16 +287,38 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
     appareilsModal.openModal();
   };
 
-  // Filter logements based on active filters
+  // Unique values for dropdown filters (from full list)
+  const { uniqueEtages, uniqueEscaliers, uniqueBatiments } = useMemo(() => {
+    const logementsList = logements?.logements ?? [];
+    const etages = new Set<string>();
+    const escaliers = new Set<string>();
+    const batiments = new Set<string>();
+    logementsList.forEach((item) => {
+      const logement = item.infosLogement;
+      const etage = getLogementEtage(logement);
+      const escalier = getLogementEscalier(logement);
+      const batiment = getLogementBatiment(logement);
+      if (etage !== undefined && etage !== null) etages.add(String(etage).trim());
+      if (escalier !== undefined && escalier !== null) escaliers.add(String(escalier).trim());
+      if (batiment !== undefined && batiment !== null) batiments.add(String(batiment).trim());
+    });
+    return {
+      uniqueEtages: Array.from(etages).filter(Boolean).sort((a, b) => a.localeCompare(b, undefined, { numeric: true })),
+      uniqueEscaliers: Array.from(escaliers).filter(Boolean).sort((a, b) => a.localeCompare(b, undefined, { numeric: true })),
+      uniqueBatiments: Array.from(batiments).filter(Boolean).sort((a, b) => a.localeCompare(b, undefined, { numeric: true })),
+    };
+  }, [logements]);
+
+  // Filter logements based on active filters and dropdown filters (etage, escalier, batiment)
   const filteredLogements = useMemo(() => {
     const logementsList = logements?.logements ?? [];
     
-    // If no filters are active, return all logements
     const hasIssueFilters = activeFilters.fuites || activeFilters.anomalies || 
                            activeFilters.dysfonctionnements || activeFilters.depannages;
     const hasEquipmentFilters = activeFilters.equipment && activeFilters.equipment.length > 0;
+    const hasDropdownFilters = filterEtage !== "" || filterEscalier !== "" || filterBatiment !== "";
     
-    if (!hasIssueFilters && !hasEquipmentFilters) {
+    if (!hasIssueFilters && !hasEquipmentFilters && !hasDropdownFilters) {
       return logementsList;
     }
 
@@ -290,7 +327,6 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
       const issues = getLogementIssues(logement);
 
       // Check if logement matches all active issue filters
-      // A logement must have the issue if the filter is active
       if (activeFilters.fuites && issues.nbFuites === 0) return false;
       if (activeFilters.anomalies && issues.nbAnomalies === 0) return false;
       if (activeFilters.dysfonctionnements && issues.nbDysfonctionnements === 0) return false;
@@ -310,7 +346,6 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
           'repartiteur': nbCompteursRepart,
         };
 
-        // Check if logement has at least one of the selected equipment types
         const hasSelectedEquipment = activeFilters.equipment.some(
           (equipType) => equipmentCounts[equipType as keyof typeof equipmentCounts] > 0
         );
@@ -318,10 +353,14 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
         if (!hasSelectedEquipment) return false;
       }
 
-      // Logement matches all active filters
+      // Dropdown filters: étage, escalier, batiment
+      if (filterEtage !== "" && getLogementEtage(logement) !== filterEtage) return false;
+      if (filterEscalier !== "" && getLogementEscalier(logement) !== filterEscalier) return false;
+      if (filterBatiment !== "" && getLogementBatiment(logement) !== filterBatiment) return false;
+
       return true;
     });
-  }, [logements, activeFilters]);
+  }, [logements, activeFilters, filterEtage, filterEscalier, filterBatiment]);
 
   // Show loading state
   if (isLoading || isFiltering) {
@@ -392,7 +431,37 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
           )}
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <select
+            value={filterEtage}
+            onChange={(e) => setFilterEtage(e.target.value)}
+            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm text-gray-700 shadow-theme-xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400"
+          >
+            <option value="">Tous les étages</option>
+            {uniqueEtages.map((v) => (
+              <option key={v} value={v}>{v}</option>
+            ))}
+          </select>
+          <select
+            value={filterEscalier}
+            onChange={(e) => setFilterEscalier(e.target.value)}
+            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm text-gray-700 shadow-theme-xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400"
+          >
+            <option value="">Tous les escaliers</option>
+            {uniqueEscaliers.map((v) => (
+              <option key={v} value={v}>{v}</option>
+            ))}
+          </select>
+          <select
+            value={filterBatiment}
+            onChange={(e) => setFilterBatiment(e.target.value)}
+            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm text-gray-700 shadow-theme-xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400"
+          >
+            <option value="">Tous les bâtiments</option>
+            {uniqueBatiments.map((v) => (
+              <option key={v} value={v}>{v}</option>
+            ))}
+          </select>
           <button 
             onClick={filterModal.openModal}
             className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
@@ -510,6 +579,8 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                 const pkLogement = logementObj?.PkLogement ?? logementObj?.pkLogement ?? null;
                 const occupantRef = getOccupantRef(logement);
                 const logementEtage = getLogementEtage(logement);
+                const logementBatiment = getLogementBatiment(logement);
+                const logementEscalier = getLogementEscalier(logement);
                 const logementNumOrdre = getLogementNumOrdre(logement);
                 const occupantName = getOccupantName(logement);
                 const nbCompteursEF = getNbCompteursEF(logement);
@@ -568,8 +639,12 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
                                 Référence client: <span className="font-normal">{occupantRef}</span>
                               </p>
                             )}
-                            {(logementEtage || logementNumOrdre) && (
+                            {(logementEtage || logementNumOrdre || logementBatiment || logementEscalier) && (
                               <p className="text-gray-800 text-theme-sm font-medium dark:text-white/90">
+                                {logementBatiment && <span>Bât.: <span className="font-normal">{logementBatiment}</span></span>}
+                                {logementBatiment && logementEscalier && " "}
+                                {logementEscalier && <span>Esc.: <span className="font-normal">{logementEscalier}</span></span>}
+                                {(logementBatiment || logementEscalier) && (logementEtage || logementNumOrdre) && " "}
                                 {logementEtage && <span>Etage: <span className="font-normal">{logementEtage}</span></span>}
                                 {logementEtage && logementNumOrdre && " "}
                                 {logementNumOrdre && <span>N° logement: <span className="font-normal">{logementNumOrdre}</span></span>}
