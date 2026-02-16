@@ -28,6 +28,9 @@ export default function ListAnomalies({ pkImmeuble }: ListAnomaliesProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [searchNumero, setSearchNumero] = useState("");
+  const [filterEtage, setFilterEtage] = useState("");
+  const [filterEscalier, setFilterEscalier] = useState("");
+  const [filterBatiment, setFilterBatiment] = useState("");
 
   // Create wrapper function for Excel export
   const handleExportAnomaliesExcel = useCallback(async () => {
@@ -95,18 +98,76 @@ export default function ListAnomalies({ pkImmeuble }: ListAnomaliesProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pkImmeuble]);
 
-  // Liste filtrée selon le N° compteur
+  // Valeurs uniques pour les filtres Bâtiment / Étage / Escalier
+  const { uniqueEtages, uniqueEscaliers, uniqueBatiments } = useMemo(() => {
+    const etages = new Set<string>();
+    const escaliers = new Set<string>();
+    const batiments = new Set<string>();
+
+    anomalies.forEach((anomalie) => {
+      const logement = anomalie.Logement;
+      const etage = logement?.NumEtage;
+      const escalier = (logement as never as { NumEscalier?: unknown })?.NumEscalier;
+      const batiment = logement?.NumBatiment;
+
+      if (etage !== undefined && etage !== null) {
+        const v = String(etage).trim();
+        if (v) etages.add(v);
+      }
+      if (escalier !== undefined && escalier !== null) {
+        const v = String(escalier).trim();
+        if (v) escaliers.add(v);
+      }
+      if (batiment !== undefined && batiment !== null) {
+        const v = String(batiment).trim();
+        if (v) batiments.add(v);
+      }
+    });
+
+    const sortFn = (a: string, b: string) =>
+      a.localeCompare(b, undefined, { numeric: true });
+
+    return {
+      uniqueEtages: Array.from(etages).sort(sortFn),
+      uniqueEscaliers: Array.from(escaliers).sort(sortFn),
+      uniqueBatiments: Array.from(batiments).sort(sortFn),
+    };
+  }, [anomalies]);
+
+  // Liste filtrée selon N° compteur + Bâtiment / Étage / Escalier
   const filteredAnomalies = useMemo(() => {
-    if (!searchNumero.trim()) {
+    const hasSearch = !!searchNumero.trim();
+    const hasDropdownFilters =
+      filterEtage !== "" || filterEscalier !== "" || filterBatiment !== "";
+
+    if (!hasSearch && !hasDropdownFilters) {
       return anomalies;
     }
+
     const term = searchNumero.trim().toLowerCase();
+
     return anomalies.filter((anomalie) => {
-      const numero = anomalie.Appareil?.Numero;
-      if (numero === undefined || numero === null) return false;
-      return String(numero).toLowerCase().includes(term);
+      // Filtre N° compteur
+      if (hasSearch) {
+        const numero = anomalie.Appareil?.Numero;
+        if (numero === undefined || numero === null) return false;
+        if (!String(numero).toLowerCase().includes(term)) return false;
+      }
+
+      const logement = anomalie.Logement;
+      const etage = String(logement?.NumEtage ?? "").trim();
+      const escalier = String(
+        (logement as never as { NumEscalier?: unknown })?.NumEscalier ?? ""
+      ).trim();
+      const batiment = String(logement?.NumBatiment ?? "").trim();
+
+      if (filterEtage && etage !== filterEtage) return false;
+      if (filterEscalier && escalier !== filterEscalier) return false;
+      if (filterBatiment && batiment !== filterBatiment) return false;
+
+      return true;
     });
-  }, [anomalies, searchNumero]);
+  }, [anomalies, searchNumero, filterEtage, filterEscalier, filterBatiment]);
 
   const totalAnomalies = useMemo(
     () => filteredAnomalies.length,
@@ -161,7 +222,7 @@ export default function ListAnomalies({ pkImmeuble }: ListAnomaliesProps) {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <button className="invisible inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
             <svg
               className="stroke-current fill-white dark:fill-gray-800"
@@ -200,6 +261,42 @@ export default function ListAnomalies({ pkImmeuble }: ListAnomaliesProps) {
             </svg>
             Filtrer
           </button>
+          <select
+            value={filterBatiment}
+            onChange={(e) => setFilterBatiment(e.target.value)}
+            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm text-gray-700 shadow-theme-xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400"
+          >
+            <option value="">Tous les bâtiments</option>
+            {uniqueBatiments.map((v) => (
+              <option key={v} value={v}>
+                {v}
+              </option>
+            ))}
+          </select>
+          <select
+            value={filterEtage}
+            onChange={(e) => setFilterEtage(e.target.value)}
+            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm text-gray-700 shadow-theme-xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400"
+          >
+            <option value="">Tous les étages</option>
+            {uniqueEtages.map((v) => (
+              <option key={v} value={v}>
+                {v}
+              </option>
+            ))}
+          </select>
+          <select
+            value={filterEscalier}
+            onChange={(e) => setFilterEscalier(e.target.value)}
+            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm text-gray-700 shadow-theme-xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400"
+          >
+            <option value="">Tous les escaliers</option>
+            {uniqueEscaliers.map((v) => (
+              <option key={v} value={v}>
+                {v}
+              </option>
+            ))}
+          </select>
           <input
             type="text"
             value={searchNumero}
