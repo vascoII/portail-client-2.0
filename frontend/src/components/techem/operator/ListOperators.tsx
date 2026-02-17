@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import {
   Table,
@@ -24,8 +24,19 @@ export default function ListOperators() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [operatorToDelete, setOperatorToDelete] = useState<Operator | null>(null);
   const [operatorToShare, setOperatorToShare] = useState<Operator | null>(null);
+  const [searchName, setSearchName] = useState("");
   const { isOpen, openModal, closeModal } = useModal();
   const shareModal = useModal();
+
+  // Liste filtrée par Nom (UserName)
+  const filteredOperators = useMemo(() => {
+    if (!searchName.trim()) return operators;
+    const term = searchName.trim().toLowerCase();
+    return operators.filter((op) => {
+      const userName = (op.UserName ?? "").toString().toLowerCase();
+      return userName.includes(term);
+    });
+  }, [operators, searchName]);
 
   // Load operators data
   const {
@@ -142,14 +153,21 @@ export default function ListOperators() {
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
               Liste des Gestionnaires
             </h3>
-            {operators.length > 0 && (
+            {filteredOperators.length > 0 && (
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                {operators.length} gestionnaire{operators.length > 1 ? 's' : ''}
+                {filteredOperators.length} gestionnaire{filteredOperators.length > 1 ? 's' : ''}
               </p>
             )}
           </div>
 
           <div className="flex items-center gap-3">
+            <input
+              type="text"
+              value={searchName}
+              onChange={(e) => setSearchName(e.target.value)}
+              placeholder="Rechercher par nom"
+              className="w-56 rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm text-gray-700 shadow-theme-xs placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder:text-gray-500"
+            />
             <Link href="/gestionnaire/nouveau">
               <Button
                 size="sm"
@@ -192,10 +210,10 @@ export default function ListOperators() {
           </div>
         )}
 
-        {operators.length === 0 ? (
+        {filteredOperators.length === 0 ? (
           <div className="flex items-center justify-center min-h-[200px] rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Aucun gestionnaire enregistré.
+              {searchName.trim() ? "Aucun gestionnaire ne correspond à la recherche." : "Aucun gestionnaire enregistré."}
             </p>
           </div>
         ) : (
@@ -236,7 +254,7 @@ export default function ListOperators() {
             </TableHeader>
 
             <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-              {operators.map((operator) => {
+              {filteredOperators.map((operator) => {
                 const pkUser = operator.PKUser;
                 const userName = operator.UserName ?? "";
                 const firstName = operator.FirstName ?? "";
