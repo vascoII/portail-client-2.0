@@ -54,19 +54,42 @@ export default function ImmeubleReleves({
     onTabChange?.(tab);
   };
 
-  // Create wrapper function for PDF export based on selected tab
-  const handleExportPdf = useCallback(async () => {
-    // Map tab types to API parameters
-    const tabToParams: Record<TabType, { type: string | null; energie: string }> = {
-      eauFroide: { type: null, energie: "EAU" },
-      eauChaude: { type: null, energie: "EAU" },
-      repartiteur: { type: "repartition", energie: "CHAUFFAGE" },
-      compteurEnergie: { type: null, energie: "CHAUFFAGE" },
-    };
+  // Create wrapper function for PDF export based on selected pkReleve (water only)
+  const handleExportPdf = useCallback(
+    async (pkReleve: number | null) => {
+      if (!pkReleve) {
+        throw new Error("Veuillez sélectionner une date de relevé.");
+      }
 
-    const params = tabToParams[selectedTab];
-    await getReport(pkImmeuble, params);
-  }, [getReport, pkImmeuble, selectedTab]);
+      try {
+        const response = await fetch(
+          `/api/immeubles/${pkImmeuble}/releve_pdf/eau?pkReleve=${pkReleve}`,
+          {
+            method: "GET",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Erreur lors de l'export PDF.");
+        }
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "releve-eau.pdf";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        throw error instanceof Error
+          ? error
+          : new Error("Erreur lors de l'export PDF.");
+      }
+    },
+    [pkImmeuble]
+  );
 
   // Format date from ISO string to French format (DD/MM/YYYY)
   const formatDateToFrench = useCallback((dateString: string): string => {
@@ -143,12 +166,15 @@ export default function ImmeubleReleves({
   }, [selectedPkReleve, exportReleveExcel, pkImmeuble, closeModal]);
 
   // Use the reusable export hooks
-  const { 
-    handleExport: handleExportPdfClick, 
-    isExporting: isExportingPdf, 
-    error: exportPdfError, 
-    clearError: clearExportPdfError 
-  } = useExport(handleExportPdf, { errorTitle: "Erreur d'export PDF" });
+  const {
+    handleExport: handleExportPdfWithPk,
+    isExporting: isExportingPdf,
+    error: exportPdfError,
+    clearError: clearExportPdfError,
+  } = useExport(
+    () => handleExportPdf(selectedPkReleve),
+    { errorTitle: "Erreur d'export PDF" }
+  );
 
   const { 
     handleExport: handleExportExcelConfirm, 
@@ -158,7 +184,14 @@ export default function ImmeubleReleves({
   } = useExport(handleExportExcel, { errorTitle: "Erreur d'export Excel" });
 
   // Handle modal validation
-  const handleModalValidate = useCallback(() => {
+  const handleModalExportPdf = useCallback(() => {
+    if (!selectedPkReleve) {
+      return;
+    }
+    handleExportPdfWithPk();
+  }, [selectedPkReleve, handleExportPdfWithPk]);
+
+  const handleModalExportExcel = useCallback(() => {
     if (!selectedPkReleve) {
       return;
     }
@@ -476,7 +509,13 @@ export default function ImmeubleReleves({
           <div className="flex items-center gap-3">
             <button
               onClick={handleExportExcelClick}
-              disabled={!isExcelExportAvailable || relevesOptions.length === 0 || isExportingExcel || isImmeubleLoading}
+              disabled={
+                !isExcelExportAvailable ||
+                relevesOptions.length === 0 ||
+                isExportingExcel ||
+                isExportingPdf ||
+                isImmeubleLoading
+              }
               className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
             >
               <svg
@@ -516,51 +555,9 @@ export default function ImmeubleReleves({
                   strokeLinejoin="round"
                 />
               </svg>
-              {isExportingExcel ? "Export en cours..." : "Export Excel"}
-            </button>
-            <button
-              onClick={handleExportPdfClick}
-              disabled={isExportingPdf || isImmeubleLoading}
-              className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-theme-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 hover:text-gray-800 disabled:opacity-50 disabled:cursor-not-allowed dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200"
-            >
-              <svg
-                className="stroke-current"
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M16.6667 11.6667V15.8333C16.6667 16.2754 16.4911 16.6993 16.1785 17.0118C15.866 17.3244 15.442 17.5 15 17.5H5C4.55797 17.5 4.13405 17.3244 3.82149 17.0118C3.50893 16.6993 3.33333 16.2754 3.33333 15.8333V11.6667"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M8.33333 13.3333L10 15L11.6667 13.3333"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M10 15V8.33333"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M3.33333 8.33333L10 2.5L16.6667 8.33333"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              {isExportingPdf ? "Export en cours..." : "Export PDF"}
+              {isExportingExcel || isExportingPdf
+                ? "Export en cours..."
+                : "Export Excel & PDF"}
             </button>
           </div>
         </div>
@@ -783,11 +780,18 @@ export default function ImmeubleReleves({
                 Annuler
               </button>
               <button
-                onClick={handleModalValidate}
+                onClick={handleModalExportPdf}
+                disabled={!selectedPkReleve || isExportingPdf}
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isExportingPdf ? "Export en cours..." : "Export PDF"}
+              </button>
+              <button
+                onClick={handleModalExportExcel}
                 disabled={!selectedPkReleve || isExportingExcel}
                 className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isExportingExcel ? "Export en cours..." : "Valider"}
+                {isExportingExcel ? "Export en cours..." : "Export Excel"}
               </button>
             </div>
           </>
