@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Service\GetImmeublesParams;
 use App\Service\GetReportParams;
 use App\Service\Immeuble;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class ImmeubleController
@@ -261,13 +261,19 @@ class ImmeubleController extends  AbstractTechemController
             return $this->redirectToRoute('logout');
         }
 
-        $date   = $request->request->get('date');
+        $pkReleveFull   = $request->request->get('pkreleve_date');
+        $pkReleve = explode("_", $pkReleveFull)[0];
+
         if ($type == 'repartition') {
             $type = null;
         }
-        $report = $client->getReportImmeuble($pkImmeuble, $type, $energie, $date);
+        $report = $client->getReportImmeuble($pkImmeuble, $type, $energie, $pkReleve);
         if (empty($report)) {
-            throw new NotFoundHttpException();
+            $response = new Response();
+                $response->headers->set('Content-Type', 'text/html; charset=utf-8');
+                $response->setContent($this->getHtml());
+                $response->setStatusCode(Response::HTTP_OK);
+                return $response;
         }
 
         $response = new Response($report);
@@ -282,25 +288,44 @@ class ImmeubleController extends  AbstractTechemController
         return $response;
     }
 
-    //    /**
-    //     * @param \Symfony\Component\HttpFoundation\Request $request
-    //     * @return \Symfony\Component\HttpFoundation\Response
-    //     */
-    //    public function searchAction(Request $request)
-    //    {
-    //        $client = $this->getClient();
-    //        if (is_null($client)) {
-    //            return $this->redirectToRoute('logout');
-    //        }
-    //
-    //        $board = $client->getMyTableauBordClient();
-    //
-    //        $locals = array(
-    //            'board' => $board,
-    //        );
-    //
-    //        return $this->render('Immeuble/index.html.twig', $locals);
-    //    }
+    //#[Route('/immeuble/report_excel/{pkImmeuble}/{type}/{energie}', name: 'TechemCoreBundle_Immeuble_report_excel')]
+    public function reportExcelAction($pkImmeuble, $type, $energie, Request $request)
+    {
+        $client = $this->getClient();
+        if (is_null($client)) {
+            return $this->redirectToRoute('logout');
+        }
+        
+        $pkReleveFull   = $request->request->get('pkreleve_date');
+        $pkReleve = explode("_", $pkReleveFull)[0];
+        $dateReleve = explode("_", $pkReleveFull)[1];
+
+        $immeubleId = explode("_", $pkImmeuble)[1];
+        $pkImmeuble = explode("_", $pkImmeuble)[0];
+        
+        if ($type == 'repartition') {
+            $type = null;
+        }
+        $report = $client->getReportImmeubleExcel($pkImmeuble, $type, $energie, $pkReleve);
+        if (empty($report)) {
+            $response = new Response();
+                $response->headers->set('Content-Type', 'text/html; charset=utf-8');
+                $response->setContent($this->getHtml());
+                $response->setStatusCode(Response::HTTP_OK);
+                return $response;
+        }
+
+        $response = new Response($report);
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $response->headers->set('Content-Disposition', 'inline; filename=releve_' . $immeubleId . '_' . $dateReleve . '.xlsx');
+        $response->headers->set('Content-Transfer-Encoding', 'binary');
+        $response->headers->set('Expires', 0);
+        $response->headers->set('Cache-Control', 'no-cache');
+        $response->headers->set('Pragma', 'no-cache');
+        $response->headers->set('Content-Length', strlen($report));
+
+        return $response;
+    }
 
     /**
      * Affiche la liste des anomalies
@@ -523,7 +548,11 @@ class ImmeubleController extends  AbstractTechemController
             }
 
             if (empty($report)) {
-                throw new NotFoundHttpException();
+                $response = new Response();
+                $response->headers->set('Content-Type', 'text/html; charset=utf-8');
+                $response->setContent($this->getHtml());
+                $response->setStatusCode(Response::HTTP_OK);
+                return $response;
             }
 
             $response = new Response($report);

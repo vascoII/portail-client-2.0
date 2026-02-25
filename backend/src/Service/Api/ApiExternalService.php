@@ -2,7 +2,12 @@
 
 namespace App\Service\Api;
 
-use App\Repository\Oracle\FactureRepository;
+use App\Repository\Dto\External\GeneratedDocumentOutputDto;
+use App\Repository\Dto\External\GetReportByTokenDataSourceOutputDto;
+use App\Repository\Dto\External\GetReportByTokenOutputDto;
+use App\Repository\Dto\External\StoredDocumentOutputDto;
+
+
 use Symfony\Component\HttpFoundation\Request;
 
 /**

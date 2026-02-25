@@ -4,11 +4,12 @@ namespace App\Service\Api;
 
 use App\Repository\Oracle\LogementRepository;
 use App\Service\GetLogementsParams;
+use App\Repository\Dto\Logement\LogementOutputDto;
 
 class ApiLogementService
 {
     public function __construct(
-        private readonly LogementRepository $logementRepository,
+        private readonly LogementRepository $logementRepository
     ) {
     }
 

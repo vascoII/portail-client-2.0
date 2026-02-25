@@ -59,6 +59,12 @@ services:
       $user: '%oracle_user%'
       $password: '%oracle_password%'
 
+  App\Oracle\OciUpdateHandler:
+    arguments:
+      $dsn: '%oracle_dsn%'
+      $user: '%oracle_user%'
+      $password: '%oracle_password%'
+
   security.authentication.provider.soap.class:
     class: App\Security\AppCustomAuthenticator
     abstract: true

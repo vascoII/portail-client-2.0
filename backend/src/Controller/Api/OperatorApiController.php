@@ -453,7 +453,7 @@ class OperatorApiController extends AbstractApiController
                 return $this->error($result->Erreur, 500);
             }
 
-            return $this->success(null, 'Gestionnaire supprimé avec succès');
+            return $this->success(['message' => 'Gestionnaire supprimé avec succès'], 'Gestionnaire supprimé avec succès');
         } catch (\Exception $e) {
             return $this->error('Erreur lors de la suppression du gestionnaire: ' . $e->getMessage(), 500);
         }

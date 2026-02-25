@@ -62,7 +62,7 @@ class LogementApiController extends AbstractApiController
                 'immeuble' => $this->normalize($immeuble),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error fetching immeuble: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération de l\'immeuble: ' . $e->getMessage(), 500);
         }
     }
 
@@ -81,7 +81,7 @@ class LogementApiController extends AbstractApiController
         $logger->info('Form data received: ' . print_r($formData, true));
 
         if (empty($formData['message']) || empty($formData['pkLogement']) || empty($formData['name'])) {
-            return $this->error('Missing required fields: message, pkLogement, name', 400);
+            return $this->error('Champs requis manquants: message, pkLogement, name', 400);
         }
 
         try {
@@ -110,8 +110,8 @@ class LogementApiController extends AbstractApiController
                 'pkLogement' => $formData['pkLogement'],
             ], 'Demande d\'intervention envoyée');
         } catch (\Exception $e) {
-            $logger->error('Error creating ticket: ' . $e->getMessage());
-            return $this->error('Error creating ticket: ' . $e->getMessage(), 500);
+            $logger->error('Erreur lors de la création du ticket: ' . $e->getMessage());
+            return $this->error('Erreur lors de la création du ticket: ' . $e->getMessage(), 500);
         }
     }
 
@@ -143,7 +143,7 @@ class LogementApiController extends AbstractApiController
             $ticketOwnerOracle = $this->apiLogementService->getTicketInterInit($client->getPkUser(), $pkLogementParam);
             return $this->success($this->normalize($ticketOwner));
         } catch (\Exception $e) {
-            return $this->error('Error fetching ticket owner: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération du propriétaire du ticket: ' . $e->getMessage(), 500);
         }
     }
 
@@ -170,7 +170,7 @@ class LogementApiController extends AbstractApiController
             $boardOracle = $this->apiLogementService->getMyTableauBordClient($client->getPkUser());
             return $this->success($this->normalize($board));
         } catch (\Exception $e) {
-            return $this->error('Error fetching dashboard: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération du tableau de bord: ' . $e->getMessage(), 500);
         }
     }
 
@@ -203,7 +203,7 @@ class LogementApiController extends AbstractApiController
         ];
 
         if (!isset($types[$type])) {
-            return $this->error('Invalid type. Must be "eau" or "chauffage"', 400);
+            return $this->error('Type invalide. Doit être "eau" ou "chauffage"', 400);
         }
 
         try {
@@ -217,7 +217,7 @@ class LogementApiController extends AbstractApiController
                 'appareils' => $this->normalize($appareils),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error fetching device information: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération des informations sur les appareils: ' . $e->getMessage(), 500);
         }
     }
 
@@ -279,7 +279,7 @@ class LogementApiController extends AbstractApiController
                 'occupant' => $this->normalize($dataOccupant),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error fetching logement: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération du logement: ' . $e->getMessage(), 500);
         }
     }
 
@@ -296,7 +296,7 @@ class LogementApiController extends AbstractApiController
 
         $data = json_decode($request->getContent(), true);
         if (!$data) {
-            return $this->error('Invalid JSON data', 400);
+            return $this->error('Données JSON invalides', 400);
         }
 
         try {
@@ -306,9 +306,9 @@ class LogementApiController extends AbstractApiController
 
             $logementOracle = $this->apiLogementService->getTableauBordLogement($client->getPkUser(), $pkLogement);
             
-            return $this->success($this->normalize($occu), 'Occupant updated successfully');
+            return $this->success($this->normalize($occu), 'Occupant mis à jour avec succès');
         } catch (\Exception $e) {
-            return $this->error('Error updating occupant: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la mise à jour de l\'occupant: ' . $e->getMessage(), 500);
         }
     }
 
@@ -336,7 +336,7 @@ class LogementApiController extends AbstractApiController
             $pkImmeuble = $logement->Immeuble->PkImmeuble ?? null;
 
             if (!$pkImmeuble) {
-                return $this->notFound('Immeuble not found for this logement');
+                return $this->notFound('Immeuble non trouvé pour ce logement');
             }
 
             $params = new GetReportParams();
@@ -345,7 +345,7 @@ class LogementApiController extends AbstractApiController
 
             $report = $client->getReport('REPART_LOGEMENT', $params);
             if (empty($report)) {
-                return $this->notFound('Report not found');
+                return $this->notFound('Rapport introuvable');
             }
 
             $response = new Response($report);
@@ -359,7 +359,7 @@ class LogementApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error generating report: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la génération du rapport: ' . $e->getMessage(), 500);
         }
     }
 
@@ -392,7 +392,7 @@ class LogementApiController extends AbstractApiController
                 'depannage' => $this->normalize($depannage),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error fetching intervention: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération des détails de l\'intervention: ' . $e->getMessage(), 500);
         }
     }
 
@@ -434,7 +434,7 @@ class LogementApiController extends AbstractApiController
                 'filters' => $depannageService->extractFiltersValues($depannages),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error fetching interventions: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération des interventions: ' . $e->getMessage(), 500);
         }
     }
 
@@ -525,7 +525,7 @@ class LogementApiController extends AbstractApiController
 
             return $this->success($result);
         } catch (\Exception $e) {
-            return $this->error('Error filtering logements: ' . $e->getMessage(), 500);
+            return $this->error('Erreur de filtrage des logements: ' . $e->getMessage(), 500);
         }
     }
 
@@ -567,7 +567,7 @@ class LogementApiController extends AbstractApiController
                 'filters' => $fuiteService->extractFiltersValues($fuites),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error fetching leaks: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération des fuites: ' . $e->getMessage(), 500);
         }
     }
 
@@ -607,7 +607,7 @@ class LogementApiController extends AbstractApiController
                 'filters' => $dysfonctionnementService->extractFiltersValues($dysfonctionnements),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error fetching dysfunctions: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération des dysfonctionnements: ' . $e->getMessage(), 500);
         }
     }
 
@@ -649,7 +649,7 @@ class LogementApiController extends AbstractApiController
                 'filters' => $anomalieService->extractFiltersValues($anomalies),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error fetching anomalies: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération des anomalies: ' . $e->getMessage(), 500);
         }
     }
 
@@ -757,7 +757,8 @@ class LogementApiController extends AbstractApiController
                 }
             }
 
-            if (ob_get_contents()) {
+            // ⚠️ Important : ne nettoyer le buffer que s'il existe
+            if (ob_get_level() > 0) {
                 ob_end_clean();
             }
 
@@ -772,7 +773,7 @@ class LogementApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error exporting logements: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de l\'exportation des logements: ' . $e->getMessage(), 500);
         }
     }
 
@@ -783,12 +784,6 @@ class LogementApiController extends AbstractApiController
     public function exportAnomalies(int $pkLogement, Request $request, Anomalie $anomalieService, ExcelHelper $excelHelper): Response|JsonResponse
     {
         ini_set('max_execution_time', 120);
-
-        // Check if faker mode is enabled and return fake data
-        $fakeResponse = $this->sendFakeData('api.logements.pkLogement.anomalies.export');
-        if ($fakeResponse !== null) {
-            return $fakeResponse;
-        }
 
         $client = $this->getAuthenticatedClientFromHeaders($request);
         if ($client instanceof JsonResponse) {
@@ -807,7 +802,8 @@ class LogementApiController extends AbstractApiController
 
             $data = $anomalieService->export($anomalies);
 
-            if (ob_get_contents()) {
+            // ⚠️ Important : ne nettoyer le buffer que s'il existe
+            if (ob_get_level() > 0) {
                 ob_end_clean();
             }
 
@@ -822,7 +818,7 @@ class LogementApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error exporting anomalies: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de l\'exportation des anomalies: ' . $e->getMessage(), 500);
         }
     }
 
@@ -833,12 +829,6 @@ class LogementApiController extends AbstractApiController
     public function exportLeaks(int $pkLogement, Request $request, Fuite $fuiteService, ExcelHelper $excelHelper): Response|JsonResponse
     {
         ini_set('max_execution_time', 120);
-
-        // Check if faker mode is enabled and return fake data
-        $fakeResponse = $this->sendFakeData('api.logements.pkLogement.fuites.export');
-        if ($fakeResponse !== null) {
-            return $fakeResponse;
-        }
 
         $client = $this->getAuthenticatedClientFromHeaders($request);
         if ($client instanceof JsonResponse) {
@@ -857,7 +847,8 @@ class LogementApiController extends AbstractApiController
 
             $data = $fuiteService->export($fuites);
 
-            if (ob_get_contents()) {
+            // ⚠️ Important : ne nettoyer le buffer que s'il existe
+            if (ob_get_level() > 0) {
                 ob_end_clean();
             }
 
@@ -872,7 +863,7 @@ class LogementApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error exporting leaks: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de l\'exportation des fuites: ' . $e->getMessage(), 500);
         }
     }
 
@@ -883,12 +874,6 @@ class LogementApiController extends AbstractApiController
     public function exportInterventions(int $pkLogement, Request $request, Depannage $depannageService, ExcelHelper $excelHelper): Response|JsonResponse
     {
         ini_set('max_execution_time', 120);
-
-        // Check if faker mode is enabled and return fake data
-        $fakeResponse = $this->sendFakeData('api.logements.pkLogement.interventions.export');
-        if ($fakeResponse !== null) {
-            return $fakeResponse;
-        }
 
         $client = $this->getAuthenticatedClientFromHeaders($request);
         if ($client instanceof JsonResponse) {
@@ -907,7 +892,8 @@ class LogementApiController extends AbstractApiController
 
             $data = $depannageService->export($depannages);
 
-            if (ob_get_contents()) {
+            // ⚠️ Important : ne nettoyer le buffer que s'il existe
+            if (ob_get_level() > 0) {
                 ob_end_clean();
             }
 
@@ -922,7 +908,7 @@ class LogementApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error exporting interventions: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de l\'exportation des interventions: ' . $e->getMessage(), 500);
         }
     }
 
@@ -933,12 +919,6 @@ class LogementApiController extends AbstractApiController
     public function exportDysfunctions(int $pkLogement, Request $request, Dysfonctionnement $dysfonctionnementService, ExcelHelper $excelHelper): Response|JsonResponse
     {
         ini_set('max_execution_time', 120);
-
-        // Check if faker mode is enabled and return fake data
-        $fakeResponse = $this->sendFakeData('api.logements.pkLogement.dysfonctionnements.export');
-        if ($fakeResponse !== null) {
-            return $fakeResponse;
-        }
 
         $client = $this->getAuthenticatedClientFromHeaders($request);
         if ($client instanceof JsonResponse) {
@@ -957,7 +937,8 @@ class LogementApiController extends AbstractApiController
 
             $data = $dysfonctionnementService->export($dysfonctionnements);
 
-            if (ob_get_contents()) {
+            // ⚠️ Important : ne nettoyer le buffer que s'il existe
+            if (ob_get_level() > 0) {
                 ob_end_clean();
             }
 
@@ -972,7 +953,7 @@ class LogementApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error exporting dysfunctions: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de l\'exportation des dysfonctionnements: ' . $e->getMessage(), 500);
         }
     }
 
@@ -989,7 +970,7 @@ class LogementApiController extends AbstractApiController
 
         $filePath = __DIR__ . '/../../../public/GuideOccupant.pdf';
         if (!file_exists($filePath)) {
-            return $this->notFound('Guide file not found');
+            return $this->notFound('Fichier de guide introuvable');
         }
 
         return new BinaryFileResponse($filePath, 200, [
@@ -1011,7 +992,7 @@ class LogementApiController extends AbstractApiController
 
         $formData = $request->request->get('intervention') ?? [];
         if (empty($formData['message']) || empty($formData['pkLogement']) || empty($formData['name'])) {
-            return $this->error('Missing required fields: message, pkLogement, name', 400);
+            return $this->error('Champs requis manquants: message, pkLogement, name', 400);
         }
 
         try {
@@ -1040,8 +1021,8 @@ class LogementApiController extends AbstractApiController
                 'pkLogement' => $formData['pkLogement'],
             ], 'Demande d\'intervention envoyé');
         } catch (\Exception $e) {
-            $logger->error('Error creating ticket: ' . $e->getMessage());
-            return $this->error('Error creating ticket: ' . $e->getMessage(), 500);
+            $logger->error('Erreur lors de la création du ticket: ' . $e->getMessage());
+            return $this->error('Erreur lors de la création du ticket: ' . $e->getMessage(), 500);
         }
     }
 

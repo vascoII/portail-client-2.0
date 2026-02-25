@@ -3,11 +3,13 @@
 namespace App\Service\Api;
 
 use App\Repository\Oracle\OccupantRepository;
+use App\Repository\Dto\Occupant\GetOccupantAccountOutputDto;
+use App\Repository\Dto\Occupant\GetOccupantOutputDto;
 
 class ApiOccupantService
 {
     public function __construct(
-        private readonly OccupantRepository $occupantRepository,
+        private readonly OccupantRepository $occupantRepository
     ) {
     }
 

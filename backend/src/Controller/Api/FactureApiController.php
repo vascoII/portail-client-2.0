@@ -139,7 +139,7 @@ class FactureApiController extends AbstractApiController
         'count' => count($normalizedFactures),
       ]);
     } catch (\Exception $e) {
-      return $this->error('Error retrieving invoices: ' . $e->getMessage(), 500);
+      return $this->error('Erreur lors de la récupération des factures: ' . $e->getMessage(), 500);
     }
   }
 
@@ -200,10 +200,8 @@ class FactureApiController extends AbstractApiController
     try {
       $factures = $client->getFactures();
 
-      $factureOracle = $this->apiFactureService->getFacture($client->getPkUser(), $pkFacture);
-
       if (empty($factures)) {
-        return $this->notFound('Invoice not found');
+        return $this->notFound('Facture non trouvée');
       }
 
       $listFactures = (array) $factures->ListeFactures;
@@ -221,7 +219,7 @@ class FactureApiController extends AbstractApiController
       }
 
       if (!$facture) {
-        return $this->notFound('Invoice not found');
+        return $this->notFound('Facture non trouvée');
       }
 
       $normalizedFacture = [
@@ -249,7 +247,7 @@ class FactureApiController extends AbstractApiController
 
       return $this->success($normalizedFacture);
     } catch (\Exception $e) {
-      return $this->error('Error retrieving invoice: ' . $e->getMessage(), 500);
+      return $this->error('Erreur lors de la récupération de la facture: ' . $e->getMessage(), 500);
     }
   }
 
@@ -278,7 +276,7 @@ class FactureApiController extends AbstractApiController
 
       return $response;
     } catch (\Exception $e) {
-      return $this->error('Error downloading invoice: ' . $e->getMessage(), 500);
+      return $this->error('Erreur lors du téléchargement de la facture: ' . $e->getMessage(), 500);
     }
   }
 }

@@ -54,7 +54,7 @@ class FrontApiController extends AbstractApiController
       $token = $this->container->get('security.token_storage')->getToken();
 
       if (!$token || !$token->hasAttribute('soap.user')) {
-        return $this->unauthorized('User information not available');
+        return $this->unauthorized('Informations utilisateur non disponibles');
       }
 
       $user = $token->getAttribute('soap.user');
@@ -81,7 +81,7 @@ class FrontApiController extends AbstractApiController
         'user' => $userData,
       ]);
     } catch (\Exception $e) {
-      return $this->error('Error retrieving user information: ' . $e->getMessage(), 500);
+      return $this->error('Erreur lors de la récupération des informations utilisateur: ' . $e->getMessage(), 500);
     }
   }
 
@@ -146,7 +146,7 @@ class FrontApiController extends AbstractApiController
         'sousTraitants' => $normalizedSoustraitants,
       ]);
     } catch (\Exception $e) {
-      return $this->error('Error retrieving personal data: ' . $e->getMessage(), 500);
+      return $this->error('Erreur lors de la récupération des données personnelles: ' . $e->getMessage(), 500);
     }
   }
 
@@ -172,7 +172,7 @@ class FrontApiController extends AbstractApiController
       $token = $this->container->get('security.token_storage')->getToken();
 
       if (!$token || !$token->hasAttribute('soap.user')) {
-        return $this->unauthorized('User information not available');
+        return $this->unauthorized('Informations utilisateur non disponibles');
       }
 
       $user = $token->getAttribute('soap.user');
@@ -199,7 +199,7 @@ class FrontApiController extends AbstractApiController
         'email' => $user->Email ?? null,
       ]);
     } catch (\Exception $e) {
-      return $this->error('Error retrieving CGU status: ' . $e->getMessage(), 500);
+      return $this->error('Erreur lors de la récupération du statut des CGU: ' . $e->getMessage(), 500);
     }
   }
 

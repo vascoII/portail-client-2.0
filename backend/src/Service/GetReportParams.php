@@ -48,6 +48,14 @@ class GetReportParams extends GetParams
      * @var string
      */
     public $PKFACTURE = false;
+    /**
+     * @var string
+     */
+    public $PKRELEVE = false;
+    /**
+     * @var string
+     */
+    public $TYPEERC = false;
 
     /**
      * @return string
@@ -64,7 +72,9 @@ class GetReportParams extends GetParams
             'PKUSER',
             'DATE1',
             'DATE2',
-            'PKFACTURE'
+            'PKFACTURE',
+            'PKRELEVE',
+            'TYPEERC'
         ];
 
         $params = [];

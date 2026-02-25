@@ -3,11 +3,12 @@
 namespace App\Service\Api;
 
 use App\Repository\Oracle\SecurityRepository;
+use App\Repository\Dto\Security\LoginOutputDto;
 
 class ApiSecurityService
 {
     public function __construct(
-        private readonly SecurityRepository $securityRepository,
+        private readonly SecurityRepository $securityRepository
     ) {
     }
 

@@ -386,9 +386,9 @@ class Client extends BaseClient
         }
 
         $params->PKRELEVE   = $pkReleve;
-
+    //    $reportType = 'RELEVE_IMMEUBLE';
         $reportType = !is_null($type) ? $type . '_' : '';
-        $reportType .= !is_null($energie) ? $energie . '_' : '';
+    //    $reportType .= !is_null($energie) ? $energie . '_' : '';
         $reportType .= 'IMMEUBLE';
 
         if ($type == 'NOTE') {
@@ -431,7 +431,7 @@ class Client extends BaseClient
         $params->PKRELEVE   = $pkReleve;
 
         $reportType = !is_null($type) ? $type . '_' : '';
-        $reportType .= !is_null($energie) ? $energie . '_' : '';
+        //$reportType .= !is_null($energie) ? $energie . '_' : '';
         $reportType .= 'IMMEUBLE';
 
         if ($type == 'NOTE') {
@@ -445,13 +445,13 @@ class Client extends BaseClient
             }
         }
 
-
         $request = (object) [
             'SessionID'     => $this->getSessionId(),
             'PkUser'        => (int) $this->getPkUser(),
             'ReportType'    => "RELEVE",
             'ParamsFiltres' => $params->toParamsFiltresString(),
         ];
+
         $result = $this->sendRequest('GetExcel', $request, false);
 
         return $result;

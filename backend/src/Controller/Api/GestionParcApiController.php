@@ -48,7 +48,7 @@ class GestionParcApiController extends AbstractApiController
                 'filters' => [],
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error retrieving dashboard: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération du tableau de bord: ' . $e->getMessage(), 500);
         }
     }
 
@@ -107,7 +107,7 @@ class GestionParcApiController extends AbstractApiController
                 'immeubles' => $this->normalize($immeubles),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error filtering buildings: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors du filtrage des immeubles: ' . $e->getMessage(), 500);
         }
     }
 
@@ -132,7 +132,7 @@ class GestionParcApiController extends AbstractApiController
             $immeuble = $client->getTableauBordImmeuble($pkImmeuble);
 
             if (!$immeuble) {
-                return $this->notFound('Building not found');
+                return $this->notFound('Immeuble non trouvé');
             }
 
             $tabs_top_consos = $immeubleService->generateTabTopConsos($immeuble);
@@ -174,7 +174,7 @@ class GestionParcApiController extends AbstractApiController
                 'chantier' => $chantier,
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error retrieving building: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération de l\'immeuble: ' . $e->getMessage(), 500);
         }
     }
 
@@ -208,7 +208,7 @@ class GestionParcApiController extends AbstractApiController
                 'depannage' => $this->normalize($depannage),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error retrieving intervention: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération de l\'intervention: ' . $e->getMessage(), 500);
         }
     }
 
@@ -239,7 +239,7 @@ class GestionParcApiController extends AbstractApiController
                 'filters' => $depannageService->extractFiltersValues($depannages),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error retrieving interventions: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération des interventions: ' . $e->getMessage(), 500);
         }
     }
 
@@ -270,7 +270,7 @@ class GestionParcApiController extends AbstractApiController
                 'filters' => $fuiteService->extractFiltersValues($fuites),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error retrieving leaks: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération des fuites: ' . $e->getMessage(), 500);
         }
     }
 
@@ -301,7 +301,7 @@ class GestionParcApiController extends AbstractApiController
                 'filters' => $anomalieService->extractFiltersValues($anomalies),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error retrieving anomalies: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération des anomalies: ' . $e->getMessage(), 500);
         }
     }
 
@@ -332,14 +332,14 @@ class GestionParcApiController extends AbstractApiController
                 'filters' => $dysfonctionnementService->extractFiltersValues($dysfonctionnements),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error retrieving dysfunctions: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération des dysfonctionnements: ' . $e->getMessage(), 500);
         }
     }
 
     /**
      * Download report PDF
      */
-    #[Route("/{pkImmeuble]/releve/{type]/{energie]", name: "report", methods: ["GET", "POST"])]
+    #[Route("/{pkImmeuble}/releve/{type}/{energie}", name: "report", methods: ["GET", "POST"])]
     public function report(Request $request, int $pkImmeuble, string $type, string $energie): Response|JsonResponse
     {
         $client = $this->getAuthenticatedClientFromHeaders($request);
@@ -366,7 +366,7 @@ class GestionParcApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error generating report: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la génération du rapport: ' . $e->getMessage(), 500);
         }
     }
 
@@ -378,12 +378,6 @@ class GestionParcApiController extends AbstractApiController
     {
         ini_set('max_execution_time', 120);
 
-        // Check if faker mode is enabled and return fake data
-        $fakeResponse = $this->sendFakeData('api.gestion-parc.pkImmeuble.anomalies.export');
-        if ($fakeResponse !== null) {
-            return $fakeResponse;
-        }
-
         $client = $this->getAuthenticatedClientFromHeaders($request);
         if ($client instanceof JsonResponse) {
             return $client;
@@ -393,7 +387,11 @@ class GestionParcApiController extends AbstractApiController
             $anomalies = $client->getAnomaliesImmeuble($pkImmeuble);
             $data = $anomalieService->export($anomalies);
             $helper = $this->container->get('excel.helper');
-            ob_end_clean();
+            
+            // ⚠️ Important : ne nettoyer le buffer que s'il existe
+            if (ob_get_level() > 0) {
+                ob_end_clean();
+            }
 
             $response = new StreamedResponse(
                 function () use ($data, $helper) {
@@ -406,7 +404,7 @@ class GestionParcApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error exporting anomalies: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de l\'exportation des anomalies: ' . $e->getMessage(), 500);
         }
     }
 
@@ -418,12 +416,6 @@ class GestionParcApiController extends AbstractApiController
     {
         ini_set('max_execution_time', 120);
 
-        // Check if faker mode is enabled and return fake data
-        $fakeResponse = $this->sendFakeData('api.gestion-parc.pkImmeuble.fuites.export');
-        if ($fakeResponse !== null) {
-            return $fakeResponse;
-        }
-
         $client = $this->getAuthenticatedClientFromHeaders($request);
         if ($client instanceof JsonResponse) {
             return $client;
@@ -433,7 +425,10 @@ class GestionParcApiController extends AbstractApiController
             $fuites = $client->getFuitesImmeuble($pkImmeuble);
             $data = $fuiteService->export($fuites);
             $helper = $this->container->get('excel.helper');
-            ob_end_clean();
+            // ⚠️ Important : ne nettoyer le buffer que s'il existe
+            if (ob_get_level() > 0) {
+                ob_end_clean();
+            }
 
             $response = new StreamedResponse(
                 function () use ($data, $helper) {
@@ -446,7 +441,7 @@ class GestionParcApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error exporting leaks: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de l\'exportation des fuites: ' . $e->getMessage(), 500);
         }
     }
 
@@ -458,12 +453,6 @@ class GestionParcApiController extends AbstractApiController
     {
         ini_set('max_execution_time', 120);
 
-        // Check if faker mode is enabled and return fake data
-        $fakeResponse = $this->sendFakeData('api.gestion-parc.pkImmeuble.interventions.export');
-        if ($fakeResponse !== null) {
-            return $fakeResponse;
-        }
-
         $client = $this->getAuthenticatedClientFromHeaders($request);
         if ($client instanceof JsonResponse) {
             return $client;
@@ -473,7 +462,10 @@ class GestionParcApiController extends AbstractApiController
             $depannages = $client->getInterventionsImmeuble($pkImmeuble);
             $data = $depannageService->export($depannages);
             $helper = $this->container->get('excel.helper');
-            ob_end_clean();
+            // ⚠️ Important : ne nettoyer le buffer que s'il existe
+            if (ob_get_level() > 0) {
+                ob_end_clean();
+            }
 
             $response = new StreamedResponse(
                 function () use ($data, $helper) {
@@ -486,7 +478,7 @@ class GestionParcApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error exporting interventions: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de l\'exportation des interventions: ' . $e->getMessage(), 500);
         }
     }
 
@@ -498,12 +490,6 @@ class GestionParcApiController extends AbstractApiController
     {
         ini_set('max_execution_time', 120);
 
-        // Check if faker mode is enabled and return fake data
-        $fakeResponse = $this->sendFakeData('api.gestion-parc.pkImmeuble.dysfonctionnements.export');
-        if ($fakeResponse !== null) {
-            return $fakeResponse;
-        }
-
         $client = $this->getAuthenticatedClientFromHeaders($request);
         if ($client instanceof JsonResponse) {
             return $client;
@@ -513,7 +499,10 @@ class GestionParcApiController extends AbstractApiController
             $dysfonctionnements = $client->getDysfonctionnementsImmeuble($pkImmeuble);
             $data = $dysfonctionnementService->export($dysfonctionnements);
             $helper = $this->container->get('excel.helper');
-            ob_end_clean();
+            // ⚠️ Important : ne nettoyer le buffer que s'il existe
+            if (ob_get_level() > 0) {
+                ob_end_clean();
+            }    
 
             $response = new StreamedResponse(
                 function () use ($data, $helper) {
@@ -526,7 +515,7 @@ class GestionParcApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error exporting dysfunctions: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de l\'exportation des dysfonctionnements: ' . $e->getMessage(), 500);
         }
     }
 
@@ -547,7 +536,7 @@ class GestionParcApiController extends AbstractApiController
             $dateEnd = $request->query->get('date-end');
 
             if (!$this->validateDate($dateBegin, 'd/m/Y') || !$this->validateDate($dateEnd, 'd/m/Y')) {
-                return $this->error('Invalid date format. Expected format: d/m/Y', 400);
+                return $this->error('Format de date invalide. Format attendu: d/m/Y', 400);
             }
 
             $params = new GetReportParams();
@@ -570,11 +559,11 @@ class GestionParcApiController extends AbstractApiController
                 $contentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
                 $filename = $docType . '-' . $dateBegin . '-' . $dateEnd . '.xlsx';
             } else {
-                return $this->error('Invalid document type', 400);
+                return $this->error('Type de document invalide', 400);
             }
 
             if (empty($report)) {
-                return $this->notFound('Report not found');
+                return $this->notFound('Rapport non trouvé');
             }
 
             $response = new Response($report);
@@ -588,7 +577,7 @@ class GestionParcApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error generating intervention report: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la génération du rapport d\'intervention: ' . $e->getMessage(), 500);
         }
     }
 

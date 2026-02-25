@@ -3,11 +3,16 @@
 namespace App\Service\Api;
 
 use App\Repository\Oracle\ImmeubleRepository;
+use App\Service\Dto\GetImmeubleOutputDto;
+use App\Service\Dto\ListImmeublesOutputDto;
+use App\Service\Dto\ListLogementsOuputDto;
+use App\Service\Dto\ImmeubleDto;
 
-class ApiImmeubleService
+
+class ApiImmeubleService extends ApiBaseService
 {
     public function __construct(
-        private readonly ImmeubleRepository $immeubleRepository,
+        private readonly ImmeubleRepository $immeubleRepository
     ) {
     }
 
@@ -49,5 +54,29 @@ class ApiImmeubleService
     public function getDetailDepannage($pkUser, $pkIntervention)
     {
         return $this->immeubleRepository->getDetailDepannage($pkUser, $pkIntervention);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    public function updateAddress2And3(int $pkUser, int $pkImmeuble, string $adresse2, string $adresse3): ImmeubleDto
+    {
+        $this->checkUserHasAccessToImmeuble($pkUser, $pkImmeuble);
+        $result = $this->immeubleRepository->updateAddress2And3($pkImmeuble, $adresse2, $adresse3);
+
+        if (!$result->isSuccess) {
+            throw new \Exception("Failed to update address for immeuble with id $pkImmeuble");
+        }
+        
+        $immeuble = $this->immeubleRepository->findByPkImmeuble($pkImmeuble);
+        return new ImmeubleDto(
+            $immeuble->pkImmeuble,
+            $immeuble->nom,
+            $immeuble->numero,
+            $immeuble->ref,
+            $immeuble->adresse1,
+            $immeuble->adresse2,
+            $immeuble->adresse3,
+            $immeuble->cp,
+            $immeuble->ville
+        );
     }
 }

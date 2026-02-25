@@ -4,11 +4,14 @@ namespace App\Service\Api;
 
 use App\Repository\Oracle\OperatorRepository;
 use App\Service\GetImmeublesParams;
+use App\Repository\Dto\Operator\GetOperatorOutputDto;
+use App\Repository\Dto\Operator\ListOperatorsOutputDto;
+use App\Repository\Dto\Operator\CreateGestionnaireOutputDto;
 
 class ApiOperatorService
 {
     public function __construct(
-        private readonly OperatorRepository $operatorRepository,
+        private readonly OperatorRepository $operatorRepository
     ) {
     }
 

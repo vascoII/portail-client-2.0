@@ -3,6 +3,7 @@
 namespace App\Service\Api;
 
 use App\Repository\Oracle\FactureRepository;
+use App\Repository\Dto\Facture\ListFacturesOutputDto;
 
 /**
  * Service métier pour les factures côté API.
@@ -13,7 +14,7 @@ use App\Repository\Oracle\FactureRepository;
 class ApiFactureService
 {
     public function __construct(
-        private readonly FactureRepository $factureRepository,
+        private readonly FactureRepository $factureRepository
     ) {
     }
 

@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use App\Service\Api\ApiImmeubleService;
 use App\Service\Api\ApiSecurityService as SecurityService;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -64,7 +65,7 @@ class ImmeubleApiController extends AbstractApiController
                 'filters' => [],
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error retrieving dashboard: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération du tableau de bord: ' . $e->getMessage(), 500);
         }
     }
 
@@ -134,7 +135,7 @@ class ImmeubleApiController extends AbstractApiController
                 'immeubles' => $this->normalize($immeubles),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error filtering buildings: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors du filtrage des immeubles: ' . $e->getMessage(), 500);
         }
     }
 
@@ -165,7 +166,7 @@ class ImmeubleApiController extends AbstractApiController
             $immeubleOracle = $this->apiImmeubleService->getTableauBordImmeuble($client->getPkUser(), $pkImmeuble);
 
             if (!$immeuble) {
-                return $this->notFound('Building not found');
+                return $this->notFound('Immeuble non trouvé');
             }
 
             $tabs_top_consos = $immeubleService->generateTabTopConsos($immeuble);
@@ -219,44 +220,7 @@ class ImmeubleApiController extends AbstractApiController
 
             return $this->success($responseData);
         } catch (\Exception $e) {
-            return $this->error('Error retrieving building: ' . $e->getMessage(), 500);
-        }
-    }
-
-    /**
-     * Get intervention details
-     *     */
-    #[Route("/{pkImmeuble}/interventions/{pkIntervention}", name: "show_intervention", methods: ["GET"])]
-    public function showIntervention(int $pkImmeuble, string $pkIntervention, Request $request): JsonResponse
-    {
-        // Check if faker mode is enabled and return fake data
-        $fakeResponse = $this->sendFakeData('api.immeubles.pkImmeuble.interventions.pkIntervention');
-        if ($fakeResponse !== null) {
-            return $fakeResponse;
-        }
-
-        $client = $this->getAuthenticatedClientFromHeaders($request);
-        if ($client instanceof JsonResponse) {
-            return $client;
-        }
-
-        try {
-            $immeuble = $client->getTableauBordImmeuble($pkImmeuble);
-            $depannage = $client->getDetailDepannage($pkIntervention);
-
-            $immeubleOracle = $this->apiImmeubleService->getTableauBordImmeuble($client->getPkUser(), $pkImmeuble);
-            $depannageOracle = $this->apiImmeubleService->getDetailDepannage($client->getPkUser(), $pkIntervention);
-
-            if (!$depannage) {
-                return $this->notFound('Intervention not found');
-            }
-
-            return $this->success([
-                'immeuble' => $this->normalize($immeuble),
-                'depannage' => $this->normalize($depannage),
-            ]);
-        } catch (\Exception $e) {
-            return $this->error('Error retrieving intervention: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération de l\'immeuble: ' . $e->getMessage(), 500);
         }
     }
 
@@ -294,7 +258,7 @@ class ImmeubleApiController extends AbstractApiController
                 'filters' => $depannageService->extractFiltersValues($depannages),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error retrieving interventions: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération des interventions: ' . $e->getMessage(), 500);
         }
     }
 
@@ -332,7 +296,7 @@ class ImmeubleApiController extends AbstractApiController
                 'filters' => $fuiteService->extractFiltersValues($fuites),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error retrieving leaks: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération des fuites: ' . $e->getMessage(), 500);
         }
     }
 
@@ -370,7 +334,7 @@ class ImmeubleApiController extends AbstractApiController
                 'filters' => $anomalieService->extractFiltersValues($anomalies),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error retrieving anomalies: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération des anomalies: ' . $e->getMessage(), 500);
         }
     }
 
@@ -408,47 +372,7 @@ class ImmeubleApiController extends AbstractApiController
                 'filters' => $dysfonctionnementService->extractFiltersValues($dysfonctionnements),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error retrieving dysfunctions: ' . $e->getMessage(), 500);
-        }
-    }
-
-    /**
-     * Download report PDF
-     *     */
-    #[Route("/{pkImmeuble}/releve/{type}/{energie}", name: "report", methods: ["GET", "POST"])]
-    public function report(Request $request, int $pkImmeuble, string $type, string $energie): Response|JsonResponse
-    {
-        $client = $this->getAuthenticatedClientFromHeaders($request);
-        if ($client instanceof JsonResponse) {
-            return $client;
-        }
-
-        try {
-            $date = $request->query->get('date') ?? $request->request->get('date');
-
-            // Handle 'repartition' type
-            if ($type == 'repartition') {
-                $type = null;
-            }
-
-            $report = $client->getReportImmeuble($pkImmeuble, $type, $energie, $date);
-
-            if (empty($report)) {
-                return $this->notFound('Report not found');
-            }
-
-            $response = new Response($report);
-            $response->headers->set('Content-Type', 'application/pdf');
-            $response->headers->set('Content-Disposition', 'inline; filename=relevé-' . date('d-m-Y') . '.pdf');
-            $response->headers->set('Content-Transfer-Encoding', 'binary');
-            $response->headers->set('Expires', 0);
-            $response->headers->set('Cache-Control', 'no-cache');
-            $response->headers->set('Pragma', 'no-cache');
-            $response->headers->set('Content-Length', strlen($report));
-
-            return $response;
-        } catch (\Exception $e) {
-            return $this->error('Error generating report: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération des dysfonctionnements: ' . $e->getMessage(), 500);
         }
     }
 
@@ -460,12 +384,6 @@ class ImmeubleApiController extends AbstractApiController
     {
         ini_set('max_execution_time', 120);
 
-        // Check if faker mode is enabled and return fake data
-        $fakeResponse = $this->sendFakeData('api.immeubles.pkImmeuble.anomalies.export');
-        if ($fakeResponse !== null) {
-            return $fakeResponse;
-        }
-
         $client = $this->getAuthenticatedClientFromHeaders($request);
         if ($client instanceof JsonResponse) {
             return $client;
@@ -474,7 +392,10 @@ class ImmeubleApiController extends AbstractApiController
         try {
             $anomalies = $client->getAnomaliesImmeuble($pkImmeuble);
             $data = $anomalieService->export($anomalies);
-            ob_end_clean();
+            // ⚠️ Important : ne nettoyer le buffer que s'il existe
+            if (ob_get_level() > 0) {
+                ob_end_clean();
+            }
 
             $response = new StreamedResponse(
                 function () use ($data, $excelHelper) {
@@ -487,7 +408,7 @@ class ImmeubleApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error exporting anomalies: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de l\'exportation des anomalies: ' . $e->getMessage(), 500);
         }
     }
 
@@ -499,12 +420,6 @@ class ImmeubleApiController extends AbstractApiController
     {
         ini_set('max_execution_time', 120);
 
-        // Check if faker mode is enabled and return fake data
-        $fakeResponse = $this->sendFakeData('api.immeubles.pkImmeuble.fuites.export');
-        if ($fakeResponse !== null) {
-            return $fakeResponse;
-        }
-
         $client = $this->getAuthenticatedClientFromHeaders($request);
         if ($client instanceof JsonResponse) {
             return $client;
@@ -513,7 +428,10 @@ class ImmeubleApiController extends AbstractApiController
         try {
             $fuites = $client->getFuitesImmeuble($pkImmeuble);
             $data = $fuiteService->export($fuites);
-            ob_end_clean();
+            // ⚠️ Important : ne nettoyer le buffer que s'il existe
+            if (ob_get_level() > 0) {
+                ob_end_clean();
+            }
 
             $response = new StreamedResponse(
                 function () use ($data, $excelHelper) {
@@ -526,7 +444,7 @@ class ImmeubleApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error exporting leaks: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de l\'exportation des fuites: ' . $e->getMessage(), 500);
         }
     }
 
@@ -538,12 +456,6 @@ class ImmeubleApiController extends AbstractApiController
     {
         ini_set('max_execution_time', 120);
 
-        // Check if faker mode is enabled and return fake data
-        $fakeResponse = $this->sendFakeData('api.immeubles.pkImmeuble.interventions.export');
-        if ($fakeResponse !== null) {
-            return $fakeResponse;
-        }
-
         $client = $this->getAuthenticatedClientFromHeaders($request);
         if ($client instanceof JsonResponse) {
             return $client;
@@ -552,7 +464,10 @@ class ImmeubleApiController extends AbstractApiController
         try {
             $depannages = $client->getInterventionsImmeuble($pkImmeuble);
             $data = $depannageService->export($depannages);
-            ob_end_clean();
+            // ⚠️ Important : ne nettoyer le buffer que s'il existe
+            if (ob_get_level() > 0) {
+                ob_end_clean();
+            }
 
             $response = new StreamedResponse(
                 function () use ($data, $excelHelper) {
@@ -565,7 +480,7 @@ class ImmeubleApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error exporting interventions: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de l\'exportation des interventions: ' . $e->getMessage(), 500);
         }
     }
 
@@ -577,12 +492,6 @@ class ImmeubleApiController extends AbstractApiController
     {
         ini_set('max_execution_time', 120);
 
-        // Check if faker mode is enabled and return fake data
-        $fakeResponse = $this->sendFakeData('api.immeubles.pkImmeuble.dysfonctionnements.export');
-        if ($fakeResponse !== null) {
-            return $fakeResponse;
-        }
-
         $client = $this->getAuthenticatedClientFromHeaders($request);
         if ($client instanceof JsonResponse) {
             return $client;
@@ -591,7 +500,10 @@ class ImmeubleApiController extends AbstractApiController
         try {
             $dysfonctionnements = $client->getDysfonctionnementsImmeuble($pkImmeuble);
             $data = $dysfonctionnementService->export($dysfonctionnements);
-            ob_end_clean();
+            // ⚠️ Important : ne nettoyer le buffer que s'il existe
+            if (ob_get_level() > 0) {
+                ob_end_clean();
+            }
 
             $response = new StreamedResponse(
                 function () use ($data, $excelHelper) {
@@ -604,7 +516,7 @@ class ImmeubleApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error exporting dysfunctions: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de l\'exportation des dysfonctionnements: ' . $e->getMessage(), 500);
         }
     }
 
@@ -648,11 +560,11 @@ class ImmeubleApiController extends AbstractApiController
                 $contentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
                 $filename = $docType . '-' . $dateBegin . '-' . $dateEnd . '.xlsx';
             } else {
-                return $this->error('Invalid document type', 400);
+                return $this->error('Type de document invalide', 400);
             }
 
             if (empty($report)) {
-                return $this->notFound('Report not found');
+                return $this->notFound('Rapport non trouvé');
             }
 
             $response = new Response($report);
@@ -666,10 +578,112 @@ class ImmeubleApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error generating intervention report: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la génération du rapport d\'intervention: ' . $e->getMessage(), 500);
         }
     }
 
+    /**
+     * Get intervention details
+     *     */
+    #[Route("/{pkImmeuble}/interventions/{pkIntervention}", name: "show_intervention", methods: ["GET"])]
+    public function showIntervention(int $pkImmeuble, string $pkIntervention, Request $request): JsonResponse
+    {
+        $client = $this->getAuthenticatedClientFromHeaders($request);
+        if ($client instanceof JsonResponse) {
+            return $client;
+        }
+
+        try {
+            $immeuble = $client->getTableauBordImmeuble($pkImmeuble);
+            $depannage = $client->getDetailDepannage($pkIntervention);
+
+            $immeubleOracle = $this->apiImmeubleService->getTableauBordImmeuble($client->getPkUser(), $pkImmeuble);
+            $depannageOracle = $this->apiImmeubleService->getDetailDepannage($client->getPkUser(), $pkIntervention);
+
+            if (!$depannage) {
+                return $this->notFound('Intervention non trouvée');
+            }
+
+            return $this->success([
+                'immeuble' => $this->normalize($immeuble),
+                'depannage' => $this->normalize($depannage),
+            ]);
+        } catch (\Exception $e) {
+            return $this->error('Erreur lors de la récupération de l\'intervention: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Download report PDF
+     *     */
+    #[Route("/{pkImmeuble}/releve_pdf/{type}/{energie}", name: "report_pdf", methods: ["GET"])]
+    public function reportPdf(Request $request, int $pkImmeuble, string $type, string $energie, #[MapQueryParameter] int $pkReleve): Response|JsonResponse
+    {
+        $client = $this->getAuthenticatedClientFromHeaders($request);
+        if ($client instanceof JsonResponse) {
+            return $client;
+        }
+
+        try {
+            if ($type == 'repartition') {
+                $type = null;
+            }
+
+            $report = $client->getReportImmeuble($pkImmeuble, is_null($type) ? null : strtoupper($type), is_null($energie) ? null : strtoupper($energie), $pkReleve);
+
+            if (empty($report)) {
+                return $this->notFound('Rapport non trouvé');
+            }
+
+            $response = new Response($report);
+            $response->headers->set('Content-Type', 'application/pdf');
+            $response->headers->set('Content-Disposition', 'inline; filename=relevé-' . date('d-m-Y') . '.pdf');
+            $response->headers->set('Content-Transfer-Encoding', 'binary');
+            $response->headers->set('Expires', 0);
+            $response->headers->set('Cache-Control', 'no-cache');
+            $response->headers->set('Pragma', 'no-cache');
+            $response->headers->set('Content-Length', strlen($report));
+
+            return $response;
+        } catch (\Exception $e) {
+            return $this->error('Erreur lors de la génération du rapport: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Download report Excel
+     *     */
+    #[Route("/{pkImmeuble}/releve_excel/{type}/{energie}", name: "report_excel", methods: ["GET"])]
+    public function reportExcel(Request $request, int $pkImmeuble, string $type, string $energie, #[MapQueryParameter] int $pkReleve): Response|JsonResponse
+    {
+        $client = $this->getAuthenticatedClientFromHeaders($request);
+        if ($client instanceof JsonResponse) {
+            return $client;
+        }
+        
+        if ($type == 'repartition') {
+            $type = null;
+        }
+        $report = $client->getReportImmeubleExcel($pkImmeuble, is_null($type) ? null : strtoupper($type), is_null($energie) ? null : strtoupper($energie), $pkReleve);
+        if (empty($report)) {
+            $response = new Response();
+                $response->headers->set('Content-Type', 'text/html; charset=utf-8');
+                $response->setContent($this->getHtml());
+                $response->setStatusCode(Response::HTTP_OK);
+                return $response;
+        }
+
+        $response = new Response($report);
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $response->headers->set('Content-Disposition', 'inline; filename=releve_' . $pkImmeuble . '_' . $pkReleve . '.xlsx');
+        $response->headers->set('Content-Transfer-Encoding', 'binary');
+        $response->headers->set('Expires', 0);
+        $response->headers->set('Cache-Control', 'no-cache');
+        $response->headers->set('Pragma', 'no-cache');
+        $response->headers->set('Content-Length', strlen($report));
+
+        return $response;
+    }
 
     private function validateDate(string $date, string $format = 'Y-m-d H:i:s'): bool
     {

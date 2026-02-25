@@ -29,7 +29,7 @@ class InterventionApiController extends AbstractApiController
             $report = $client->getReportDepannage($pkDepannage);
 
             if (empty($report)) {
-                return $this->notFound('Intervention report not found');
+                return $this->notFound('Rapport d\'intervention introuvable');
             }
 
             $response = new Response($report);
@@ -43,7 +43,7 @@ class InterventionApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error generating intervention report: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la génération du rapport d\'intervention: ' . $e->getMessage(), 500);
         }
     }
 }

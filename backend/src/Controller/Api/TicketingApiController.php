@@ -30,12 +30,6 @@ class TicketingApiController extends AbstractApiController
     #[Route("", name: "list", methods: ["GET"])]
     public function ticketList(Request $request): JsonResponse
     {
-        // Check if faker mode is enabled and return fake data
-        $fakeResponse = $this->sendFakeData('api.tickets');
-        if ($fakeResponse !== null) {
-            return $fakeResponse;
-        }
-
         $client = $this->getAuthenticatedClientFromHeaders($request);
         if ($client instanceof JsonResponse) {
             return $client;
@@ -174,7 +168,7 @@ class TicketingApiController extends AbstractApiController
                 'showAll' => $showAll !== null,
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error fetching tickets: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération des billets: ' . $e->getMessage(), 500);
         }
     }
 
@@ -182,12 +176,6 @@ class TicketingApiController extends AbstractApiController
     #[Route("/menu", name: "menu", methods: ["GET"])]
     public function menuTicket(Request $request): JsonResponse
     {
-        // Check if faker mode is enabled and return fake data
-        $fakeResponse = $this->sendFakeData('api.tickets.menu');
-        if ($fakeResponse !== null) {
-            return $fakeResponse;
-        }
-
         $client = $this->getAuthenticatedClientFromHeaders($request);
         if ($client instanceof JsonResponse) {
             return $client;
@@ -205,7 +193,7 @@ class TicketingApiController extends AbstractApiController
                 'nbTicketsInterUser' => $nbTicketsInterUser,
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error fetching ticket menu: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération du menu des billets: ' . $e->getMessage(), 500);
         }
     }
 
@@ -241,12 +229,6 @@ class TicketingApiController extends AbstractApiController
     #[Route("/{pkTicket}/attachment", name: "attachment", methods: ["GET"])]
     public function attachmentTicket(string $pkTicket, Request $request, LoggerInterface $logger): JsonResponse
     {
-        // Check if faker mode is enabled and return fake data
-        $fakeResponse = $this->sendFakeData('api.tickets.pkTicket.attachment');
-        if ($fakeResponse !== null) {
-            return $fakeResponse;
-        }
-
         $client = $this->getAuthenticatedClientFromHeaders($request);
         if ($client instanceof JsonResponse) {
             return $client;
@@ -258,7 +240,7 @@ class TicketingApiController extends AbstractApiController
             $attachmentOracle = $this->apiTicketingService->getAttachmentTicketInter($client->getPkUser(), $pkTicket);
 
             if (!$attachment) {
-                return $this->notFound('Attachment not found');
+                return $this->notFound('Pièce jointe introuvable');
             }
 
             $imageName = $attachment->Name ?? null;
@@ -272,8 +254,8 @@ class TicketingApiController extends AbstractApiController
                 'attachmentContent' => $imageContent,
             ]);
         } catch (\Exception $e) {
-            $logger->error('Error fetching attachment: ' . $e->getMessage());
-            return $this->error('Error fetching attachment: ' . $e->getMessage(), 500);
+            $logger->error('Erreur lors de la récupération de la pièce jointe: ' . $e->getMessage());
+            return $this->error('Erreur lors de la récupération de la pièce jointe: ' . $e->getMessage(), 500);
         }
     }
 
@@ -283,12 +265,6 @@ class TicketingApiController extends AbstractApiController
     #[Route("/create/{pkLogement}", name: "create_info", methods: ["GET"])]
     public function createTicketInfo(int $pkLogement, Request $request): JsonResponse
     {
-        // Check if faker mode is enabled and return fake data
-        $fakeResponse = $this->sendFakeData('api.tickets.create.pkLogement');
-        if ($fakeResponse !== null) {
-            return $fakeResponse;
-        }
-
         $client = $this->getAuthenticatedClientFromHeaders($request);
         if ($client instanceof JsonResponse) {
             return $client;
@@ -312,7 +288,7 @@ class TicketingApiController extends AbstractApiController
                 'formData' => $dataForm,
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error fetching ticket owner information: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération des informations du propriétaire du billet: ' . $e->getMessage(), 500);
         }
     }
 
@@ -325,12 +301,6 @@ class TicketingApiController extends AbstractApiController
     public function download(Request $request, ExcelHelper $excelHelper): StreamedResponse|JsonResponse
     {
         ini_set('max_execution_time', 120);
-
-        // Check if faker mode is enabled and return fake data
-        $fakeResponse = $this->sendFakeData('api.tickets.download');
-        if ($fakeResponse !== null) {
-            return $fakeResponse;
-        }
 
         $client = $this->getAuthenticatedClientFromHeaders($request);
         if ($client instanceof JsonResponse) {
@@ -457,7 +427,10 @@ class TicketingApiController extends AbstractApiController
                 $data[] = $row;
             }
 
-            ob_end_clean();
+            // ⚠️ Important : ne nettoyer le buffer que s'il existe
+            if (ob_get_level() > 0) {
+                ob_end_clean();
+            }
 
             $response = new StreamedResponse(
                 function () use ($data, $excelHelper) {
@@ -470,7 +443,7 @@ class TicketingApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error exporting tickets: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de l\'exportation des billets: ' . $e->getMessage(), 500);
         }
     }
 }

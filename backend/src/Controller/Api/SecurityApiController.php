@@ -42,7 +42,7 @@ class SecurityApiController extends AbstractApiController
         $password = (string) $data['password'] ?? null;
 
         if (empty($username) || empty($password)) {
-            return $this->error('Username and password are required', 400);
+            return $this->error('Un nom d\'utilisateur et un mot de passe sont requis.', 400);
         }
 
         try {
@@ -50,7 +50,7 @@ class SecurityApiController extends AbstractApiController
             $loginData = $client->loginForApi($username, $password);
 
             if (!$loginData) {
-                return $this->error('Invalid credentials', 401);
+                return $this->error('Identifiants invalides', 401);
             }
 
             //Get client's Tickets permissions
@@ -103,9 +103,9 @@ class SecurityApiController extends AbstractApiController
                 'has_ticket_permission' => $hasTicketPermission,
                 'session_id' => $loginData['session_id'],
                 'pk_user' => $loginData['pk_user'],
-            ], 'Login successful');
+            ], 'Connexion réussie');
         } catch (\Exception $e) {
-            return $this->error('Login failed: ' . $e->getMessage(), 401);
+            return $this->error('La connexion a échoué: ' . $e->getMessage(), 401);
         }
     }
     /**
@@ -125,7 +125,7 @@ class SecurityApiController extends AbstractApiController
             $success = $client->loginFromParam($param);
 
             if (!$success) {
-                return $this->error('Login failed', 401);
+                return $this->error('La connexion a échoué', 401);
             }
 
             $roles = ['ROLE_USER'];
@@ -166,11 +166,11 @@ class SecurityApiController extends AbstractApiController
                 'user' => $this->normalize($currentUser),
                 'roles' => $roles,
                 'session_id' => $client->getSessionId(),
-            ], 'Login successful');
+            ], 'Connexion réussie');
         } catch (RuntimeException $e) {
-            return $this->error('Login failed: ' . $e->getMessage(), 401);
+            return $this->error('La connexion a échoué: ' . $e->getMessage(), 401);
         } catch (\Exception $e) {
-            return $this->error('Login failed: ' . $e->getMessage(), 500);
+            return $this->error('La connexion a échoué: ' . $e->getMessage(), 500);
         }
     }
 
@@ -203,7 +203,7 @@ class SecurityApiController extends AbstractApiController
         $this->container->get('security.token_storage')->setToken(null);
         $request->getSession()->invalidate();
 
-        return $this->success(null, 'Logout successful');
+        return $this->success(null, 'Déconnexion réussie');
     }
 
     /**
@@ -244,15 +244,15 @@ class SecurityApiController extends AbstractApiController
         $token = $this->container->get('security.token_storage')->getToken();
 
         if (!$token || !$token instanceof SoapSessionToken) {
-            return $this->unauthorized('Not authenticated');
+            return $this->unauthorized('Non authentifié');
         }
 
         if (!$token->hasAttribute('soap.session_id') || !$token->hasAttribute('soap.pk_user')) {
-            return $this->unauthorized('Session information missing');
+            return $this->unauthorized('Informations de session manquantes');
         }
 
         if (!$token->hasAttribute('soap.user')) {
-            return $this->unauthorized('User information missing');
+            return $this->unauthorized('Informations utilisateur manquantes');
         }
 
         try {
@@ -265,7 +265,7 @@ class SecurityApiController extends AbstractApiController
             $data = json_decode($request->getContent(), true);
 
             if (!$data || empty($data['password'])) {
-                return $this->error('Password is required', 400);
+                return $this->error('Mot de passe requis', 400);
             }
 
             // Handle password confirmation
@@ -273,7 +273,7 @@ class SecurityApiController extends AbstractApiController
             if (is_array($data['password'])) {
                 if (isset($data['password']['first']) && isset($data['password']['second'])) {
                     if ($data['password']['first'] !== $data['password']['second']) {
-                        return $this->error('Passwords do not match', 400);
+                        return $this->error('Les mots de passe ne correspondent pas', 400);
                     }
                     $password = $data['password']['first'];
                 } else {
@@ -284,18 +284,18 @@ class SecurityApiController extends AbstractApiController
             }
 
             if (empty($password)) {
-                return $this->error('Password is required', 400);
+                return $this->error('Mot de passe requis', 400);
             }
 
             // Validate password length
             if (strlen($password) < 8) {
-                return $this->error('Password must be at least 8 characters long', 400);
+                return $this->error('Le mot de passe doit contenir au moins 8 caractères', 400);
             }
 
             $this->client->updatePassword($user->PKUser, $password);
-            return $this->success(null, 'Password updated successfully');
+            return $this->success(null, 'Mot de passe mis à jour avec succès');
         } catch (\Exception $e) {
-            return $this->error('Unable to update password. Please try again later', 500);
+            return $this->error('Impossible de mettre à jour le mot de passe. Veuillez réessayer plus tard', 500);
         }
     }
 
@@ -315,11 +315,11 @@ class SecurityApiController extends AbstractApiController
         $token = $this->container->get('security.token_storage')->getToken();
 
         if (!$token || !$token instanceof SoapSessionToken) {
-            return $this->unauthorized('Not authenticated');
+            return $this->unauthorized('Non authentifié');
         }
 
         if (!$token->hasAttribute('soap.user')) {
-            return $this->unauthorized('User information missing');
+            return $this->unauthorized('Informations utilisateur manquantes');
         }
 
         $user = $token->getAttribute('soap.user');

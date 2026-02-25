@@ -79,7 +79,7 @@ class OccupantApiController extends AbstractApiController
                 'soustraitants' => $this->normalize($soustraitants),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error fetching occupant logement: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération du logement de l\'occupant: ' . $e->getMessage(), 500);
         }
     }
 
@@ -124,7 +124,7 @@ class OccupantApiController extends AbstractApiController
                 'consoTabs' => $this->normalize($consoTabs),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error fetching simulator data: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération des données du simulateur: ' . $e->getMessage(), 500);
         }
     }
 
@@ -159,7 +159,7 @@ class OccupantApiController extends AbstractApiController
                 'depannage' => $this->normalize($depannage),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error fetching intervention: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération des détails de l\'intervention: ' . $e->getMessage(), 500);
         }
     }
 
@@ -202,7 +202,7 @@ class OccupantApiController extends AbstractApiController
                 'filters' => $depannageService->extractFiltersValues($depannages),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error fetching interventions: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération des interventions: ' . $e->getMessage(), 500);
         }
     }
 
@@ -246,7 +246,7 @@ class OccupantApiController extends AbstractApiController
                 'filters' => $fuiteService->extractFiltersValues($fuites),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error fetching leaks: ' . $e->getMessage(), 500);
+            return $this->error('Fuites lors de la récupération des erreurs: ' . $e->getMessage(), 500);
         }
     }
 
@@ -289,7 +289,7 @@ class OccupantApiController extends AbstractApiController
                 'filters' => $dysfonctionnementService->extractFiltersValues($dysfonctionnements),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error fetching dysfunctions: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération des dysfonctionnements: ' . $e->getMessage(), 500);
         }
     }
 
@@ -333,7 +333,7 @@ class OccupantApiController extends AbstractApiController
                 'filters' => $anomalieService->extractFiltersValues($anomalies),
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error fetching anomalies: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération des anomalies: ' . $e->getMessage(), 500);
         }
     }
 
@@ -386,7 +386,7 @@ class OccupantApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error exporting anomalies: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de l\'exportation des anomalies: ' . $e->getMessage(), 500);
         }
     }
 
@@ -435,7 +435,7 @@ class OccupantApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error exporting leaks: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de l\'exportation des fuites: ' . $e->getMessage(), 500);
         }
     }
 
@@ -484,7 +484,7 @@ class OccupantApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error exporting interventions: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de l\'exportation des interventions: ' . $e->getMessage(), 500);
         }
     }
 
@@ -533,14 +533,14 @@ class OccupantApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error exporting dysfunctions: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de l\'exportation des dysfonctionnements: ' . $e->getMessage(), 500);
         }
     }
 
     /**
      * Get water report PDF
      */
-    #[Route("/{pkOccupant]/releve-eau", name: "releve_eau", methods: ["GET"])]
+    #[Route("/{pkOccupant}/releve-eau", name: "releve_eau", methods: ["GET"])]
     public function showEauReleve(int $pkOccupant, Request $request): Response|JsonResponse
     {
         $client = $this->getAuthenticatedClientFromHeaders($request);
@@ -551,8 +551,9 @@ class OccupantApiController extends AbstractApiController
         try {
             $params = new GetReportParams();
             $params->PKOCCUPANT = $pkOccupant;
+            $params->TYPEERC = 'EAU';
 
-            $report = $client->getReport('RELEVE_EAU_OCCUPANT', $params);
+            $report = $client->getReport('RELEVE_OCCUPANT', $params);
             if (empty($report)) {
                 return $this->notFound('Report not found');
             }
@@ -568,14 +569,14 @@ class OccupantApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error generating report: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la génération du rapport: ' . $e->getMessage(), 500);
         }
     }
 
     /**
      * Get repartition report PDF
      */
-    #[Route("/{pkOccupant]/releve-repart/{pkImmeuble]", name: "releve_repart", methods: ["GET"])]
+    #[Route("/{pkOccupant}/releve-repart/{pkImmeuble}", name: "releve_repart", methods: ["GET"])]
     public function showRepartReleve(int $pkImmeuble, int $pkOccupant, Request $request): Response|JsonResponse
     {
         $client = $this->getAuthenticatedClientFromHeaders($request);
@@ -604,14 +605,14 @@ class OccupantApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error generating report: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la génération du rapport: ' . $e->getMessage(), 500);
         }
     }
 
     /**
      * Get note report PDF
      */
-    #[Route("/{pkOccupant]/releve-note/{pkImmeuble]/{energie]", name: "releve_note", methods: ["GET"])]
+    #[Route("/{pkOccupant}/releve-note/{pkImmeuble}/{energie}", name: "releve_note", methods: ["GET"])]
     public function showNoteReleve(int $pkImmeuble, int $pkOccupant, string $energie, Request $request): Response|JsonResponse
     {
         $client = $this->getAuthenticatedClientFromHeaders($request);
@@ -645,7 +646,7 @@ class OccupantApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error generating report: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la génération du rapport: ' . $e->getMessage(), 500);
         }
     }
 
@@ -744,7 +745,7 @@ class OccupantApiController extends AbstractApiController
                 'rgpdcheckboxvalue' => $rgpdcheckboxvalue,
             ]);
         } catch (\Exception $e) {
-            return $this->error('Error fetching account information: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération des informations du compte: ' . $e->getMessage(), 500);
         }
     }
 
@@ -801,9 +802,9 @@ class OccupantApiController extends AbstractApiController
             return $this->success([
                 'logement' => $this->normalize($logement),
                 'consoTabs' => $this->normalize($consoTabs)
-            ], $request->isMethod('POST') ? 'Alerts updated successfully' : null);
+            ], $request->isMethod('POST') ? 'Alertes mises à jour avec succès' : null);
         } catch (\Exception $e) {
-            return $this->error('Error fetching/updating alerts: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération/mise à jour des alertes: ' . $e->getMessage(), 500);
         }
     }
 }

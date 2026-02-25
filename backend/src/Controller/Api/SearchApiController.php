@@ -43,11 +43,11 @@ class SearchApiController extends AbstractApiController
                 $board = $client->getMyTableauBordClient();
                 return $this->success([
                     'board' => $this->normalize($board),
-                    'message' => 'No search type specified. Use ?type=immeuble or ?type=occupant',
+                    'message' => 'Aucun type de recherche spécifié. Utilisez ?type=immeuble ou ?type=occupant',
                 ]);
             }
         } catch (\Exception $e) {
-            return $this->error('Error performing search: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la recherche: ' . $e->getMessage(), 500);
         }
     }
 

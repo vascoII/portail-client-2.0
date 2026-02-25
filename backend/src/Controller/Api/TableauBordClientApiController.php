@@ -88,7 +88,7 @@ class TableauBordClientApiController extends AbstractApiController
 
             return $this->success($data);
         } catch (\Exception $e) {
-            return $this->error('Error fetching dashboard: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la récupération du tableau de bord: ' . $e->getMessage(), 500);
         }
     }
 
@@ -114,7 +114,7 @@ class TableauBordClientApiController extends AbstractApiController
         $dateEnd = $request->query->get('date-end');
 
         if (!$this->validateDate($dateBegin, 'd/m/Y') || !$this->validateDate($dateEnd, 'd/m/Y')) {
-            return $this->error('Invalid date format. Expected format: d/m/Y', 400);
+            return $this->error('Format de date invalide. Format attendu: d/m/Y', 400);
         }
 
         try {
@@ -134,11 +134,11 @@ class TableauBordClientApiController extends AbstractApiController
                 $report = $client->getExcel('LIVRET_INTER_LISTE', $params);
                 $isExcel = true;
             } else {
-                return $this->error('Invalid document type. Allowed: synthese-inte, detail-inte, detail-excel-inte', 400);
+                return $this->error('Type de document invalide. Types autorisés: synthese-inte, detail-inte, detail-excel-inte', 400);
             }
 
             if (empty($report)) {
-                return $this->notFound('Report not found');
+                return $this->notFound('Rapport introuvable');
             }
 
             $response = new Response($report);
@@ -165,7 +165,7 @@ class TableauBordClientApiController extends AbstractApiController
 
             return $response;
         } catch (\Exception $e) {
-            return $this->error('Error generating report: ' . $e->getMessage(), 500);
+            return $this->error('Erreur lors de la génération du rapport: ' . $e->getMessage(), 500);
         }
     }
 
