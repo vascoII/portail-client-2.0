@@ -39,7 +39,7 @@ export default function ImmeubleReleves({
   selectedTab: controlledTab,
   onTabChange,
 }: ImmeubleRelevesProps) {
-  const { useImmeubleQuery } = useImmeubles();
+  const { useImmeubleQuery, exportImmeubleRelevePdf, exportImmeubleReleveExcel } = useImmeubles();
   const { data: immeubleData, isLoading: isImmeubleLoading } = useImmeubleQuery(pkImmeuble);
   const [uncontrolledTab, setUncontrolledTab] = useState<TabType>("eauFroide");
   const { isOpen: isModalOpen, openModal, closeModal } = useModal();
@@ -71,34 +71,9 @@ export default function ImmeubleReleves({
         energieSegment = "cet";
       }
 
-      try {
-        const response = await fetch(
-          `/api/immeubles/${pkImmeuble}/releve_pdf/releve/${energieSegment}?pkReleve=${pkReleve}`,
-          {
-            method: "GET",
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Erreur lors de l'export PDF.");
-        }
-
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "releve.pdf";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-      } catch (error) {
-        throw error instanceof Error
-          ? error
-          : new Error("Erreur lors de l'export PDF.");
-      }
+      await exportImmeubleRelevePdf(pkImmeuble, energieSegment, pkReleve);
     },
-    [pkImmeuble, selectedTab]
+    [pkImmeuble, selectedTab, exportImmeubleRelevePdf]
   );
 
   // Format date from ISO string to French format (DD/MM/YYYY)
@@ -191,37 +166,12 @@ export default function ImmeubleReleves({
       energieSegment = "rcet";
     }
 
-    try {
-      const response = await fetch(
-        `/api/immeubles/${pkImmeuble}/releve_excel/releve/${energieSegment}?pkReleve=${selectedPkReleve}`,
-        {
-          method: "GET",
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Erreur lors de l'export Excel.");
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "releve.xlsx";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      throw error instanceof Error
-        ? error
-        : new Error("Erreur lors de l'export Excel.");
-    }
+    await exportImmeubleReleveExcel(pkImmeuble, energieSegment, selectedPkReleve);
 
     // Close modal only on success (if error, useExport will handle it and modal stays open)
     closeModal();
     setSelectedPkReleve(null);
-  }, [selectedPkReleve, pkImmeuble, closeModal, selectedTab]);
+  }, [selectedPkReleve, pkImmeuble, closeModal, selectedTab, exportImmeubleReleveExcel]);
 
   // Use the reusable export hooks
   const {

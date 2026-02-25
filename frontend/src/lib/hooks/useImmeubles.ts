@@ -655,6 +655,68 @@ export function useImmeubles() {
   };
 
   /**
+   * Export immeuble releve PDF using new endpoint
+   * GET /api/immeubles/{pkImmeuble}/releve_pdf/releve/{energie}?pkReleve={pkReleve}
+   * Downloads the file automatically
+   */
+  const exportImmeubleRelevePdf = async (
+    pkImmeuble: string | number,
+    energie: string,
+    pkReleve: string | number
+  ): Promise<void> => {
+    try {
+      const response = await api.get(
+        `/immeubles/${pkImmeuble}/releve_pdf/releve/${energie}`,
+        {
+          params: { pkReleve },
+          responseType: "blob",
+        }
+      );
+
+      const blob = new Blob([response.data as unknown as BlobPart], {
+        type: "application/pdf",
+      });
+
+      const filename = `releve_${pkImmeuble}_${pkReleve}.pdf`;
+      downloadBlob(blob, filename);
+    } catch (error) {
+      const errorMessage = handleApiError(error);
+      throw new Error(`Failed to export immeuble releve PDF: ${errorMessage}`);
+    }
+  };
+
+  /**
+   * Export immeuble releve Excel using new endpoint
+   * GET /api/immeubles/{pkImmeuble}/releve_excel/releve/{energie}?pkReleve={pkReleve}
+   * Downloads the file automatically
+   */
+  const exportImmeubleReleveExcel = async (
+    pkImmeuble: string | number,
+    energie: string,
+    pkReleve: string | number
+  ): Promise<void> => {
+    try {
+      const response = await api.get(
+        `/immeubles/${pkImmeuble}/releve_excel/releve/${energie}`,
+        {
+          params: { pkReleve },
+          responseType: "blob",
+        }
+      );
+
+      const blob = new Blob([response.data as unknown as BlobPart], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      const filename = `releve_${pkImmeuble}_${pkReleve}.xlsx`;
+      downloadBlob(blob, filename);
+    } catch (error) {
+      const errorMessage = handleApiError(error);
+      throw new Error(`Failed to export immeuble releve Excel: ${errorMessage}`);
+    }
+  };
+
+  /**
    * Export anomalies to Excel
    * GET /api/immeubles/{pkImmeuble}/anomalies/export
    * Downloads the file automatically
@@ -877,6 +939,8 @@ export function useImmeubles() {
     // Export/Download functions
     getReport,
     exportReleveExcel,
+    exportImmeubleRelevePdf,
+    exportImmeubleReleveExcel,
     exportImmeubles,
     exportAnomalies,
     exportFuites,
