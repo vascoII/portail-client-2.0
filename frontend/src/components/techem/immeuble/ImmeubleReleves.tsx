@@ -39,7 +39,7 @@ export default function ImmeubleReleves({
   selectedTab: controlledTab,
   onTabChange,
 }: ImmeubleRelevesProps) {
-  const { useImmeubleQuery, getReport, exportReleveExcel } = useImmeubles();
+  const { useImmeubleQuery } = useImmeubles();
   const { data: immeubleData, isLoading: isImmeubleLoading } = useImmeubleQuery(pkImmeuble);
   const [uncontrolledTab, setUncontrolledTab] = useState<TabType>("eauFroide");
   const { isOpen: isModalOpen, openModal, closeModal } = useModal();
@@ -54,16 +54,26 @@ export default function ImmeubleReleves({
     onTabChange?.(tab);
   };
 
-  // Create wrapper function for PDF export based on selected pkReleve (water only)
+  // Create wrapper function for PDF export based on selected tab and pkReleve
   const handleExportPdf = useCallback(
     async (pkReleve: number | null) => {
       if (!pkReleve) {
         throw new Error("Veuillez sélectionner une date de relevé.");
       }
 
+      let energieSegment: string;
+      if (selectedTab === "eauFroide" || selectedTab === "eauChaude") {
+        energieSegment = "eau";
+      } else if (selectedTab === "repartiteur") {
+        energieSegment = "repart";
+      } else {
+        // compteurEnergie
+        energieSegment = "cet";
+      }
+
       try {
         const response = await fetch(
-          `/api/immeubles/${pkImmeuble}/releve_pdf/eau?pkReleve=${pkReleve}`,
+          `/api/immeubles/${pkImmeuble}/releve_pdf/releve/${energieSegment}?pkReleve=${pkReleve}`,
           {
             method: "GET",
           }
@@ -77,7 +87,7 @@ export default function ImmeubleReleves({
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
-        link.download = "releve-eau.pdf";
+        link.download = "releve.pdf";
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -88,7 +98,7 @@ export default function ImmeubleReleves({
           : new Error("Erreur lors de l'export PDF.");
       }
     },
-    [pkImmeuble]
+    [pkImmeuble, selectedTab]
   );
 
   // Format date from ISO string to French format (DD/MM/YYYY)
@@ -112,18 +122,32 @@ export default function ImmeubleReleves({
     let listeReleves: { releve?: Array<{ PkReleve?: number; DateReleve?: string }> } | null = null;
 
     if (selectedTab === "eauFroide") {
-      const immeubleEF = (immeuble && typeof immeuble === 'object' && 'ImmeubleEF' in immeuble)
+      const immeubleEF = (immeuble && typeof immeuble === "object" && "ImmeubleEF" in immeuble)
         ? (immeuble as { ImmeubleEF?: Record<string, unknown> }).ImmeubleEF
         : null;
-      listeReleves = (immeubleEF && typeof immeubleEF === 'object' && 'ListeReleves' in immeubleEF)
+      listeReleves = (immeubleEF && typeof immeubleEF === "object" && "ListeReleves" in immeubleEF)
         ? (immeubleEF as { ListeReleves?: { releve?: Array<{ PkReleve?: number; DateReleve?: string }> } }).ListeReleves ?? null
         : null;
     } else if (selectedTab === "eauChaude") {
-      const immeubleEC = (immeuble && typeof immeuble === 'object' && 'ImmeubleEC' in immeuble)
+      const immeubleEC = (immeuble && typeof immeuble === "object" && "ImmeubleEC" in immeuble)
         ? (immeuble as { ImmeubleEC?: Record<string, unknown> }).ImmeubleEC
         : null;
-      listeReleves = (immeubleEC && typeof immeubleEC === 'object' && 'ListeReleves' in immeubleEC)
+      listeReleves = (immeubleEC && typeof immeubleEC === "object" && "ListeReleves" in immeubleEC)
         ? (immeubleEC as { ListeReleves?: { releve?: Array<{ PkReleve?: number; DateReleve?: string }> } }).ListeReleves ?? null
+        : null;
+    } else if (selectedTab === "repartiteur") {
+      const immeubleRepart = (immeuble && typeof immeuble === "object" && "ImmeubleRepart" in immeuble)
+        ? (immeuble as { ImmeubleRepart?: Record<string, unknown> }).ImmeubleRepart
+        : null;
+      listeReleves = (immeubleRepart && typeof immeubleRepart === "object" && "ListeReleves" in immeubleRepart)
+        ? (immeubleRepart as { ListeReleves?: { releve?: Array<{ PkReleve?: number; DateReleve?: string }> } }).ListeReleves ?? null
+        : null;
+    } else if (selectedTab === "compteurEnergie") {
+      const immeubleCET = (immeuble && typeof immeuble === "object" && "ImmeubleCET" in immeuble)
+        ? (immeuble as { ImmeubleCET?: Record<string, unknown> }).ImmeubleCET
+        : null;
+      listeReleves = (immeubleCET && typeof immeubleCET === "object" && "ListeReleves" in immeubleCET)
+        ? (immeubleCET as { ListeReleves?: { releve?: Array<{ PkReleve?: number; DateReleve?: string }> } }).ListeReleves ?? null
         : null;
     }
 
@@ -141,10 +165,7 @@ export default function ImmeubleReleves({
       .sort((a, b) => new Date(b.dateReleve).getTime() - new Date(a.dateReleve).getTime()); // Sort by date descending (newest first)
   }, [immeubleData, selectedTab, formatDateToFrench]);
 
-  // Check if Excel export is available for current tab
-  const isExcelExportAvailable = selectedTab === "eauFroide" || selectedTab === "eauChaude";
-
-  // Handle opening Excel export modal
+  // Handle opening export modal
   const handleExportExcelClick = useCallback(() => {
     if (relevesOptions.length === 0) {
       // If no releves available, show error or disable button
@@ -154,16 +175,53 @@ export default function ImmeubleReleves({
     openModal();
   }, [relevesOptions, openModal]);
 
-  // Handle Excel export with selected PkReleve
+  // Handle Excel export with selected PkReleve and selected tab
   const handleExportExcel = useCallback(async () => {
     if (!selectedPkReleve) {
       throw new Error("Veuillez sélectionner une date de relevé.");
     }
-    await exportReleveExcel(pkImmeuble, selectedPkReleve);
+
+    let energieSegment: string;
+    if (selectedTab === "eauFroide" || selectedTab === "eauChaude") {
+      energieSegment = "eau";
+    } else if (selectedTab === "repartiteur") {
+      energieSegment = "repart";
+    } else {
+      // compteurEnergie
+      energieSegment = "rcet";
+    }
+
+    try {
+      const response = await fetch(
+        `/api/immeubles/${pkImmeuble}/releve_excel/releve/${energieSegment}?pkReleve=${selectedPkReleve}`,
+        {
+          method: "GET",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Erreur lors de l'export Excel.");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "releve.xlsx";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      throw error instanceof Error
+        ? error
+        : new Error("Erreur lors de l'export Excel.");
+    }
+
     // Close modal only on success (if error, useExport will handle it and modal stays open)
     closeModal();
     setSelectedPkReleve(null);
-  }, [selectedPkReleve, exportReleveExcel, pkImmeuble, closeModal]);
+  }, [selectedPkReleve, pkImmeuble, closeModal, selectedTab]);
 
   // Use the reusable export hooks
   const {
@@ -510,7 +568,6 @@ export default function ImmeubleReleves({
             <button
               onClick={handleExportExcelClick}
               disabled={
-                !isExcelExportAvailable ||
                 relevesOptions.length === 0 ||
                 isExportingExcel ||
                 isExportingPdf ||
