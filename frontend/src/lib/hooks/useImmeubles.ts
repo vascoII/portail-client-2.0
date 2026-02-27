@@ -654,6 +654,7 @@ export function useImmeubles() {
     }
   };
 
+
   /**
    * Export immeuble releve PDF using new endpoint
    * GET /api/immeubles/{pkImmeuble}/releve_pdf/releve/{energie}?pkReleve={pkReleve}

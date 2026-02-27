@@ -148,7 +148,7 @@ export default function ListInterventions({
     const escaliers = new Set<string>();
     const batiments = new Set<string>();
 
-    depannages.forEach((depannage) => {
+    depannages.forEach((depannage:any) => {// eslint-disable-line @typescript-eslint/no-explicit-any
       const logement = depannage.Logement;
       const etage = logement?.NumEtage;
       const escalier = (logement as never as { NumEscalier?: unknown })?.NumEscalier;
@@ -190,7 +190,7 @@ export default function ListInterventions({
 
     const term = searchNumero.trim().toLowerCase();
 
-    return depannages.filter((depannage) => {
+    return depannages.filter((depannage:any) => {// eslint-disable-line @typescript-eslint/no-explicit-any
       // Filtre N° intervention
       if (hasSearch) {
         const numero = getInterventionNumber(depannage);
@@ -537,7 +537,7 @@ export default function ListInterventions({
           </TableHeader>
 
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-            {filteredDepannages.map((depannage, index) => {
+            {filteredDepannages.map((depannage:any, index:any) => {// eslint-disable-line @typescript-eslint/no-explicit-any
               const numeroIntervention = getInterventionNumber(depannage);
               const key = numeroIntervention || `depannage-${index}`;
               return (

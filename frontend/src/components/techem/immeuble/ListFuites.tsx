@@ -120,7 +120,7 @@ export default function ListFuites({ pkImmeuble }: ListFuitesProps) {
     const escaliers = new Set<string>();
     const batiments = new Set<string>();
 
-    fuites.forEach((fuite) => {
+    fuites.forEach((fuite:any) => {// eslint-disable-line @typescript-eslint/no-explicit-any  
       const logement = fuite.Logement;
       const etage = logement?.NumEtage;
       const escalier = (logement as never as { NumEscalier?: unknown })?.NumEscalier;
@@ -162,7 +162,7 @@ export default function ListFuites({ pkImmeuble }: ListFuitesProps) {
 
     const term = searchNumero.trim().toLowerCase();
 
-    return fuites.filter((fuite) => {
+    return fuites.filter((fuite:any) => {// eslint-disable-line @typescript-eslint/no-explicit-any
       // Filtre N° compteur
       if (hasSearch) {
         const numero = fuite.Appareil?.Numero;
@@ -186,7 +186,7 @@ export default function ListFuites({ pkImmeuble }: ListFuitesProps) {
   }, [fuites, searchNumero, filterEtage, filterEscalier, filterBatiment]);
 
   const totalLeaks = useMemo(
-    () => filteredFuites.reduce((acc, fuite) => acc + getLeakCount(fuite), 0),
+    () => filteredFuites.reduce((acc:any, fuite:any) => acc + getLeakCount(fuite), 0),// eslint-disable-line @typescript-eslint/no-explicit-any
     [filteredFuites]
   );
 
@@ -455,7 +455,7 @@ export default function ListFuites({ pkImmeuble }: ListFuitesProps) {
           </TableHeader>
 
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-            {filteredFuites.map((fuite, index) => {
+            {filteredFuites.map((fuite:any, index:any) => {// eslint-disable-line @typescript-eslint/no-explicit-any
               const key = fuite.PkFuite ?? fuite.Appareil?.Numero ?? `fuite-${index}`;
               const pkLogement = fuite.Logement?.PkLogement;
               const compteur = fuite.Appareil?.Numero ?? "—";

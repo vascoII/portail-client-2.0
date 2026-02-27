@@ -320,10 +320,11 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
     };
   }, [logements]);
 
-  // Filter logements based on active filters and dropdown filters (etage, escalier, batiment)
+  // Filter logements based on active filters
   const filteredLogements = useMemo(() => {
     const logementsList = logements?.logements ?? [];
     
+    // If no filters are active, return all logements
     const hasIssueFilters = activeFilters.fuites || activeFilters.anomalies || 
                            activeFilters.dysfonctionnements || activeFilters.depannages;
     const hasEquipmentFilters = activeFilters.equipment && activeFilters.equipment.length > 0;
@@ -338,6 +339,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
       const issues = getLogementIssues(logement);
 
       // Check if logement matches all active issue filters
+      // A logement must have the issue if the filter is active
       if (activeFilters.fuites && issues.nbFuites === 0) return false;
       if (activeFilters.anomalies && issues.nbAnomalies === 0) return false;
       if (activeFilters.dysfonctionnements && issues.nbDysfonctionnements === 0) return false;
@@ -357,6 +359,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
           'repartiteur': nbCompteursRepart,
         };
 
+        // Check if logement has at least one of the selected equipment types
         const hasSelectedEquipment = activeFilters.equipment.some(
           (equipType) => equipmentCounts[equipType as keyof typeof equipmentCounts] > 0
         );
@@ -369,6 +372,7 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
       if (filterEscalier !== "" && getLogementEscalier(logement) !== filterEscalier) return false;
       if (filterBatiment !== "" && getLogementBatiment(logement) !== filterBatiment) return false;
 
+      // Logement matches all active filters
       return true;
     });
   }, [logements, activeFilters, filterEtage, filterEscalier, filterBatiment]);
@@ -444,12 +448,12 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
 
         <div className="flex flex-wrap items-center gap-3">
           <select
-            value={filterEtage}
-            onChange={(e) => setFilterEtage(e.target.value)}
+            value={filterBatiment}
+            onChange={(e) => setFilterBatiment(e.target.value)}
             className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm text-gray-700 shadow-theme-xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400"
           >
-            <option value="">Tous les étages</option>
-            {uniqueEtages.map((v) => (
+            <option value="">Bâtiments</option>
+            {uniqueBatiments.map((v) => (
               <option key={v} value={v}>{v}</option>
             ))}
           </select>
@@ -458,18 +462,18 @@ export default function ListLogements({ pkImmeuble }: ListLogementsProps) {
             onChange={(e) => setFilterEscalier(e.target.value)}
             className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm text-gray-700 shadow-theme-xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400"
           >
-            <option value="">Tous les escaliers</option>
+            <option value="">Escaliers</option>
             {uniqueEscaliers.map((v) => (
               <option key={v} value={v}>{v}</option>
             ))}
           </select>
           <select
-            value={filterBatiment}
-            onChange={(e) => setFilterBatiment(e.target.value)}
+            value={filterEtage}
+            onChange={(e) => setFilterEtage(e.target.value)}
             className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-theme-sm text-gray-700 shadow-theme-xs focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400"
           >
-            <option value="">Tous les bâtiments</option>
-            {uniqueBatiments.map((v) => (
+            <option value="">Etages</option>
+            {uniqueEtages.map((v) => (
               <option key={v} value={v}>{v}</option>
             ))}
           </select>

@@ -104,7 +104,7 @@ export default function ListAnomalies({ pkImmeuble }: ListAnomaliesProps) {
     const escaliers = new Set<string>();
     const batiments = new Set<string>();
 
-    anomalies.forEach((anomalie) => {
+    anomalies.forEach((anomalie:any) => {// eslint-disable-line @typescript-eslint/no-explicit-any
       const logement = anomalie.Logement;
       const etage = logement?.NumEtage;
       const escalier = (logement as never as { NumEscalier?: unknown })?.NumEscalier;
@@ -135,7 +135,7 @@ export default function ListAnomalies({ pkImmeuble }: ListAnomaliesProps) {
   }, [anomalies]);
 
   // Liste filtrée selon N° compteur + Bâtiment / Étage / Escalier
-  const filteredAnomalies = useMemo(() => {
+    const filteredAnomalies = useMemo(() => {
     const hasSearch = !!searchNumero.trim();
     const hasDropdownFilters =
       filterEtage !== "" || filterEscalier !== "" || filterBatiment !== "";
@@ -146,7 +146,7 @@ export default function ListAnomalies({ pkImmeuble }: ListAnomaliesProps) {
 
     const term = searchNumero.trim().toLowerCase();
 
-    return anomalies.filter((anomalie) => {
+    return anomalies.filter((anomalie:any) => {// eslint-disable-line @typescript-eslint/no-explicit-any
       // Filtre N° compteur
       if (hasSearch) {
         const numero = anomalie.Appareil?.Numero;
@@ -433,7 +433,7 @@ export default function ListAnomalies({ pkImmeuble }: ListAnomaliesProps) {
           </TableHeader>
 
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-            {filteredAnomalies.map((anomalie, index) => {
+            {filteredAnomalies.map((anomalie:any, index:any) => {// eslint-disable-line @typescript-eslint/no-explicit-any
               const key = anomalie.PkAnomalie ?? anomalie.Appareil?.Numero ?? `anomalie-${index}`;
               const pkLogement = anomalie.Logement?.PkLogement;
               const indexValue = anomalie.Anomalie?.Index ?? "—";

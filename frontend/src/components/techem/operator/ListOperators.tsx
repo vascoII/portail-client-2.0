@@ -74,12 +74,6 @@ export default function ListOperators() {
       setOperatorToDelete(null);
       setErrorMessage(null); // Clear any previous errors
     } catch (error) {
-      await refetchOperators();
-      // Close modal and reset state on success
-      closeModal();
-      setOperatorToDelete(null);
-      setErrorMessage(null);
-      
       console.error("Error deleting operator:", error);
       const errorMessage = handleApiError(error);
       setErrorMessage(
@@ -213,7 +207,7 @@ export default function ListOperators() {
         {filteredOperators.length === 0 ? (
           <div className="flex items-center justify-center min-h-[200px] rounded-xl border border-dashed border-gray-200 dark:border-gray-800">
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              {searchName.trim() ? "Aucun gestionnaire ne correspond à la recherche." : "Aucun gestionnaire enregistré."}
+               {searchName.trim() ? "Aucun gestionnaire ne correspond à la recherche." : "Aucun gestionnaire enregistré."}
             </p>
           </div>
         ) : (
@@ -254,7 +248,7 @@ export default function ListOperators() {
             </TableHeader>
 
             <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-              {filteredOperators.map((operator) => {
+              {filteredOperators.map((operator: any) => {// eslint-disable-line @typescript-eslint/no-explicit-any
                 const pkUser = operator.PKUser;
                 const userName = operator.UserName ?? "";
                 const firstName = operator.FirstName ?? "";
