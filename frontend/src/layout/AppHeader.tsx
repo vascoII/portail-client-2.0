@@ -9,6 +9,11 @@ import Link from "next/link";
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Modal } from "@/components/ui/modal";
 import { useRouter } from "next/navigation";
+import { useSearch } from "@/lib/hooks/useSearch";
+import type {
+  SearchImmeublesParams,
+  SearchOccupantsParams,
+} from "@/lib/hooks/useSearch";
 
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
@@ -16,12 +21,14 @@ const AppHeader: React.FC = () => {
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
   const { user } = useAuth();
   const router = useRouter();
+  const { searchImmeubles, searchOccupants } = useSearch();
 
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [isNoResultsModalOpen, setIsNoResultsModalOpen] = useState(false);
-  const [searchType, setSearchType] = useState<"immeuble" | "occupant">(
-    "immeuble",
-  );
+  const [searchType, setSearchType] = useState<
+    "tout" | "immeuble" | "occupant"
+  >("tout");
+  const [searchAll, setSearchAll] = useState("");
   const [refNumero, setRefNumero] = useState("");
   const [nom, setNom] = useState("");
   const [adresse, setAdresse] = useState("");
@@ -70,6 +77,7 @@ const AppHeader: React.FC = () => {
 
   const openSearchModal = () => {
     setSearchError(null);
+    setSearchType("tout");
     setIsSearchModalOpen(true);
   };
 
@@ -83,64 +91,138 @@ const AppHeader: React.FC = () => {
     setIsSearching(true);
 
     try {
-      const payload = {
-        type: searchType,
-        refNumero: refNumero || undefined,
-        nom: nom || undefined,
-        adresse: adresse || undefined,
-        cp: cp || undefined,
-        ville: ville || undefined,
-      };
+      // Global search ("Tout"): essayer d'abord sur les immeubles puis sur les occupants
+      if (searchType === "tout") {
+        const query = searchAll.trim();
 
-      const response = await fetch("/api/search", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+        if (!query) {
+          setSearchError("Veuillez saisir un critère de recherche.");
+          setIsSearching(false);
+          return;
+        }
 
-      if (!response.ok) {
-        throw new Error("Erreur lors de la recherche.");
-      }
+        const immeublesParams: SearchImmeublesParams = { tout: query };
+        const immeublesResult = await searchImmeubles(immeublesParams);
 
-      const data: unknown = await response.json();
-      const results =
-        Array.isArray(data)
-          ? data
-          : typeof data === "object" && data !== null
-            ? Array.isArray((data as { results?: unknown[] }).results)
-              ? (data as { results: unknown[] }).results
-              : Array.isArray((data as { data?: unknown[] }).data)
-                ? (data as { data: unknown[] }).data
-                : []
-            : [];
+        if (
+          immeublesResult.results &&
+          immeublesResult.results.length > 0
+        ) {
+          if (typeof window !== "undefined") {
+            window.sessionStorage.setItem(
+              "search_immeubles_results",
+              JSON.stringify(immeublesResult.results),
+            );
+          }
+          closeSearchModal();
+          router.push("/immeuble");
+          return;
+        }
 
-      if (!results || results.length === 0) {
+        const occupantsParams: SearchOccupantsParams = { tout: query };
+        const occupantsResult = await searchOccupants(occupantsParams);
+
+        if (
+          occupantsResult.results &&
+          occupantsResult.results.length > 0
+        ) {
+          if (typeof window !== "undefined") {
+            window.sessionStorage.setItem(
+              "search_logements_results",
+              JSON.stringify(occupantsResult.results),
+            );
+          }
+          closeSearchModal();
+          router.push("/logements");
+          return;
+        }
+
         setIsNoResultsModalOpen(true);
         return;
       }
 
-      if (typeof window !== "undefined") {
-        if (searchType === "immeuble") {
+      // Recherche Immeuble seule
+      if (searchType === "immeuble") {
+        const params: SearchImmeublesParams = {};
+
+        if (refNumero.trim()) {
+          params.ref_numero = refNumero.trim();
+        }
+        if (nom.trim()) {
+          params.nom = nom.trim();
+        }
+        const fullAdresse = [adresse.trim(), cp.trim(), ville.trim()]
+          .filter(Boolean)
+          .join(" ");
+        if (fullAdresse) {
+          params.adresse = fullAdresse;
+        }
+
+        if (Object.keys(params).length === 0) {
+          setSearchError("Veuillez saisir au moins un critère.");
+          setIsSearching(false);
+          return;
+        }
+
+        const result = await searchImmeubles(params);
+
+        if (!result.results || result.results.length === 0) {
+          setIsNoResultsModalOpen(true);
+          return;
+        }
+
+        if (typeof window !== "undefined") {
           window.sessionStorage.setItem(
             "search_immeubles_results",
-            JSON.stringify(results),
-          );
-        } else {
-          window.sessionStorage.setItem(
-            "search_logements_results",
-            JSON.stringify(results),
+            JSON.stringify(result.results),
           );
         }
+
+        closeSearchModal();
+        router.push("/immeuble");
+        return;
       }
 
-      closeSearchModal();
+      // Recherche Occupant seule
+      if (searchType === "occupant") {
+        const params: SearchOccupantsParams = {};
 
-      if (searchType === "immeuble") {
-        router.push("/immeuble");
-      } else {
+        if (refNumero.trim()) {
+          params.ref_numero = refNumero.trim();
+        }
+        if (nom.trim()) {
+          params.nom = nom.trim();
+        }
+        const fullAdresse = [adresse.trim(), cp.trim(), ville.trim()]
+          .filter(Boolean)
+          .join(" ");
+        if (fullAdresse) {
+          params.adresse = fullAdresse;
+        }
+
+        if (Object.keys(params).length === 0) {
+          setSearchError("Veuillez saisir au moins un critère.");
+          setIsSearching(false);
+          return;
+        }
+
+        const result = await searchOccupants(params);
+
+        if (!result.results || result.results.length === 0) {
+          setIsNoResultsModalOpen(true);
+          return;
+        }
+
+        if (typeof window !== "undefined") {
+          window.sessionStorage.setItem(
+            "search_logements_results",
+            JSON.stringify(result.results),
+          );
+        }
+
+        closeSearchModal();
         router.push("/logements");
+        return;
       }
     } catch {
       setSearchError(
@@ -322,6 +404,17 @@ const AppHeader: React.FC = () => {
                   <input
                     type="radio"
                     name="searchType"
+                    value="tout"
+                    checked={searchType === "tout"}
+                    onChange={() => setSearchType("tout")}
+                    className="h-4 w-4 border-gray-300 text-brand-600 focus:ring-brand-500"
+                  />
+                  Tout
+                </label>
+                <label className="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200">
+                  <input
+                    type="radio"
+                    name="searchType"
                     value="immeuble"
                     checked={searchType === "immeuble"}
                     onChange={() => setSearchType("immeuble")}
@@ -342,67 +435,86 @@ const AppHeader: React.FC = () => {
                 </label>
               </div>
             </div>
+            {searchType === "tout" ? (
+              <div className="space-y-1">
+                <label
+                  htmlFor="tout"
+                  className="block text-sm font-medium text-gray-700 dark:text-gray-200"
+                >
+                  Recherche
+                </label>
+                <input
+                  id="tout"
+                  type="text"
+                  value={searchAll}
+                  onChange={(e) => setSearchAll(e.target.value)}
+                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                />
+              </div>
+            ) : (
+              <>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                      Référence / Numéro
+                    </label>
+                    <input
+                      type="text"
+                      value={refNumero}
+                      onChange={(e) => setRefNumero(e.target.value)}
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                      Nom
+                    </label>
+                    <input
+                      type="text"
+                      value={nom}
+                      onChange={(e) => setNom(e.target.value)}
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                    />
+                  </div>
+                </div>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-1">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                  Référence / Numéro
-                </label>
-                <input
-                  type="text"
-                  value={refNumero}
-                  onChange={(e) => setRefNumero(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                  Nom
-                </label>
-                <input
-                  type="text"
-                  value={nom}
-                  onChange={(e) => setNom(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
-                />
-              </div>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-3">
-              <div className="space-y-1">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                  Adresse
-                </label>
-                <input
-                  type="text"
-                  value={adresse}
-                  onChange={(e) => setAdresse(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                  Code postal
-                </label>
-                <input
-                  type="text"
-                  value={cp}
-                  onChange={(e) => setCp(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-                  Ville
-                </label>
-                <input
-                  type="text"
-                  value={ville}
-                  onChange={(e) => setVille(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
-                />
-              </div>
-            </div>
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <div className="space-y-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                      Adresse
+                    </label>
+                    <input
+                      type="text"
+                      value={adresse}
+                      onChange={(e) => setAdresse(e.target.value)}
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                      Code postal
+                    </label>
+                    <input
+                      type="text"
+                      value={cp}
+                      onChange={(e) => setCp(e.target.value)}
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                      Ville
+                    </label>
+                    <input
+                      type="text"
+                      value={ville}
+                      onChange={(e) => setVille(e.target.value)}
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                    />
+                  </div>
+                </div>
+              </>
+            )}
 
             {searchError && (
               <p className="text-sm text-red-600 dark:text-red-400">
