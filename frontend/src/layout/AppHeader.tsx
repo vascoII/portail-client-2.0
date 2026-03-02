@@ -7,12 +7,28 @@ import { useAuth } from "@/lib/hooks/useAuth";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState, useEffect, useRef, useMemo } from "react";
+import { Modal } from "@/components/ui/modal";
+import { useRouter } from "next/navigation";
 
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
 
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
   const { user } = useAuth();
+  const router = useRouter();
+
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [isNoResultsModalOpen, setIsNoResultsModalOpen] = useState(false);
+  const [searchType, setSearchType] = useState<"immeuble" | "occupant">(
+    "immeuble",
+  );
+  const [refNumero, setRefNumero] = useState("");
+  const [nom, setNom] = useState("");
+  const [adresse, setAdresse] = useState("");
+  const [cp, setCp] = useState("");
+  const [ville, setVille] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
 
   // Determine the home link based on user type
   const homeLink = useMemo(() => {
@@ -50,13 +66,98 @@ const AppHeader: React.FC = () => {
   const toggleApplicationMenu = () => {
     setApplicationMenuOpen(!isApplicationMenuOpen);
   };
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLButtonElement>(null);
+
+  const openSearchModal = () => {
+    setSearchError(null);
+    setIsSearchModalOpen(true);
+  };
+
+  const closeSearchModal = () => {
+    setIsSearchModalOpen(false);
+  };
+
+  const handleSearchSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setSearchError(null);
+    setIsSearching(true);
+
+    try {
+      const payload = {
+        type: searchType,
+        refNumero: refNumero || undefined,
+        nom: nom || undefined,
+        adresse: adresse || undefined,
+        cp: cp || undefined,
+        ville: ville || undefined,
+      };
+
+      const response = await fetch("/api/search", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erreur lors de la recherche.");
+      }
+
+      const data: unknown = await response.json();
+      const results =
+        Array.isArray(data)
+          ? data
+          : typeof data === "object" && data !== null
+            ? Array.isArray((data as { results?: unknown[] }).results)
+              ? (data as { results: unknown[] }).results
+              : Array.isArray((data as { data?: unknown[] }).data)
+                ? (data as { data: unknown[] }).data
+                : []
+            : [];
+
+      if (!results || results.length === 0) {
+        setIsNoResultsModalOpen(true);
+        return;
+      }
+
+      if (typeof window !== "undefined") {
+        if (searchType === "immeuble") {
+          window.sessionStorage.setItem(
+            "search_immeubles_results",
+            JSON.stringify(results),
+          );
+        } else {
+          window.sessionStorage.setItem(
+            "search_logements_results",
+            JSON.stringify(results),
+          );
+        }
+      }
+
+      closeSearchModal();
+
+      if (searchType === "immeuble") {
+        router.push("/immeuble");
+      } else {
+        router.push("/logements");
+      }
+    } catch {
+      setSearchError(
+        "Une erreur s'est produite lors de la recherche. Veuillez réessayer.",
+      );
+    } finally {
+      setIsSearching(false);
+    }
+  };
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key === "k") {
         event.preventDefault();
-        inputRef.current?.focus();
+        if (!isSearchModalOpen) {
+          openSearchModal();
+        }
       }
     };
 
@@ -65,7 +166,7 @@ const AppHeader: React.FC = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [isSearchModalOpen]);
 
   return (
     <header className="sticky top-0 flex w-full bg-white border-gray-200 z-99999 dark:border-gray-800 dark:bg-gray-900 lg:border-b">
@@ -148,38 +249,33 @@ const AppHeader: React.FC = () => {
           </button>
 
           <div className="hidden lg:block">
-            <form>
-              <div className="relative">
-                <span className="absolute -translate-y-1/2 left-4 top-1/2 pointer-events-none">
-                  <svg
-                    className="fill-gray-500 dark:fill-gray-400"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M3.04175 9.37363C3.04175 5.87693 5.87711 3.04199 9.37508 3.04199C12.8731 3.04199 15.7084 5.87693 15.7084 9.37363C15.7084 12.8703 12.8731 15.7053 9.37508 15.7053C5.87711 15.7053 3.04175 12.8703 3.04175 9.37363ZM9.37508 1.54199C5.04902 1.54199 1.54175 5.04817 1.54175 9.37363C1.54175 13.6991 5.04902 17.2053 9.37508 17.2053C11.2674 17.2053 13.003 16.5344 14.357 15.4176L17.177 18.238C17.4699 18.5309 17.9448 18.5309 18.2377 18.238C18.5306 17.9451 18.5306 17.4703 18.2377 17.1774L15.418 14.3573C16.5365 13.0033 17.2084 11.2669 17.2084 9.37363C17.2084 5.04817 13.7011 1.54199 9.37508 1.54199Z"
-                      fill=""
-                    />
-                  </svg>
-                </span>
-                <input
-                  ref={inputRef}
-                  type="text"
-                  placeholder="Recherche avancée..."
-                  className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 pr-14 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-gray-900 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]"
-                />
-
-                <button className="absolute right-2.5 top-1/2 inline-flex -translate-y-1/2 items-center gap-0.5 rounded-lg border border-gray-200 bg-gray-50 px-[7px] py-[4.5px] text-xs -tracking-[0.2px] text-gray-500 dark:border-gray-800 dark:bg-white/[0.03] dark:text-gray-400">
-                  <span> ⌘ </span>
-                  <span> K </span>
-                </button>
-              </div>
-            </form>
+            <div className="relative">
+              <span className="absolute -translate-y-1/2 left-4 top-1/2 pointer-events-none">
+                <svg
+                  className="fill-gray-500 dark:fill-gray-400"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M3.04175 9.37363C3.04175 5.87693 5.87711 3.04199 9.37508 3.04199C12.8731 3.04199 15.7084 5.87693 15.7084 9.37363C15.7084 12.8703 12.8731 15.7053 9.37508 15.7053C5.87711 15.7053 3.04175 12.8703 3.04175 9.37363ZM9.37508 1.54199C5.04902 1.54199 1.54175 5.04817 1.54175 9.37363C1.54175 13.6991 5.04902 17.2053 9.37508 17.2053C11.2674 17.2053 13.003 16.5344 14.357 15.4176L17.177 18.238C17.4699 18.5309 17.9448 18.5309 18.2377 18.238C18.5306 17.9451 18.5306 17.4703 18.2377 17.1774L15.418 14.3573C16.5365 13.0033 17.2084 11.2669 17.2084 9.37363C17.2084 5.04817 13.7011 1.54199 9.37508 1.54199Z"
+                    fill=""
+                  />
+                </svg>
+              </span>
+              <button
+                ref={inputRef}
+                type="button"
+                onClick={openSearchModal}
+                className="dark:bg-dark-900 h-11 w-full rounded-lg border border-gray-200 bg-transparent py-2.5 pl-12 pr-14 text-left text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-800 dark:bg-gray-900 dark:bg-white/[0.03] dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 xl:w-[430px]"
+              >
+                Recherche avancée...
+              </button>
+            </div>
           </div>
         </div>
         <div
@@ -200,6 +296,164 @@ const AppHeader: React.FC = () => {
     
         </div>
       </div>
+
+      {/* Advanced Search Modal */}
+      <Modal
+        isOpen={isSearchModalOpen}
+        onClose={closeSearchModal}
+        className="max-w-[600px] p-5 lg:p-8"
+      >
+        <div className="no-scrollbar relative w-full overflow-y-auto rounded-3xl bg-white p-2 dark:bg-gray-900 sm:p-4">
+          <div className="px-2 pb-4">
+            <h4 className="mb-2 text-xl font-semibold text-gray-800 dark:text-white/90">
+              Recherche avancée
+            </h4>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Recherchez un immeuble ou un occupant selon vos critères.
+            </p>
+          </div>
+          <form onSubmit={handleSearchSubmit} className="space-y-4 px-2 pb-2">
+            <div className="flex items-center gap-4">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                Type de recherche
+              </span>
+              <div className="flex items-center gap-3">
+                <label className="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200">
+                  <input
+                    type="radio"
+                    name="searchType"
+                    value="immeuble"
+                    checked={searchType === "immeuble"}
+                    onChange={() => setSearchType("immeuble")}
+                    className="h-4 w-4 border-gray-300 text-brand-600 focus:ring-brand-500"
+                  />
+                  Immeuble
+                </label>
+                <label className="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-200">
+                  <input
+                    type="radio"
+                    name="searchType"
+                    value="occupant"
+                    checked={searchType === "occupant"}
+                    onChange={() => setSearchType("occupant")}
+                    className="h-4 w-4 border-gray-300 text-brand-600 focus:ring-brand-500"
+                  />
+                  Occupant
+                </label>
+              </div>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Référence / Numéro
+                </label>
+                <input
+                  type="text"
+                  value={refNumero}
+                  onChange={(e) => setRefNumero(e.target.value)}
+                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Nom
+                </label>
+                <input
+                  type="text"
+                  value={nom}
+                  onChange={(e) => setNom(e.target.value)}
+                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-3">
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Adresse
+                </label>
+                <input
+                  type="text"
+                  value={adresse}
+                  onChange={(e) => setAdresse(e.target.value)}
+                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Code postal
+                </label>
+                <input
+                  type="text"
+                  value={cp}
+                  onChange={(e) => setCp(e.target.value)}
+                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                />
+              </div>
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                  Ville
+                </label>
+                <input
+                  type="text"
+                  value={ville}
+                  onChange={(e) => setVille(e.target.value)}
+                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+                />
+              </div>
+            </div>
+
+            {searchError && (
+              <p className="text-sm text-red-600 dark:text-red-400">
+                {searchError}
+              </p>
+            )}
+
+            <div className="mt-4 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={closeSearchModal}
+                className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 shadow-theme-xs hover:bg-gray-50 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-white/[0.03]"
+              >
+                Annuler
+              </button>
+              <button
+                type="submit"
+                disabled={isSearching}
+                className="inline-flex items-center justify-center rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-theme-xs hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {isSearching ? "Recherche..." : "Rechercher"}
+              </button>
+            </div>
+          </form>
+        </div>
+      </Modal>
+
+      {/* No Results Modal */}
+      <Modal
+        isOpen={isNoResultsModalOpen}
+        onClose={() => setIsNoResultsModalOpen(false)}
+        className="max-w-[400px] p-5"
+      >
+        <div className="no-scrollbar relative w-full overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900">
+          <h4 className="mb-3 text-lg font-semibold text-gray-800 dark:text-white/90">
+            Aucun résultat
+          </h4>
+          <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">
+            Pas de résultats trouvés selon vos critères.
+          </p>
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={() => setIsNoResultsModalOpen(false)}
+              className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-theme-xs hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
+            >
+              Fermer
+            </button>
+          </div>
+        </div>
+      </Modal>
     </header>
   );
 };

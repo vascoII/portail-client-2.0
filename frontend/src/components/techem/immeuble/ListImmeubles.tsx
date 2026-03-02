@@ -173,13 +173,43 @@ export default function ListImmeubles() {
   }, [immeubles, activeFilters, searchTerm]);
 
   useEffect(() => {
-    // Load all buildings on component mount
     let isMounted = true;
-    
+
     const loadImmeubles = async () => {
       try {
         setIsLoading(true);
         setLoadingError(null);
+
+        // If there are search results from the advanced search, use them instead of loading all
+        if (typeof window !== "undefined") {
+          const stored = window.sessionStorage.getItem("search_immeubles_results");
+          if (stored) {
+            try {
+              const parsed = JSON.parse(stored) as Building[];
+              if (isMounted) {
+                setImmeubles(Array.isArray(parsed) ? parsed : []);
+                setLoadingError(null);
+              }
+            } catch (error) {
+              console.error("Error parsing search_immeubles_results:", error);
+              if (isMounted) {
+                setImmeubles([]);
+                setLoadingError({
+                  title: "Erreur de chargement",
+                  message:
+                    "Impossible de lire les résultats de recherche. Veuillez relancer la recherche.",
+                });
+              }
+            } finally {
+              window.sessionStorage.removeItem("search_immeubles_results");
+              if (isMounted) {
+                setIsLoading(false);
+              }
+            }
+            return;
+          }
+        }
+
         const response = await filterImmeubles({});
         if (isMounted) {
           setImmeubles(response.immeubles || []);
