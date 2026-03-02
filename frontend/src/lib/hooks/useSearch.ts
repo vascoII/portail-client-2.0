@@ -100,25 +100,26 @@ export function useSearch() {
 
   /**
    * Search immeubles query
-   * GET /api/search?type=immeuble
+   * POST /api/search (type = immeuble)
    * @param params - Search parameters
    */
   const useSearchImmeublesQuery = (params?: SearchImmeublesParams) => {
     return useQuery({
       queryKey: ["search", "immeubles", params],
       queryFn: async (): Promise<SearchImmeublesResponse> => {
-        const queryParams: any = { type: "immeuble" }; // eslint-disable-line @typescript-eslint/no-explicit-any
+        const body: any = { type: "immeuble" }; // eslint-disable-line @typescript-eslint/no-explicit-any
 
         // Add filters (API validates minimum lengths)
-        if (params?.ref) queryParams.ref = params.ref;
-        if (params?.ref_numero) queryParams.ref_numero = params.ref_numero;
-        if (params?.nom) queryParams.nom = params.nom;
-        if (params?.tout) queryParams.tout = params.tout;
-        if (params?.adresse) queryParams.adresse = params.adresse;
+        if (params?.ref) body.ref = params.ref;
+        if (params?.ref_numero) body.ref_numero = params.ref_numero;
+        if (params?.nom) body.nom = params.nom;
+        if (params?.tout) body.tout = params.tout;
+        if (params?.adresse) body.adresse = params.adresse;
 
-        const response = await api.get<SearchImmeublesResponse>("/search", {
-          params: queryParams,
-        });
+        const response = await api.post<SearchImmeublesResponse>(
+          "/search",
+          body,
+        );
         return extractApiData<SearchImmeublesResponse>(response);
       },
       enabled: !!params && Object.keys(params).length > 0, // Only run if params provided
@@ -135,21 +136,22 @@ export function useSearch() {
   const searchImmeubles = async (
     params: SearchImmeublesParams
   ): Promise<SearchImmeublesResponse> => {
-    const queryParams: any = { type: "immeuble" }; // eslint-disable-line @typescript-eslint/no-explicit-any
+    const body: any = { type: "immeuble" }; // eslint-disable-line @typescript-eslint/no-explicit-any
 
     // Add filters
-    if (params.ref) queryParams.ref = params.ref;
-    if (params.ref_numero) queryParams.ref_numero = params.ref_numero;
-    if (params.nom) queryParams.nom = params.nom;
-    if (params.tout) queryParams.tout = params.tout;
-    if (params.adresse) queryParams.adresse = params.adresse;
+    if (params.ref) body.ref = params.ref;
+    if (params.ref_numero) body.ref_numero = params.ref_numero;
+    if (params.nom) body.nom = params.nom;
+    if (params.tout) body.tout = params.tout;
+    if (params.adresse) body.adresse = params.adresse;
 
     const result = await queryClient.fetchQuery({
       queryKey: ["search", "immeubles", params],
       queryFn: async (): Promise<SearchImmeublesResponse> => {
-        const response = await api.get<SearchImmeublesResponse>("/search", {
-          params: queryParams,
-        });
+        const response = await api.post<SearchImmeublesResponse>(
+          "/search",
+          body,
+        );
         return extractApiData<SearchImmeublesResponse>(response);
       },
       retry: false,
@@ -160,26 +162,27 @@ export function useSearch() {
 
   /**
    * Search occupants query
-   * GET /api/search?type=occupant
+   * POST /api/search (type = occupant)
    * @param params - Search parameters
    */
   const useSearchOccupantsQuery = (params?: SearchOccupantsParams) => {
     return useQuery({
       queryKey: ["search", "occupants", params],
       queryFn: async (): Promise<SearchOccupantsResponse> => {
-        const queryParams: any = { type: "occupant" }; // eslint-disable-line @typescript-eslint/no-explicit-any
+        const body: any = { type: "occupant" }; // eslint-disable-line @typescript-eslint/no-explicit-any
 
         // Add filters
-        if (params?.ref) queryParams.ref = params.ref;
-        if (params?.ref_numero) queryParams.ref_numero = params.ref_numero;
-        if (params?.nom) queryParams.nom = params.nom;
-        if (params?.tout) queryParams.tout = params.tout;
-        if (params?.adresse) queryParams.adresse = params.adresse;
-        if (params?.pkImmeuble) queryParams.pkImmeuble = params.pkImmeuble;
+        if (params?.ref) body.ref = params.ref;
+        if (params?.ref_numero) body.ref_numero = params.ref_numero;
+        if (params?.nom) body.nom = params.nom;
+        if (params?.tout) body.tout = params.tout;
+        if (params?.adresse) body.adresse = params.adresse;
+        if (params?.pkImmeuble) body.pkImmeuble = params.pkImmeuble;
 
-        const response = await api.get<SearchOccupantsResponse>("/search", {
-          params: queryParams,
-        });
+        const response = await api.post<SearchOccupantsResponse>(
+          "/search",
+          body,
+        );
         return extractApiData<SearchOccupantsResponse>(response);
       },
       enabled: !!params && Object.keys(params).length > 0, // Only run if params provided
@@ -196,22 +199,23 @@ export function useSearch() {
   const searchOccupants = async (
     params: SearchOccupantsParams
   ): Promise<SearchOccupantsResponse> => {
-    const queryParams: any = { type: "occupant" }; // eslint-disable-line @typescript-eslint/no-explicit-any
+    const body: any = { type: "occupant" }; // eslint-disable-line @typescript-eslint/no-explicit-any
 
     // Add filters
-    if (params.ref) queryParams.ref = params.ref;
-    if (params.ref_numero) queryParams.ref_numero = params.ref_numero;
-    if (params.nom) queryParams.nom = params.nom;
-    if (params.tout) queryParams.tout = params.tout;
-    if (params.adresse) queryParams.adresse = params.adresse;
-    if (params.pkImmeuble) queryParams.pkImmeuble = params.pkImmeuble;
+    if (params.ref) body.ref = params.ref;
+    if (params.ref_numero) body.ref_numero = params.ref_numero;
+    if (params.nom) body.nom = params.nom;
+    if (params.tout) body.tout = params.tout;
+    if (params.adresse) body.adresse = params.adresse;
+    if (params.pkImmeuble) body.pkImmeuble = params.pkImmeuble;
 
     const result = await queryClient.fetchQuery({
       queryKey: ["search", "occupants", params],
       queryFn: async (): Promise<SearchOccupantsResponse> => {
-        const response = await api.get<SearchOccupantsResponse>("/search", {
-          params: queryParams,
-        });
+        const response = await api.post<SearchOccupantsResponse>(
+          "/search",
+          body,
+        );
         return extractApiData<SearchOccupantsResponse>(response);
       },
       retry: false,
@@ -222,7 +226,7 @@ export function useSearch() {
 
   /**
    * Generic search mutation (can be used for both types)
-   * GET /api/search
+   * POST /api/search
    * @param type - Search type ('immeuble' or 'occupant')
    * @param params - Search parameters
    */
@@ -234,25 +238,22 @@ export function useSearch() {
       type: "immeuble" | "occupant";
       params: SearchImmeublesParams | SearchOccupantsParams;
     }): Promise<SearchImmeublesResponse | SearchOccupantsResponse> => {
-      const queryParams: any = { type }; // eslint-disable-line @typescript-eslint/no-explicit-any
+      const body: any = { type }; // eslint-disable-line @typescript-eslint/no-explicit-any
 
       // Add filters
-      if ("ref" in params && params.ref) queryParams.ref = params.ref;
+      if ("ref" in params && params.ref) body.ref = params.ref;
       if ("ref_numero" in params && params.ref_numero)
-        queryParams.ref_numero = params.ref_numero;
-      if ("nom" in params && params.nom) queryParams.nom = params.nom;
-      if ("tout" in params && params.tout) queryParams.tout = params.tout;
+        body.ref_numero = params.ref_numero;
+      if ("nom" in params && params.nom) body.nom = params.nom;
+      if ("tout" in params && params.tout) body.tout = params.tout;
       if ("adresse" in params && params.adresse)
-        queryParams.adresse = params.adresse;
+        body.adresse = params.adresse;
       if ("pkImmeuble" in params && params.pkImmeuble)
-        queryParams.pkImmeuble = params.pkImmeuble;
+        body.pkImmeuble = params.pkImmeuble;
 
-      const response = await api.get<SearchImmeublesResponse | SearchOccupantsResponse>(
-        "/search",
-        {
-          params: queryParams,
-        }
-      );
+      const response = await api.post<
+        SearchImmeublesResponse | SearchOccupantsResponse
+      >("/search", body);
       return extractApiData<SearchImmeublesResponse | SearchOccupantsResponse>(response);
     },
   });

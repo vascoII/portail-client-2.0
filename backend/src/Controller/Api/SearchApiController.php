@@ -16,22 +16,36 @@ class SearchApiController extends AbstractApiController
 {
     /**
      * Search for immeubles or occupants
+     *
+     * Now expects a POST request with a JSON body:
+     * {
+     *   "type": "immeuble" | "occupant",
+     *   "ref": "...",
+     *   "ref_numero": "...",
+     *   "nom": "...",
+     *   "tout": "...",
+     *   "adresse": "...",
+     *   "pkImmeuble": 123 // (optionnel, pour occupant)
+     * }
      */
-    #[Route("", name: "index", methods: ["GET"])]
+    #[Route("", name: "index", methods: ["POST"])]
     public function index(Request $request): JsonResponse
     {
-        // Check if faker mode is enabled and return fake data
-        $fakeResponse = $this->sendFakeData('api.search');
-        if ($fakeResponse !== null) {
-            return $fakeResponse;
-        }
-
         $client = $this->getAuthenticatedClientFromHeaders($request);
         if ($client instanceof JsonResponse) {
             return $client;
         }
 
+        // Read "type" from JSON body, fallback to query if needed
         $type = $request->query->get('type');
+        if ($type === null || $type === '') {
+            try {
+                $data = $request->toArray();
+            } catch (\JsonException $e) {
+                $data = [];
+            }
+            $type = $data['type'] ?? null;
+        }
 
         try {
             if ($type == 'immeuble') {
@@ -112,8 +126,16 @@ class SearchApiController extends AbstractApiController
         $params->NBFUITES = true;
         $params->NBCOMPTEURS = true;
 
-        // Get pkImmeuble from request if provided
-        $pkImmeuble = $request->query->get('pkImmeuble', -1);
+        // Get pkImmeuble from request if provided (JSON body or query)
+        $pkImmeuble = $request->query->get('pkImmeuble', null);
+        if ($pkImmeuble === null) {
+            try {
+                $data = $request->toArray();
+            } catch (\JsonException $e) {
+                $data = [];
+            }
+            $pkImmeuble = $data['pkImmeuble'] ?? -1;
+        }
 
         // Apply filters
         if (isset($filtersMin1['ref'])) {
@@ -155,8 +177,27 @@ class SearchApiController extends AbstractApiController
     {
         $validFilters = [];
 
+        // Prefer JSON body (POST), but keep query support as fallback
+        try {
+            $body = $request->toArray();
+        } catch (\JsonException $e) {
+            $body = [];
+        }
+
         foreach ($filters as $filter) {
-            $value = trim($request->query->get($filter, ''));
+            $rawValue = null;
+
+            if ($request->isMethod('POST')) {
+                if (array_key_exists($filter, $body)) {
+                    $rawValue = $body[$filter];
+                }
+            }
+
+            if ($rawValue === null) {
+                $rawValue = $request->query->get($filter, '');
+            }
+
+            $value = trim((string) $rawValue);
             if (strlen($value) >= $minLength) {
                 $validFilters[$filter] = $value;
             }
