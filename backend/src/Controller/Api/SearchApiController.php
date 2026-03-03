@@ -106,10 +106,7 @@ class SearchApiController extends AbstractApiController
         }
 
         return $this->success([
-            'type' => 'immeuble',
-            'filters' => array_merge($filtersMin1, $filtersMin3),
-            'results' => $this->normalize($immeubles),
-            'count' => count($immeubles),
+            'immeubles' => $this->normalize($immeubles),
         ]);
     }
 
@@ -165,10 +162,8 @@ class SearchApiController extends AbstractApiController
         }
 
         return $this->success([
-            'type' => 'occupant',
-            'filters' => array_merge($filtersMin1, $filtersMin3),
-            'results' => $this->normalize($logements),
-            'count' => count($logements),
+            'logement' => $this->normalize($logements),
+            
         ]);
     }
 
