@@ -5,22 +5,18 @@ import type { Building, Housing, DashboardData, SearchParams as _SearchParams } 
 
 /**
  * Response from /api/search endpoint for immeubles
+ * Matches backend `json_response.txt` -> data.immeubles: Building[]
  */
 export interface SearchImmeublesResponse {
-  type: "immeuble";
-  filters: Record<string, string>;
-  results: Building[];
-  count: number;
+  immeubles: Building[];
 }
 
 /**
  * Response from /api/search endpoint for occupants
+ * Matches backend `json_response.txt` -> data.logement: Housing[]
  */
 export interface SearchOccupantsResponse {
-  type: "occupant";
-  filters: Record<string, string>;
-  results: Housing[];
-  count: number;
+  logement: Housing[];
 }
 
 /**

@@ -105,13 +105,13 @@ const AppHeader: React.FC = () => {
         const immeublesResult = await searchImmeubles(immeublesParams);
 
         if (
-          immeublesResult.results &&
-          immeublesResult.results.length > 0
+          immeublesResult.immeubles &&
+          immeublesResult.immeubles.length > 0
         ) {
           if (typeof window !== "undefined") {
             window.sessionStorage.setItem(
               "search_immeubles_results",
-              JSON.stringify(immeublesResult.results),
+              JSON.stringify(immeublesResult.immeubles),
             );
           }
           closeSearchModal();
@@ -123,13 +123,13 @@ const AppHeader: React.FC = () => {
         const occupantsResult = await searchOccupants(occupantsParams);
 
         if (
-          occupantsResult.results &&
-          occupantsResult.results.length > 0
+          occupantsResult.logement &&
+          occupantsResult.logement.length > 0
         ) {
           if (typeof window !== "undefined") {
             window.sessionStorage.setItem(
               "search_logements_results",
-              JSON.stringify(occupantsResult.results),
+              JSON.stringify(occupantsResult.logement),
             );
           }
           closeSearchModal();
@@ -166,7 +166,7 @@ const AppHeader: React.FC = () => {
 
         const result = await searchImmeubles(params);
 
-        if (!result.results || result.results.length === 0) {
+        if (!result.immeubles || result.immeubles.length === 0) {
           setIsNoResultsModalOpen(true);
           return;
         }
@@ -174,7 +174,7 @@ const AppHeader: React.FC = () => {
         if (typeof window !== "undefined") {
           window.sessionStorage.setItem(
             "search_immeubles_results",
-            JSON.stringify(result.results),
+            JSON.stringify(result.immeubles),
           );
         }
 
@@ -208,7 +208,7 @@ const AppHeader: React.FC = () => {
 
         const result = await searchOccupants(params);
 
-        if (!result.results || result.results.length === 0) {
+        if (!result.logement || result.logement.length === 0) {
           setIsNoResultsModalOpen(true);
           return;
         }
@@ -216,7 +216,7 @@ const AppHeader: React.FC = () => {
         if (typeof window !== "undefined") {
           window.sessionStorage.setItem(
             "search_logements_results",
-            JSON.stringify(result.results),
+            JSON.stringify(result.logement),
           );
         }
 
