@@ -13,6 +13,8 @@ import { useSearch } from "@/lib/hooks/useSearch";
 import type {
   SearchImmeublesParams,
   SearchOccupantsParams,
+  SearchImmeublesResponse,
+  SearchOccupantsResponse,
 } from "@/lib/hooks/useSearch";
 
 const AppHeader: React.FC = () => {
@@ -21,7 +23,7 @@ const AppHeader: React.FC = () => {
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
   const { user } = useAuth();
   const router = useRouter();
-  const { searchImmeubles, searchOccupants } = useSearch();
+  const { search } = useSearch();
 
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [isNoResultsModalOpen, setIsNoResultsModalOpen] = useState(false);
@@ -91,6 +93,12 @@ const AppHeader: React.FC = () => {
     setIsSearching(true);
 
     try {
+      // Always clear previous cached UI results before a new search
+      if (typeof window !== "undefined") {
+        window.sessionStorage.removeItem("search_immeubles_results");
+        window.sessionStorage.removeItem("search_logements_results");
+      }
+
       // Global search ("Tout"): essayer d'abord sur les immeubles puis sur les occupants
       if (searchType === "tout") {
         const query = searchAll.trim();
@@ -102,7 +110,10 @@ const AppHeader: React.FC = () => {
         }
 
         const immeublesParams: SearchImmeublesParams = { tout: query };
-        const immeublesResult = await searchImmeubles(immeublesParams);
+        const immeublesResult = (await search(
+          "immeuble",
+          immeublesParams,
+        )) as SearchImmeublesResponse;
 
         if (
           immeublesResult.immeubles &&
@@ -120,7 +131,10 @@ const AppHeader: React.FC = () => {
         }
 
         const occupantsParams: SearchOccupantsParams = { tout: query };
-        const occupantsResult = await searchOccupants(occupantsParams);
+        const occupantsResult = (await search(
+          "occupant",
+          occupantsParams,
+        )) as SearchOccupantsResponse;
 
         if (
           occupantsResult.logement &&
@@ -164,7 +178,10 @@ const AppHeader: React.FC = () => {
           return;
         }
 
-        const result = await searchImmeubles(params);
+        const result = (await search(
+          "immeuble",
+          params,
+        )) as SearchImmeublesResponse;
 
         if (!result.immeubles || result.immeubles.length === 0) {
           setIsNoResultsModalOpen(true);
@@ -206,7 +223,10 @@ const AppHeader: React.FC = () => {
           return;
         }
 
-        const result = await searchOccupants(params);
+        const result = (await search(
+          "occupant",
+          params,
+        )) as SearchOccupantsResponse;
 
         if (!result.logement || result.logement.length === 0) {
           setIsNoResultsModalOpen(true);
