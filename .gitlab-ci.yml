@@ -1,43 +1,65 @@
-stages:
-  - install
-  - security
+############################################
+# Définition des étapes (stages) du pipeline
+############################################
+
+stages:                       # Liste ordonnée des grandes étapes du pipeline
+  - install                   # 1ère étape : installation des dépendances
+  - security                  # 2ème étape : vérifications de sécurité
+
+############################################
+# Variables d'environnement globales
+############################################
 
 variables:
-  NODE_ENV: production
-  COMPOSER_ALLOW_SUPERUSER: 1
+  NODE_ENV: production        # Indique à Node/React que l'on est en mode "production"
+  COMPOSER_ALLOW_SUPERUSER: 1 # Autorise l'exécution de Composer en tant que root dans les images Docker
 
-# 🔹 Backend Symfony
-composer_install:
-  image: composer:2
-  stage: install
-  script:
+############################################
+# 🔹 Backend Symfony (répertoire backend/)
+############################################
+
+composer_install:             # Job d'installation des dépendances PHP du backend
+  image: composer:2           # Image Docker officielle contenant PHP + Composer 2
+  stage: install              # Ce job s'exécute dans la stage "install"
+  script:                     # Liste des commandes exécutées dans le job
+    - cd backend              # On se place dans le dossier backend/ du projet
     - composer install --no-interaction --no-progress --prefer-dist
-  artifacts:
+                              # Installe les dépendances PHP (sans interaction ni barre de progression)
+  artifacts:                  # Artifacts = fichiers à conserver entre les jobs
     paths:
-      - vendor/
+      - backend/vendor/       # On garde le dossier vendor/ généré dans backend/ pour les jobs suivants
 
-composer_audit:
-  image: composer:2
-  stage: security
+composer_audit:               # Job de vérification de sécurité des dépendances PHP
+  image: composer:2           # Même image Docker que pour l'installation
+  stage: security             # Ce job s'exécute dans la stage "security"
   script:
+    - cd backend              # On se place dans le dossier backend/
     - composer install --no-interaction --no-progress --prefer-dist
+                              # On s'assure d'abord que toutes les dépendances sont installées
     - composer audit --format=plain
-  allow_failure: false
+                              # Analyse les dépendances pour trouver des failles de sécurité connues
+  allow_failure: false        # Le pipeline échoue si ce job échoue (aucune faille critique n'est tolérée)
 
-# 🔹 Frontend React
-npm_install:
-  image: node:20
-  stage: install
+############################################
+# 🔹 Frontend Next.js / React (répertoire frontend/)
+############################################
+
+npm_install:                  # Job d'installation des dépendances Node pour le frontend
+  image: node:20              # Image Docker officielle Node.js 20
+  stage: install              # Ce job appartient aussi à la stage "install"
   script:
-    - npm ci
-  artifacts:
+    - cd frontend             # On se place dans le dossier frontend/
+    - npm ci                  # Installe les dépendances à partir de package-lock.json (installation propre/reproductible)
+  artifacts:                  # On conserve les dépendances pour éviter de les réinstaller dans chaque job
     paths:
-      - node_modules/
+      - frontend/node_modules/ # Dossier node_modules/ du frontend
 
-npm_audit:
-  image: node:20
-  stage: security
+npm_audit:                    # Job d'audit de sécurité des dépendances Node
+  image: node:20              # Même image Docker Node.js 20
+  stage: security             # Job de la stage "security"
   script:
-    - npm ci
+    - cd frontend             # On se place dans le dossier frontend/
+    - npm ci                  # Réinstalle les dépendances pour être sûr d'auditer la bonne version
     - npm audit --audit-level=high
-  allow_failure: false
+                              # Lance un audit de sécurité et échoue si des vulnérabilités de niveau "high" (ou plus) sont trouvées
+  allow_failure: false        # Le pipeline échoue si des vulnérabilités sérieuses sont détectées
