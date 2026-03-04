@@ -1,0 +1,43 @@
+stages:
+  - install
+  - security
+
+variables:
+  NODE_ENV: production
+  COMPOSER_ALLOW_SUPERUSER: 1
+
+# 🔹 Backend Symfony
+composer_install:
+  image: composer:2
+  stage: install
+  script:
+    - composer install --no-interaction --no-progress --prefer-dist
+  artifacts:
+    paths:
+      - vendor/
+
+composer_audit:
+  image: composer:2
+  stage: security
+  script:
+    - composer install --no-interaction --no-progress --prefer-dist
+    - composer audit --format=plain
+  allow_failure: false
+
+# 🔹 Frontend React
+npm_install:
+  image: node:20
+  stage: install
+  script:
+    - npm ci
+  artifacts:
+    paths:
+      - node_modules/
+
+npm_audit:
+  image: node:20
+  stage: security
+  script:
+    - npm ci
+    - npm audit --audit-level=high
+  allow_failure: false
