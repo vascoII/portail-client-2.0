@@ -8,7 +8,10 @@ import type { Building, Housing, DashboardData, SearchParams as _SearchParams } 
  * Matches backend `json_response.txt` -> data.immeubles: Building[]
  */
 export interface SearchImmeublesResponse {
+  type: "immeuble";
+  filters: Record<string, string>;
   immeubles: Building[];
+  count: number;
 }
 
 /**
@@ -16,7 +19,10 @@ export interface SearchImmeublesResponse {
  * Matches backend `json_response.txt` -> data.logement: Housing[]
  */
 export interface SearchOccupantsResponse {
+  type: "occupant";
+  filters: Record<string, string>;
   logement: Housing[];
+  count: number;
 }
 
 /**
@@ -183,7 +189,7 @@ export function useSearch() {
       },
       enabled: !!params && Object.keys(params).length > 0, // Only run if params provided
       retry: false,
-      staleTime: 2 * 60 * 1000, // Consider fresh for 2 minutes
+      staleTime: 2 */* 60 **/ 1000, // Consider fresh for 2 minutes
     });
   };
 
@@ -215,7 +221,7 @@ export function useSearch() {
         return extractApiData<SearchOccupantsResponse>(response);
       },
       retry: false,
-      staleTime: 2 * 60 * 1000,
+      staleTime: 2 * /*60 **/ 1000,
     });
     return result;
   };

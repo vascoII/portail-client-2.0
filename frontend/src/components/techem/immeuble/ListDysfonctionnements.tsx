@@ -117,7 +117,7 @@ export default function ListDysfonctionnements({ pkImmeuble }: ListDysfonctionne
     const escaliers = new Set<string>();
     const batiments = new Set<string>();
 
-    dysfonctionnements.forEach((dysfonctionnement) => {
+    dysfonctionnements.forEach((dysfonctionnement:any) => {// eslint-disable-line @typescript-eslint/no-explicit-any
       const logement = dysfonctionnement.Logement;
       const etage = logement?.NumEtage;
       const escalier = (logement as never as { NumEscalier?: unknown })?.NumEscalier;
@@ -159,7 +159,7 @@ export default function ListDysfonctionnements({ pkImmeuble }: ListDysfonctionne
 
     const term = searchNumero.trim().toLowerCase();
 
-    return dysfonctionnements.filter((dysfonctionnement) => {
+    return dysfonctionnements.filter((dysfonctionnement:any) => {// eslint-disable-line @typescript-eslint/no-explicit-any
       // Filtre N° compteur
       if (hasSearch) {
         const numero = dysfonctionnement.Appareil?.Numero;
@@ -183,7 +183,7 @@ export default function ListDysfonctionnements({ pkImmeuble }: ListDysfonctionne
   }, [dysfonctionnements, searchNumero, filterEtage, filterEscalier, filterBatiment]);
 
   const totalDysfonctionnements = useMemo(
-    () => filteredDysfonctionnements.reduce((acc, dys) => acc + getDysfunctionCount(dys), 0),
+    () => filteredDysfonctionnements.reduce((acc:any, dys:any) => acc + getDysfunctionCount(dys), 0),// eslint-disable-line @typescript-eslint/no-explicit-any
     [filteredDysfonctionnements]
   );
 
@@ -458,7 +458,7 @@ export default function ListDysfonctionnements({ pkImmeuble }: ListDysfonctionne
           </TableHeader>
 
           <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-            {filteredDysfonctionnements.map((dysfonctionnement, index) => {
+            {filteredDysfonctionnements.map((dysfonctionnement:any, index:any) => {// eslint-disable-line @typescript-eslint/no-explicit-any
               const key = dysfonctionnement.PkDysfonctionnement ?? dysfonctionnement.Appareil?.Numero ?? `dysfonctionnement-${index}`;
               const pkLogement = dysfonctionnement.Logement?.PkLogement;
               const compteur = dysfonctionnement.Appareil?.Numero ?? "—";

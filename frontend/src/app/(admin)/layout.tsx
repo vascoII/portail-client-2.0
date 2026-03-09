@@ -85,6 +85,7 @@ export default function AdminLayout({
     "/tickets",
     "/gestionnaire",
     "/factures",
+    "/logements",
   ];
 
   const shouldCenterContent = !noCenterPrefixes.some((prefix) =>

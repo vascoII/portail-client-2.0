@@ -127,6 +127,7 @@ const AppHeader: React.FC = () => {
           }
           closeSearchModal();
           router.push("/immeuble");
+          window.location.reload();
           return;
         }
 
@@ -148,10 +149,12 @@ const AppHeader: React.FC = () => {
           }
           closeSearchModal();
           router.push("/logements");
+          window.location.reload();
           return;
         }
 
         setIsNoResultsModalOpen(true);
+        window.location.reload();
         return;
       }
 
@@ -197,6 +200,7 @@ const AppHeader: React.FC = () => {
 
         closeSearchModal();
         router.push("/immeuble");
+        window.location.reload();
         return;
       }
 
@@ -242,6 +246,7 @@ const AppHeader: React.FC = () => {
 
         closeSearchModal();
         router.push("/logements");
+        window.location.reload();
         return;
       }
     } catch {

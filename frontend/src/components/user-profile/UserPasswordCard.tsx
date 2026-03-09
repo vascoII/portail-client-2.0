@@ -72,7 +72,7 @@ export default function UserPasswordCard() {
       });
       setIsSuccess(true);
       reset();
-    } catch (error) {
+    } catch (error) {// eslint-disable-line @typescript-eslint/no-unused-vars
       setError("root", {
         type: "manual",
         message:

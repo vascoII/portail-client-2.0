@@ -69,18 +69,19 @@ const getNavItems = (
 
   // Always show Occupant (all patterns) - for occupant users
   dashboardSubItemsOcupant.push({ name: "Occupant", path: "/occupant", pro: false });
+  dashboardSubItemsOcupant.push({ name: "Simulateur", path: "/occupant/simulateur", pro: false });
 
   // Show Immeubles if we're on /immeuble or /logement (patterns 2-7)
-  if (pathname.startsWith("/immeuble") || pathname.startsWith("/logement")) {
+  //if (pathname.startsWith("/immeuble") || pathname.startsWith("/logement")) {
     dashboardSubItems.push({ name: "Immeubles", path: "/immeuble", pro: false });
-  }
+  //}
 
   // Show Immeuble if we have pkImmeuble (patterns 3-7)
   if (pkImmeuble) {
     dashboardSubItems.push({ name: "Immeuble", path: `/immeuble/${pkImmeuble}`, pro: false });
 
     // Show all 4 types if we're on an immeuble type page (pattern 4)
-    if (pathname.startsWith(`/immeuble/${pkImmeuble}/`) && currentSection && IMMEUBLE_SECTION_SLUGS.some(s => s.slug === currentSection)) {
+  /*  if (pathname.startsWith(`/immeuble/${pkImmeuble}/`) && currentSection && IMMEUBLE_SECTION_SLUGS.some(s => s.slug === currentSection)) {
       IMMEUBLE_SECTION_SLUGS.forEach(({ slug, label }) => {
         dashboardSubItems.push({
           name: label,
@@ -88,7 +89,7 @@ const getNavItems = (
           pro: false,
         });
       });
-    }
+    }*/
 
     // Show Logements if we're on logements page or logement detail page (patterns 5-7)
     if (pathname.includes("/logements") || pkLogement) {
@@ -113,7 +114,17 @@ const getNavItems = (
           });
         }
       }
-    }
+    } else {
+      dashboardSubItems.push({ name: "Fuites", path: `/immeuble/${pkImmeuble}/fuites`, pro: false });
+      dashboardSubItems.push({ name: "Alarmes", path: `/immeuble/${pkImmeuble}/dysfonctionnements`, pro: false });
+      dashboardSubItems.push({ name: "Anomalies", path: `/immeuble/${pkImmeuble}/anomalies`, pro: false });
+      dashboardSubItems.push({ name: "Dépannages", path: `/immeuble/${pkImmeuble}/depannages`, pro: false });
+    }  
+  } else {
+    dashboardSubItems.push({ name: "Fuites", path: "/immeuble?fuites=1", pro: false });
+    dashboardSubItems.push({ name: "Alarmes", path: "/immeuble?dysfonctionnements=1", pro: false });
+    dashboardSubItems.push({ name: "Anomalies", path: "/immeuble?anomalies=1", pro: false });
+    dashboardSubItems.push({ name: "Dépannages", path: "/immeuble?depannages=1", pro: false });
   }
 
   // Select the appropriate dashboard items based on userType

@@ -80,7 +80,6 @@ export default function ListLogementsAllImmeubles() {
         setIsLoading(false);
       }
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error("Error reading search_logements_results:", error);
       if (isMounted) {
         setEntries([]);
@@ -179,7 +178,7 @@ export default function ListLogementsAllImmeubles() {
     if (!logement) return "";
     return (
       toStringSafe(logement.NumOrdre) ||
-      toStringSafe((logement as any).numOrdre) ||
+      toStringSafe((logement as any).numOrdre) || // eslint-disable-line @typescript-eslint/no-explicit-any
       toStringSafe(logement.Numero) ||
       toStringSafe((logement as any).numero) // eslint-disable-line @typescript-eslint/no-explicit-any
     );
@@ -608,4 +607,3 @@ export default function ListLogementsAllImmeubles() {
     </div>
   );
 }
-
