@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import styles from "./style/SimulationResultsCard.module.css";
 import Toggle from "../ui/Toggle";
 import { useSimulation } from "./SimulationContext";
@@ -24,6 +24,30 @@ export const SimulationResultsCard = () => {
     gardenSizeM2,
     isMonthly,
   } = state;
+
+  const [realWeeklyLiters, setRealWeeklyLiters] = useState<number | null>(null);
+  const [realMonthlyLiters, setRealMonthlyLiters] = useState<number | null>(null);
+
+  // Lecture de la consommation réelle calculée sur la page occupant
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const raw = window.localStorage.getItem("simulateur-conso-reelle");
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as {
+        weeklyLiters?: number;
+        monthlyLiters?: number;
+      };
+      if (typeof parsed.weeklyLiters === "number") {
+        setRealWeeklyLiters(parsed.weeklyLiters);
+      }
+      if (typeof parsed.monthlyLiters === "number") {
+        setRealMonthlyLiters(parsed.monthlyLiters);
+      }
+    } catch {
+      // silencieux
+    }
+  }, []);
 
   // Reprise de la logique de calcul de simulateur.html.twig
   const weeklyData = useMemo(() => {
@@ -173,6 +197,19 @@ export const SimulationResultsCard = () => {
           {Math.round(total)} L / {isMonthly ? "mois" : "semaine"}
         </strong>
       </div>
+
+      {realWeeklyLiters !== null && realMonthlyLiters !== null && (
+        <div className="mt-1 text-xs text-gray-600">
+          Consommation réelle moyenne sur la période :{" "}
+          <span className="font-semibold">
+            {Math.round(realWeeklyLiters)} L / semaine
+          </span>
+          {" · "}
+          <span className="font-semibold">
+            {Math.round(realMonthlyLiters)} L / mois
+          </span>
+        </div>
+      )}
 
       <div className={styles.donutWrapper}>
         <svg
