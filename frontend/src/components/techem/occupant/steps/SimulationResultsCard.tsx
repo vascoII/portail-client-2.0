@@ -102,6 +102,33 @@ export const SimulationResultsCard = () => {
 
   const total = Object.values(scaledData).reduce((a, b) => a + b, 0);
 
+  // Totaux hebdo / mensuels pour la simulation (pour comparaison chiffrée)
+  const estimatedWeeklyLiters = useMemo(
+    () => Object.values(weeklyData).reduce((a, b) => a + b, 0),
+    [weeklyData],
+  );
+  const estimatedMonthlyLiters = estimatedWeeklyLiters * 4;
+
+  const comparisonEstimated = isMonthly ? estimatedMonthlyLiters : estimatedWeeklyLiters;
+  const comparisonReal =
+    isMonthly ? realMonthlyLiters ?? null : realWeeklyLiters ?? null;
+
+  const diffLiters =
+    comparisonReal !== null ? comparisonEstimated - comparisonReal : null;
+  const diffPercent =
+    diffLiters !== null && comparisonReal && comparisonReal > 0
+      ? (diffLiters / comparisonReal) * 100
+      : null;
+
+  const diffClass =
+    diffLiters !== null && comparisonReal !== null
+      ? diffLiters > 0
+        ? "text-red-600"
+        : diffLiters < 0
+          ? "text-emerald-600"
+          : "text-gray-700"
+      : "text-gray-400";
+
   // Calculs pour les segments du donut
   const percentages = useMemo(() => {
     if (total <= 0) {
@@ -197,17 +224,77 @@ export const SimulationResultsCard = () => {
           {Math.round(total)} L / {isMonthly ? "mois" : "semaine"}
         </strong>
       </div>
+      {comparisonReal !== null && (
+        <div className="mt-3 space-y-1 text-xs text-gray-700">
+          <div className="flex flex-wrap items-baseline gap-3">
+            <div>
+              <span className="text-gray-500">Estimation :</span>{" "}
+              <span className="font-semibold">
+                {Math.round(comparisonEstimated)} L /{" "}
+                {isMonthly ? "mois" : "semaine"}
+              </span>
+            </div>
+            <div>
+              <span className="text-gray-500">Réel :</span>{" "}
+              <span className="font-semibold">
+                {Math.round(comparisonReal)} L /{" "}
+                {isMonthly ? "mois" : "semaine"}
+              </span>
+            </div>
+            <div>
+              <span className="text-gray-500">Écart :</span>{" "}
+              <span className={`font-semibold ${diffClass}`}>
+                {diffLiters !== null
+                  ? `${diffLiters > 0 ? "+" : ""}${Math.round(diffLiters)} L`
+                  : "N/A"}
+                {diffPercent !== null && (
+                  <> ({diffPercent > 0 ? "+" : ""}{diffPercent.toFixed(1)}%)</>
+                )}
+              </span>
+            </div>
+          </div>
 
-      {realWeeklyLiters !== null && realMonthlyLiters !== null && (
-        <div className="mt-1 text-xs text-gray-600">
-          Consommation réelle moyenne sur la période :{" "}
-          <span className="font-semibold">
-            {Math.round(realWeeklyLiters)} L / semaine
-          </span>
-          {" · "}
-          <span className="font-semibold">
-            {Math.round(realMonthlyLiters)} L / mois
-          </span>
+          {/* Mini-barres de comparaison */}
+          <div className="mt-2 space-y-1">
+            {(() => {
+              const maxVal = Math.max(comparisonEstimated, comparisonReal || 0);
+              const safeMax = maxVal > 0 ? maxVal : 1;
+              const estWidth = Math.max(
+                8,
+                Math.round((comparisonEstimated / safeMax) * 100),
+              );
+              const realWidth = Math.max(
+                8,
+                Math.round(((comparisonReal || 0) / safeMax) * 100),
+              );
+              return (
+                <>
+                  <div className="flex items-center gap-2">
+                    <span className="w-16 text-[11px] text-gray-500">
+                      Estimé
+                    </span>
+                    <div className="flex-1 h-2 rounded-full bg-gray-100 overflow-hidden">
+                      <div
+                        className="h-2 rounded-full bg-sky-500"
+                        style={{ width: `${estWidth}%` }}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-16 text-[11px] text-gray-500">
+                      Réel
+                    </span>
+                    <div className="flex-1 h-2 rounded-full bg-gray-100 overflow-hidden">
+                      <div
+                        className="h-2 rounded-full bg-emerald-500"
+                        style={{ width: `${realWidth}%` }}
+                      />
+                    </div>
+                  </div>
+                </>
+              );
+            })()}
+          </div>
         </div>
       )}
 
