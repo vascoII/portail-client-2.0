@@ -2,28 +2,93 @@
 
 import React, { useMemo, useState } from "react";
 import styles from "./style/SimulationResultsCard.module.css";
+import Toggle from "../ui/Toggle";
+import { useSimulation } from "./SimulationContext";
 
-export const SimulationResultsCard = ({ data }: { data: Record<string, number> }) => {
-  /**
-   * data = {
-   *   douches: 120,
-   *   wc: 30,
-   *   linge: 15,
-   *   vaisselle: 10,
-   *   jardin: 25
-   * }
-   */
+export const SimulationResultsCard = () => {
+  const { state, update } = useSimulation();
 
-  const total = Object.values(data).reduce((a, b) => a + b, 0);
+  const {
+    occupants,
+    showersPerOccupantPerWeek,
+    bathsPerOccupantPerWeek,
+    flushesPerOccupantPerWeek,
+    toiletType,
+    dishwasherEnabled,
+    dishwasherPerf,
+    dishwasherCyclesPerWeek,
+    washingEnabled,
+    washingPerf,
+    washingCyclesPerWeek,
+    gardenEnabled,
+    gardenSizeM2,
+    isMonthly,
+  } = state;
+
+  // Reprise de la logique de calcul de simulateur.html.twig
+  const weeklyData = useMemo(() => {
+    const showerUse = occupants * showersPerOccupantPerWeek * 50;
+    const bathUse = occupants * bathsPerOccupantPerWeek * 150;
+    const toiletUse =
+      occupants *
+      flushesPerOccupantPerWeek *
+      (toiletType === "eco" ? 5 : 10);
+    const dishwasherUse = dishwasherEnabled
+      ? dishwasherCyclesPerWeek * (dishwasherPerf === "low" ? 10 : 15)
+      : 0;
+    const washingUse = washingEnabled
+      ? washingCyclesPerWeek * (washingPerf === "low" ? 50 : 70)
+      : 0;
+    const gardenUse = gardenEnabled ? gardenSizeM2 * 6 : 0;
+
+    return {
+      "Douches": showerUse,
+      "Bains": bathUse,
+      "Chasses d'eau": toiletUse,
+      "Lave-vaisselle": dishwasherUse,
+      "Lave-linge": washingUse,
+      "Jardin": gardenUse,
+    };
+  }, [
+    occupants,
+    showersPerOccupantPerWeek,
+    bathsPerOccupantPerWeek,
+    flushesPerOccupantPerWeek,
+    toiletType,
+    dishwasherEnabled,
+    dishwasherPerf,
+    dishwasherCyclesPerWeek,
+    washingEnabled,
+    washingPerf,
+    washingCyclesPerWeek,
+    gardenEnabled,
+    gardenSizeM2,
+  ]);
+
+  const scaledData = useMemo(() => {
+    if (!isMonthly) {
+      return weeklyData;
+    }
+    const monthly: Record<string, number> = {};
+    Object.entries(weeklyData).forEach(([key, value]) => {
+      monthly[key] = value * 4;
+    });
+    return monthly;
+  }, [weeklyData, isMonthly]);
+
+  const total = Object.values(scaledData).reduce((a, b) => a + b, 0);
 
   // Calculs pour les segments du donut
   const percentages = useMemo(() => {
-    return Object.entries(data).map(([label, value]) => ({
+    if (total <= 0) {
+      return [] as { label: string; value: number; pct: number }[];
+    }
+    return Object.entries(scaledData).map(([label, value]) => ({
       label,
       value,
       pct: +((value / total) * 100).toFixed(1),
     }));
-  }, [data, total]);
+  }, [scaledData, total]);
 
   // Gestion du tooltip
   const [tooltip, setTooltip] = useState({
@@ -86,10 +151,27 @@ export const SimulationResultsCard = ({ data }: { data: Record<string, number> }
     <div className={styles.card}>
       <h2 className={styles.title}>💧 Répartition de votre consommation</h2>
 
+      <div className="mb-4">
+        <Toggle
+          label="Afficher les résultats en valeurs mensuelles"
+          value={isMonthly}
+          onChange={(value) => update({ isMonthly: value })}
+        />
+      </div>
+
+      {total <= 0 && (
+        <div className="text-sm text-gray-500 mb-3">
+          Renseignez les informations des étapes précédentes pour afficher une
+          estimation de votre consommation.
+        </div>
+      )}
+
       {/* Total */}
       <div className={styles.total}>
         <span>Total estimé :</span>
-        <strong>{total} L / jour</strong>
+        <strong>
+          {Math.round(total)} L / {isMonthly ? "mois" : "semaine"}
+        </strong>
       </div>
 
       <div className={styles.donutWrapper}>
@@ -134,12 +216,20 @@ export const SimulationResultsCard = ({ data }: { data: Record<string, number> }
                 tabIndex={0}
                 aria-label={`${item.label} ${item.pct}%`}
                 onMouseEnter={(e) =>
-                  showTooltip(e, item.label, `${item.pct}%`)
+                  showTooltip(
+                    e,
+                    item.label,
+                    `${Math.round(item.value)} L (${item.pct}%)`,
+                  )
                 }
                 onMouseMove={moveTooltip}
                 onMouseLeave={hideTooltip}
                 onClick={(e) =>
-                  toggleTooltipTap(e, item.label, `${item.pct}%`)
+                  toggleTooltipTap(
+                    e,
+                    item.label,
+                    `${Math.round(item.value)} L (${item.pct}%)`,
+                  )
                 }
               />
             );
@@ -161,17 +251,19 @@ export const SimulationResultsCard = ({ data }: { data: Record<string, number> }
         </svg>
 
         {/* Légende */}
-        <div className={styles.legend}>
-          {percentages.map((item, i) => (
-            <div key={i} className={styles.legendItem}>
-              <span
-                className={styles.legendDot}
-                style={{ background: colors[i][1] }}
-              ></span>
-              {item.label}
-            </div>
-          ))}
-        </div>
+        {percentages.length > 0 && (
+          <div className={styles.legend}>
+            {percentages.map((item, i) => (
+              <div key={i} className={styles.legendItem}>
+                <span
+                  className={styles.legendDot}
+                  style={{ background: colors[i % colors.length][1] }}
+                ></span>
+                {item.label}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
