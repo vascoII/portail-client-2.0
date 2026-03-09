@@ -20,8 +20,6 @@ export default function SimulateurPage() {
   ];
 
   return (
-    <SimulationProvider>
-      <Wizard steps={steps} />
-    </SimulationProvider>
+    <SimulationProvider children={<Wizard steps={steps} />} />
   );
 }
