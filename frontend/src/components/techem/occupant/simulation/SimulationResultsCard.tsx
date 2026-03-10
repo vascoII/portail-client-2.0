@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import styles from "./style/SimulationResultsCard.module.css";
 import Toggle from "../ui/Toggle";
+import DonutChart from "../ui/DonutChart";
 import { useSimulation } from "./SimulationContext";
 
-export const SimulationResultsCard = () => {
+export default function SimulationResultsCard() {  
   const { state, update } = useSimulation();
 
   const {
@@ -29,25 +30,29 @@ export const SimulationResultsCard = () => {
   const [realMonthlyLiters, setRealMonthlyLiters] = useState<number | null>(null);
 
   // Lecture de la consommation réelle calculée sur la page occupant
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    try {
-      const raw = window.localStorage.getItem("simulateur-conso-reelle");
-      if (!raw) return;
-      const parsed = JSON.parse(raw) as {
-        weeklyLiters?: number;
-        monthlyLiters?: number;
-      };
-      if (typeof parsed.weeklyLiters === "number") {
-        setRealWeeklyLiters(parsed.weeklyLiters);
+  try {
+    const authStorage = localStorage.getItem("auth-storage");
+    if (authStorage) {
+      const authData = JSON.parse(authStorage);
+      const user = authData?.state?.user;
+    
+      if (user?.PKUser) {
+        const occupantConsumption = localStorage.getItem("occupant_consumption_" + user?.PKUser);
+        if (occupantConsumption) {
+          const occupantConsumptionData = JSON.parse(occupantConsumption);   
+
+          if (typeof occupantConsumptionData.weeklyLiters === "number") {
+            setRealWeeklyLiters(occupantConsumptionData.weeklyLiters);
+          }
+          if (typeof occupantConsumptionData.monthlyLiters === "number") {
+            setRealMonthlyLiters(occupantConsumptionData.monthlyLiters);
+          }
+        }        
       }
-      if (typeof parsed.monthlyLiters === "number") {
-        setRealMonthlyLiters(parsed.monthlyLiters);
-      }
-    } catch {
-      // silencieux
-    }
-  }, []);
+    }  
+  } catch (e){
+    console.log("error: " + e)
+  }
 
   // Reprise de la logique de calcul de simulateur.html.twig
   const weeklyData = useMemo(() => {
@@ -103,10 +108,25 @@ export const SimulationResultsCard = () => {
   const total = Object.values(scaledData).reduce((a, b) => a + b, 0);
 
   // Totaux hebdo / mensuels pour la simulation (pour comparaison chiffrée)
-  const estimatedWeeklyLiters = useMemo(
+  let estimatedWeeklyLiters = useMemo(
     () => Object.values(weeklyData).reduce((a, b) => a + b, 0),
     [weeklyData],
   );
+
+  const authStorage = localStorage.getItem("auth-storage");
+  if (authStorage) {
+      const authData = JSON.parse(authStorage);
+      const user = authData?.state?.user;
+
+      if (user?.PKUser) {
+        const occupantConsumption = localStorage.getItem("occupant_consumption_" + user?.PKUser);
+        if (occupantConsumption) {
+          const occupantConsumptionData = JSON.parse(occupantConsumption);   
+          estimatedWeeklyLiters = occupantConsumptionData?.weeklyLiters 
+        }        
+      } 
+  } 
+
   const estimatedMonthlyLiters = estimatedWeeklyLiters * 4;
 
   const comparisonEstimated = isMonthly ? estimatedMonthlyLiters : estimatedWeeklyLiters;
@@ -130,7 +150,7 @@ export const SimulationResultsCard = () => {
       : "text-gray-400";
 
   // Calculs pour les segments du donut
-  const percentages = useMemo(() => {
+  /**const percentages = useMemo(() => {
     if (total <= 0) {
       return [] as { label: string; value: number; pct: number }[];
     }
@@ -139,18 +159,18 @@ export const SimulationResultsCard = () => {
       value,
       pct: +((value / total) * 100).toFixed(1),
     }));
-  }, [scaledData, total]);
+  }, [scaledData, total]);*/
 
   // Gestion du tooltip
-  const [tooltip, setTooltip] = useState({
+  /**const [tooltip, setTooltip] = useState({
     visible: false,
     x: 0,
     y: 0,
     label: "",
     value: "",
-  });
+  });*/
 
-  const showTooltip = (e: React.MouseEvent<SVGCircleElement>, label: string, value: string) => {
+  /**const showTooltip = (e: React.MouseEvent<SVGCircleElement>, label: string, value: string) => {
     const rect = e.currentTarget.ownerSVGElement?.getBoundingClientRect();
     if (!rect) return;
     setTooltip({
@@ -160,9 +180,9 @@ export const SimulationResultsCard = () => {
       label,
       value,
     });
-  };
+  };*/
 
-  const moveTooltip = (e: React.MouseEvent<SVGCircleElement>) => {
+  /**const moveTooltip = (e: React.MouseEvent<SVGCircleElement>) => {
     if (!tooltip.visible) return;
     const rect = e.currentTarget.ownerSVGElement?.getBoundingClientRect();
     if (!rect) return;
@@ -171,32 +191,32 @@ export const SimulationResultsCard = () => {
       x: e.clientX - rect.left,
       y: e.clientY - rect.top,
     }));
-  };
+  };*/
 
-  const hideTooltip = () =>
+  /**const hideTooltip = () =>
     setTooltip((t) => ({
       ...t,
       visible: false,
-    }));
+    }));*/
 
   // Tap mobile
-  const toggleTooltipTap = (e: React.MouseEvent<SVGCircleElement>, label: string, value: string) => {
+  /**const toggleTooltipTap = (e: React.MouseEvent<SVGCircleElement>, label: string, value: string) => {
     e.preventDefault();
     if (tooltip.visible && tooltip.label === label) {
       hideTooltip();
       return;
     }
     showTooltip(e, label, value);
-  };
+  };*/
 
-  // Mapping des couleurs (proche de ton design chantier, mais version water)
-  const colors = [
+  // Mapping des couleurs (proche de design chantier, mais version water)
+  /**const colors = [
     ["#008DFF", "#006BCE"],
     ["#6EC8FF", "#A5E0FF"],
     ["#00C2A0", "#00A784"],
     ["#FFC65C", "#FFB020"],
     ["#FF7A7A", "#FF5252"],
-  ];
+  ];*/
 
   return (
     <div className={styles.card}>
@@ -299,95 +319,7 @@ export const SimulationResultsCard = () => {
       )}
 
       <div className={styles.donutWrapper}>
-        <svg
-          width="200"
-          height="200"
-          viewBox="0 0 42 42"
-          className={styles.donut}
-          role="img"
-        >
-          <defs>
-            {colors.map((c, i) => (
-              <linearGradient
-                key={i}
-                id={`grad-${i}`}
-                x1="0%"
-                y1="0%"
-                x2="100%"
-                y2="0%"
-              >
-                <stop offset="0%" stopColor={c[0]} />
-                <stop offset="100%" stopColor={c[1]} />
-              </linearGradient>
-            ))}
-          </defs>
-
-          {percentages.map((item, i) => {
-            const prev = percentages
-              .slice(0, i)
-              .reduce((acc, s) => acc + s.pct, 0);
-
-            return (
-              <circle
-                key={i}
-                className={styles.segment}
-                stroke={`url(#grad-${i})`}
-                strokeDasharray={`${item.pct} ${100 - item.pct}`}
-                strokeDashoffset={-prev}
-                cx="21"
-                cy="21"
-                r="15.915"
-                tabIndex={0}
-                aria-label={`${item.label} ${item.pct}%`}
-                onMouseEnter={(e) =>
-                  showTooltip(
-                    e,
-                    item.label,
-                    `${Math.round(item.value)} L (${item.pct}%)`,
-                  )
-                }
-                onMouseMove={moveTooltip}
-                onMouseLeave={hideTooltip}
-                onClick={(e) =>
-                  toggleTooltipTap(
-                    e,
-                    item.label,
-                    `${Math.round(item.value)} L (${item.pct}%)`,
-                  )
-                }
-              />
-            );
-          })}
-
-          {tooltip.visible && (
-            <foreignObject
-              x={Math.max(tooltip.x - 30, 0)}
-              y={Math.max(tooltip.y - 36, 0)}
-              width="80"
-              height="40"
-            >
-              <div className={styles.tooltip}>
-                <div className={styles.tooltipTitle}>{tooltip.label}</div>
-                <div className={styles.tooltipValue}>{tooltip.value}</div>
-              </div>
-            </foreignObject>
-          )}
-        </svg>
-
-        {/* Légende */}
-        {percentages.length > 0 && (
-          <div className={styles.legend}>
-            {percentages.map((item, i) => (
-              <div key={i} className={styles.legendItem}>
-                <span
-                  className={styles.legendDot}
-                  style={{ background: colors[i % colors.length][1] }}
-                ></span>
-                {item.label}
-              </div>
-            ))}
-          </div>
-        )}
+        <DonutChart data={scaledData} />
       </div>
     </div>
   );

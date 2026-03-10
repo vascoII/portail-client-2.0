@@ -2,7 +2,7 @@
 import Card from "../ui/Card";
 import Slider from "../ui/Slider";
 import NumberInput from "../ui/NumberInput";
-import { useSimulation } from "./SimulationContext";
+import { useSimulation } from "../simulation/SimulationContext";
 
 export default function StepHabits() {
   const { state, update } = useSimulation();

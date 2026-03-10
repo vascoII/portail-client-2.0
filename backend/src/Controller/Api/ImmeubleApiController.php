@@ -23,6 +23,8 @@ use Symfony\Component\Serializer\SerializerInterface;
 use App\Service\Client;
 use App\Service\FakeDataService;
 
+require_once './tech/fpdf/fpdf.php';
+
 /**
  * API Controller for Immeubles (Buildings)
  */
@@ -564,7 +566,24 @@ class ImmeubleApiController extends AbstractApiController
             }
 
             if (empty($report)) {
-                return $this->notFound('Rapport non trouvé');
+                $pdf = new \FPDF();
+                $pdf->AddPage();
+                $pdf->SetFont('Helvetica', '', 14);
+
+                // Centrer le texte sur la page
+                $message = "Aucun rapport disponible pour la période sélectionnée.";
+                $pdf->SetXY(10, 10); // Position approximativement verticale au centre
+                $pdf->Cell(190, 10, mb_convert_encoding($message, 'ISO-8859-1', 'UTF-8'), 0, 1, 'C'); // FPDF attend ISO-8859-1 par défaut
+
+                $pdfOutput = $pdf->Output('', 'S');
+
+                $response = new Response($pdfOutput, Response::HTTP_OK, [
+                    'Content-Type' => 'application/pdf',
+                    'Content-Disposition' => 'inline; filename="rapport-vide.pdf"',
+                    'Content-Length' => strlen($pdfOutput),
+                ]);
+
+                return $response;
             }
 
             $response = new Response($report);

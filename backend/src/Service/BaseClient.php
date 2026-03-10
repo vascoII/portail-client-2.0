@@ -347,8 +347,16 @@ class BaseClient
             return true;
         }
 
-        if (!isset($response->{$resultName})) {
-			throw new RuntimeException($name . ' fail.'.$response);
+        if (!isset($response->{$resultName}) && (
+            !is_array(json_decode(json_encode($response), true)) && 
+            count(json_decode(json_encode($response), true)) != 0
+        )) {
+			throw new RuntimeException($name . ' fail.'.json_encode($response));
+        } else if(
+            is_array(json_decode(json_encode($response), true)) && 
+            count(json_decode(json_encode($response), true)) == 0
+        ) {
+            $response->GetReportResult = null;
         }
 
         $result = $response->{$resultName};

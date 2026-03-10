@@ -1,7 +1,7 @@
 // components/steps/StepHousehold.tsx
 import Card from "../ui/Card";
 import NumberInput from "../ui/NumberInput";
-import { useSimulation } from "./SimulationContext";
+import { useSimulation } from "../simulation/SimulationContext";
 
 export default function StepHousehold() {
   const { state, update } = useSimulation();

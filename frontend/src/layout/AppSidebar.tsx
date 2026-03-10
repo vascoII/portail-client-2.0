@@ -115,10 +115,10 @@ const getNavItems = (
         }
       }
     } else {
-      dashboardSubItems.push({ name: "Fuites", path: `/immeuble/${pkImmeuble}/fuites`, pro: false });
-      dashboardSubItems.push({ name: "Alarmes", path: `/immeuble/${pkImmeuble}/dysfonctionnements`, pro: false });
-      dashboardSubItems.push({ name: "Anomalies", path: `/immeuble/${pkImmeuble}/anomalies`, pro: false });
-      dashboardSubItems.push({ name: "Dépannages", path: `/immeuble/${pkImmeuble}/depannages`, pro: false });
+    //  dashboardSubItems.push({ name: "Fuites", path: `/immeuble/${pkImmeuble}/fuites`, pro: false });
+    //  dashboardSubItems.push({ name: "Alarmes", path: `/immeuble/${pkImmeuble}/dysfonctionnements`, pro: false });
+    //  dashboardSubItems.push({ name: "Anomalies", path: `/immeuble/${pkImmeuble}/anomalies`, pro: false });
+    //  dashboardSubItems.push({ name: "Dépannages", path: `/immeuble/${pkImmeuble}/depannages`, pro: false });
     }  
   } else {
     dashboardSubItems.push({ name: "Fuites", path: "/immeuble?fuites=1", pro: false });

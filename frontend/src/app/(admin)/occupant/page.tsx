@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import { useFkUser } from "@/lib/hooks/useFkUser";
 import { useOccupant } from "@/lib/hooks/useOccupant";
 import OccupantMainCard from "@/components/techem/occupant/OccupantMainCard";
@@ -29,11 +29,8 @@ export default function OccupantPage() {
   const occupantData = occupantLogementData;
 
   // Calcul et stockage local de la consommation réelle (eau froide + eau chaude)
-  useEffect(() => {
-    if (!fkUser || !occupantData?.logement) return;
-
-    try {
-      const logement = occupantData.logement as any;
+  if (fkUser && occupantData?.logement) {
+      const logement = occupantData.logement as any;// eslint-disable-line @typescript-eslint/no-explicit-any
 
       const ecConso = Number(
         logement?.LogementEC?.ConsoPeriode?.Conso ??
@@ -79,29 +76,26 @@ export default function OccupantPage() {
       const weeklyLiters = dailyLiters * 7;
       const monthlyLiters = dailyLiters * 30;
 
-      const payload = {
-        fkUser: String(fkUser),
-        periodStart: dateDebStr ?? null,
-        periodEnd: dateFinStr ?? null,
-        days,
-        efM3: efConso || 0,
-        ecM3: ecConso || 0,
+      // Persist consumption payload to local storage
+      const consumptionPayload = {
         totalM3,
         totalLiters,
+        dailyLiters,
         weeklyLiters,
         monthlyLiters,
+        ecConso,
+        efConso,
+        dateDeb: dateDeb?.toISOString() ?? null,
+        dateFin: dateFin?.toISOString() ?? null,
+        days,
+        timestamp: new Date().toISOString(),
       };
 
-      if (typeof window !== "undefined") {
-        window.localStorage.setItem(
-          "simulateur-conso-reelle",
-          JSON.stringify(payload),
-        );
-      }
-    } catch {
-      // silencieux : pas bloquant pour l'affichage de la page
-    }
-  }, [fkUser, occupantData]);
+      localStorage.setItem(
+        `occupant_consumption_${fkUser}`,
+        JSON.stringify(consumptionPayload),
+      );
+  }
 
   return (
     <div className="grid grid-cols-12 gap-4 md:gap-6">

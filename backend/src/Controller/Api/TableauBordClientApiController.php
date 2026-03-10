@@ -13,6 +13,8 @@ use App\Service\Api\ApiSecurityService as SecurityService;
 use Symfony\Component\Serializer\SerializerInterface;
 use App\Service\Client;
 use App\Service\FakeDataService;
+
+require_once './tech/fpdf/fpdf.php';
 /**
  * API Controller for Client Dashboard (Tableau de bord client)
  */
@@ -138,22 +140,40 @@ class TableauBordClientApiController extends AbstractApiController
             }
 
             if (empty($report)) {
-                return $this->notFound('Rapport introuvable');
-            }
+                $pdf = new \FPDF();
+                $pdf->AddPage();
+                $pdf->SetFont('Helvetica', '', 14);
 
-            $response = new Response($report);
+                // Centrer le texte sur la page
+                $message = "Aucun rapport disponible pour la période sélectionnée.";
+                $pdf->SetXY(10, 10); // Position approximativement verticale au centre
+                $pdf->Cell(190, 10, mb_convert_encoding($message, 'ISO-8859-1', 'UTF-8'), 0, 1, 'C'); // FPDF attend ISO-8859-1 par défaut
+
+                $pdfOutput = $pdf->Output('', 'S');
+
+                $response = new Response($pdfOutput, Response::HTTP_OK, [
+                    'Content-Type' => 'application/pdf',
+                    'Content-Disposition' => 'inline; filename="rapport-vide.pdf"',
+                    'Content-Length' => strlen($pdfOutput),
+                ]);
+
+                return $response;
+            } else {
+                $response = new Response($report);
+                $strlen = strlen($report);
+            }
 
             if ($isExcel) {
                 $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
                 $response->headers->set(
                     'Content-Disposition',
-                    'inline; filename=' . $docType . '-' . $dateBegin . '-' . $dateEnd . '.xlsx'
+                    'attachment; filename=' . $docType . '-' . $dateBegin . '-' . $dateEnd . '.xlsx'
                 );
             } else {
                 $response->headers->set('Content-Type', 'application/pdf');
                 $response->headers->set(
                     'Content-Disposition',
-                    'inline; filename=' . $docType . '-' . $dateBegin . '-' . $dateEnd . '.pdf'
+                    'attachment; filename=' . $docType . '-' . $dateBegin . '-' . $dateEnd . '.pdf'
                 );
             }
 
@@ -161,7 +181,7 @@ class TableauBordClientApiController extends AbstractApiController
             $response->headers->set('Expires', 0);
             $response->headers->set('Cache-Control', 'no-cache');
             $response->headers->set('Pragma', 'no-cache');
-            $response->headers->set('Content-Length', strlen($report));
+            $response->headers->set('Content-Length', $strlen);
 
             return $response;
         } catch (\Exception $e) {

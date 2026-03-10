@@ -7,10 +7,18 @@ import {
   Legend
 } from "chart.js";
 
-// OBLIGATOIRE pour les donuts et pie charts
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function DonutChart({ data }: { data: Record<string, number> }) {
+  const colors = [
+    "#008DFF",
+    "#6EC8FF",
+    "#00C2A0",
+    "#FFC65C",
+    "#FF7A7A",
+    "#8b5cf6"
+  ];
+
   return (
     <Doughnut
       data={{
@@ -18,13 +26,19 @@ export default function DonutChart({ data }: { data: Record<string, number> }) {
         datasets: [
           {
             data: Object.values(data),
-            backgroundColor: ["#2563eb", "#14b8a6", "#f43f5e", "#f59e0b", "#8b5cf6"]
+            backgroundColor: colors,
+            borderWidth: 1,
           }
         ]
       }}
       options={{
         responsive: true,
-        cutout: "60%"
+        cutout: "60%",
+        plugins: {
+          legend: {
+            position: "right",
+          }
+        }
       }}
     />
   );

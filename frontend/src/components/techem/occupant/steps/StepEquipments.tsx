@@ -2,7 +2,7 @@
 import Card from "../ui/Card";
 import Toggle from "../ui/Toggle";
 import NumberInput from "../ui/NumberInput";
-import { useSimulation } from "./SimulationContext";
+import { useSimulation } from "../simulation/SimulationContext";
 
 export default function StepEquipments() {
   const { state, update } = useSimulation();

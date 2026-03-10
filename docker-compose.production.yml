@@ -1,11 +1,11 @@
 services:
   nginx:
     image: nginx:stable-alpine
-    container_name: nginx_preview
+    container_name: nginx_production
     ports:
       - "80:80"
     volumes:
-      - ./nginx/conf.d.preview:/etc/nginx/conf.d:ro
+      - ./nginx/conf.d.production:/etc/nginx/conf.d:ro
       - ./backend:/var/www/backend:ro   # 👉 nécessaire pour index.php
     depends_on:
       - backend
@@ -16,8 +16,8 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile.preview
-    container_name: backend_preview
+      dockerfile: Dockerfile.production
+    container_name: backend_production
     environment:
       - APP_ENV=dev
       - APP_DEBUG=1
@@ -29,8 +29,8 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.preview
-    container_name: frontend_preview
+      dockerfile: Dockerfile.production
+    container_name: frontend_production
     environment:
       - NODE_ENV=production
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_BASE_URL:-https://portail.techem.fr/api}

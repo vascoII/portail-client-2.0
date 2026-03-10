@@ -174,12 +174,12 @@ export default function ListImmeubles() {
 
   useEffect(() => {
     let isMounted = true;
-
+    
     const loadImmeubles = async () => {
       try {
         setIsLoading(true);
         setLoadingError(null);
-
+        
         // If there are search results from the advanced search, use them instead of loading all
         if (typeof window !== "undefined") {
           const stored = window.sessionStorage.getItem("search_immeubles_results");
@@ -279,25 +279,25 @@ export default function ListImmeubles() {
 
   // Get building reference
   const getBuildingRef = (building: Building): string => {
-    return building.ref ?? building.Ref ?? "";
+    return building.ref ?? building.Ref ??  building.Immeuble.ref ?? building.Immeuble.Ref ?? "";
   };
 
   // Get building numero
   const getBuildingNumero = (building: Building): string => {
-    return building.numero ?? building.Numero ?? "";
+    return building.numero ?? building.Numero ?? building.Immeuble.numero ?? building.Immeuble.Numero ?? "";
   };
 
   // Get building address parts
   const getBuildingAddress1 = (building: Building): string => {
-    return building.adresse1 ?? building.Adresse1 ?? "";
+    return building.adresse1 ?? building.Adresse1 ?? building.Immeuble.adresse1 ?? building.Immeuble.Adresse1 ?? "";
   };
 
   const getBuildingCp = (building: Building): string => {
-    return building.cp ?? building.Cp ?? "";
+    return building.cp ?? building.Cp ?? building.Immeuble.cp ?? building.Immeuble.Cp ?? "";
   };
 
   const getBuildingVille = (building: Building): string => {
-    return building.ville ?? building.Ville ?? "";
+    return building.ville ?? building.Ville ?? building.Immeuble.ville ?? building.Immeuble.Ville ?? "";
   };
 
   // Get number of cold water counters

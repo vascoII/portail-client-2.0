@@ -1,5 +1,5 @@
 docker compose down
-echo "Preview arrêtées."
+echo "Production arrêtées."
 
 docker container prune -f
 echo "Conteneurs supprimées."

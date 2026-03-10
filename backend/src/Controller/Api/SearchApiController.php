@@ -37,7 +37,7 @@ class SearchApiController extends AbstractApiController
         }
 
         // Read "type" from JSON body, fallback to query if needed
-        $type = $request->query->get('type');
+        $type = $request->query->get('type', null);
         if ($type === null || $type === '') {
             try {
                 $data = $request->toArray();

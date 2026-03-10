@@ -1,9 +1,9 @@
-\"use client\";
+"use client";
 
-import React, { createContext, useContext, useState } from \"react\";
+import React, { createContext, useContext, useState } from "react";
 
-export type ToiletType = \"standard\" | \"eco\";
-export type AppliancePerf = \"low\" | \"standard\";
+export type ToiletType = "standard" | "eco";
+export type AppliancePerf = "low" | "standard";
 
 export interface SimulationState {
   occupants: number;
@@ -43,13 +43,13 @@ const defaultState: SimulationState = {
   occupants: 2,
   showersPerOccupantPerWeek: 7,
   bathsPerOccupantPerWeek: 0,
-  toiletType: \"standard\",
+  toiletType: "standard",
   flushesPerOccupantPerWeek: 25,
   dishwasherEnabled: false,
-  dishwasherPerf: \"standard\",
+  dishwasherPerf: "standard",
   dishwasherCyclesPerWeek: 0,
   washingEnabled: false,
-  washingPerf: \"standard\",
+  washingPerf: "standard",
   washingCyclesPerWeek: 0,
   gardenEnabled: false,
   gardenSizeM2: 0,
@@ -77,7 +77,7 @@ export function SimulationProvider({ children }: { children: React.ReactNode }) 
 export function useSimulation(): SimulationContextValue {
   const ctx = useContext(SimulationContext);
   if (!ctx) {
-    throw new Error(\"useSimulation must be used within a SimulationProvider\");
+    throw new Error("useSimulation must be used within a SimulationProvider");
   }
   return ctx;
 }

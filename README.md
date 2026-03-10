@@ -1,6 +1,6 @@
 # Project Setup Guide - TECHEM Portail Client
 
-Ce guide explique comment lancer le projet en local, soit en mode classique, soit via la preview Docker.
+Ce guide explique comment lancer le projet en local, soit en mode classique, soit via la production Docker.
 
 ---
 
@@ -9,28 +9,28 @@ Ce guide explique comment lancer le projet en local, soit en mode classique, soi
 ```bash
 git clone https://gitlab-prod.eu.techem.corp/france/portal/portail-client-2.0.git
 cd portail-client-2.0
-dos2unix docker-preview-starter.sh (si besoin au premier lanch si error, sudo apt install dos2unix)
-dos2unix dockerless-preview-starter.sh (si besoin au premier lanch si error, sudo apt install dos2unix)
+dos2unix docker-production-starter.sh (si besoin au premier lanch si error, sudo apt install dos2unix)
+dos2unix dockerless-production-starter.sh (si besoin au premier lanch si error, sudo apt install dos2unix)
 ```
 
 ---
 
-## 2. Lancer la preview Docker (recommandé pour la branche `preview`)
+## 2. Lancer la production Docker (recommandé pour la branche `production`)
 
 Lancer le projet avec Docker, voici les grandes étapes.
 
-### 2.1. Lancer la preview Docker
+### 2.1. Lancer la production Docker
 
 Depuis la racine du projet :
 
 ```bash
-git checkout preview
-./docker-preview-starter.sh
+git checkout production
+./docker-production-starter.sh
 ```
 
 Le script va :
 
-- Copier `env.preview.example` vers `.env` si `.env` n’existe pas encore
+- Copier `env.production.example` vers `.env` si `.env` n’existe pas encore
 - Construire les conteneurs **sans cache** :
   ```bash
   docker compose build --no-cache
@@ -46,11 +46,11 @@ Par défaut, les services seront disponibles sur :
 - Frontend SSR: http://base_url (via Nginx)
 - Backend API: http://base_url/api
 
-Ajuster les ports via les variables `NEXT_PUBLIC_API_BASE_URL` et `NEXT_PUBLIC_APP_URL` dans les fichiers `.env` et `docker-compose.preview.yml`.
+Ajuster les ports via les variables `NEXT_PUBLIC_API_BASE_URL` et `NEXT_PUBLIC_APP_URL` dans les fichiers `.env` et `docker-compose.production.yml`.
 
-### 2.2. Stopper la preview Docker
+### 2.2. Stopper la production Docker
 
 ```bash
-./docker-preview-stop.sh
+./docker-production-stop.sh
 ```
 ---
