@@ -9,12 +9,10 @@ class ApiTableauBordClientService
 {
     public function __construct(
         private readonly TableauBordClientRepository $tableauBordClientRepository,
-    ) {
-    }
+    ) {}
 
-    public function getMyTableauBordClient(int $pkUser)
+    public function getMyTableauBordClient(int $pkUser, string $sessionId)
     {
-        return $this->tableauBordClientRepository->getMyTableauBordClient($pkUser);
+        return $this->tableauBordClientRepository->getMyTableauBordClient($pkUser, $sessionId);
     }
 }
-

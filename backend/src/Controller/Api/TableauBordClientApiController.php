@@ -29,20 +29,10 @@ class TableauBordClientApiController extends AbstractApiController
         parent::__construct($client, $serializer, $securityService, $fakeDataService);
         $this->apiTableauBordClientService = $apiTableauBordClientService;
     }
-    
+
     #[Route("", name: "index", methods: ["GET"])]
     public function index(Request $request): JsonResponse
     {
-        // Check if faker mode is enabled and return fake data (already formatted)
-        if ($this->isFakerMode()) {
-            try {
-                $fakeData = $this->fakeDataService->get('api.parc');
-                return new JsonResponse($fakeData);
-            } catch (\Exception $e) {
-                return $this->error('Fake data not available: ' . $e->getMessage(), 500);
-            }
-        }
-
         $client = $this->getAuthenticatedClientFromHeaders($request);
         if ($client instanceof JsonResponse) {
             return $client;
@@ -51,7 +41,7 @@ class TableauBordClientApiController extends AbstractApiController
         try {
             $board = $client->getMyTableauBordClient();
 
-            $boardOracle = $this->apiTableauBordClientService->getMyTableauBordClient(pkUser: $client->getPkUser());
+            $boardOracle = $this->apiTableauBordClientService->getMyTableauBordClient(pkUser: $client->getPkUser(), sessionId: $client->getSessionId());
 
             // Calculate installation statistics
             $installed = $board->NbCompteursPoses ?? 0;
