@@ -1,0 +1,82 @@
+http://localhost/api/immeubles/filtre
+
+{
+    "success": true,
+    "status": 200,
+    "data": {
+        "immeubles": [
+            {
+                "Immeuble": {
+                    "PkImmeuble": 2833,
+                    "Nom": "",
+                    "Numero": "032001",
+                    "Ref": "",
+                    "Adresse1": "20 AVENUE MONTAIGNE/32 RUE JEAN GOUJON",
+                    "Adresse2": "",
+                    "Adresse3": "",
+                    "Cp": "75008",
+                    "Ville": "PARIS",
+                    "HasTelereleve": false,
+                    "FkClientTop": 39755,
+                    "Actif": true,
+                    "DateActivationClient": "0001-01-01T00:00:00",
+                    "DateActivationOccupant": "0001-01-01T00:00:00",
+                    "HasNoteOccupant": true,
+                    "HasDecompteOccupant": true,
+                    "HasFactures": true,
+                    "HasChantiers": false
+                },
+                "NbLogements": 19,
+                "NbAppareils": 75,
+                "NbCompteursEC": 36,
+                "NbCompteursEF": 39,
+                "NbCompteursRepart": 0,
+                "NbCompteursCET": 0,
+                "NbCompteursCapteur": 0,
+                "NbCompteursElect": -1,
+                "NbCompteursGaz": -1,
+                "NbFuites": 0,
+                "NbDepannages": 0,
+                "NbDysfonctionnements": 0,
+                "NbAnomalies": 15,
+                "NbChantiers": 0
+            },
+            {
+                "Immeuble": {
+                    "PkImmeuble": 11818,
+                    "Nom": "",
+                    "Numero": "024646",
+                    "Ref": "",
+                    "Adresse1": "18 RUE CHANCE MILLY",
+                    "Adresse2": "",
+                    "Adresse3": "",
+                    "Cp": "92110",
+                    "Ville": "CLICHY",
+                    "HasTelereleve": false,
+                    "FkClientTop": 39755,
+                    "Actif": true,
+                    "DateActivationClient": "0001-01-01T00:00:00",
+                    "DateActivationOccupant": "0001-01-01T00:00:00",
+                    "HasNoteOccupant": true,
+                    "HasDecompteOccupant": true,
+                    "HasFactures": true,
+                    "HasChantiers": false
+                },
+                "NbLogements": 17,
+                "NbAppareils": 22,
+                "NbCompteursEC": 0,
+                "NbCompteursEF": 22,
+                "NbCompteursRepart": 0,
+                "NbCompteursCET": 0,
+                "NbCompteursCapteur": 0,
+                "NbCompteursElect": -1,
+                "NbCompteursGaz": -1,
+                "NbFuites": 0,
+                "NbDepannages": 0,
+                "NbDysfonctionnements": 0,
+                "NbAnomalies": 0,
+                "NbChantiers": 0
+            }
+        ]
+    }
+}
