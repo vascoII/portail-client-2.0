@@ -116,36 +116,152 @@ class ImmeubleRepository
     
     public function getImmeubleCount(int $pkUser, int $pkImmeuble): array
     {
+        // Implémentation inspirée de WS_Common.GetTableauBordImmeuble (branche WS2),
+        // qui lit les agrégats directement dans WEB_IMMEUBLE.
+
+        $sql = <<<SQL
+SELECT
+    NVL(NBLOGEMENT, 0)      AS NBLOGEMENT,
+    NVL(NBDEPANNAGES, 0)    AS NBDEPANNAGES,
+    NVL(NBSUSFRAUDCLI, 0)   AS NBSUSFRAUDCLI,
+    NVL(NBEC, 0)            AS NBEC,
+    NVL(NBEF, 0)            AS NBEF,
+    NVL(NBREPART, 0)        AS NBREPART,
+    NVL(NBCET, 0)           AS NBCET,
+    NVL(NBCAPTEUR, 0)       AS NBCAPTEUR,
+    TELERELEVE
+FROM WEB_IMMEUBLE
+WHERE PKIMMEUBLE = :pkImmeuble
+SQL;
+
+        $rows = $this->oci->fetchAllAssoc($sql, ['pkImmeuble' => $pkImmeuble]);
+
+        if ($rows === []) {
+            return [
+                'nbLogements' => 0,
+                'nbAppareils' => 0,
+                'nbDepannages' => 0,
+                'nbDepannagesTotal' => 0,
+                'degresDepannages' => 0,
+                'nbDysfonctionnements' => 0,
+                'degresDysfonctionnements' => 0,
+                'hasTelereleve' => false,
+                'nbCompteursEc' => 0,
+                'nbCompteursEf' => 0,
+                'nbCompteursRepart' => 0,
+                'nbCompteursCet' => 0,
+                'nbCompteursCapteur' => 0,
+                'nbCompteursElect' => 0,
+                'nbCompteursGaz' => 0,
+                'nbCompteursTelereveleTotal' => 0,
+                'nbCompteursTelereveleOk' => 0,
+                'hasTransfertFichiers' => false,
+            ];
+        }
+
+        $row = $rows[0];
+
+        $nbCompteursEc     = (int) ($row['NBEC'] ?? 0);
+        $nbCompteursEf     = (int) ($row['NBEF'] ?? 0);
+        $nbCompteursRepart = (int) ($row['NBREPART'] ?? 0);
+        $nbCompteursCet    = (int) ($row['NBCET'] ?? 0);
+        $nbCompteursCapteur= (int) ($row['NBCAPTEUR'] ?? 0);
+
+        $nbAppareils = $nbCompteursEc + $nbCompteursEf + $nbCompteursRepart + $nbCompteursCet;
+
         return [
-            'nbLogements' => 0,
-            'nbAppareils' => 0,
-            'nbDepannages' => 0,
+            'nbLogements' => (int) ($row['NBLOGEMENT'] ?? 0),
+            'nbAppareils' => $nbAppareils,
+            'nbDepannages' => (int) ($row['NBDEPANNAGES'] ?? 0),
+            // Nombre total de dépannages : non exposé directement en WS2 pour ce cas, laissé à 0 pour l'instant
             'nbDepannagesTotal' => 0,
+            // "degrés" non présents dans GetTableauBordImmeuble WS2 : initialisés à 0
             'degresDepannages' => 0,
-            'nbDysfonctionnements' => 0,
+            'nbDysfonctionnements' => (int) ($row['NBSUSFRAUDCLI'] ?? 0),
             'degresDysfonctionnements' => 0,
-            'hasTelereleve' => false,
-            'nbCompteursEc' => 0,
-            'nbCompteursEf' => 0,
-            'nbCompteursRepart' => 0,
-            'nbCompteursCet' => 0,
-            'nbCompteursCapteur' => 0,
+            'hasTelereleve' => ($row['TELERELEVE'] ?? '') === 'O',
+            'nbCompteursEc' => $nbCompteursEc,
+            'nbCompteursEf' => $nbCompteursEf,
+            'nbCompteursRepart' => $nbCompteursRepart,
+            'nbCompteursCet' => $nbCompteursCet,
+            'nbCompteursCapteur' => $nbCompteursCapteur,
+            // Compteurs électricité / gaz non exposés dans WEB_IMMEUBLE (WS2)
             'nbCompteursElect' => 0,
             'nbCompteursGaz' => 0,
+            // Statut télérélevé détaillé (total / OK) non implémenté dans WS2 : initialisés à 0
             'nbCompteursTelereveleTotal' => 0,
             'nbCompteursTelereveleOk' => 0,
-            'hasTransfertFichiers' => false
+            // HasTransfertFichiers est géré uniquement dans la branche legacy (non WS2) : false ici
+            'hasTransfertFichiers' => false,
         ];
     }
     
     public function getImmeubleEc(int $pkUser, int $pkImmeuble): ImmeubleEAUDto
     {
+        // Implémentation inspirée du bloc "EC" de
+        // WS_Common.GetTableauBordImmeuble (branche WS2).
+
+        // 1) Récupérer les compteurs / fuites / anomalies EC sur WEB_IMMEUBLE
+        $sql = <<<SQL
+SELECT
+    NVL(NBFUITES_EC, 0) AS NBFUITES_EC,
+    NVL(NBANO_EC, 0)    AS NBANO_EC
+FROM WEB_IMMEUBLE
+WHERE PKIMMEUBLE = :pkImmeuble
+SQL;
+
+        $rows = $this->oci->fetchAllAssoc($sql, ['pkImmeuble' => $pkImmeuble]);
+
+        $nbFuitesEc = 0;
+        $nbAnomaliesEc = 0;
+
+        if ($rows !== []) {
+            $row = $rows[0];
+            $nbFuitesEc = (int) ($row['NBFUITES_EC'] ?? 0);
+            $nbAnomaliesEc = (int) ($row['NBANO_EC'] ?? 0);
+        }
+
+        // 2) Reproduire GetInfosRatioReleveImmeubles("I", PkImmeuble, "EAU")
+        // pour obtenir NbCompteursARelever / NbCompteursReleves.
+
+        $sqlRatio = <<<SQL
+SELECT
+    SUM(nbcompteursreleves)   AS NBCOMPTEURSRELEVES,
+    SUM(nbcompteursarelever)  AS NBCOMPTEURSARELEVER
+FROM (
+    SELECT
+        pkreleve,
+        nbcompteursreleves,
+        nbcompteursarelever,
+        RANK() OVER (PARTITION BY fkimmeuble, typeerc ORDER BY datereleve DESC) AS rnk
+    FROM web_releve
+    WHERE fkimmeuble = :pkImmeuble
+      AND substr(upper(typeERC), 1, 11) = 'EAU'
+)
+WHERE rnk = 1
+SQL;
+
+        $rowsRatio = $this->oci->fetchAllAssoc($sqlRatio, ['pkImmeuble' => $pkImmeuble]);
+
+        $nbCompteursARelever = null;
+        $nbCompteursReleves  = null;
+
+        if ($rowsRatio !== [] && isset($rowsRatio[0])) {
+            $r = $rowsRatio[0];
+            $nbCompteursARelever = isset($r['NBCOMPTEURSARELEVER']) ? (int) $r['NBCOMPTEURSARELEVER'] : null;
+            $nbCompteursReleves  = isset($r['NBCOMPTEURSRELEVES']) ? (int) $r['NBCOMPTEURSRELEVES'] : null;
+        }
+
+        // 3) Construire un ImmeubleEAUDto avec les données Oracle.
+        // Les éléments plus avancés (chantier, top consos, séries, listeReleves)
+        // seront complétés dans une phase ultérieure.
+
         return new ImmeubleEAUDto(
-            nbCompteursARelever: null,
-            nbCompteursReleves: 0,
-            nbFuites: null,
+            nbCompteursARelever: $nbCompteursARelever,
+            nbCompteursReleves: $nbCompteursReleves,
+            nbFuites: $nbFuitesEc,
             degresFuites: null,
-            nbAnomalies: null,
+            nbAnomalies: $nbAnomaliesEc,
             degresAnomalies: null,
             chantier: new ChantierDto(
                 pkChantier: null,
@@ -176,12 +292,68 @@ class ImmeubleRepository
     
     public function getImmeubleEf(int $pkUser, int $pkImmeuble): ImmeubleEAUDto
     {
+        // Implémentation inspirée du bloc "EF" de
+        // WS_Common.GetTableauBordImmeuble (branche WS2).
+
+        // 1) Récupérer les fuites / anomalies EF sur WEB_IMMEUBLE
+        $sql = <<<SQL
+SELECT
+    NVL(NBFUITES_EF, 0) AS NBFUITES_EF,
+    NVL(NBANO_EF, 0)    AS NBANO_EF
+FROM WEB_IMMEUBLE
+WHERE PKIMMEUBLE = :pkImmeuble
+SQL;
+
+        $rows = $this->oci->fetchAllAssoc($sql, ['pkImmeuble' => $pkImmeuble]);
+
+        $nbFuitesEf = 0;
+        $nbAnomaliesEf = 0;
+
+        if ($rows !== []) {
+            $row = $rows[0];
+            $nbFuitesEf = (int) ($row['NBFUITES_EF'] ?? 0);
+            $nbAnomaliesEf = (int) ($row['NBANO_EF'] ?? 0);
+        }
+
+        // 2) Reproduire GetInfosRatioReleveImmeubles("I", PkImmeuble, "EAU")
+        // pour obtenir NbCompteursARelever / NbCompteursReleves (même logique qu'en EC).
+
+        $sqlRatio = <<<SQL
+SELECT
+    SUM(nbcompteursreleves)   AS NBCOMPTEURSRELEVES,
+    SUM(nbcompteursarelever)  AS NBCOMPTEURSARELEVER
+FROM (
+    SELECT
+        pkreleve,
+        nbcompteursreleves,
+        nbcompteursarelever,
+        RANK() OVER (PARTITION BY fkimmeuble, typeerc ORDER BY datereleve DESC) AS rnk
+    FROM web_releve
+    WHERE fkimmeuble = :pkImmeuble
+      AND substr(upper(typeERC), 1, 11) = 'EAU'
+)
+WHERE rnk = 1
+SQL;
+
+        $rowsRatio = $this->oci->fetchAllAssoc($sqlRatio, ['pkImmeuble' => $pkImmeuble]);
+
+        $nbCompteursARelever = null;
+        $nbCompteursReleves  = null;
+
+        if ($rowsRatio !== [] && isset($rowsRatio[0])) {
+            $r = $rowsRatio[0];
+            $nbCompteursARelever = isset($r['NBCOMPTEURSARELEVER']) ? (int) $r['NBCOMPTEURSARELEVER'] : null;
+            $nbCompteursReleves  = isset($r['NBCOMPTEURSRELEVES']) ? (int) $r['NBCOMPTEURSRELEVES'] : null;
+        }
+
+        // 3) Construire un ImmeubleEAUDto avec les données Oracle.
+
         return new ImmeubleEAUDto(
-            nbCompteursARelever: null,
-            nbCompteursReleves: 0,
-            nbFuites: null,
+            nbCompteursARelever: $nbCompteursARelever,
+            nbCompteursReleves: $nbCompteursReleves,
+            nbFuites: $nbFuitesEf,
             degresFuites: null,
-            nbAnomalies: null,
+            nbAnomalies: $nbAnomaliesEf,
             degresAnomalies: null,
             chantier: new ChantierDto(
                 pkChantier: null,
@@ -212,9 +384,46 @@ class ImmeubleRepository
 
     public function getImmeubleRepart(int $pkUser, int $pkImmeuble): ImmeubleRepartDto
     {
+        // Implémentation inspirée du bloc "ImmeubleRepart" de
+        // WS_Common.GetTableauBordImmeuble (branche WS2).
+        //
+        // On commence par reproduire le ratio relevés / à relever :
+        //   GetInfosRatioReleveImmeubles("I", PkImmeuble, "REPARTITEUR", ...)
+
+        $sqlRatio = <<<SQL
+SELECT
+    SUM(nbcompteursreleves)   AS NBCOMPTEURSRELEVES,
+    SUM(nbcompteursarelever)  AS NBCOMPTEURSARELEVER
+FROM (
+    SELECT
+        pkreleve,
+        nbcompteursreleves,
+        nbcompteursarelever,
+        RANK() OVER (PARTITION BY fkimmeuble, typeerc ORDER BY datereleve DESC) AS rnk
+    FROM web_releve
+    WHERE fkimmeuble = :pkImmeuble
+      AND substr(upper(typeERC), 1, 11) = 'REPARTITEUR'
+)
+WHERE rnk = 1
+SQL;
+
+        $rowsRatio = $this->oci->fetchAllAssoc($sqlRatio, ['pkImmeuble' => $pkImmeuble]);
+
+        $nbCompteursARelever = null;
+        $nbCompteursReleves  = null;
+
+        if ($rowsRatio !== [] && isset($rowsRatio[0])) {
+            $r = $rowsRatio[0];
+            $nbCompteursARelever = isset($r['NBCOMPTEURSARELEVER']) ? (int) $r['NBCOMPTEURSARELEVER'] : null;
+            $nbCompteursReleves  = isset($r['NBCOMPTEURSRELEVES']) ? (int) $r['NBCOMPTEURSRELEVES'] : null;
+        }
+
+        // Les autres champs (chantier, top consos, données de répartition détaillées, séries)
+        // restent initialisés comme avant et seront complétés plus tard.
+
         return new ImmeubleRepartDto(
-            nbCompteursARelever: null,
-            nbCompteursReleves: null,
+            nbCompteursARelever: $nbCompteursARelever,
+            nbCompteursReleves: $nbCompteursReleves,
             chantier: new ChantierDto(
                 pkChantier: null,
                 pkDevis: null,
@@ -262,9 +471,43 @@ class ImmeubleRepository
     
     public function getImmeubleCet(int $pkUser, int $pkImmeuble): ImmeubleCETDto
     {
+        // Implémentation inspirée du bloc "ImmeubleCET" de
+        // WS_Common.GetTableauBordImmeuble (branche WS2).
+        //
+        // On commence par reproduire le ratio relevés / à relever :
+        //   GetInfosRatioReleveImmeubles("I", PkImmeuble, "CET", ...)
+
+        $sqlRatio = <<<SQL
+SELECT
+    SUM(nbcompteursreleves)   AS NBCOMPTEURSRELEVES,
+    SUM(nbcompteursarelever)  AS NBCOMPTEURSARELEVER
+FROM (
+    SELECT
+        pkreleve,
+        nbcompteursreleves,
+        nbcompteursarelever,
+        RANK() OVER (PARTITION BY fkimmeuble, typeerc ORDER BY datereleve DESC) AS rnk
+    FROM web_releve
+    WHERE fkimmeuble = :pkImmeuble
+      AND substr(upper(typeERC), 1, 3) = 'CET'
+)
+WHERE rnk = 1
+SQL;
+
+        $rowsRatio = $this->oci->fetchAllAssoc($sqlRatio, ['pkImmeuble' => $pkImmeuble]);
+
+        $nbCompteursARelever = null;
+        $nbCompteursReleves  = null;
+
+        if ($rowsRatio !== [] && isset($rowsRatio[0])) {
+            $r = $rowsRatio[0];
+            $nbCompteursARelever = isset($r['NBCOMPTEURSARELEVER']) ? (int) $r['NBCOMPTEURSARELEVER'] : null;
+            $nbCompteursReleves  = isset($r['NBCOMPTEURSRELEVES']) ? (int) $r['NBCOMPTEURSRELEVES'] : null;
+        }
+
         return new ImmeubleCETDto(
-            nbCompteursARelever: null,
-            nbCompteursReleves: null,
+            nbCompteursARelever: $nbCompteursARelever,
+            nbCompteursReleves: $nbCompteursReleves,
             chantier: new ChantierDto(
                 pkChantier: null,
                 pkDevis: null,
