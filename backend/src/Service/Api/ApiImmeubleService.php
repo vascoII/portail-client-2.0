@@ -79,4 +79,56 @@ class ApiImmeubleService extends ApiBaseService
             $immeuble->ville
         );
     }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////
+    public function getImmeuble(int $pkUser, int pkImmeuble)
+    {
+        return $this->immeubleRepository->getImmeuble($pkUser, $pkImmeuble);
+    }
+    
+    public function getImmeubleEc(int $pkUser, int pkImmeuble)
+    {
+        return $this->immeubleRepository->getImmeubleEc($pkUser, $pkImmeuble);
+    }
+    
+    public function getImmeubleEf(int $pkUser, int pkImmeuble)
+    {
+        return $this->immeubleRepository->getImmeubleEf($pkUser, $pkImmeuble);
+    }
+
+    public function getImmeubleRepart(int $pkUser, int pkImmeuble)
+    {
+        return $this->immeubleRepository->getImmeubleRepart($pkUser, $pkImmeuble);
+    }
+    
+    public function getImmeubleCet(int $pkUser, int pkImmeuble)
+    {
+        return $this->immeubleRepository->getImmeubleCet($pkUser, $pkImmeuble);
+    }
+    
+    public function getImmeubleCapteur(int $pkUser, int pkImmeuble)
+    {
+        return $this->immeubleRepository->getImmeubleCapteur($pkUser, $pkImmeuble);
+    }
+
+    public function getImmeubleElect(int $pkUser, int pkImmeuble)
+    {
+        return $this->immeubleRepository->getImmeubleElect($pkUser, $pkImmeuble);
+    }
+
+    public function getImmeubleGaz(int $pkUser, int pkImmeuble)
+    {
+        return $this->immeubleRepository->getImmeubleGaz($pkUser, $pkImmeuble);
+    }
+    
+    public function etImmeubleSerieConsosEau(int $pkUser, int pkImmeuble)
+    {
+        return $this->immeubleRepository->getImmeubleSerieConsosEau($pkUser, $pkImmeuble);
+    }
+
+    public function getImmeubleSerieConsosCompteurGeneral(int $pkUser, int pkImmeuble)
+    {
+        return $this->immeubleRepository->getImmeubleSerieConsosCompteurGeneral($pkUser, $pkImmeuble);
+    }
 }
