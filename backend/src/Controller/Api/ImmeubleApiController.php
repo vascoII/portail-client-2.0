@@ -22,6 +22,7 @@ use App\Service\Api\ApiSecurityService as SecurityService;
 use Symfony\Component\Serializer\SerializerInterface;
 use App\Service\Client;
 use App\Service\FakeDataService;
+use App\Service\Api\ApiTableauBordClientService;
 
 require_once './tech/fpdf/fpdf.php';
 
@@ -32,11 +33,13 @@ require_once './tech/fpdf/fpdf.php';
 class ImmeubleApiController extends AbstractApiController
 {
     private ApiImmeubleService $apiImmeubleService;
+    private ApiTableauBordClientService $apiTableauBordClientService;
 
-    public function __construct(Client $client, SerializerInterface $serializer, SecurityService $securityService, ?FakeDataService $fakeDataService = null, ApiImmeubleService $apiImmeubleService)
+    public function __construct(Client $client, SerializerInterface $serializer, SecurityService $securityService, ?FakeDataService $fakeDataService = null, ApiImmeubleService $apiImmeubleService, ApiTableauBordClientService $apiTableauBordClientService)
     {
         parent::__construct($client, $serializer, $securityService, $fakeDataService);
         $this->apiImmeubleService = $apiImmeubleService;
+        $this->apiTableauBordClientService = $apiTableauBordClientService;
     }
 
     /**
@@ -45,12 +48,6 @@ class ImmeubleApiController extends AbstractApiController
     #[Route("", name: "index", methods: ["GET"])]
     public function index(Request $request): JsonResponse
     {
-        // Check if faker mode is enabled and return fake data
-        $fakeResponse = $this->sendFakeData('api.immeubles');
-        if ($fakeResponse !== null) {
-            return $fakeResponse;
-        }
-
         $client = $this->getAuthenticatedClientFromHeaders($request);
         if ($client instanceof JsonResponse) {
             return $client;
@@ -60,10 +57,11 @@ class ImmeubleApiController extends AbstractApiController
             $board = $client->getMyTableauBordClient();
 
             $this->validateToken($client);
-            $boardOracle = $this->apiImmeubleService->getMyTableauBordClient($client->getPkUser());
+            $boardOracle = $this->apiTableauBordClientService->getMyTableauBordClient(pkUser: $client->getPkUser(), sessionId: $client->getSessionId());
 
             return $this->success([
                 'board' => $this->normalize($board),
+                'boardOracle' => $this->normalize($boardOracle),
                 'filters' => [],
             ]);
         } catch (\Exception $e) {
@@ -77,16 +75,6 @@ class ImmeubleApiController extends AbstractApiController
     #[Route("/filtre", name: "filter", methods: ["GET", "POST"])]
     public function filter(Request $request): JsonResponse
     {
-        // Check if faker mode is enabled and return fake data (already formatted)
-        if ($this->isFakerMode()) {
-            try {
-                $fakeData = $this->fakeDataService->get('api.immeubles.filtre');
-                return new JsonResponse($fakeData);
-            } catch (\Exception $e) {
-                return $this->error('Fake data not available: ' . $e->getMessage(), 500);
-            }
-        }
-
         $client = $this->getAuthenticatedClientFromHeaders($request);
         if ($client instanceof JsonResponse) {
             return $client;
@@ -122,19 +110,18 @@ class ImmeubleApiController extends AbstractApiController
                     $params->FIELD_ADRESSE_CP_VILLE = $adresse;
 
                     $immeubles = $client->getMyImmeubles($params);
-
                     $immeublesOracle = $this->apiImmeubleService->getMyImmeubles($client->getPkUser(), $params);
                 } else {
                     $immeubles = [];
                 }
             } else {
                 $immeubles = $client->getMyImmeubles($params);
-
                 $immeublesOracle = $this->apiImmeubleService->getMyImmeubles($client->getPkUser(), $params);
             }
 
             return $this->success([
                 'immeubles' => $this->normalize($immeubles),
+                'immeublesOracle' => $this->normalize($immeublesOracle),
             ]);
         } catch (\Exception $e) {
             return $this->error('Erreur lors du filtrage des immeubles: ' . $e->getMessage(), 500);
@@ -147,16 +134,6 @@ class ImmeubleApiController extends AbstractApiController
     #[Route("/{pkImmeuble}", name: "show", methods: ["GET"])]
     public function show(int $pkImmeuble, Request $request, Immeuble $immeubleService): JsonResponse
     {
-        // Check if faker mode is enabled and return fake data (already formatted)
-        if ($this->isFakerMode()) {
-            try {
-                $fakeData = $this->fakeDataService->get('api.immeubles.pkImmeuble');
-                return new JsonResponse($fakeData);
-            } catch (\Exception $e) {
-                return $this->error('Fake data not available: ' . $e->getMessage(), 500);
-            }
-        }
-
         $client = $this->getAuthenticatedClientFromHeaders($request);
         if ($client instanceof JsonResponse) {
             return $client;
@@ -164,8 +141,16 @@ class ImmeubleApiController extends AbstractApiController
 
         try {
             $immeuble = $client->getTableauBordImmeuble($pkImmeuble);
-
-            $immeubleOracle = $this->apiImmeubleService->getTableauBordImmeuble($client->getPkUser(), $pkImmeuble);
+            $immeubleOracle = [
+                'Immeuble' => $this->apiImmeubleService->getImmeuble($client->getPkUser(), pkImmeuble),
+                'ImmeubleEC' => $this->apiImmeubleService->getImmeubleEc($client->getPkUser(), pkImmeuble),
+                'ImmeubleEF' => $this->apiImmeubleService->getImmeubleEf($client->getPkUser(), pkImmeuble),
+                'ImmeubleRepart' => $this->apiImmeubleService->getImmeubleRepart($client->getPkUser(), pkImmeuble),
+                'ImmeubleCET' => $this->apiImmeubleService->getImmeubleCet($client->getPkUser(), pkImmeuble),
+                'ImmeubleCapteur' => $this->apiImmeubleService->getImmeubleCapteur($client->getPkUser(), pkImmeuble),
+                'SerieConsosEAU' => $this->apiImmeubleService->getImmeubleSerieConsosEau($client->getPkUser(), pkImmeuble),
+                'SerieConsosCompteurGeneral' => $this->apiImmeubleService->getImmeubleSerieConsosCompteurGeneral($client->getPkUser(), pkImmeuble),
+            ];
 
             if (!$immeuble) {
                 return $this->notFound('Immeuble non trouvé');
@@ -208,6 +193,7 @@ class ImmeubleApiController extends AbstractApiController
                 'tabs_top_consos' => $tabs_top_consos,
                 'tabs_evo_consos' => $tabs_evo_consos,
                 'chantier' => $chantier,
+                'immeubleOracle' => $this->normalize($immeubleOracle),
             ];
 
             // GPS coordinates for preview/demo mode
@@ -679,17 +665,17 @@ class ImmeubleApiController extends AbstractApiController
         if ($client instanceof JsonResponse) {
             return $client;
         }
-        
+
         if ($type == 'repartition') {
             $type = null;
         }
         $report = $client->getReportImmeubleExcel($pkImmeuble, is_null($type) ? null : strtoupper($type), is_null($energie) ? null : strtoupper($energie), $pkReleve);
         if (empty($report)) {
             $response = new Response();
-                $response->headers->set('Content-Type', 'text/html; charset=utf-8');
-                $response->setContent($this->getHtml());
-                $response->setStatusCode(Response::HTTP_OK);
-                return $response;
+            $response->headers->set('Content-Type', 'text/html; charset=utf-8');
+            $response->setContent($this->getHtml());
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
         }
 
         $response = new Response($report);

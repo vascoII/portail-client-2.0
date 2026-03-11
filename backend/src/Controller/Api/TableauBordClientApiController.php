@@ -40,7 +40,6 @@ class TableauBordClientApiController extends AbstractApiController
 
         try {
             $board = $client->getMyTableauBordClient();
-
             $boardOracle = $this->apiTableauBordClientService->getMyTableauBordClient(pkUser: $client->getPkUser(), sessionId: $client->getSessionId());
 
             // Calculate installation statistics
@@ -68,6 +67,7 @@ class TableauBordClientApiController extends AbstractApiController
             $data = [
                 'board' => $this->normalize($board),
                 'chantier' => $chantier,
+                'boardOracle' => $this->normalize($boardOracle),
             ];
 
             // Check for demo mode

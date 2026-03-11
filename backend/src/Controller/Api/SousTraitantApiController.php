@@ -109,22 +109,21 @@ class SousTraitantApiController extends AbstractApiController
     #[Route("/{pkSousTraitant}", name: "update", methods: ["PUT", "PATCH"])]
     public function update(int $pkSousTraitant, Request $request): JsonResponse
     {
-        return $this->error('Mise à jour de sous-traitant via Oracle non encore implémentée', 501);
+        //return $this->error('Mise à jour de sous-traitant via Oracle non encore implémentée', 501);
 
-        // Exemple de mapping quand l\'écriture Oracle sera disponible :
-        // $payload = json_decode($request->getContent(), true) ?? [];
-        // $dto = new SousTraitantDto(
-        //     nom: $payload['nom'] ?? null,
-        //     description: $payload['description'] ?? null,
-        //     territoires: $payload['territoires'] ?? null,
-        //     pays: $payload['pays'] ?? null,
-        //     adresse: $payload['adresse'] ?? null,
-        //     cp: $payload['cp'] ?? null,
-        //     ville: $payload['ville'] ?? null,
-        //     protection: $payload['protection'] ?? null,
-        // );
-        // $this->apiSousTraitantService->updateSousTraitant($pkSousTraitant, $dto);
-        // return $this->success(null, 'Sous-traitant mis à jour', 200);
+        $payload = json_decode($request->getContent(), true) ?? [];
+        $dto = new SousTraitantDto(
+            nom: $payload['nom'] ?? null,
+            description: $payload['description'] ?? null,
+            territoires: $payload['territoires'] ?? null,
+            pays: $payload['pays'] ?? null,
+            adresse: $payload['adresse'] ?? null,
+            cp: $payload['cp'] ?? null,
+            ville: $payload['ville'] ?? null,
+            protection: $payload['protection'] ?? null,
+        );
+        $this->apiSousTraitantService->updateSousTraitant($pkSousTraitant, $dto);
+        return $this->success(null, 'Sous-traitant mis à jour', 200);
     }
 
     /**
@@ -140,4 +139,3 @@ class SousTraitantApiController extends AbstractApiController
         // return $this->success(null, 'Sous-traitant supprimé', 200);
     }
 }
-

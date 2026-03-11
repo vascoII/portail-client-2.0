@@ -13,6 +13,7 @@ class ApiTableauBordClientService
 
     public function getMyTableauBordClient(int $pkUser, string $sessionId)
     {
+        return [];
         return $this->tableauBordClientRepository->getMyTableauBordClient($pkUser, $sessionId);
     }
 }
