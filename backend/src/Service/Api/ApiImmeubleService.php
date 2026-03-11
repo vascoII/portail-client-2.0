@@ -3,10 +3,14 @@
 namespace App\Service\Api;
 
 use App\Repository\Oracle\ImmeubleRepository;
-use App\Service\Dto\GetImmeubleOutputDto;
-use App\Service\Dto\ListImmeublesOutputDto;
-use App\Service\Dto\ListLogementsOuputDto;
 use App\Service\Dto\ImmeubleDto;
+use App\Service\Dto\ImmeubleEAUDto;
+use App\Service\Dto\ImmeubleRepartDto;
+use App\Service\Dto\ImmeubleCETDto;
+use App\Service\Dto\ImmeubleCapteurDto;
+use App\Service\Dto\ImmeubleElectDto;
+use App\Service\Dto\ImmeubleGazDto;
+use App\Service\Dto\SerieDto;
 
 
 class ApiImmeubleService extends ApiBaseService
@@ -82,52 +86,57 @@ class ApiImmeubleService extends ApiBaseService
 
 
     //////////////////////////////////////////////////////////////////////////////////////
-    public function getImmeuble(int $pkUser, int pkImmeuble)
+    public function getImmeuble(int $pkUser, int $pkImmeuble): ?ImmeubleDto
     {
         return $this->immeubleRepository->getImmeuble($pkUser, $pkImmeuble);
     }
     
-    public function getImmeubleEc(int $pkUser, int pkImmeuble)
+    public function getImmeubleCount(int $pkUser, int $pkImmeuble): array
+    {
+        return $this->immeubleRepository->getImmeubleCount($pkUser, $pkImmeuble);
+    }
+    
+    public function getImmeubleEc(int $pkUser, int $pkImmeuble): ImmeubleEAUDto
     {
         return $this->immeubleRepository->getImmeubleEc($pkUser, $pkImmeuble);
     }
     
-    public function getImmeubleEf(int $pkUser, int pkImmeuble)
+    public function getImmeubleEf(int $pkUser, int $pkImmeuble): ImmeubleEAUDto
     {
         return $this->immeubleRepository->getImmeubleEf($pkUser, $pkImmeuble);
     }
 
-    public function getImmeubleRepart(int $pkUser, int pkImmeuble)
+    public function getImmeubleRepart(int $pkUser, int $pkImmeuble): ImmeubleRepartDto
     {
         return $this->immeubleRepository->getImmeubleRepart($pkUser, $pkImmeuble);
     }
     
-    public function getImmeubleCet(int $pkUser, int pkImmeuble)
+    public function getImmeubleCet(int $pkUser, int $pkImmeuble): ImmeubleCETDto
     {
         return $this->immeubleRepository->getImmeubleCet($pkUser, $pkImmeuble);
     }
     
-    public function getImmeubleCapteur(int $pkUser, int pkImmeuble)
+    public function getImmeubleCapteur(int $pkUser, int $pkImmeuble): ImmeubleCapteurDto
     {
         return $this->immeubleRepository->getImmeubleCapteur($pkUser, $pkImmeuble);
     }
 
-    public function getImmeubleElect(int $pkUser, int pkImmeuble)
+    public function getImmeubleElect(int $pkUser, int $pkImmeuble): ImmeubleElectDto
     {
         return $this->immeubleRepository->getImmeubleElect($pkUser, $pkImmeuble);
     }
 
-    public function getImmeubleGaz(int $pkUser, int pkImmeuble)
+    public function getImmeubleGaz(int $pkUser, int $pkImmeuble): ImmeubleGazDto
     {
         return $this->immeubleRepository->getImmeubleGaz($pkUser, $pkImmeuble);
     }
     
-    public function etImmeubleSerieConsosEau(int $pkUser, int pkImmeuble)
+    public function getImmeubleSerieConsosEau(int $pkUser, int $pkImmeuble): SerieDto
     {
         return $this->immeubleRepository->getImmeubleSerieConsosEau($pkUser, $pkImmeuble);
     }
 
-    public function getImmeubleSerieConsosCompteurGeneral(int $pkUser, int pkImmeuble)
+    public function getImmeubleSerieConsosCompteurGeneral(int $pkUser, int $pkImmeuble): SerieDto
     {
         return $this->immeubleRepository->getImmeubleSerieConsosCompteurGeneral($pkUser, $pkImmeuble);
     }

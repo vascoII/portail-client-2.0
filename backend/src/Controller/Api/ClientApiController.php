@@ -83,12 +83,13 @@ class ClientApiController extends AbstractApiController
     #[Route("", name: "create", methods: ["POST"])]
     public function create(Request $request): JsonResponse
     {
-        return $this->error('Création de client via Oracle non encore implémentée', 501);
+        if (!$this->validateClientOracle($request)) {
+            return $this->error('Création de client via Oracle non encore implémentée', 501);
+        }
 
-        // Exemple de mapping quand l\'écriture Oracle sera disponible :
-        // $payload = json_decode($request->getContent(), true) ?? [];
-        // $this->apiClientService->createClient($payload);
-        // return $this->success(null, 'Client créé', 201);
+        $payload = json_decode($request->getContent(), true) ?? [];
+        $this->apiClientService->createClient($payload);
+        return $this->success(null, 'Client créé', 201);
     }
 
     /**
@@ -97,12 +98,13 @@ class ClientApiController extends AbstractApiController
     #[Route("/{pkClient}", name: "update", methods: ["PUT", "PATCH"])]
     public function update(int $pkClient, Request $request): JsonResponse
     {
-        return $this->error('Mise à jour de client via Oracle non encore implémentée', 501);
-
-        // Exemple de mapping quand l\'écriture Oracle sera disponible :
-        // $payload = json_decode($request->getContent(), true) ?? [];
-        // $this->apiClientService->updateClient($pkClient, $payload);
-        // return $this->success(null, 'Client mis à jour', 200);
+        if (!$this->validateClientOracle($request)) {
+            return $this->error('Mise à jour de client via Oracle non encore implémentée', 501);
+        }
+        
+        $payload = json_decode($request->getContent(), true) ?? [];
+        $this->apiClientService->updateClient($pkClient, $payload);
+        return $this->success(null, 'Client mis à jour', 200);
     }
 
     /**
@@ -111,11 +113,12 @@ class ClientApiController extends AbstractApiController
     #[Route("/{pkClient}", name: "delete", methods: ["DELETE"])]
     public function delete(int $pkClient, Request $request): JsonResponse
     {
-        return $this->error('Suppression de client via Oracle non encore implémentée', 501);
+        if (!$this->validateClientOracle($request)) {
+            return $this->error('Suppression de client via Oracle non encore implémentée', 501);
+        }
 
-        // Exemple quand l\'écriture Oracle sera disponible :
-        // $this->apiClientService->deleteClient($pkClient);
-        // return $this->success(null, 'Client supprimé', 200);
+        $this->apiClientService->deleteClient($pkClient);
+        return $this->success(null, 'Client supprimé', 200);
     }
 }
 

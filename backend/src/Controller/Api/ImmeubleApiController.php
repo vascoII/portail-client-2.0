@@ -142,14 +142,15 @@ class ImmeubleApiController extends AbstractApiController
         try {
             $immeuble = $client->getTableauBordImmeuble($pkImmeuble);
             $immeubleOracle = [
-                'Immeuble' => $this->apiImmeubleService->getImmeuble($client->getPkUser(), pkImmeuble),
-                'ImmeubleEC' => $this->apiImmeubleService->getImmeubleEc($client->getPkUser(), pkImmeuble),
-                'ImmeubleEF' => $this->apiImmeubleService->getImmeubleEf($client->getPkUser(), pkImmeuble),
-                'ImmeubleRepart' => $this->apiImmeubleService->getImmeubleRepart($client->getPkUser(), pkImmeuble),
-                'ImmeubleCET' => $this->apiImmeubleService->getImmeubleCet($client->getPkUser(), pkImmeuble),
-                'ImmeubleCapteur' => $this->apiImmeubleService->getImmeubleCapteur($client->getPkUser(), pkImmeuble),
-                'SerieConsosEAU' => $this->apiImmeubleService->getImmeubleSerieConsosEau($client->getPkUser(), pkImmeuble),
-                'SerieConsosCompteurGeneral' => $this->apiImmeubleService->getImmeubleSerieConsosCompteurGeneral($client->getPkUser(), pkImmeuble),
+                'Immeuble' => $this->apiImmeubleService->getImmeuble($client->getPkUser(), $pkImmeuble),
+                'ImmeubleCount' => $this->apiImmeubleService->getImmeubleCount($client->getPkUser(), $pkImmeuble),
+                'ImmeubleEC' => $this->apiImmeubleService->getImmeubleEc($client->getPkUser(), $pkImmeuble),
+                'ImmeubleEF' => $this->apiImmeubleService->getImmeubleEf($client->getPkUser(), $pkImmeuble),
+                'ImmeubleRepart' => $this->apiImmeubleService->getImmeubleRepart($client->getPkUser(), $pkImmeuble),
+                'ImmeubleCET' => $this->apiImmeubleService->getImmeubleCet($client->getPkUser(), $pkImmeuble),
+                'ImmeubleCapteur' => $this->apiImmeubleService->getImmeubleCapteur($client->getPkUser(), $pkImmeuble),
+                'SerieConsosEAU' => $this->apiImmeubleService->getImmeubleSerieConsosEau($client->getPkUser(), $pkImmeuble),
+                'SerieConsosCompteurGeneral' => $this->apiImmeubleService->getImmeubleSerieConsosCompteurGeneral($client->getPkUser(), $pkImmeuble),
             ];
 
             if (!$immeuble) {
@@ -665,17 +666,17 @@ class ImmeubleApiController extends AbstractApiController
         if ($client instanceof JsonResponse) {
             return $client;
         }
-
+        
         if ($type == 'repartition') {
             $type = null;
         }
         $report = $client->getReportImmeubleExcel($pkImmeuble, is_null($type) ? null : strtoupper($type), is_null($energie) ? null : strtoupper($energie), $pkReleve);
         if (empty($report)) {
             $response = new Response();
-            $response->headers->set('Content-Type', 'text/html; charset=utf-8');
-            $response->setContent($this->getHtml());
-            $response->setStatusCode(Response::HTTP_OK);
-            return $response;
+                $response->headers->set('Content-Type', 'text/html; charset=utf-8');
+                $response->setContent($this->getHtml());
+                $response->setStatusCode(Response::HTTP_OK);
+                return $response;
         }
 
         $response = new Response($report);

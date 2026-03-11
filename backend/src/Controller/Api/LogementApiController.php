@@ -305,7 +305,7 @@ class LogementApiController extends AbstractApiController
             $occu = $client->setOccupants4Chgt($logement->Occupant->PkOccupant, $data, $isnew);
 
             $logementOracle = $this->apiLogementService->getTableauBordLogement($client->getPkUser(), $pkLogement);
-
+            
             return $this->success($this->normalize($occu), 'Occupant mis à jour avec succès');
         } catch (\Exception $e) {
             return $this->error('Erreur lors de la mise à jour de l\'occupant: ' . $e->getMessage(), 500);
@@ -423,6 +423,7 @@ class LogementApiController extends AbstractApiController
                 $depannages = $client->getInterventionsImmeuble($pkImmeuble, $pkLogement);
 
                 $depannagesOracle = $this->apiLogementService->getInterventionsImmeuble($client->getPkUser(), $pkImmeuble, $pkLogement);
+
             } else {
                 $depannages = [];
             }

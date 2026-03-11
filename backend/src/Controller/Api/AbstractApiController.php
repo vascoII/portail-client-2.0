@@ -264,4 +264,18 @@ abstract class AbstractApiController extends AbstractTechemController
             return $this->unauthorized($e->getMessage());
         }
     }
+
+    protected function validateClientOracle(Request $request): bool
+    {
+        $client = $this->getAuthenticatedClientFromHeaders($request);
+        if ($client instanceof JsonResponse) {
+            return false;
+        }
+        /** Only lhazard TBD */
+        if ($client->getPkUser() !== 206437) {
+            return false;
+        }
+
+        return true;
+    }
 }

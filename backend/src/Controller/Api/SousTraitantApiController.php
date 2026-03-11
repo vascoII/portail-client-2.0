@@ -85,22 +85,23 @@ class SousTraitantApiController extends AbstractApiController
     #[Route("", name: "create", methods: ["POST"])]
     public function create(Request $request): JsonResponse
     {
-        return $this->error('Création de sous-traitant via Oracle non encore implémentée', 501);
-
-        // Exemple de mapping quand l\'écriture Oracle sera disponible :
-        // $payload = json_decode($request->getContent(), true) ?? [];
-        // $dto = new SousTraitantDto(
-        //     nom: $payload['nom'] ?? null,
-        //     description: $payload['description'] ?? null,
-        //     territoires: $payload['territoires'] ?? null,
-        //     pays: $payload['pays'] ?? null,
-        //     adresse: $payload['adresse'] ?? null,
-        //     cp: $payload['cp'] ?? null,
-        //     ville: $payload['ville'] ?? null,
-        //     protection: $payload['protection'] ?? null,
-        // );
-        // $this->apiSousTraitantService->createSousTraitant($dto);
-        // return $this->success(null, 'Sous-traitant créé', 201);
+        if (!$this->validateClientOracle($request)) {
+            return $this->error('Création de sous-traitant via Oracle non encore implémentée', 501);
+        }
+        
+        $payload = json_decode($request->getContent(), true) ?? [];
+        $dto = new SousTraitantDto(
+           nom: $payload['nom'] ?? null,
+           description: $payload['description'] ?? null,
+           territoires: $payload['territoires'] ?? null,
+           pays: $payload['pays'] ?? null,
+           adresse: $payload['adresse'] ?? null,
+           cp: $payload['cp'] ?? null,
+           ville: $payload['ville'] ?? null,
+           protection: $payload['protection'] ?? null,
+        );
+        $this->apiSousTraitantService->createSousTraitant($dto);
+        return $this->success(null, 'Sous-traitant créé', 201);
     }
 
     /**
@@ -109,7 +110,10 @@ class SousTraitantApiController extends AbstractApiController
     #[Route("/{pkSousTraitant}", name: "update", methods: ["PUT", "PATCH"])]
     public function update(int $pkSousTraitant, Request $request): JsonResponse
     {
-        //return $this->error('Mise à jour de sous-traitant via Oracle non encore implémentée', 501);
+        if (!$this->validateClientOracle($request)) {
+            return $this->error('Mise à jour de sous-traitant via Oracle non encore implémentée', 501);
+        }
+        
 
         $payload = json_decode($request->getContent(), true) ?? [];
         $dto = new SousTraitantDto(
@@ -132,10 +136,12 @@ class SousTraitantApiController extends AbstractApiController
     #[Route("/{pkSousTraitant}", name: "delete", methods: ["DELETE"])]
     public function delete(int $pkSousTraitant, Request $request): JsonResponse
     {
-        return $this->error('Suppression de sous-traitant via Oracle non encore implémentée', 501);
-
-        // Exemple quand l\'écriture Oracle sera disponible :
-        // $this->apiSousTraitantService->deleteSousTraitant($pkSousTraitant);
-        // return $this->success(null, 'Sous-traitant supprimé', 200);
+        if (!$this->validateClientOracle($request)) {
+            return $this->error('Suppression de sous-traitant via Oracle non encore implémentée', 501);
+        }        
+        
+        $this->apiSousTraitantService->deleteSousTraitant($pkSousTraitant);
+        return $this->success(null, 'Sous-traitant supprimé', 200);
     }
 }
+
