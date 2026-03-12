@@ -7,8 +7,8 @@ namespace App\Service\Dto;
 final class SerieDto
 {
     public function __construct(
-        public readonly ?int $defaultIntervalle,
-        public readonly ?string $valeursXyl,
-        public readonly ?string $annee
+        public readonly ?int $DefaultIntervalle,
+        public readonly ?string $ValeursXyl,
+        public readonly ?string $Annee
     ) {}
 }

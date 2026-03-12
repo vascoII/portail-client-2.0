@@ -7,9 +7,9 @@ namespace App\Service\Dto;
 final class IndexRecapDateDto
 {
     public function __construct(
-        public readonly ?\DateTimeImmutable $date,
-        public readonly ?float $moy,
-        public readonly ?float $max,
-        public readonly ?float $min
+        public readonly ?\DateTimeImmutable $Date,
+        public readonly ?float $Moy,
+        public readonly ?float $Max,
+        public readonly ?float $Min
     ) {}
 }

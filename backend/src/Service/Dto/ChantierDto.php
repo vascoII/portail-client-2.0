@@ -7,11 +7,11 @@ namespace App\Service\Dto;
 final class ChantierDto
 {
     public function __construct(
-        public readonly ?int $pkChantier,
-        public readonly ?int $pkDevis,
-        public readonly ?int $pkImmeuble,
-        public readonly ?\DateTimeImmutable $dateEntreeChantier,
-        public readonly ?int $nbCompteursPoses,
-        public readonly ?int $nbCompteursCommandes
+        public readonly ?int $PkChantier,
+        public readonly ?int $PkDevis,
+        public readonly ?int $PkImmeuble,
+        public readonly ?\DateTimeImmutable $DateEntreeChantier,
+        public readonly ?int $NbCompteursPoses,
+        public readonly ?int $NbCompteursCommandes
     ) {}
 }

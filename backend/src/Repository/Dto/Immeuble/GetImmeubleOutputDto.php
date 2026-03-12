@@ -7,14 +7,23 @@ namespace App\Repository\Dto\Immeuble;
 final class GetImmeubleOutputDto
 {
     public function __construct(
-        public readonly ?int $pkImmeuble,
-        public readonly ?string $nom,
-        public readonly ?string $numero,
-        public readonly ?string $ref,
-        public readonly ?string $adresse1,
-        public readonly ?string $adresse2,
-        public readonly ?string $adresse3,
-        public readonly ?string $cp,
-        public readonly ?string $ville
+        public readonly ?int $PkImmeuble,
+        public readonly ?string $Nom,
+        public readonly ?string $Numero,
+        public readonly ?string $Ref,
+        public readonly ?string $Adresse1,
+        public readonly ?string $Adresse2,
+        public readonly ?string $Adresse3,
+        public readonly ?string $Cp,
+        public readonly ?string $Ville,
+        public readonly ?bool $Telereleve,
+        public readonly ?string $FkClientTop,
+        public readonly ?bool $Actif = false,
+        public readonly ?\DateTime $DateActivationClient,
+        public readonly ?\DateTime $DateActivationOccupant,
+        public readonly ?bool $HasNoteOccupant = false,
+        public readonly ?bool $HasDecompteOccupant = false,
+        public readonly ?bool $HasFactures = false,
+        public readonly ?bool $HasChantiers = false
     ) {}
 }

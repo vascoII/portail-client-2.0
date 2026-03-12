@@ -74,7 +74,7 @@ class ImmeubleRepository
      */
     public function updateAddress2And3(int $pkImmeuble, string $adresse2, string $adresse3): SuccessOutputDto
     {
-        $sql = "UPDATE IMMEUBLE SET ADRESSE2 = :adresse2, ADRESSE3 = :adresse3 WHERE PKIMMEUBLE = :pkImmeuble";
+        $sql = "UPDATE WEB_IMMEUBLE SET ADRESSE2 = :adresse2, ADRESSE3 = :adresse3 WHERE PKIMMEUBLE = :pkImmeuble";
 
         $params = [
             'pkImmeuble'   => $pkImmeuble,
@@ -88,7 +88,7 @@ class ImmeubleRepository
 
     public function findByPkImmeuble(int $pkImmeuble): ?GetImmeubleOutputDto
     {
-        $sql = "SELECT PKIMMEUBLE, NOM, NUMERO, REF, ADRESSE1, ADRESSE2, ADRESSE3, CP, VILLE FROM IMMEUBLE WHERE PKIMMEUBLE = :pkImmeuble";
+        $sql = "SELECT PKIMMEUBLE, NOM, ADRESSE AS ADRESSE1, ADRESSE2, ADRESSE3, CP, VILLE FROM WEB_IMMEUBLE WHERE PKIMMEUBLE = :pkImmeuble";
         $params = ['pkImmeuble' => $pkImmeuble];
         $result = $this->oci->fetchAllAssoc($sql, $params);
         return $result ? new GetImmeubleOutputDto(...$result[0]) : null;
@@ -97,20 +97,32 @@ class ImmeubleRepository
     //////////////////////////////////////////////////////////////////////////////////////
     public function getImmeuble(int $pkUser, int $pkImmeuble): ?ImmeubleDto
     {
-        $sql = "SELECT PKIMMEUBLE, NOM, NUMERO, REF, ADRESSE1, ADRESSE2, ADRESSE3, CP, VILLE FROM IMMEUBLE WHERE PKIMMEUBLE = :pkImmeuble";
+        $sql = "SELECT PKIMMEUBLE, NOM, ADRESSE, ADRESSE2, ADRESSE3, CP, VILLE, TELERELEVE, FKCLIENTTOP, ACTIF, NOTEOCCUPANT, 
+            ESPACECLIENT_SHOWBILLINGOCC, ESPACECLIENT_SHOWFACTURES, ESPACECLIENT_SHOWCHANTIERS 
+            FROM WEB_IMMEUBLE WHERE PKIMMEUBLE = :pkImmeuble";
+        
         $params = ['pkImmeuble' => $pkImmeuble];
         $result = $this->oci->fetchAllAssoc($sql, $params);
         
         return $result ? new ImmeubleDto(
-            pkImmeuble: $pkImmeuble,
-            nom: $result[0]['nom'] ?? null,
-            numero: $result[0]['numero'] ?? null,
-            ref: $result[0]['ref'] ?? null,
-            adresse1: $result[0]['adresse1'] ?? null,
-            adresse2: $result[0]['adresse2'] ?? null,
-            adresse3: $result[0]['adresse3'] ?? null,
-            cp: $result[0]['cp'] ?? null,
-            ville: $result[0]['ville'] ?? null
+            PkImmeuble: $pkImmeuble,
+            Nom: $result[0]['NOM'] ?? null,
+            Numero: $result[0]['Numero'] ?? null,
+            Ref: $result[0]['Ref'] ?? null,
+            Adresse1: $result[0]['ADRESSE'] ?? null,
+            Adresse2: $result[0]['ADRESSE2'] ?? null,
+            Adresse3: $result[0]['ADRESSE3'] ?? null,
+            Cp: $result[0]['CP'] ?? null,
+            Ville: $result[0]['VILLE'] ?? null,
+            Telereleve: $result[0]['TELERELEVE'] ?? null,
+            FkClientTop: $result[0]['FKCLIENTTOP'] ?? null,
+            Actif: $result[0]['ACTIF'] == 'O' ? true : false,
+            DateActivationClient: new \DateTime(),
+            DateActivationOccupant: new \DateTime(),
+            HasNoteOccupant: $result[0]['NOTEOCCUPANT'] == 'O' ? true : false,
+            HasDecompteOccupant: $result[0]['ESPACECLIENT_SHOWBILLINGOCC'] == 'O' ? true : false,
+            HasFactures: $result[0]['ESPACECLIENT_SHOWFACTURES'] == 'O' ? true : false,
+            HasChantiers: $result[0]['ESPACECLIENT_SHOWCHANTIERS'] == 'O' ? true : false,
         ) : null;
     }
     
@@ -138,24 +150,24 @@ SQL;
 
         if ($rows === []) {
             return [
-                'nbLogements' => 0,
-                'nbAppareils' => 0,
-                'nbDepannages' => 0,
-                'nbDepannagesTotal' => 0,
-                'degresDepannages' => 0,
-                'nbDysfonctionnements' => 0,
-                'degresDysfonctionnements' => 0,
-                'hasTelereleve' => false,
-                'nbCompteursEc' => 0,
-                'nbCompteursEf' => 0,
-                'nbCompteursRepart' => 0,
-                'nbCompteursCet' => 0,
-                'nbCompteursCapteur' => 0,
-                'nbCompteursElect' => 0,
-                'nbCompteursGaz' => 0,
-                'nbCompteursTelereveleTotal' => 0,
-                'nbCompteursTelereveleOk' => 0,
-                'hasTransfertFichiers' => false,
+                'NbLogements' => 0,
+                'NbAppareils' => 0,
+                'NbDepannages' => 0,
+                'NbDepannagesTotal' => 0,
+                'DegresDepannages' => 0,
+                'NbDysfonctionnements' => 0,
+                'DegresDysfonctionnements' => 0,
+                'HasTelereleve' => false,
+                'NbCompteursEC' => 0,
+                'NbCompteursEF' => 0,
+                'NbCompteursRepart' => 0,
+                'NbCompteursCET' => 0,
+                'NbCompteursCapteur' => 0,
+                'NbCompteursElect' => 0,
+                'NbCompteursGaz' => 0,
+                'NbCompteursTelereveleTotal' => 0,
+                'NbCompteursTelereveleOK' => 0,
+                'HasTransfertFichiers' => false,
             ];
         }
 
@@ -170,29 +182,29 @@ SQL;
         $nbAppareils = $nbCompteursEc + $nbCompteursEf + $nbCompteursRepart + $nbCompteursCet;
 
         return [
-            'nbLogements' => (int) ($row['NBLOGEMENT'] ?? 0),
-            'nbAppareils' => $nbAppareils,
-            'nbDepannages' => (int) ($row['NBDEPANNAGES'] ?? 0),
+            'NbLogements' => (int) ($row['NBLOGEMENT'] ?? 0),
+            'NbAppareils' => $nbAppareils,
+            'NbDepannages' => (int) ($row['NBDEPANNAGES'] ?? 0),
             // Nombre total de dépannages : non exposé directement en WS2 pour ce cas, laissé à 0 pour l'instant
-            'nbDepannagesTotal' => 0,
+            'NbDepannagesTotal' => 0,
             // "degrés" non présents dans GetTableauBordImmeuble WS2 : initialisés à 0
-            'degresDepannages' => 0,
-            'nbDysfonctionnements' => (int) ($row['NBSUSFRAUDCLI'] ?? 0),
-            'degresDysfonctionnements' => 0,
-            'hasTelereleve' => ($row['TELERELEVE'] ?? '') === 'O',
-            'nbCompteursEc' => $nbCompteursEc,
-            'nbCompteursEf' => $nbCompteursEf,
-            'nbCompteursRepart' => $nbCompteursRepart,
-            'nbCompteursCet' => $nbCompteursCet,
-            'nbCompteursCapteur' => $nbCompteursCapteur,
+            'DegresDepannages' => 0,
+            'NbDysfonctionnements' => (int) ($row['NBSUSFRAUDCLI'] ?? 0),
+            'DegresDysfonctionnements' => 0,
+            'HasTelereleve' => ($row['TELERELEVE'] ?? '') === 'O',
+            'NbCompteursEc' => $nbCompteursEc,
+            'NbCompteursEf' => $nbCompteursEf,
+            'NbCompteursRepart' => $nbCompteursRepart,
+            'NbCompteursCet' => $nbCompteursCet,
+            'NbCompteursCapteur' => $nbCompteursCapteur,
             // Compteurs électricité / gaz non exposés dans WEB_IMMEUBLE (WS2)
-            'nbCompteursElect' => 0,
-            'nbCompteursGaz' => 0,
+            'NbCompteursElect' => 0,
+            'NbCompteursGaz' => 0,
             // Statut télérélevé détaillé (total / OK) non implémenté dans WS2 : initialisés à 0
-            'nbCompteursTelereveleTotal' => 0,
-            'nbCompteursTelereveleOk' => 0,
+            'NbCompteursTelereveleTotal' => 0,
+            'NbCompteursTelereveleOk' => 0,
             // HasTransfertFichiers est géré uniquement dans la branche legacy (non WS2) : false ici
-            'hasTransfertFichiers' => false,
+            'HasTransfertFichiers' => false,
         ];
     }
     
@@ -257,36 +269,36 @@ SQL;
         // seront complétés dans une phase ultérieure.
 
         return new ImmeubleEAUDto(
-            nbCompteursARelever: $nbCompteursARelever,
-            nbCompteursReleves: $nbCompteursReleves,
-            nbFuites: $nbFuitesEc,
-            degresFuites: null,
-            nbAnomalies: $nbAnomaliesEc,
-            degresAnomalies: null,
-            chantier: new ChantierDto(
-                pkChantier: null,
-                pkDevis: null,
-                pkImmeuble: $pkImmeuble,
-                dateEntreeChantier: null,
-                nbCompteursPoses: null,
-                nbCompteursCommandes: null
+            NbCompteursARelever: $nbCompteursARelever,
+            NbCompteursReleves: $nbCompteursReleves,
+            NbFuites: $nbFuitesEc,
+            DegresFuites: null,
+            NbAnomalies: $nbAnomaliesEc,
+            DegresAnomalies: null,
+            Chantier: new ChantierDto(
+                PkChantier: null,
+                PkDevis: null,
+                PkImmeuble: $pkImmeuble,
+                DateEntreeChantier: null,
+                NbCompteursPoses: null,
+                NbCompteursCommandes: null
             ),
-            topConsos: new TopConsosDto(
-                dateReleve: null,
-                consosGrandes: [],
-                consosPetites: []
+            TopConsos: new TopConsosDto(
+                DateReleve: null,
+                ConsosGrandes: [],
+                ConsosPetites: []
             ),
-            serieConsos1: new SerieDto(
-                defaultIntervalle: null,
-                valeursXyl: null,
-                annee: null
+            SerieConsos1: new SerieDto(
+                DefaultIntervalle: null,
+                ValeursXyl: null,
+                Annee: null
             ),
-            serieConsos2: new SerieDto(
-                defaultIntervalle: null,
-                valeursXyl: null,
-                annee: null
+            SerieConsos2: new SerieDto(
+                DefaultIntervalle: null,
+                ValeursXyl: null,
+                Annee: null
             ),
-            listeReleves: []
+            ListeReleves: []
         );
     }
     
@@ -349,36 +361,36 @@ SQL;
         // 3) Construire un ImmeubleEAUDto avec les données Oracle.
 
         return new ImmeubleEAUDto(
-            nbCompteursARelever: $nbCompteursARelever,
-            nbCompteursReleves: $nbCompteursReleves,
-            nbFuites: $nbFuitesEf,
-            degresFuites: null,
-            nbAnomalies: $nbAnomaliesEf,
-            degresAnomalies: null,
-            chantier: new ChantierDto(
-                pkChantier: null,
-                pkDevis: null,
-                pkImmeuble: $pkImmeuble,
-                dateEntreeChantier: null,
-                nbCompteursPoses: null,
-                nbCompteursCommandes: null
+            NbCompteursARelever: $nbCompteursARelever,
+            NbCompteursReleves: $nbCompteursReleves,
+            NbFuites: $nbFuitesEf,
+            DegresFuites: null,
+            NbAnomalies: $nbAnomaliesEf,
+            DegresAnomalies: null,
+            Chantier: new ChantierDto(
+                PkChantier: null,
+                PkDevis: null,
+                PkImmeuble: $pkImmeuble,
+                DateEntreeChantier: null,
+                NbCompteursPoses: null,
+                NbCompteursCommandes: null
             ),
-            topConsos: new TopConsosDto(
-                dateReleve: null,
-                consosGrandes: [],
-                consosPetites: []
+            TopConsos: new TopConsosDto(
+                DateReleve: null,
+                ConsosGrandes: [],
+                ConsosPetites: []
             ),
-            serieConsos1: new SerieDto(
-                defaultIntervalle: null,
-                valeursXyl: null,
-                annee: null
+            SerieConsos1: new SerieDto(
+                DefaultIntervalle: null,
+                ValeursXyl: null,
+                Annee: null
             ),
-            serieConsos2: new SerieDto(
-                defaultIntervalle: null,
-                valeursXyl: null,
-                annee: null
+            SerieConsos2: new SerieDto(
+                DefaultIntervalle: null,
+                ValeursXyl: null,
+                Annee: null
             ),
-            listeReleves: []
+            ListeReleves: []
         );
     }
 
@@ -422,49 +434,49 @@ SQL;
         // restent initialisés comme avant et seront complétés plus tard.
 
         return new ImmeubleRepartDto(
-            nbCompteursARelever: $nbCompteursARelever,
-            nbCompteursReleves: $nbCompteursReleves,
-            chantier: new ChantierDto(
-                pkChantier: null,
-                pkDevis: null,
-                pkImmeuble: $pkImmeuble,
-                dateEntreeChantier: null,
-                nbCompteursPoses: null,
-                nbCompteursCommandes: null
+            NbCompteursARelever: $nbCompteursARelever,
+            NbCompteursReleves: $nbCompteursReleves,
+            Chantier: new ChantierDto(
+                PkChantier: null,
+                PkDevis: null,
+                PkImmeuble: $pkImmeuble,
+                DateEntreeChantier: null,
+                NbCompteursPoses: null,
+                NbCompteursCommandes: null
             ),
-            topConsos: new TopConsosDto(
-                dateReleve: null,
-                consosGrandes: [],
-                consosPetites: []
+            TopConsos: new TopConsosDto(
+                DateReleve: null,
+                ConsosGrandes: [],
+                ConsosPetites: []
             ),
-            serieConsos: new SerieDto(
-                defaultIntervalle: null,
-                valeursXyl: null,
-                annee: null
+            SerieConsos: new SerieDto(
+                DefaultIntervalle: null,
+                ValeursXyl: null,
+                Annee: null
             ),
-            listeReleves: [],
-            totURepart: null,
-            totTantChauff: null,
-            puTant: null,
-            prixURepart: null,
-            prixAbonn: null,
-            montARepartTant: null,
-            partRepartConsos: null,
-            ctCombust: null,
-            serieConsosTotale1: new SerieDto(
-                defaultIntervalle: null,
-                valeursXyl: null,
-                annee: null
+            ListeReleves: [],
+            TotURepart: null,
+            TotTantChauff: null,
+            PuTant: null,
+            PrixURepart: null,
+            PrixAbonn: null,
+            MontARepartTant: null,
+            PartRepartConsos: null,
+            CtCombust: null,
+            SerieConsosTotale1: new SerieDto(
+                DefaultIntervalle: null,
+                ValeursXyl: null,
+                Annee: null
             ),
-            serieConsosTotale2: new SerieDto(
-                defaultIntervalle: null,
-                valeursXyl: null,
-                annee: null
+            SerieConsosTotale2: new SerieDto(
+                DefaultIntervalle: null,
+                ValeursXyl: null,
+                Annee: null
             ),
-            serieConsosDJU: new SerieDto(
-                defaultIntervalle: null,
-                valeursXyl: null,
-                annee: null
+            SerieConsosDJU: new SerieDto(
+                DefaultIntervalle: null,
+                ValeursXyl: null,
+                Annee: null
             )
         );
     }
@@ -506,49 +518,49 @@ SQL;
         }
 
         return new ImmeubleCETDto(
-            nbCompteursARelever: $nbCompteursARelever,
-            nbCompteursReleves: $nbCompteursReleves,
-            chantier: new ChantierDto(
-                pkChantier: null,
-                pkDevis: null,
-                pkImmeuble: $pkImmeuble,
-                dateEntreeChantier: null,
-                nbCompteursPoses: null,
-                nbCompteursCommandes: null
+            NbCompteursARelever: $nbCompteursARelever,
+            NbCompteursReleves: $nbCompteursReleves,
+            Chantier: new ChantierDto(
+                PkChantier: null,
+                PkDevis: null,
+                PkImmeuble: $pkImmeuble,
+                DateEntreeChantier: null,
+                NbCompteursPoses: null,
+                NbCompteursCommandes: null
             ),
-            topConsos: new TopConsosDto(
-                dateReleve: null,
-                consosGrandes: [],
-                consosPetites: []
+            TopConsos: new TopConsosDto(
+                DateReleve: null,
+                ConsosGrandes: [],
+                ConsosPetites: []
             ),
-            serieConsos: new SerieDto(
-                defaultIntervalle: null,
-                valeursXyl: null,
-                annee: null
+            SerieConsos: new SerieDto(
+                DefaultIntervalle: null,
+                ValeursXyl: null,
+                Annee: null
             ),
-            listeReleves: null,
-            totURepart: null,
-            totTantChauff: null,
-            puTant: null,
-            prixURepart: null,
-            prixAbonn: null,
-            montARepartTant: null,
-            partRepartConsos: null,
-            ctCombust: null,
-            serieConsosTotale1: new SerieDto(
-                defaultIntervalle: null,
-                valeursXyl: null,
-                annee: null
+            ListeReleves: null,
+            TotURepart: null,
+            TotTantChauff: null,
+            PuTant: null,
+            PrixURepart: null,
+            PrixAbonn: null,
+            MontARepartTant: null,
+            PartRepartConsos: null,
+            CtCombust: null,
+            SerieConsosTotale1: new SerieDto(
+                DefaultIntervalle: null,
+                ValeursXyl: null,
+                Annee: null
             ),
-            serieConsosTotale2: new SerieDto(
-                defaultIntervalle: null,
-                valeursXyl: null,
-                annee: null
+            SerieConsosTotale2: new SerieDto(
+                DefaultIntervalle: null,
+                ValeursXyl: null,
+                Annee: null
             ),
-            serieConsosDJU: new SerieDto(
-                defaultIntervalle: null,
-                valeursXyl: null,
-                annee: null
+            SerieConsosDJU: new SerieDto(
+                DefaultIntervalle: null,
+                ValeursXyl: null,
+                Annee: null
             )
         );
     }
@@ -556,27 +568,27 @@ SQL;
     public function getImmeubleCapteur(int $pkUser, int $pkImmeuble): ImmeubleCapteurDto
     {
         return new ImmeubleCapteurDto(
-            indexRecapTemperature: new IndexRecapDateDto(
-                date: null,
-                moy: null,
-                max: null,
-                min: null
+            IndexRecapTemperature: new IndexRecapDateDto(
+                Date: null,
+                Moy: null,
+                Max: null,
+                Min: null
             ),
-            indexRecapHumidite: new IndexRecapDateDto(
-                date: null,
-                moy: null,
-                max: null,
-                min: null
+            IndexRecapHumidite: new IndexRecapDateDto(
+                Date: null,
+                Moy: null,
+                Max: null,
+                Min: null
             ),
-            serieConsosTemperature: new SerieDto(
-                defaultIntervalle: null,
-                valeursXyl: null,
-                annee: null
+            SerieConsosTemperature: new SerieDto(
+                DefaultIntervalle: null,
+                ValeursXyl: null,
+                Annee: null
             ),
-            serieConsosHumidite: new SerieDto(
-                defaultIntervalle: null,
-                valeursXyl: null,
-                annee: null
+            SerieConsosHumidite: new SerieDto(
+                DefaultIntervalle: null,
+                ValeursXyl: null,
+                Annee: null
             )
         );
     }
@@ -584,62 +596,62 @@ SQL;
     public function getImmeubleElect(int $pkUser, int $pkImmeuble): ImmeubleElectDto
     {
         return new ImmeubleElectDto(
-            nbCompteursARelever: null,
-            nbCompteursReleves: null,
-            chantier: new ChantierDto(
-                pkChantier: null,
-                pkDevis: null,
-                pkImmeuble: $pkImmeuble,
-                dateEntreeChantier: null,
-                nbCompteursPoses: null,
-                nbCompteursCommandes: null
+            NbCompteursARelever: null,
+            NbCompteursReleves: null,
+            Chantier: new ChantierDto(
+                PkChantier: null,
+                PkDevis: null,
+                PkImmeuble: $pkImmeuble,
+                DateEntreeChantier: null,
+                NbCompteursPoses: null,
+                NbCompteursCommandes: null
             ),
-            topConsos: new TopConsosDto(
-                dateReleve: null,
-                consosGrandes: [],
-                consosPetites: []
+            TopConsos: new TopConsosDto(
+                DateReleve: null,
+                ConsosGrandes: [],
+                ConsosPetites: []
             ),
-            listeReleves: []
+            ListeReleves: []
         );
     }
 
     public function getImmeubleGaz(int $pkUser, int $pkImmeuble): ImmeubleGazDto
     {
         return new ImmeubleGazDto(
-            nbCompteursARelever: null,
-            nbCompteursReleves: null,
-            chantier: new ChantierDto(
-                pkChantier: null,
-                pkDevis: null,
-                pkImmeuble: $pkImmeuble,
-                dateEntreeChantier: null,
-                nbCompteursPoses: null,
-                nbCompteursCommandes: null
+            NbCompteursARelever: null,
+            NbCompteursReleves: null,
+            Chantier: new ChantierDto(
+                PkChantier: null,
+                PkDevis: null,
+                PkImmeuble: $pkImmeuble,
+                DateEntreeChantier: null,
+                NbCompteursPoses: null,
+                NbCompteursCommandes: null
             ),
-            topConsos: new TopConsosDto(
-                dateReleve: null,
-                consosGrandes: [],
-                consosPetites: []
+            TopConsos: new TopConsosDto(
+                DateReleve: null,
+                ConsosGrandes: [],
+                ConsosPetites: []
             ),
-            listeReleves: []
+            ListeReleves: []
         );
     }
     
     public function getImmeubleSerieConsosEau(int $pkUser, int $pkImmeuble): SerieDto
     {
         return new SerieDto(
-            defaultIntervalle: null,
-            valeursXyl: null,
-            annee: null
+            DefaultIntervalle: null,
+            ValeursXyl: null,
+            Annee: null
         );
     }
 
     public function getImmeubleSerieConsosCompteurGeneral(int $pkUser, int $pkImmeuble): SerieDto
     {
         return new SerieDto(
-            defaultIntervalle: null,
-            valeursXyl: null,
-            annee: null
+            DefaultIntervalle: null,
+            ValeursXyl: null,
+            Annee: null
         );
     }
     

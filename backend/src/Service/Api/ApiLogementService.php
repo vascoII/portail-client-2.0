@@ -18,9 +18,9 @@ class ApiLogementService
         return $this->logementRepository->getLogements($pkUser, $pkImmeuble, $params);
     }
 
-    public function getTableauBordLogement(int $pkUser, int $pkImmeuble)
+    public function getTableauBordLogement(string $SessionID, int $PkUser, int $PkLogement, int $PkOccupant)
     {
-        return $this->logementRepository->getTableauBordLogement($pkUser, $pkImmeuble);
+        return $this->logementRepository->getTableauBordLogement($SessionID, $PkUser, $PkLogement, $PkOccupant);
     }
 
     public function getTableauBordImmeuble(int $pkUser, int $pkImmeuble)
@@ -43,9 +43,9 @@ class ApiLogementService
         return $this->logementRepository->getAnomaliesImmeuble($pkUser, $pkImmeuble, $pkLogement, $pkAppareil);
     }
     
-    public function getTicketInterInit(int $pkUser, $pkLogementParam)
+    public function getTicketInterInit(string $SessionID, int $PkUser, int $PkLogement)
     {
-        return $this->logementRepository->getTicketInterInit($pkUser, $pkLogementParam);
+        return $this->logementRepository->getTicketInterInit($SessionID, $PkUser, $PkLogement);
     }
 
     public function getMyTableauBordClient(int $pkUser)
@@ -58,9 +58,9 @@ class ApiLogementService
         return $this->logementRepository->getInfosAppareilsType($pkUser, $pkLogement, $type);
     }
 
-    public function getNbTicketsInterByLogement(int $pkUser, int $pkLogement)
+    public function getNbTicketsInterByLogement(string $SessionID, int $PkUser, int $PkLogement, string $ParamsFiltres)
     {
-        return $this->logementRepository->getNbTicketsInterByLogement($pkUser, $pkLogement);
+        return $this->logementRepository->getNbTicketsInterByLogement($SessionID, $PkUser, $PkLogement, $ParamsFiltres);
     }
 
     public function getOccupants(int $pkUser, int $pkLogement, int $pkOccupant, bool $isActif = true)

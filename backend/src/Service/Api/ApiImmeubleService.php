@@ -60,31 +60,6 @@ class ApiImmeubleService extends ApiBaseService
         return $this->immeubleRepository->getDetailDepannage($pkUser, $pkIntervention);
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-    public function updateAddress2And3(int $pkUser, int $pkImmeuble, string $adresse2, string $adresse3): ImmeubleDto
-    {
-        $this->checkUserHasAccessToImmeuble($pkUser, $pkImmeuble);
-        $result = $this->immeubleRepository->updateAddress2And3($pkImmeuble, $adresse2, $adresse3);
-
-        if (!$result->isSuccess) {
-            throw new \Exception("Failed to update address for immeuble with id $pkImmeuble");
-        }
-        
-        $immeuble = $this->immeubleRepository->findByPkImmeuble($pkImmeuble);
-        return new ImmeubleDto(
-            $immeuble->pkImmeuble,
-            $immeuble->nom,
-            $immeuble->numero,
-            $immeuble->ref,
-            $immeuble->adresse1,
-            $immeuble->adresse2,
-            $immeuble->adresse3,
-            $immeuble->cp,
-            $immeuble->ville
-        );
-    }
-
-
     //////////////////////////////////////////////////////////////////////////////////////
     public function getImmeuble(int $pkUser, int $pkImmeuble): ?ImmeubleDto
     {

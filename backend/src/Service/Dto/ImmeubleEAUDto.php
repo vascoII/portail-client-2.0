@@ -10,16 +10,16 @@ final class ImmeubleEAUDto
      * @param ReleveDto[] $listeReleves
      */
     public function __construct(
-        public ?int $nbCompteursARelever = null,
-        public ?int $nbCompteursReleves = null,
-        public ?int $nbFuites = null,
-        public ?int $degresFuites = null,
-        public ?int $nbAnomalies = null,
-        public ?int $degresAnomalies = null,
-        public ?ChantierDto $chantier = null,
-        public ?TopConsosDto $topConsos = null,
-        public ?SerieDto $serieConsos1 = null,
-        public ?SerieDto $serieConsos2 = null,
-        public ?array $listeReleves = null
+        public ?int $NbCompteursARelever = null,
+        public ?int $NbCompteursReleves = null,
+        public ?int $NbFuites = null,
+        public ?int $DegresFuites = null,
+        public ?int $NbAnomalies = null,
+        public ?int $DegresAnomalies = null,
+        public ?ChantierDto $Chantier = null,
+        public ?TopConsosDto $TopConsos = null,
+        public ?SerieDto $SerieConsos1 = null,
+        public ?SerieDto $SerieConsos2 = null,
+        public ?array $ListeReleves = null
     ) {}
 }
