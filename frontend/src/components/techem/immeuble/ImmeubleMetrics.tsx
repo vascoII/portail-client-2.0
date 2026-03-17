@@ -58,8 +58,8 @@ export const ImmeubleMetrics = ({ pkImmeuble }: ImmeubleMetricsProps) => {
 
       const dateBegin = formatDateForApi(startDate);
       const dateEndFormatted = formatDateForApi(endDate);
-
-      const response = await apiClient.get<Blob>("parc/intervention", {
+      
+      const response = await apiClient.get<Blob>("immeubles/" + pkImmeuble + "/intervention", {
         params: {
           "doc-type": exportType,
           "date-begin": dateBegin,

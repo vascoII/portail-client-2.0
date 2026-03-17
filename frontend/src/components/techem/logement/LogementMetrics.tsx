@@ -178,18 +178,6 @@ export const LogementMetrics = ({ pkLogement, pkImmeuble }: LogementMetricsProps
             </h4>
           </Link>
         </div>
-        <div className="flex justify-end">
-          <button
-            className="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-medium text-gray-700 shadow-theme-xs transition hover:bg-gray-50 hover:text-gray-900 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-white/[0.05]"
-            onClick={(event) => {
-              event.preventDefault();
-              event.stopPropagation();
-              livretModal.openModal();
-            }}
-          >
-            Livret d&apos;intervention
-          </button>
-        </div>
       </div>
       {/* Depannages - Metric Item End */}
     </div>
