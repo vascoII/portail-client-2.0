@@ -265,7 +265,19 @@ export default function CGUPageClient() {
   const [validCGU, setValidCGU] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const { acceptCGU: acceptCGURequest, isAcceptingCGU, acceptCGUError } = useFront();
+  // On the CGU page, we only need CGU-related calls.
+  // Disable other background queries to avoid unnecessary API traffic and 401 redirects.
+  const {
+    acceptCGU: acceptCGURequest,
+    isAcceptingCGU,
+    acceptCGUError,
+  } = useFront({
+    enableMe: false,
+    enableLegalNotices: false,
+    enablePersonalDatas: false,
+    enableCguStatus: false,
+    enableDashboard: false,
+  });
 
   // Validation des champs
   const isEmailValid = email ? isValidEmail(email) : false;

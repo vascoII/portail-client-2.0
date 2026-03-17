@@ -81,7 +81,17 @@ const createApiClient = (): AxiosInstance => {
         if (status === 401) {
           // Redirect to login page (only on client side)
           if (typeof window !== 'undefined') {
-            window.location.href = '/login';
+            const currentPath = window.location.pathname;
+            const requestUrl = String(error.config?.url ?? '');
+
+            const isOnCguPage = currentPath.startsWith('/cgu');
+            const isCguEndpoint =
+              requestUrl.includes('/cgu/status') || requestUrl.includes('/cgu/accept');
+
+            // Avoid redirect loops when user is on CGU page or calling CGU endpoints
+            if (!isOnCguPage && !isCguEndpoint) {
+              window.location.href = '/login';
+            }
           }
         }
       

@@ -18,6 +18,29 @@ export interface MeResponse {
 }
 
 /**
+ * Configuration options for useFront hook.
+ *
+ * By default, all queries are enabled to preserve existing behaviour.
+ * On specific pages (like /cgu), you can disable unnecessary queries
+ * to avoid triggering background API calls.
+ */
+export interface UseFrontOptions {
+  enableMe?: boolean;
+  enableLegalNotices?: boolean;
+  enablePersonalDatas?: boolean;
+  enableCguStatus?: boolean;
+  enableDashboard?: boolean;
+}
+
+const defaultFrontOptions: Required<UseFrontOptions> = {
+  enableMe: true,
+  enableLegalNotices: true,
+  enablePersonalDatas: true,
+  enableCguStatus: true,
+  enableDashboard: true,
+};
+
+/**
  * Response from /api/legal-notices endpoint
  */
 export interface LegalNoticesResponse {
@@ -77,8 +100,9 @@ export interface DashboardApiResponse {
  * });
  * ```
  */
-export function useFront() {
+export function useFront(options?: UseFrontOptions) {
   const queryClient = useQueryClient();
+  const opts = { ...defaultFrontOptions, ...(options || {}) };
 
   /**
    * Get current user information query
@@ -92,6 +116,7 @@ export function useFront() {
     },
     retry: false,
     staleTime: 5 * 60 * 1000, // Consider fresh for 5 minutes
+    enabled: opts.enableMe,
   });
 
   /**
@@ -106,6 +131,7 @@ export function useFront() {
     },
     retry: false,
     staleTime: 60 * 60 * 1000, // Consider fresh for 1 hour (static content)
+    enabled: opts.enableLegalNotices,
   });
 
   /**
@@ -120,6 +146,7 @@ export function useFront() {
     },
     retry: false,
     staleTime: 10 * 60 * 1000, // Consider fresh for 10 minutes
+    enabled: opts.enablePersonalDatas,
   });
 
   /**
@@ -140,6 +167,7 @@ export function useFront() {
     },
     retry: false,
     staleTime: 5 * 60 * 1000, // Consider fresh for 5 minutes
+    enabled: opts.enableCguStatus,
   });
 
   /**
@@ -161,6 +189,7 @@ export function useFront() {
     },
     retry: false,
     staleTime: getStaleTimeUntilMidnight(), // Cache until midnight (SOAP data updated once per night at 2 AM)
+    enabled: opts.enableDashboard,
   });
 
   /**

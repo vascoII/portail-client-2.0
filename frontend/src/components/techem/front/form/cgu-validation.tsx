@@ -75,7 +75,15 @@ export default function CGUValidationForm({
     },
   });
 
-  const { acceptCGU, isAcceptingCGU, acceptCGUError, getCGUStatus } = useFront();
+  // On the CGU validation form, only CGU endpoints are required.
+  // Disable unrelated queries to prevent background API calls while on /cgu.
+  const { acceptCGU, isAcceptingCGU, acceptCGUError, getCGUStatus } = useFront({
+    enableMe: false,
+    enableLegalNotices: false,
+    enablePersonalDatas: false,
+    enableCguStatus: true,
+    enableDashboard: false,
+  });
 
   // Charger l'email actuel si disponible
   useEffect(() => {
