@@ -79,7 +79,10 @@ const createApiClient = (): AxiosInstance => {
 
         // Handle 401
         if (status === 401) {
-          window.location.href = '/login';
+          // Redirect to login page (only on client side)
+          if (typeof window !== 'undefined') {
+            window.location.href = '/login';
+          }
         }
       
         // Handle 403 Forbidden - Access denied
