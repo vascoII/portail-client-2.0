@@ -1,0 +1,663 @@
+{
+    "success": true,
+    "status": 200,
+    "data": {
+        "immeuble": {
+            "Erreur": "",
+            "Info": "",
+            "Immeuble": {
+                "PkImmeuble": 223773,
+                "Nom": "106 JEAN JAURES",
+                "Numero": "013855",
+                "Ref": "1121",
+                "Adresse1": "106 AVENUE JEAN JAURES",
+                "Adresse2": "",
+                "Adresse3": "",
+                "Cp": "21000",
+                "Ville": "DIJON",
+                "HasTelereleve": true,
+                "FkClientTop": 36335,
+                "Actif": true,
+                "DateActivationClient": "0001-01-01T00:00:00",
+                "DateActivationOccupant": "0001-01-01T00:00:00",
+                "HasNoteOccupant": false,
+                "HasDecompteOccupant": true,
+                "HasFactures": false,
+                "HasChantiers": false
+            },
+            "NbLogements": 50,
+            "NbAppareils": 50,
+            "NbDepannages": 0,
+            "NbDepannagesTotal": 2,
+            "NbDysfonctionnements": 0,
+            "HasTelereleve": true,
+            "NbCompteursEC": 0,
+            "NbCompteursEF": 0,
+            "NbCompteursRepart": 0,
+            "NbCompteursCET": 50,
+            "NbCompteursCapteur": 0,
+            "NbCompteursElect": -1,
+            "NbCompteursGaz": -1,
+            "NbCompteursTelereveleTotal": 50,
+            "NbCompteursTelereveleOK": 0,
+            "HasTransfertFichiers": true,
+            "ImmeubleEC": {
+                "NbCompteursARelever": -1,
+                "NbCompteursReleves": -1,
+                "NbFuites": -1,
+                "NbAnomalies": -1,
+                "Chantier": {
+                    "PkChantier": -1,
+                    "PkDevis": -1,
+                    "PkImmeuble": -1,
+                    "DateEntreeChantier": "0001-01-01T00:00:00",
+                    "NbCompteursPoses": -1,
+                    "NbCompteursCommandes": -1
+                },
+                "TopConsos": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DateReleve": "0001-01-01T00:00:00",
+                    "consosGrandes": [],
+                    "consosPetites": []
+                },
+                "SerieConsos1": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": ""
+                },
+                "SerieConsos2": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": ""
+                },
+                "ListeReleves": []
+            },
+            "ImmeubleEF": {
+                "NbCompteursARelever": -1,
+                "NbCompteursReleves": -1,
+                "NbFuites": -1,
+                "NbAnomalies": -1,
+                "Chantier": {
+                    "PkChantier": -1,
+                    "PkDevis": -1,
+                    "PkImmeuble": -1,
+                    "DateEntreeChantier": "0001-01-01T00:00:00",
+                    "NbCompteursPoses": -1,
+                    "NbCompteursCommandes": -1
+                },
+                "TopConsos": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DateReleve": "0001-01-01T00:00:00",
+                    "consosGrandes": [],
+                    "consosPetites": []
+                },
+                "SerieConsos1": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": ""
+                },
+                "SerieConsos2": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": ""
+                },
+                "ListeReleves": []
+            },
+            "ImmeubleRepart": {
+                "NbCompteursARelever": -1,
+                "NbCompteursReleves": -1,
+                "Chantier": {
+                    "PkChantier": -1,
+                    "PkDevis": -1,
+                    "PkImmeuble": -1,
+                    "DateEntreeChantier": "0001-01-01T00:00:00",
+                    "NbCompteursPoses": -1,
+                    "NbCompteursCommandes": -1
+                },
+                "TopConsos": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DateReleve": "0001-01-01T00:00:00",
+                    "consosGrandes": [],
+                    "consosPetites": []
+                },
+                "SerieConsos": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": ""
+                },
+                "ListeReleves": [],
+                "Tot_URepart": "-1",
+                "Tot_TantChauff": "-1",
+                "PU_Tant": "-1",
+                "Prix_URepart": "-1",
+                "Prix_Abonn": "-1",
+                "Mont_ARepartTant": "-1",
+                "Part_RepartConsos": "-1",
+                "CT_Combust": "-1",
+                "SerieConsosTotale1": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": ""
+                },
+                "SerieConsosTotale2": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": ""
+                },
+                "SerieConsosDJU": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": ""
+                }
+            },
+            "ImmeubleCET": {
+                "NbCompteursARelever": 50,
+                "NbCompteursReleves": 0,
+                "Chantier": {
+                    "PkChantier": -1,
+                    "PkDevis": -1,
+                    "PkImmeuble": -1,
+                    "DateEntreeChantier": "0001-01-01T00:00:00",
+                    "NbCompteursPoses": -1,
+                    "NbCompteursCommandes": -1
+                },
+                "TopConsos": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DateReleve": "2024-12-31T00:00:00",
+                    "consosGrandes": [],
+                    "consosPetites": []
+                },
+                "SerieConsos": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": ""
+                },
+                "ListeReleves": {
+                    "releve": [
+                        {
+                            "PkReleve": 1542871,
+                            "DateReleve": "2024-12-31T00:00:00",
+                            "TypeERC": "CET"
+                        },
+                        {
+                            "PkReleve": 1423698,
+                            "DateReleve": "2023-12-31T00:00:00",
+                            "TypeERC": "CET"
+                        },
+                        {
+                            "PkReleve": 1342237,
+                            "DateReleve": "2022-12-31T00:00:00",
+                            "TypeERC": "CET"
+                        },
+                        {
+                            "PkReleve": 1264454,
+                            "DateReleve": "2021-12-31T00:00:00",
+                            "TypeERC": "CET"
+                        }
+                    ]
+                },
+                "Tot_URepart": "143326",
+                "Tot_TantChauff": "22620",
+                "PU_Tant": "0.128544",
+                "Prix_URepart": "0.047336",
+                "Prix_Abonn": "3205.6",
+                "Mont_ARepartTant": "2907.66",
+                "Part_RepartConsos": "6784.55",
+                "CT_Combust": "5905.25",
+                "SerieConsosTotale1": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": "2026"
+                },
+                "SerieConsosTotale2": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": "2025"
+                },
+                "SerieConsosDJU": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": "2025"
+                }
+            },
+            "ImmeubleCapteur": {
+                "IndexRecapTemperature": {
+                    "Date": "0001-01-01T00:00:00",
+                    "Moy": "-1",
+                    "Max": "-1",
+                    "Min": "-1"
+                },
+                "IndexRecapHumidite": {
+                    "Date": "0001-01-01T00:00:00",
+                    "Moy": "-1",
+                    "Max": "-1",
+                    "Min": "-1"
+                },
+                "SerieConsosTemperature": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": ""
+                },
+                "SerieConsosHumidite": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": ""
+                }
+            },
+            "ImmeubleElect": {
+                "NbCompteursARelever": -1,
+                "NbCompteursReleves": -1,
+                "Chantier": {
+                    "PkChantier": -1,
+                    "PkDevis": -1,
+                    "PkImmeuble": -1,
+                    "DateEntreeChantier": "0001-01-01T00:00:00",
+                    "NbCompteursPoses": -1,
+                    "NbCompteursCommandes": -1
+                },
+                "TopConsos": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DateReleve": "0001-01-01T00:00:00",
+                    "consosGrandes": [],
+                    "consosPetites": []
+                },
+                "ListeReleves": []
+            },
+            "ImmeubleGaz": {
+                "NbCompteursARelever": -1,
+                "NbCompteursReleves": -1,
+                "Chantier": {
+                    "PkChantier": -1,
+                    "PkDevis": -1,
+                    "PkImmeuble": -1,
+                    "DateEntreeChantier": "0001-01-01T00:00:00",
+                    "NbCompteursPoses": -1,
+                    "NbCompteursCommandes": -1
+                },
+                "TopConsos": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DateReleve": "0001-01-01T00:00:00",
+                    "consosGrandes": [],
+                    "consosPetites": []
+                },
+                "ListeReleves": []
+            },
+            "SerieConsosEAU": {
+                "Erreur": "",
+                "Info": "",
+                "DefaultIntervalle": 365,
+                "ValeursXYL": "",
+                "Annee": ""
+            },
+            "SerieConsosCompteurGeneral": {
+                "Erreur": "",
+                "Info": "",
+                "DefaultIntervalle": 365,
+                "ValeursXYL": "",
+                "Annee": ""
+            },
+            "SerieConsosECValues": [],
+            "SerieConsosEFValues": [],
+            "SerieConsosEAUValues": [],
+            "SerieConsosRepartValues": [],
+            "SerieConsosEnergieValues": [],
+            "SerieConsosElectValues": [],
+            "SerieConsosGazValues": [],
+            "SerieConsosCompteurGeneralValues": [],
+            "PcCompteursTelereveleOK": 100,
+            "RatioNbDepannages": 0,
+            "RatioNbDysfonctionnements": 0,
+            "HasTopConsosEF": false,
+            "TopConsosEFClasses": "",
+            "HasTopConsosEC": false,
+            "TopConsosECClasses": "",
+            "HasTopConsosRepart": false,
+            "TopConsosRepartClasses": "",
+            "HasTopConsosEnergie": false,
+            "TopConsosEnergieClasses": "",
+            "HasTopConsosElect": false,
+            "TopConsosElectClasses": "",
+            "HasTopConsosGaz": false,
+            "TopConsosGazClasses": "",
+            "HasSerieConsosEAU": true,
+            "SerieConsosEAUClasses": " active ",
+            "HasSerieConsosCompteurGeneral": true,
+            "SerieConsosCompteurGeneralClasses": "",
+            "HasSerieConsosRepart": false,
+            "SerieConsosRepartClasses": "",
+            "HasSerieConsosEnergie": false,
+            "SerieConsosEnergieClasses": "",
+            "HasSerieConsosElect": false,
+            "SerieConsosElectClasses": "",
+            "HasSerieConsosGaz": false,
+            "SerieConsosGazClasses": ""
+        },
+        "evolution_charts": {
+            "evo-consos-coldw": {
+                "options": {
+                    "series": [
+                        {
+                            "color": "#bae2f0"
+                        }
+                    ],
+                    "intervalle": 365
+                },
+                "data": []
+            },
+            "evo-consos-gen": {
+                "options": {
+                    "series": [
+                        {
+                            "color": "#bae2f0"
+                        }
+                    ],
+                    "intervalle": 365
+                },
+                "data": []
+            }
+        },
+        "comparative_chart": {
+            "options": {
+                "SerieConsosCompteurGeneral": true
+            },
+            "data": []
+        },
+        "tabs_top_consos": [],
+        "tabs_evo_consos": {
+            "SerieConsosEAU": {
+                "label": "Eau",
+                "id": "evo-consos-coldw",
+                "classes": " active ",
+                "serieColor": "#bae2f0"
+            },
+            "SerieConsosCompteurGeneral": {
+                "label": "Eau",
+                "id": "evo-consos-gen",
+                "classes": "",
+                "serieColor": "#bae2f0"
+            }
+        },
+        "chantier": {
+            "installed": -1,
+            "installed_percent": 100,
+            "remaining": 0,
+            "remaining_percent": 0,
+            "total": -1,
+            "date": "01/01/0001"
+        },
+        "immeubleOracle": {
+            "Immeuble": {
+                "PkImmeuble": 223773,
+                "Nom": "1_____S",
+                "Numero": null,
+                "Ref": null,
+                "Adresse1": "106 AVENUE JEAN JAURES",
+                "Adresse2": null,
+                "Adresse3": null,
+                "Cp": "21000",
+                "Ville": "DIJON",
+                "Telereleve": true,
+                "FkClientTop": "36335",
+                "Actif": true,
+                "DateActivationClient": {
+                    "date": "2026-03-18 09:18:01.567850",
+                    "timezone_type": 3,
+                    "timezone": "UTC"
+                },
+                "DateActivationOccupant": {
+                    "date": "2026-03-18 09:18:01.567852",
+                    "timezone_type": 3,
+                    "timezone": "UTC"
+                },
+                "HasNoteOccupant": false,
+                "HasDecompteOccupant": false,
+                "HasFactures": false,
+                "HasChantiers": false
+            },
+            "ImmeubleCount": {
+                "NbLogements": 50,
+                "NbAppareils": 50,
+                "NbDepannages": 2,
+                "NbDepannagesTotal": 0,
+                "DegresDepannages": 0,
+                "NbDysfonctionnements": 0,
+                "DegresDysfonctionnements": 0,
+                "HasTelereleve": true,
+                "NbCompteursEc": 0,
+                "NbCompteursEf": 0,
+                "NbCompteursRepart": 0,
+                "NbCompteursCet": 50,
+                "NbCompteursCapteur": 0,
+                "NbCompteursElect": 0,
+                "NbCompteursGaz": 0,
+                "NbCompteursTelereveleTotal": 0,
+                "NbCompteursTelereveleOk": 0,
+                "HasTransfertFichiers": false
+            },
+            "ImmeubleEC": {
+                "NbCompteursARelever": null,
+                "NbCompteursReleves": null,
+                "NbFuites": 0,
+                "DegresFuites": null,
+                "NbAnomalies": 0,
+                "DegresAnomalies": null,
+                "Chantier": {
+                    "PkChantier": null,
+                    "PkDevis": null,
+                    "PkImmeuble": 223773,
+                    "DateEntreeChantier": null,
+                    "NbCompteursPoses": null,
+                    "NbCompteursCommandes": null
+                },
+                "TopConsos": {
+                    "DateReleve": null,
+                    "ConsosGrandes": [],
+                    "ConsosPetites": []
+                },
+                "SerieConsos1": {
+                    "DefaultIntervalle": null,
+                    "ValeursXyl": null,
+                    "Annee": null
+                },
+                "SerieConsos2": {
+                    "DefaultIntervalle": null,
+                    "ValeursXyl": null,
+                    "Annee": null
+                },
+                "ListeReleves": []
+            },
+            "ImmeubleEF": {
+                "NbCompteursARelever": null,
+                "NbCompteursReleves": null,
+                "NbFuites": 0,
+                "DegresFuites": null,
+                "NbAnomalies": 0,
+                "DegresAnomalies": null,
+                "Chantier": {
+                    "PkChantier": null,
+                    "PkDevis": null,
+                    "PkImmeuble": 223773,
+                    "DateEntreeChantier": null,
+                    "NbCompteursPoses": null,
+                    "NbCompteursCommandes": null
+                },
+                "TopConsos": {
+                    "DateReleve": null,
+                    "ConsosGrandes": [],
+                    "ConsosPetites": []
+                },
+                "SerieConsos1": {
+                    "DefaultIntervalle": null,
+                    "ValeursXyl": null,
+                    "Annee": null
+                },
+                "SerieConsos2": {
+                    "DefaultIntervalle": null,
+                    "ValeursXyl": null,
+                    "Annee": null
+                },
+                "ListeReleves": []
+            },
+            "ImmeubleRepart": {
+                "NbCompteursARelever": null,
+                "NbCompteursReleves": null,
+                "Chantier": {
+                    "PkChantier": null,
+                    "PkDevis": null,
+                    "PkImmeuble": 223773,
+                    "DateEntreeChantier": null,
+                    "NbCompteursPoses": null,
+                    "NbCompteursCommandes": null
+                },
+                "TopConsos": {
+                    "DateReleve": null,
+                    "ConsosGrandes": [],
+                    "ConsosPetites": []
+                },
+                "SerieConsos": {
+                    "DefaultIntervalle": null,
+                    "ValeursXyl": null,
+                    "Annee": null
+                },
+                "ListeReleves": [],
+                "TotURepart": null,
+                "TotTantChauff": null,
+                "PuTant": null,
+                "PrixURepart": null,
+                "PrixAbonn": null,
+                "MontARepartTant": null,
+                "PartRepartConsos": null,
+                "CtCombust": null,
+                "SerieConsosTotale1": {
+                    "DefaultIntervalle": null,
+                    "ValeursXyl": null,
+                    "Annee": null
+                },
+                "SerieConsosTotale2": {
+                    "DefaultIntervalle": null,
+                    "ValeursXyl": null,
+                    "Annee": null
+                },
+                "SerieConsosDJU": {
+                    "DefaultIntervalle": null,
+                    "ValeursXyl": null,
+                    "Annee": null
+                }
+            },
+            "ImmeubleCET": {
+                "NbCompteursARelever": 50,
+                "NbCompteursReleves": 0,
+                "Chantier": {
+                    "PkChantier": null,
+                    "PkDevis": null,
+                    "PkImmeuble": 223773,
+                    "DateEntreeChantier": null,
+                    "NbCompteursPoses": null,
+                    "NbCompteursCommandes": null
+                },
+                "TopConsos": {
+                    "DateReleve": null,
+                    "ConsosGrandes": [],
+                    "ConsosPetites": []
+                },
+                "SerieConsos": {
+                    "DefaultIntervalle": null,
+                    "ValeursXyl": null,
+                    "Annee": null
+                },
+                "ListeReleves": null,
+                "TotURepart": null,
+                "TotTantChauff": null,
+                "PuTant": null,
+                "PrixURepart": null,
+                "PrixAbonn": null,
+                "MontARepartTant": null,
+                "PartRepartConsos": null,
+                "CtCombust": null,
+                "SerieConsosTotale1": {
+                    "DefaultIntervalle": null,
+                    "ValeursXyl": null,
+                    "Annee": null
+                },
+                "SerieConsosTotale2": {
+                    "DefaultIntervalle": null,
+                    "ValeursXyl": null,
+                    "Annee": null
+                },
+                "SerieConsosDJU": {
+                    "DefaultIntervalle": null,
+                    "ValeursXyl": null,
+                    "Annee": null
+                }
+            },
+            "ImmeubleCapteur": {
+                "IndexRecapTemperature": {
+                    "Date": null,
+                    "Moy": null,
+                    "Max": null,
+                    "Min": null
+                },
+                "IndexRecapHumidite": {
+                    "Date": null,
+                    "Moy": null,
+                    "Max": null,
+                    "Min": null
+                },
+                "SerieConsosTemperature": {
+                    "DefaultIntervalle": null,
+                    "ValeursXyl": null,
+                    "Annee": null
+                },
+                "SerieConsosHumidite": {
+                    "DefaultIntervalle": null,
+                    "ValeursXyl": null,
+                    "Annee": null
+                }
+            },
+            "SerieConsosEAU": {
+                "DefaultIntervalle": null,
+                "ValeursXyl": null,
+                "Annee": null
+            },
+            "SerieConsosCompteurGeneral": {
+                "DefaultIntervalle": null,
+                "ValeursXyl": null,
+                "Annee": null
+            }
+        }
+    }
+}
