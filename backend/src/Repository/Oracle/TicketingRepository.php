@@ -11,11 +11,6 @@ class TicketingRepository
         private readonly OciFacade $oci
     ) {}
 
-    public function getMyTableauBordClient(int $pkUser)
-    {
-        return [];
-    }
-
     public function getTicketsIntersUser(int $pkUser)
     {
         return [];

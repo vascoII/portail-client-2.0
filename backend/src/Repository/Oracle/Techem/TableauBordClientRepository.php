@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Repository\Oracle;
+namespace App\Repository\Oracle\Techem;
 
 use App\Oracle\OciFacade;
+use App\Repository\Oracle\Techem\UserRepository;
 
 class TableauBordClientRepository
 {

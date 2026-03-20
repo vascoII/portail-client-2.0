@@ -25,7 +25,7 @@ export interface ApiError {
  * Create and configure Axios instance for API calls
  */
 const createApiClient = (): AxiosInstance => {
-  const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:9000/api';
+  const baseURL = (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost/api') + '/' + (process.env.NEXT_PUBLIC_API_VERSION ?? 'v1');
 
   const client = axios.create({
     baseURL,

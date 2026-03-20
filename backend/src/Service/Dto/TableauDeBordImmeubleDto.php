@@ -4,6 +4,14 @@ declare(strict_types=1);
 
 namespace App\Service\Dto;
 
+use App\Service\Dto\Immeuble\ImmeubleDto;
+use App\Service\Dto\Immeuble\ImmeubleEAUDto;
+use App\Service\Dto\Immeuble\ImmeubleRepartDto;
+use App\Service\Dto\Immeuble\ImmeubleCETDto;
+use App\Service\Dto\Immeuble\ImmeubleCapteurDto;
+use App\Service\Dto\Immeuble\ImmeubleElectDto;
+use App\Service\Dto\Immeuble\ImmeubleGazDto;
+
 final class TableauDeBordImmeubleDto
 {
     public function __construct(

@@ -11,11 +11,6 @@ class ApiTicketingService
     ) {
     }
 
-    public function getMyTableauBordClient(int $pkUser)
-    {
-        return $this->ticketingRepository->getMyTableauBordClient($pkUser);
-    }
-
     public function getTicketsIntersUser(int $pkUser)
     {
         return $this->ticketingRepository->getTicketsIntersUser($pkUser);

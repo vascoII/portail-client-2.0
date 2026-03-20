@@ -2,14 +2,14 @@
 
 namespace App\Service\Api;
 
-use App\Repository\Oracle\ImmeubleRepository;
-use App\Service\Dto\ImmeubleDto;
-use App\Service\Dto\ImmeubleEAUDto;
-use App\Service\Dto\ImmeubleRepartDto;
-use App\Service\Dto\ImmeubleCETDto;
-use App\Service\Dto\ImmeubleCapteurDto;
-use App\Service\Dto\ImmeubleElectDto;
-use App\Service\Dto\ImmeubleGazDto;
+use App\Repository\Oracle\Techem\ImmeubleRepository;
+use App\Service\Dto\Immeuble\ImmeubleDto;
+use App\Service\Dto\Immeuble\ImmeubleEAUDto;
+use App\Service\Dto\Immeuble\ImmeubleRepartDto;
+use App\Service\Dto\Immeuble\ImmeubleCETDto;
+use App\Service\Dto\Immeuble\ImmeubleCapteurDto;
+use App\Service\Dto\Immeuble\ImmeubleElectDto;
+use App\Service\Dto\Immeuble\ImmeubleGazDto;
 use App\Service\Dto\SerieDto;
 
 

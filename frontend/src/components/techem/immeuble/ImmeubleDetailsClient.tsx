@@ -10,6 +10,7 @@ import ImmeubleReleves, {
 } from "@/components/techem/immeuble/ImmeubleReleves";
 import ImmeubleConsommationChart from "@/components/techem/immeuble/ImmeubleConsommationChart";
 import ImmeubleStatisticsConsommationChart from "@/components/techem/immeuble/ImmeubleStatisticsConsommationChart";
+import { ChantierImmeubleCard } from "@/components/techem/immeuble/ChantierCard";
 
 interface ImmeubleDetailsClientProps {
   pkImmeuble: string;
@@ -38,6 +39,7 @@ export default function ImmeubleDetailsClient({
         <div className="col-span-12 space-y-6 xl:col-span-5">
           <ImmeubleCard pkImmeuble={pkImmeuble} />
           <ImmeubleRelevesCard pkImmeuble={pkImmeuble} />
+          <ChantierImmeubleCard pkImmeuble={pkImmeuble} />
         </div>
       </div>
 

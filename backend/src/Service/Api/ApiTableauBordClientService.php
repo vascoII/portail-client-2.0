@@ -2,7 +2,7 @@
 
 namespace App\Service\Api;
 
-use App\Repository\Oracle\TableauBordClientRepository;
+use App\Repository\Oracle\Techem\TableauBordClientRepository;
 
 
 class ApiTableauBordClientService
@@ -14,7 +14,6 @@ class ApiTableauBordClientService
 
     public function getMyTableauBordClient(int $pkUser, string $sessionId)
     {
-        return [];
         return $this->tableauBordClientRepository->getMyTableauBordClient($pkUser, $sessionId);
     }
 }

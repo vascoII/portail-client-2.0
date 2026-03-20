@@ -2,9 +2,8 @@
 
 namespace App\Service\Api;
 
-use App\Repository\Oracle\LogementRepository;
+use App\Repository\Oracle\Techem\LogementRepository;
 use App\Service\GetLogementsParams;
-use App\Repository\Dto\Logement\LogementOutputDto;
 
 class ApiLogementService
 {

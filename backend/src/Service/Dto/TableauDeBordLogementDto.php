@@ -4,6 +4,15 @@ declare(strict_types=1);
 
 namespace App\Service\Dto;
 
+use App\Service\Dto\Immeuble\ImmeubleDto;
+use App\Service\Dto\Logement\LogementDto;
+use App\Service\Dto\Logement\LogementEAUDto;
+use App\Service\Dto\Logement\LogementRepartDto;
+use App\Service\Dto\Logement\LogementCETDto;
+use App\Service\Dto\Logement\LogementCapteurDto;
+use App\Service\Dto\Logement\LogementElectDto;
+use App\Service\Dto\Logement\LogementGazDto;
+
 final class TableauDeBordLogementDto
 {
     public function __construct(

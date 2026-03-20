@@ -38,10 +38,6 @@ services:
       - "../src/Entity/"
       - "../src/Kernel.php"
 
-  App\Service\FakeDataService:
-    arguments:
-      $projectDir: '%kernel.project_dir%'
-
   App\Service\Client:
     arguments:
       $kernel: "@kernel"
@@ -54,12 +50,14 @@ services:
 
   # Façade OCI utilisée par les repositories Oracle (ex: FactureRepository)
   App\Oracle\OciFacade:
+    lazy: true
     arguments:
       $dsn: '%oracle_dsn%'
       $user: '%oracle_user%'
       $password: '%oracle_password%'
 
   App\Oracle\OciUpdateHandler:
+    lazy: true
     arguments:
       $dsn: '%oracle_dsn%'
       $user: '%oracle_user%'

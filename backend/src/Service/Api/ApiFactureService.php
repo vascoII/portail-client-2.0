@@ -2,8 +2,7 @@
 
 namespace App\Service\Api;
 
-use App\Repository\Oracle\FactureRepository;
-use App\Repository\Dto\Facture\ListFacturesOutputDto;
+use App\Repository\Oracle\Techem\FactureRepository;
 
 /**
  * Service métier pour les factures côté API.

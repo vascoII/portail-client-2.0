@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Repository\Oracle;
+namespace App\Repository\Oracle\Techem;
 
 use App\Oracle\OciFacade;
-use App\Repository\Oracle\UserRepository;
+use App\Repository\Oracle\Techem\UserRepository;
 
 /**
  * Lecture des factures depuis Oracle (migration SOAP → Oracle).

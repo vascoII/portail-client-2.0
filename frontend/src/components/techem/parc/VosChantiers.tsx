@@ -4,6 +4,8 @@ import { useState } from "react";
 import { LoadingChart } from "@/components/ui/loading";
 import { useParc } from "@/lib/hooks/useParc";
 
+import { ChantierDashboardCard } from "@/components/techem/parc/ChantierCard";
+
 export default function VosChantiers() {
   const { isParcLoading } = useParc();
   const [isOpen, setIsOpen] = useState(false);
@@ -69,23 +71,10 @@ export default function VosChantiers() {
 
         <div
           className={`transition-all ${
-            isOpen ? "mt-5 max-h-40 opacity-100" : "max-h-0 opacity-0"
+            isOpen ? "mt-5 max-h-240 opacity-100" : "max-h-0 opacity-0"
           } overflow-hidden`}
         >
-          <div className="flex items-center gap-3 rounded-xl border border-dashed border-amber-300 bg-amber-50/60 px-4 py-4 dark:border-amber-500/40 dark:bg-amber-500/10">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-amber-200 text-amber-800 dark:bg-amber-500/30 dark:text-amber-200">
-              🚧
-            </span>
-            <div>
-              <p className="text-sm font-semibold text-amber-900 dark:text-amber-200">
-                Fonctionnalité à venir
-              </p>
-              <p className="text-sm text-amber-800 dark:text-amber-200/80">
-                La section chantiers est en cours de conception. Vous serez 
-                informés par notification lorsque la fonctionnalité sera disponible.
-              </p>
-            </div>
-          </div>
+          <ChantierDashboardCard/>
         </div>
       </div>
     </div>

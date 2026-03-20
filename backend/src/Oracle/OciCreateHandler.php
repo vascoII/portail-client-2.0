@@ -12,20 +12,22 @@ namespace App\Oracle;
  */
 class OciCreateHandler
 {
-    /** @var resource */
-    private $conn;
+    private $conn = null;
 
-    public function __construct(string $dsn, string $user, string $password)
+    public function __construct(
+        private string $dsn,
+        private string $user,
+        private string $password
+    ) {}
+
+    public function getConnection()
     {
-        $this->conn = oci_connect($user, $password, $dsn, 'AL32UTF8');
-
-        if (! $this->conn) {
-            $e = oci_error();
-            $message = $e['message'] ?? 'unknown OCI error';
-            throw new \RuntimeException('OCI connect failed: ' . $message);
+        if ($this->conn === null) {
+            $this->conn = oci_connect($this->user, $this->password, $this->dsn, 'AL32UTF8');
         }
-    }
 
+        return $this->conn;
+    }
     /**
      * Exécute un INSERT dans une transaction sécurisée.
      *
@@ -36,9 +38,9 @@ class OciCreateHandler
      */
     public function insert(string $sql, array $params = []): int
     {
-        $stid = oci_parse($this->conn, $sql);
+        $stid = oci_parse($this->getConnection(), $sql);
         if (! $stid) {
-            $e = oci_error($this->conn);
+            $e = oci_error($this->getConnection());
             throw new \RuntimeException(
                 "OCI parse failed: " . ($e['message'] ?? 'unknown') . "\nSQL: $sql"
             );
@@ -75,8 +77,8 @@ class OciCreateHandler
 
             $rowCount = oci_num_rows($stid);
 
-            if (! oci_commit($this->conn)) {
-                $e = oci_error($this->conn);
+            if (! oci_commit($this->getConnection())) {
+                $e = oci_error($this->getConnection());
                 throw new \RuntimeException('OCI commit failed: ' . ($e['message'] ?? 'unknown'));
             }
 
@@ -85,7 +87,7 @@ class OciCreateHandler
             return $rowCount;
         } catch (\Throwable $e) {
             // Sécurité maximale : rollback systématique en cas d'erreur
-            @oci_rollback($this->conn);
+            @oci_rollback($this->getConnection());
             oci_free_statement($stid);
             throw $e;
         }
@@ -96,7 +98,7 @@ class OciCreateHandler
      */
     private function getSingleValue(string $sql): ?string
     {
-        $stid = oci_parse($this->conn, $sql);
+        $stid = oci_parse($this->getConnection(), $sql);
         if (! $stid || ! oci_execute($stid)) {
             return null;
         }
