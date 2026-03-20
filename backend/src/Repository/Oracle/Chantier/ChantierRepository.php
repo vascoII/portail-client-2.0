@@ -22,17 +22,9 @@ class ChantierRepository
     {
         $sql = <<<SQL
 SELECT
-    PKCLIENT,
-    ID,
-    NOM,
-    ADRESSE1,
-    ADRESSE2,
-    ADRESSE3,
-    CP,
-
-    FKCLIENT
-FROM WEB_CLIENT
-WHERE PKCLIENT = :pkChantier
+    *
+FROM CHANTIER
+WHERE FKIMMEUBLE = :pkImmeuble
 SQL;
 
         $rows = $this->oci->fetchAllAssoc($sql, ['pkImmeuble' => $pkImmeuble]);
