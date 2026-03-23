@@ -22,7 +22,6 @@ use App\Service\Api\ApiSecurityService as SecurityService;
 use Symfony\Component\Serializer\SerializerInterface;
 use App\Service\Client;
 use App\Service\Api\ApiTableauBordClientService;
-use App\Service\Api\ApiChantierService;
 
 require_once './tech/fpdf/fpdf.php';
 
@@ -34,14 +33,12 @@ class ImmeubleApiController extends AbstractApiController
 {
     private ApiImmeubleService $apiImmeubleService;
     private ApiTableauBordClientService $apiTableauBordClientService;
-    private ApiChantierService $apiChantierService;
 
-    public function __construct(Client $client, SerializerInterface $serializer, SecurityService $securityService, ApiImmeubleService $apiImmeubleService, ApiTableauBordClientService $apiTableauBordClientService, ApiChantierService $apiChantierService)
+    public function __construct(Client $client, SerializerInterface $serializer, SecurityService $securityService, ApiImmeubleService $apiImmeubleService, ApiTableauBordClientService $apiTableauBordClientService)
     {
         parent::__construct($client, $serializer, $securityService);
         $this->apiImmeubleService = $apiImmeubleService;
         $this->apiTableauBordClientService = $apiTableauBordClientService;
-        $this->apiChantierService = $apiChantierService;
     }
 
     /**
@@ -145,8 +142,7 @@ class ImmeubleApiController extends AbstractApiController
                 'ImmeubleRepart' => $this->apiImmeubleService->getImmeubleRepart($client->getPkUser(), $pkImmeuble),
                 'ImmeubleCET' => $this->apiImmeubleService->getImmeubleCet($client->getPkUser(), $pkImmeuble),
                 'ImmeubleCapteur' => $this->apiImmeubleService->getImmeubleCapteur($client->getPkUser(), $pkImmeuble),
-                'ImmeubleChantier' => $this->apiChantierService->getImmeubleChantier($client->getPkUser(), $pkImmeuble),   
-             ];
+            ];
 
             if (!$immeuble) {
                 return $this->notFound('Immeuble non trouvé');

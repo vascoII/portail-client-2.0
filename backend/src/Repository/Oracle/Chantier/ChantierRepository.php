@@ -18,7 +18,7 @@ class ChantierRepository
      *
      * @return array<string, mixed>|null
      */
-    public function findOneByPkChantier(int $pkImmeuble): ?array
+    public function getByPkImmeuble(string $pkImmeuble): ?array
     {
         $sql = <<<SQL
 SELECT
@@ -29,7 +29,7 @@ SQL;
 
         $rows = $this->oci->fetchAllAssoc($sql, ['pkImmeuble' => $pkImmeuble]);
 
-        return $rows[0] ?? null;
+        return $rows ?? null;
     }
 
 }

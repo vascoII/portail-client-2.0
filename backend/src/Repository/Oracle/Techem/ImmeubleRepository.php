@@ -654,5 +654,13 @@ SQL;
             Annee: null
         );
     }
+
+    public function getChantierByPkImmeuble(int $pkUser, int $pkImmeuble): array
+    {
+        $sql = "SELECT PKIMMEUBLE, NOM, ADRESSE AS ADRESSE1, ADRESSE2, ADRESSE3, CP, VILLE FROM WEB_IMMEUBLE WHERE PKIMMEUBLE = :pkImmeuble";
+        $params = ['pkImmeuble' => $pkImmeuble];
+        $result = $this->oci->getConnection()->fetchAllAssoc($sql, $params);
+        return $result ? $result[0] : null;
+    }
     
 }

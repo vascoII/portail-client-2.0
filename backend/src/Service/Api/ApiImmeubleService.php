@@ -115,4 +115,9 @@ class ApiImmeubleService extends ApiBaseService
     {
         return $this->immeubleRepository->getImmeubleSerieConsosCompteurGeneral($pkUser, $pkImmeuble);
     }
+
+    public function getChantierByPkImmeuble(int $pkUser, int $pkImmeuble): array 
+    {
+        return $this->immeubleRepository->getChantierByPkImmeuble($pkUser, $pkImmeuble);
+    }
 }
