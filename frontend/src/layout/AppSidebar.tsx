@@ -130,6 +130,7 @@ const getNavItems = (
   // Select the appropriate dashboard items based on userType
   const selectedDashboardItems = userType === "O" ? dashboardSubItemsOcupant : dashboardSubItems;
   const isClient = userType === "C" ? true : false;
+  const isGestionnaire = userType === "G" ? true : false;
 
   // Check if Administration should be shown
   // Show if: (env=prod && userType == "A") OR env=dev
@@ -145,7 +146,7 @@ const getNavItems = (
     },
   ];
 
-  if (hasTicketPermission && isClient) {
+  if (hasTicketPermission && (isClient || isGestionnaire)) {
     navItems.push({
       icon: <ListIcon />,
       name: "Tickets",
