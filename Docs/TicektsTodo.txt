@@ -1,0 +1,73 @@
+Impossible d'editer les coordonnées d'un occupant
+
+en se connectant avec le login tch-lhazard@techem.fr (mot de passe accès commercial à récupérer dans LER ou auprès des équipes techem)
+circulation de la page parc à la page logement (test fait sur immeuble N° d'immeuble: 032001 - logement  LEMAIGRE Référence 565 33)
+en cliquant sur le bouton d'édition (crayon en haut à droite) impossible de changer un element des coordonnées d'occupants
+============================================================================================================================
+
+Impossible d'ajouter un occupant
+
+Voir issue : 42 Dans ce cas, il s'ajout du bouton ajouter, impossible d'ajouter un occupant.
+============================================================================================================================
+
+Zone recherche avancée depuis parc
+
+La zone de recherche avancée depuis la page parc ne renvoi par sur la liste des immeuble ou des logements/occupant trouvés.
+Si la recherche est lancée depuis la liste immeuble, alors l'immeuble est trouvé affiché filtré, mais impossible de cliquer dessus pour rentrer dans l'immeuble
+Probablement identique si on trouve un logement/occupants
+=========================================================================================================================================
+
+Page logement / onglet Eau Chaude - Eau Froide -
+
+utiliser le login tch-lhazard@techem.fr
+Dans la page logement (LEMAIRE -- immeuble/2833/logements/119969),
+1 - dans l'onglet eau froide, il est possible d'obtenir le relevé en pdf, mais pas dans l'onglet eau chaude
+2 - il manque des informations comme numéro de compteur, derniere consommation, date de dernier relevé dans les 2 onglets
+=========================================================================================================================================
+
+Mot de passe oublié - fenetre confuse
+
+Lors de l'utilisation de la page mot de passe oublié, et après clic sur envoyé le mot de passe, le message succes s'affiche, mais l'alerte est rouge laissant penser à une erreur
+mettre du vert ou un format plus ad hoc
+=========================================================================================================================================
+
+Vue chantier - acces gestionnaire
+
+Depuis l'accès gestionnaire (tch-tch-test04@test04.fr) sur l'immeuble 024646, des données sont présentent dans l'onglet chantier. Données non cohérentes
+=========================================================================================================================================
+
+Erreur droit gestionnaire - Vue immeuble
+
+Le gestionnaire dispose toujours d'une vue sur tous les immeubles alors que le règlage est changé depuis le compte administrateur. Il est possible que cela provienne d'un effet du cache. Auquel cas, orécision à voir sur la durée de vie du cache.
+Complément d'information : l'affichage de la liste des logements avec le compte gestionnaire retourne une erreur ensuite (pas d'accès immeuble :))
+(tous les compte avec mot de passe commercial)
+Pour reproduire :
+Connexion avec le compte gestionnaire tch-test04@test04.fr
+affichage de l'état de parc et de liste des immeubles (2)
+deconnexion
+connexion avec compte tch-lhazard@techem.fr
+se rendre dans la gestion des droits des gestionnaires (en haut à droite)
+Supprimer un des 2 immeubles pour le compte gestionnaire tst04
+Appliquer
+Deconnexion
+Connexion avec le compte gestionnaire tch-test04@test04.fr
+Toujours 2 immeuble dans la liste Parc
+tentative de suppression du stockage local (inspecter/application) et logout sans succès.
+connexion // sur ancien portail : 1 seul immeuble en parc
+=========================================================================================================================================
+
+Compte Gestionnaire - Pas de vue ticket
+
+Connecté en tant que GESTIONNAIRE (tch-test04@test04.fr  & mot de passe commercial), le menu TICKETS dans le bandeau gauche n'apparait pas.
+=========================================================================================================================================
+
+Page logement / onglet eau chaude froide - Données index - Selection compteur pas repris
+
+Dans la page Logement,
+sur la vision des index compteurs EF / EC / RFC, si il existe plusieurs compteurs alors les index sont soient en cumulé, soit selectionable par compteur. Cette vue manque sur le nouveau portail
+Visible sur le logement 75535 - M. ZANTOUT - (cmopte tch-lhazard@techem.fr/immeuble 032001
+=========================================================================================================================================
+
+Pas d'expiration de session
+
+Sur une session authentifiée, reprise d'activité 3 jours plus tard, la session est toujours valide. A vérifier en fonction du reglage "production" ou "dev" mis en place.

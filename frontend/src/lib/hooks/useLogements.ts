@@ -435,21 +435,27 @@ export function useLogements() {
    * @param pkLogement - Logement ID
    * @param data - Occupant data
    */
-  const updateOccupantMutation = useMutation({
+  interface UpdateOccupantMutationVariables {
+    pkLogement: string | number;
+    data: OccupantData;
+  }
+
+  const updateOccupantMutation = useMutation<
+    UpdateOccupantResponse,
+    Error,
+    UpdateOccupantMutationVariables
+  >({
     mutationFn: async ({
       pkLogement,
       data,
-    }: {
-      pkLogement: string | number;
-      data: OccupantData;
-    }): Promise<UpdateOccupantResponse> => {
+    }: UpdateOccupantMutationVariables): Promise<UpdateOccupantResponse> => {
       const response = await api.put<UpdateOccupantResponse>(
         `/logements/${pkLogement}/occupant`,
         data
       );
       return extractApiData<UpdateOccupantResponse>(response);
     },
-    onSuccess: (_, variables) => {
+    onSuccess: (_: UpdateOccupantResponse, variables: UpdateOccupantMutationVariables): void => {
       // Invalidate logement query to refresh data
       queryClient.invalidateQueries({
         queryKey: ["logements", variables.pkLogement],

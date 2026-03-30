@@ -1412,10 +1412,10 @@ class Client extends BaseClient
      *
      * @return mixed
      */
-    public function setOccupants4Chgt($PkOccupant, $data, $IsNew)
+    public function setOccupants4Chgt($PkOccupant, $data, $IsNew = false)
     {
-        if (isset($data['email'])) {
-            $newEmail = $data['email'];
+        if (isset($data['email']) || isset($data['newEmail'])) {
+            $newEmail = $data['email'] ?? $data['newEmail'];
             $occupantToUpdate = [
                 'PkOccupant' => (int)$PkOccupant,
                 'newEmail'     => $newEmail,
@@ -1423,8 +1423,8 @@ class Client extends BaseClient
             ];
         }
 
-        if (isset($data['phone'])) {
-            $occupantToUpdate['newTelmobile'] = $data['phone'];
+        if (isset($data['phone']) || isset($data['newTelmobile'])) {
+            $occupantToUpdate['newTelmobile'] = $data['phone'] ?? $data['newTelmobile'];
         }
 
         if (isset($data['numbail'])) {

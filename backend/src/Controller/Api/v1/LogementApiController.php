@@ -70,6 +70,12 @@ class LogementApiController extends AbstractApiController
         }
 
         $formData = $request->request->all()['intervention'] ?? [];
+        /*'Nom'        => $data['name'],
+            'Email'      => $data['email'],
+            'TelFixe'    => $data['phone'],
+            'TelMobile'  => $data['mobile'],
+            'Objet'      => $data['objet'],
+            'MotifLibre' => $data['message'],*/
         $logger->info('Form data received: ' . print_r($formData, true));
 
         if (empty($formData['message']) || empty($formData['pkLogement']) || empty($formData['name'])) {
@@ -248,6 +254,7 @@ class LogementApiController extends AbstractApiController
         }
 
         $data = json_decode($request->getContent(), true);
+
         if (!$data) {
             return $this->error('Données JSON invalides', 400);
         }
@@ -884,7 +891,7 @@ class LogementApiController extends AbstractApiController
         if (empty($formData['message']) || empty($formData['pkLogement']) || empty($formData['name'])) {
             return $this->error('Champs requis manquants: message, pkLogement, name', 400);
         }
-
+echo '<pre>'; var_dump($formData); echo '<pre>'; die;
         try {
             $attachment = $request->files->get('intervention')['attachment'] ?? null;
 

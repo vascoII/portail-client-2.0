@@ -1,18 +1,3 @@
-Dans immeuble Repartiteur avoir export excel et pdf
------------------
-
-/logements/229573/logement/1418429/releve_repart
-
-N° de Série: Tous les appareils
-20780974 - CHAMBRE
-20780973 - CUISINE
------------------------
-
-Tous les onglets d'énergies sont disponible au lieu de restreindre uniquement à ceux présents
-Le bouton info conso est absent
-Le bouton Télécharger le guide occupant est absent
-
-
 {
     "success": true,
     "status": 200,
