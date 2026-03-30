@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { isAuthSessionExpired } from "@/lib/auth/authSession";
 
 export function AdminRedirect() {
   const router = useRouter();
@@ -13,6 +14,18 @@ export function AdminRedirect() {
     if (authStorage) {
         const authData = JSON.parse(authStorage);
         const user = authData?.state?.user;
+        const creationDate = authData?.state?.creationDate;
+
+        // If the persisted session is expired, wipe it and force re-login.
+        if (isAuthSessionExpired(creationDate)) {
+          try {
+            localStorage.removeItem("auth-storage");
+          } catch {
+            // ignore
+          }
+          router.replace("/login");
+          return;
+        }
 
         if (user?.UserType) {
           const userType = String(user.UserType);

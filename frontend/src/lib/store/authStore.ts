@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { User, UserRole } from "@/lib/types/api";
+import { isAuthSessionExpired } from "@/lib/auth/authSession";
 
 /**
  * Authentication state interface
@@ -10,6 +11,8 @@ interface AuthState {
   roles: UserRole[];
   sessionId: string | null;
   pkUser: number | null;
+  // ISO datetime string (when login happened) persisted in localStorage.
+  creationDate: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
@@ -41,6 +44,7 @@ const initialState: AuthState = {
   roles: [],
   sessionId: null,
   pkUser: null,
+  creationDate: null,
   isAuthenticated: false,
   isLoading: false,
   error: null,
@@ -71,6 +75,7 @@ export const useAuthStore = create<AuthStore>()(
           roles,
           sessionId,
           pkUser,
+          creationDate: user ? new Date().toISOString() : null,
           isAuthenticated: !!user,
           error: null,
           _hasHydrated: true, // Ensure hydrated flag is set
@@ -125,6 +130,7 @@ export const useAuthStore = create<AuthStore>()(
         roles: state.roles,
         sessionId: state.sessionId,
         pkUser: state.pkUser,
+        creationDate: state.creationDate,
         isAuthenticated: state.isAuthenticated,
       }),
       // Skip hydration errors in Next.js SSR
@@ -132,6 +138,20 @@ export const useAuthStore = create<AuthStore>()(
       // Callback when hydration is complete
       onRehydrateStorage: () => {
         return (state, _error) => { // eslint-disable-line @typescript-eslint/no-unused-vars
+          // If the persisted session is older than our TTL (or missing creationDate),
+          // wipe it immediately.
+          if (isAuthSessionExpired(state?.creationDate)) {
+            try {
+              if (typeof window !== "undefined") {
+                window.localStorage.removeItem("auth-storage");
+              }
+            } catch {
+              // Ignore localStorage access errors.
+            }
+            return { ...initialState, _hasHydrated: true };
+          }
+
+          // After rehydration, set the hydrated flag.
           // After rehydration, we need to set the hydrated flag
           // We'll do this by calling set from the store instance
           // But since we can't access set here, we'll use a different approach:

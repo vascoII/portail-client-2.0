@@ -1,0 +1,24 @@
+Changements appliqués (expiration + créationDate)
+Ajout de creationDate dans le store
+
+Nouveau champ creationDate: string | null dans authStore.
+Lors d’un login, creationDate est rempli avec new Date().toISOString() et persisté dans auth-storage.
+TTL côté frontend
+
+Nouveau helper frontend/src/lib/auth/authSession.ts :
+creationDate + TTL => considéré “expiré”
+si creationDate est absente (anciens logs), on considère aussi expiré (pour casser l’infini).
+Purge au rechargement + limitation des requêtes
+
+authStore.ts: au moment de la rehydratation Zustand, si expiré => localStorage.removeItem('auth-storage') + reset du store.
+api/client.ts: avant d’attacher X-Session-ID/X-Pk-User, si expiré => on supprime auth-storage et on n’attache plus ces headers.
+Mise à jour immédiate de l’UI (même sans refresh)
+
+useAuth.ts: ajout d’un useEffect qui déclenche clearAuth() dès que creationDate + TTL est atteint, et retire aussi auth-storage.
+Résultat: l’UI repasse “non authentifiée” sans attendre une prochaine requête API.
+Hooks/guards qui lisent auth-storage directement
+
+AdminRedirect.tsx et useFkUser.ts : ajout d’une vérification creationDate/TTL avant de continuer.
+TTL : valeur par défaut
+Par défaut, j’ai mis 12h.
+Tu peux la modifier via NEXT_PUBLIC_AUTH_TTL_MS (en ms) côté frontend (sinon, la valeur par défaut s’applique).

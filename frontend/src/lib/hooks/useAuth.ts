@@ -5,6 +5,7 @@ import { useAuthStore } from "@/lib/store/authStore";
 import { useSecurity } from "@/lib/hooks/useSecurity";
 import { handleApiError } from "@/lib/api/client";
 import type { LoginCredentials } from "@/lib/hooks/useSecurity";
+import { AUTH_STORAGE_TTL_MS, isAuthSessionExpired } from "@/lib/auth/authSession";
 
 /**
  * Custom hook for authentication
@@ -43,6 +44,7 @@ export function useAuth() {
     roles,
     sessionId,
     pkUser,
+    creationDate,
     isAuthenticated,
     isLoading: storeLoading,
     error: storeError,
@@ -66,6 +68,51 @@ export function useAuth() {
       return () => clearTimeout(timer);
     }
   }, [_hasHydrated]);
+
+  // If the persisted session TTL has elapsed, immediately clear auth state.
+  // This prevents the UI from staying authenticated until the next API call.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    if (!creationDate) return;
+
+    if (isAuthSessionExpired(creationDate)) {
+      clearAuth();
+      try {
+        localStorage.removeItem("auth-storage");
+      } catch {
+        // ignore
+      }
+      return;
+    }
+
+    const createdAtMs = Date.parse(creationDate);
+    if (!Number.isFinite(createdAtMs)) return;
+
+    const expiresAt = createdAtMs + AUTH_STORAGE_TTL_MS;
+    const timeLeftMs = expiresAt - Date.now();
+
+    if (timeLeftMs <= 0) {
+      clearAuth();
+      try {
+        localStorage.removeItem("auth-storage");
+      } catch {
+        // ignore
+      }
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      clearAuth();
+      try {
+        localStorage.removeItem("auth-storage");
+      } catch {
+        // ignore
+      }
+    }, timeLeftMs);
+
+    return () => window.clearTimeout(timer);
+  }, [creationDate, clearAuth]);
 
   /**
    * Login function with Zustand integration and automatic redirection
