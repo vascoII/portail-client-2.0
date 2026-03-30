@@ -527,7 +527,12 @@ export default function ListImmeubles() {
             {/* Table Body */}
             <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
               {filteredImmeubles.map((immeuble) => {
-                const pkImmeuble = immeuble.PkImmeuble ?? immeuble.pkImmeuble ?? "";
+                const pkImmeuble =
+                  immeuble.PkImmeuble ??
+                  immeuble.pkImmeuble ??
+                  immeuble.Immeuble?.PkImmeuble ??
+                  immeuble.Immeuble?.pkImmeuble ??
+                  "";
                 const buildingRef = getBuildingRef(immeuble);
                 const buildingNumero = getBuildingNumero(immeuble);
                 const buildingAddress1 = getBuildingAddress1(immeuble);
