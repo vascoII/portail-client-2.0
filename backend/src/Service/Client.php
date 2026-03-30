@@ -88,9 +88,9 @@ class Client extends BaseClient
      * @return array
      */
     public
-    function getMyImmeubles(?GetImmeublesParams $params = null)
+    function getMyImmeubles(?GetImmeublesParams $params = null, bool $use_cache = true)
     {
-        return $this->getImmeubles(-1, $params);
+        return $this->getImmeubles(-1, $params, $use_cache);
     }
 
     /**
@@ -183,7 +183,12 @@ class Client extends BaseClient
      */
     public function getMyTableauBordClient()
     {
-        return $this->getTableauBordClient($this->getSessionId(), $this->getPkUser());
+        return $this->getTableauBordClient($this->getSessionId(), $this->getPkUser(), true);
+    }
+
+    public function getMyTableauBordClientNoCache()
+    {
+        return $this->getTableauBordClient($this->getSessionId(), $this->getPkUser(), false);
     }
 
     /**
@@ -204,14 +209,14 @@ class Client extends BaseClient
      *
      * @return object
      */
-    public function getTableauBordClient($sessionId, $pkUser)
+    public function getTableauBordClient($sessionId, $pkUser, bool $use_cache = true)
     {
         $request = (object) [
             'SessionID' => $sessionId,
             'PkUser'    => (int) $pkUser,
         ];
 
-        $board = $this->sendRequest('GetTableauBordClient', $request);
+        $board = $this->sendRequest('GetTableauBordClient', $request, $use_cache);
 
         if ($board->NbCompteursARelever > 0) {
             $PcImmeublesTelereleve = (100 * $board->NbCompteursReleves) / $board->NbCompteursARelever;

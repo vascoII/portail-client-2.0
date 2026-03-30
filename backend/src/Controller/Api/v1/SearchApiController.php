@@ -54,7 +54,7 @@ class SearchApiController extends AbstractApiController
                 return $this->searchOccupants($request, $client);
             } else {
                 // Return dashboard if no type specified
-                $board = $client->getMyTableauBordClient();
+                $board = $client->getMyTableauBordClientNoCache();
                 return $this->success([
                     'board' => $this->normalize($board),
                     'message' => 'Aucun type de recherche spécifié. Utilisez ?type=immeuble ou ?type=occupant',
@@ -99,7 +99,7 @@ class SearchApiController extends AbstractApiController
         $hasFilters = !empty($filtersMin1) || !empty($filtersMin3);
 
         if ($hasFilters) {
-            $immeubles = $client->getMyImmeubles($params);
+            $immeubles = $client->getMyImmeubles($params, false);
         } else {
             // If no valid filters, return empty result
             $immeubles = [];

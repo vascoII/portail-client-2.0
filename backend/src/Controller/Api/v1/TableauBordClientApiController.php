@@ -28,7 +28,7 @@ class TableauBordClientApiController extends AbstractApiController
         parent::__construct($client, $serializer, $securityService);
         $this->apiTableauBordClientService = $apiTableauBordClientService;
     }
-    
+
     #[Route("", name: "index", methods: ["GET"])]
     public function index(Request $request): JsonResponse
     {
@@ -38,8 +38,8 @@ class TableauBordClientApiController extends AbstractApiController
         }
 
         try {
-            $board = $client->getMyTableauBordClient();
-            
+            $board = $client->getMyTableauBordClientNoCache();
+
             // Calculate installation statistics
             $installed = $board->NbCompteursPoses ?? 0;
             $total = $board->NbCompteursCommandes ?? 0;
@@ -66,14 +66,6 @@ class TableauBordClientApiController extends AbstractApiController
                 'board' => $this->normalize($board),
                 'chantier' => $chantier,
             ];
-
-            // Check for demo mode
-            if (file_exists(__DIR__ . '/../../../demo.txt')) {
-                $data['demo'] = true;
-                if (isset($data['board']['PcImmeublesTransfertFichiers'])) {
-                    $data['board']['PcImmeublesTransfertFichiers'] = '100';
-                }
-            }
 
             return $this->success($data);
         } catch (\Exception $e) {

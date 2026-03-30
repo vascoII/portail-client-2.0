@@ -315,7 +315,7 @@ class OperatorApiController extends AbstractApiController
             $params->NBCOMPTEURS = true;
 
             $availableImmeublesNumbers = [];
-            $availableImmeubles = $client->getMyImmeubles($params);
+            $availableImmeubles = $client->getMyImmeubles($params, false);
             foreach ($availableImmeubles as $immeuble) {
                 $availableImmeublesNumbers[] = $immeuble->Immeuble->PkImmeuble;
             }

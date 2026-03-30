@@ -37,7 +37,7 @@ class GestionParcApiController extends AbstractApiController
         }
 
         try {
-            $board = $client->getMyTableauBordClient();
+            $board = $client->getMyTableauBordClientNoCache();
 
             return $this->success([
                 'board' => $this->normalize($board),
@@ -83,12 +83,12 @@ class GestionParcApiController extends AbstractApiController
                     $params->FIELD_ALLFIELDS = $tout;
                     $params->FIELD_ADRESSE_CP_VILLE = $adresse;
 
-                    $immeubles = $client->getMyImmeubles($params);
+                    $immeubles = $client->getMyImmeubles($params, false);
                 } else {
                     $immeubles = [];
                 }
             } else {
-                $immeubles = $client->getMyImmeubles($params);
+                $immeubles = $client->getMyImmeubles($params, false);
             }
 
             return $this->success([
