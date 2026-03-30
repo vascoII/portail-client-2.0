@@ -3,8 +3,9 @@
 import { QueryClient } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { useState, ReactNode } from "react";
+import { useEffect, useMemo, useState, ReactNode } from "react";
 import { createLocalStoragePersister } from "@/lib/cache/persistQueryClient";
+import { useAuthStore } from "@/lib/store/authStore";
 
 /**
  * Providers component that wraps the application with React Query
@@ -17,6 +18,9 @@ import { createLocalStoragePersister } from "@/lib/cache/persistQueryClient";
  * - Offline-first network mode
  */
 export default function Providers({ children }: { children: ReactNode }) {
+  const userType = useAuthStore((s) => s.user?.UserType ?? null);
+  const isGestionnaire = userType === "G";
+
   // Create a QueryClient instance with default options
   // Using useState to ensure the client is created only once per component instance
   const [queryClient] = useState(
@@ -50,7 +54,13 @@ export default function Providers({ children }: { children: ReactNode }) {
   );
 
   // Create persister (synchronous, works immediately)
-  const persister = createLocalStoragePersister();
+  const persister = useMemo(() => createLocalStoragePersister(), []);
+
+  // If we are a gestionnaire, ensure we don't display stale perimeters from old cache.
+  useEffect(() => {
+    if (!isGestionnaire) return;
+    queryClient.removeQueries({ queryKey: ["immeubles"] });
+  }, [isGestionnaire, queryClient]);
 
   return (
     <PersistQueryClientProvider
@@ -63,6 +73,9 @@ export default function Providers({ children }: { children: ReactNode }) {
           // Persister uniquement les queries logement et immeubles
           shouldDehydrateQuery: (query) => {
             const queryKey = query.queryKey[0];
+            if (isGestionnaire && queryKey === "immeubles") {
+              return false;
+            }
             return (
               queryKey === "logements" ||
               queryKey === "immeubles" ||

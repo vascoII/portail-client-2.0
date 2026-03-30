@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { api, extractApiData, handleApiError } from "@/lib/api/client";
 import { getStaleTimeUntilMidnight } from "@/lib/utils/cache";
+import { useAuthStore } from "@/lib/store/authStore";
 import type {
   BuildingDetailsResponse,
   Building,
@@ -244,6 +245,7 @@ function downloadBlob(blob: Blob, filename: string): void {
  */
 export function useImmeubles() {
   const queryClient = useQueryClient();
+  const isGestionnaire = useAuthStore((s) => s.user?.UserType === "G");
 
   /**
    * Get buildings dashboard query
@@ -256,7 +258,10 @@ export function useImmeubles() {
       return extractApiData<ImmeublesIndexResponse>(response);
     },
     retry: false,
-    staleTime: getStaleTimeUntilMidnight(), // Cache until midnight (SOAP data updated once per night at 2 AM)
+    staleTime: isGestionnaire ? 0 : getStaleTimeUntilMidnight(), // For G: no cache (perimeter can change); otherwise cache until midnight
+    gcTime: isGestionnaire ? 0 : undefined,
+    refetchOnMount: isGestionnaire ? "always" : undefined,
+    refetchOnWindowFocus: isGestionnaire ? true : undefined,
   });
 
   /**
@@ -272,7 +277,8 @@ export function useImmeubles() {
         return extractApiData<ImmeublesIndexResponse>(response);
       },
       retry: false,
-      staleTime: getStaleTimeUntilMidnight(),
+      staleTime: isGestionnaire ? 0 : getStaleTimeUntilMidnight(),
+      gcTime: isGestionnaire ? 0 : undefined,
     });
     return result;
   };
