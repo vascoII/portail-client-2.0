@@ -1,6 +1,5 @@
 import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { isAuthSessionExpired } from '@/lib/auth/authSession';
-
 /**
  * API Response structure
  */
@@ -49,7 +48,7 @@ const createApiClient = (): AxiosInstance => {
           if (authStorage) {
             const authData = JSON.parse(authStorage);
             const state = authData?.state;
-
+            
             // If the persisted auth session is too old, don't attach the headers anymore.
             // This prevents the UI from staying "authenticated" forever.
             if (isAuthSessionExpired(state?.creationDate)) {

@@ -996,7 +996,7 @@ class Client extends BaseClient
             'Email'     => $email,
         ];
 
-        $result = $this->sendRequest('ResetPasswordFromEmail', $request, false);
+        $result = $this->sendRequest('ResetPasswordFromEmail2', $request, false);
 
         return $result;
     }

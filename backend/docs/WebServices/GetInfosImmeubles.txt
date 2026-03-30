@@ -1,1 +1,0 @@
-$this->sendRequest('GetInfosImmeubles', $request, $use_cache)

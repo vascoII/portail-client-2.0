@@ -1,1 +1,0 @@
-$this->sendRequest('getFactures', $request, false)

@@ -97,7 +97,17 @@ export default function ResetPasswordForm() {
             )}
 
             {/* Alerte d'erreur */}
-            {displayError && !isSuccess && (
+            {displayError && displayError.includes('mot de passe envoyé avec succès') &&!isSuccess && (
+              <div className="mb-6">
+                <Alert
+                  variant="success"
+                  title="Email envoyé"
+                  message="Un email contenant un lien de réinitialisation de mot de passe vous sera adressé sur votre boîte email d'ici quelques minutes. Merci de vérifier également votre dossier antispam."
+                />
+              </div>
+            )}
+
+            {displayError && !displayError.includes('mot de passe envoyé avec succès') &&!isSuccess && (
               <div className="mb-6">
                 <Alert
                   variant="error"

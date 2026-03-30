@@ -16,6 +16,7 @@ export function useFkUser(): string | null {
           setFkUser(null);
           return;
         }
+        
         const user = authData?.state?.user;
 
         if (user?.FK) {

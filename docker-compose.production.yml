@@ -20,7 +20,7 @@ services:
     container_name: backend_production
     environment:
       - APP_ENV=dev
-      - APP_DEBUG=1
+      - APP_DEBUG=0
     expose:
       - "9000" # PHP-FPM port
     networks:
@@ -32,7 +32,7 @@ services:
       dockerfile: Dockerfile.production
     container_name: frontend_production
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_BASE_URL:-https://portail.techem.fr/api}
     expose:
       - "3000" # SSR port

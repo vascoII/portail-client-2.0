@@ -27,9 +27,9 @@ export const ChantierImmeubleCard = ({ pkImmeuble }: ImmeubleRelevesCardProps) =
   }, [immeubleData]);
 
   // --- Données inchangées (comme demandé) ---
-  const poses = chantierInfo.installed ?? 12265;
-  const aPoser = chantierInfo.remaining ?? 33968;
-  const commandes = chantierInfo.total ?? 46233;
+  const poses = chantierInfo.installed ? Math.max(chantierInfo.installed, 0) : 0;
+  const aPoser = chantierInfo.remaining ? Math.max(chantierInfo.remaining, 0) : 0;
+  const commandes = chantierInfo.total ? Math.max(chantierInfo.total, 0) : 0;
  
   // Calcul des pourcentages pour le donut
   const { pctPoses, pctAPoser } = useMemo(() => {

@@ -1,1 +1,0 @@
-$this->sendRequest('GetNbTicketsIntersUser', $request, $use_cache = false)
