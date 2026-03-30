@@ -60,6 +60,8 @@ export default function Providers({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!isGestionnaire) return;
     queryClient.removeQueries({ queryKey: ["immeubles"] });
+    queryClient.removeQueries({ queryKey: ["parc"] });
+    queryClient.removeQueries({ queryKey: ["gestion-parc"] });
   }, [isGestionnaire, queryClient]);
 
   return (
@@ -73,7 +75,12 @@ export default function Providers({ children }: { children: ReactNode }) {
           // Persister uniquement les queries logement et immeubles
           shouldDehydrateQuery: (query) => {
             const queryKey = query.queryKey[0];
-            if (isGestionnaire && queryKey === "immeubles") {
+            if (
+              isGestionnaire &&
+              (queryKey === "immeubles" ||
+                queryKey === "parc" ||
+                queryKey === "gestion-parc")
+            ) {
               return false;
             }
             return (

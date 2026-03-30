@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, extractApiData, handleApiError } from "@/lib/api/client";
 import { getStaleTimeUntilMidnight } from "@/lib/utils/cache";
+import { useAuthStore } from "@/lib/store/authStore";
 import type {
   Building,
   BuildingListResponse,
@@ -73,6 +74,7 @@ function downloadBlob(blob: Blob, filename: string, contentType: string): void {
  */
 export function useGestionParc() {
   const queryClient = useQueryClient();
+  const isGestionnaire = useAuthStore((s) => s.user?.UserType === "G");
 
   // --- Queries ---
 
@@ -88,7 +90,10 @@ export function useGestionParc() {
       );
       return extractApiData<GestionParcIndexResponse>(response);
     },
-    staleTime: getStaleTimeUntilMidnight(), // Cache until midnight (SOAP data updated once per night at 2 AM)
+    staleTime: isGestionnaire ? 0 : getStaleTimeUntilMidnight(), // For G: no cache (perimeter can change)
+    gcTime: isGestionnaire ? 0 : undefined,
+    refetchOnMount: isGestionnaire ? "always" : undefined,
+    refetchOnWindowFocus: isGestionnaire ? true : undefined,
     retry: false,
   });
 
@@ -106,7 +111,10 @@ export function useGestionParc() {
         return extractApiData<GestionParcBuildingDetailsResponse>(response);
       },
       enabled: !!pkImmeuble,
-      staleTime: getStaleTimeUntilMidnight(), // Cache until midnight (SOAP data updated once per night at 2 AM)
+      staleTime: isGestionnaire ? 0 : getStaleTimeUntilMidnight(),
+      gcTime: isGestionnaire ? 0 : undefined,
+      refetchOnMount: isGestionnaire ? "always" : undefined,
+      refetchOnWindowFocus: isGestionnaire ? true : undefined,
       retry: false,
     });
 
@@ -175,7 +183,10 @@ export function useGestionParc() {
         return extractApiData<LeakListResponse>(response);
       },
       enabled: !!pkImmeuble,
-      staleTime: getStaleTimeUntilMidnight(), // Cache until midnight (SOAP data updated once per night at 2 AM)
+      staleTime: isGestionnaire ? 0 : getStaleTimeUntilMidnight(),
+      gcTime: isGestionnaire ? 0 : undefined,
+      refetchOnMount: isGestionnaire ? "always" : undefined,
+      refetchOnWindowFocus: isGestionnaire ? true : undefined,
       retry: false,
     });
 
@@ -193,7 +204,10 @@ export function useGestionParc() {
         return extractApiData<AnomalyListResponse>(response);
       },
       enabled: !!pkImmeuble,
-      staleTime: getStaleTimeUntilMidnight(), // Cache until midnight (SOAP data updated once per night at 2 AM)
+      staleTime: isGestionnaire ? 0 : getStaleTimeUntilMidnight(),
+      gcTime: isGestionnaire ? 0 : undefined,
+      refetchOnMount: isGestionnaire ? "always" : undefined,
+      refetchOnWindowFocus: isGestionnaire ? true : undefined,
       retry: false,
     });
 
@@ -211,7 +225,10 @@ export function useGestionParc() {
         return extractApiData<DysfunctionListResponse>(response);
       },
       enabled: !!pkImmeuble,
-      staleTime: getStaleTimeUntilMidnight(), // Cache until midnight (SOAP data updated once per night at 2 AM)
+      staleTime: isGestionnaire ? 0 : getStaleTimeUntilMidnight(),
+      gcTime: isGestionnaire ? 0 : undefined,
+      refetchOnMount: isGestionnaire ? "always" : undefined,
+      refetchOnWindowFocus: isGestionnaire ? true : undefined,
       retry: false,
     });
 

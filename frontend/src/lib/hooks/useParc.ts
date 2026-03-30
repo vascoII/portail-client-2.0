@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { api, extractApiData, handleApiError } from "@/lib/api/client";
 import { getStaleTimeUntilMidnight } from "@/lib/utils/cache";
+import { useAuthStore } from "@/lib/store/authStore";
 import type { ChantierData } from "@/lib/types/api";
 
 export interface ParcBoardData {
@@ -129,6 +130,7 @@ const normalizeParcResponse = (raw?: ParcApiRawResponse): ParcApiResponse => {
 };
 
 export function useParc() {
+  const isGestionnaire = useAuthStore((s) => s.user?.UserType === "G");
   const parcQuery = useQuery({
     queryKey: ["parc"],
     queryFn: async (): Promise<ParcApiResponse> => {
@@ -137,7 +139,10 @@ export function useParc() {
       return normalizeParcResponse(raw);
     },
     retry: false,
-    staleTime: getStaleTimeUntilMidnight(),
+    staleTime: isGestionnaire ? 0 : getStaleTimeUntilMidnight(),
+    gcTime: isGestionnaire ? 0 : undefined,
+    refetchOnMount: isGestionnaire ? "always" : undefined,
+    refetchOnWindowFocus: isGestionnaire ? true : undefined,
   });
 
   return {
