@@ -126,7 +126,7 @@ const AppHeader: React.FC = () => {
             );
           }
           closeSearchModal();
-          router.push("/immeuble");
+          router.push(`/immeuble?fromSearch=${Date.now()}`);
           return;
         }
 
@@ -147,7 +147,7 @@ const AppHeader: React.FC = () => {
             );
           }
           closeSearchModal();
-          router.push("/logements");
+          router.push(`/logements?fromSearch=${Date.now()}`);
           return;
         }
 
@@ -196,7 +196,7 @@ const AppHeader: React.FC = () => {
         }
 
         closeSearchModal();
-        router.push("/immeuble");
+        router.push(`/immeuble?fromSearch=${Date.now()}`);
         return;
       }
 
@@ -241,7 +241,7 @@ const AppHeader: React.FC = () => {
         }
 
         closeSearchModal();
-        router.push("/logements");
+        router.push(`/logements?fromSearch=${Date.now()}`);
         return;
       }
     } catch {
