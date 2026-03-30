@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { FaFaucet, FaFire, FaChartBar, FaBolt } from "react-icons/fa";
@@ -30,6 +30,7 @@ export default function ListImmeubles() {
   const searchParams = useSearchParams();
   const { filterImmeubles, isFiltering, exportImmeubles } = useImmeubles();
   const { prefetchImmeubleLogements } = usePrefetchOnHover();
+  const lastHandledFromSearchRef = useRef<string | null>(null);
   const [immeubles, setImmeubles] = useState<Building[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadingError, setLoadingError] = useState<{ title: string; message: string } | null>(null);
@@ -180,11 +181,23 @@ export default function ListImmeubles() {
         setIsLoading(true);
         setLoadingError(null);
         
+        const fromSearch = searchParams.get("fromSearch");
+        // En dev (React StrictMode), l'effet peut tourner 2 fois.
+        // On évite qu'un 2e passage (même token) ré-écrase les résultats de recherche
+        // par le chargement complet.
+        if (fromSearch && lastHandledFromSearchRef.current === fromSearch) {
+          if (isMounted) setIsLoading(false);
+          return;
+        }
+
         // If there are search results from the advanced search, use them instead of loading all
         if (typeof window !== "undefined") {
           const stored = window.sessionStorage.getItem("search_immeubles_results");
           if (stored) {
             try {
+              if (fromSearch) {
+                lastHandledFromSearchRef.current = fromSearch;
+              }
               const parsed = JSON.parse(stored) as Building[];
               if (isMounted) {
                 setImmeubles(Array.isArray(parsed) ? parsed : []);
@@ -257,8 +270,9 @@ export default function ListImmeubles() {
     return () => {
       isMounted = false;
     };
+    // Re-run when URL changes (e.g. advanced search adds a query param)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty dependency array - only run on mount
+  }, [searchParams]); // When search params change, try to consume search results
 
   // Format number with thousands separator
   const formatNumber = (num: number | undefined): string => {
