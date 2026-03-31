@@ -18,6 +18,7 @@ import type {
   AppareilInfo,
   DashboardData,
 } from "@/lib/types/api";
+import type { OccupantDetailsResponse } from "@/lib/types/api";
 
 /**
  * Parameters for filtering logements
@@ -404,6 +405,26 @@ export function useLogements() {
       enabled: !!pkLogement,
       retry: false,
       staleTime: getStaleTimeUntilMidnight(), // Cache until midnight (SOAP data updated once per night at 2 AM)
+    });
+  };
+
+  /**
+   * Get occupant details (non "changement en cours")
+   * GET /api/logements/{pkLogement}/occupant/details
+   * @param pkLogement - Logement ID
+   */
+  const useOccupantDetailsQuery = (pkLogement: string | number) => {
+    return useQuery({
+      queryKey: ["logements", pkLogement, "occupant-details"],
+      queryFn: async (): Promise<OccupantDetailsResponse> => {
+        const response = await api.get<OccupantDetailsResponse>(
+          `/logements/${pkLogement}/occupant/details`
+        );
+        return extractApiData<OccupantDetailsResponse>(response);
+      },
+      enabled: !!pkLogement,
+      retry: false,
+      staleTime: 5 * 60 * 1000,
     });
   };
 
@@ -1087,6 +1108,7 @@ export function useLogements() {
     useTicketOwnerQuery,
     useInfosAppareilsQuery,
     useLogementQuery,
+    useOccupantDetailsQuery,
     useInterventionQuery,
     useInterventionsQuery,
     useFuitesQuery,

@@ -69,6 +69,7 @@ export default function EditOccupantForm({ pkLogement }: EditOccupantFormProps) 
 
   const {
     useLogementQuery,
+    useOccupantDetailsQuery,
     updateOccupant,
     isUpdatingOccupant,
     updateOccupantError,
@@ -80,6 +81,11 @@ export default function EditOccupantForm({ pkLogement }: EditOccupantFormProps) 
     isLoading: isLoadingLogement,
     error: logementError,
   } = useLogementQuery(pkLogement);
+
+  // Détails occupant (version "courante" via getOccupants(..., false))
+  const {
+    data: occupantDetailsData,
+  } = useOccupantDetailsQuery(pkLogement);
 
   // PkOccupant courant si disponible
   const pkOccupant =
@@ -97,36 +103,56 @@ export default function EditOccupantForm({ pkLogement }: EditOccupantFormProps) 
 
   // Pré-remplir le formulaire avec les données de l'occupant
   useEffect(() => {
-    if (logementData?.logement && logementData?.occupant) {
-      const occupant = logementData.occupant;
-      const currentOccupant = logementData.logement.Occupant;
-
-      // Utiliser les nouvelles données si disponibles, sinon les données actuelles
-      reset({
-        nameOccupant: occupant.newNom || currentOccupant?.Nom || "",
-        email: occupant.newEmail || currentOccupant?.Email || "",
-        phone: occupant.newTelmobile || currentOccupant?.TelMobile || currentOccupant?.TelFixe || "",
-        CodeLogeGestio: occupant.CodeLogeGestio || "",
-        numBail: occupant.numBail || "",
-        dateArrivee: occupant.dateArrivee || (currentOccupant?.DateArrivee 
-          ? new Date(currentOccupant.DateArrivee).toISOString().split("T")[0]
-          : ""),
-      });
-    } else if (logementData?.logement?.Occupant) {
-      // Si pas de données occupant dans la réponse, utiliser les données actuelles
-      const currentOccupant = logementData.logement.Occupant;
-      reset({
-        nameOccupant: currentOccupant.Nom || "",
-        email: currentOccupant.Email || "",
-        phone: currentOccupant.TelMobile || currentOccupant.TelFixe || "",
-        CodeLogeGestio: "",
-        numBail: "",
-        dateArrivee: currentOccupant.DateArrivee
-          ? new Date(currentOccupant.DateArrivee).toISOString().split("T")[0]
-          : "",
-      });
+    const currentOccupant = logementData?.logement?.Occupant;
+    if (!currentOccupant) {
+      return;
     }
-  }, [logementData, reset]);
+
+    const changeOccupant = logementData.occupant ?? {};
+    const details = occupantDetailsData?.occupant ?? {};
+
+    const nameOccupant =
+      changeOccupant.newNom ??
+      currentOccupant.Nom ??
+      "";
+
+    const email =
+      details.Email ??
+      details.newEmail ??
+      changeOccupant.newEmail ??
+      currentOccupant.Email ??
+      "";
+
+    const phone =
+      details.TelMobile ??
+      details.TelFixe ??
+      changeOccupant.newTelmobile ??
+      currentOccupant.TelMobile ??
+      currentOccupant.TelFixe ??
+      "";
+
+    const codeLogeGestio = changeOccupant.CodeLogeGestio ?? "";
+    const numBail = changeOccupant.numBail ?? "";
+
+    const dateArriveeSource =
+      changeOccupant.dateArrivee ??
+      currentOccupant.DateArrivee ??
+      null;
+
+    const dateArrivee =
+      dateArriveeSource
+        ? new Date(dateArriveeSource).toISOString().split("T")[0]
+        : "";
+
+    reset({
+      nameOccupant,
+      email,
+      phone,
+      CodeLogeGestio: codeLogeGestio,
+      numBail,
+      dateArrivee,
+    });
+  }, [logementData, occupantDetailsData, reset]);
 
   /**
    * Gestion de la soumission du formulaire

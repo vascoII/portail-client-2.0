@@ -243,6 +243,43 @@ class LogementApiController extends AbstractApiController
     }
 
     /**
+     * Get current occupant details (non "changement en cours")
+     */
+    #[Route("/{pkLogement}/occupant/details", name: "occupant_details", methods: ["GET"])]
+    public function getOccupantDetails(int $pkLogement, Request $request): JsonResponse
+    {
+        $client = $this->getAuthenticatedClientFromHeaders($request);
+        if ($client instanceof JsonResponse) {
+            return $client;
+        }
+
+        try {
+            $logement = $client->getTableauBordLogement($pkLogement);
+
+            if (!isset($logement->Immeuble) || !isset($logement->Immeuble->PkImmeuble)) {
+                return $this->error('Immeuble introuvable pour ce logement', 404);
+            }
+
+            if (!isset($logement->Occupant) || !isset($logement->Occupant->PkOccupant)) {
+                return $this->error('Occupant introuvable pour ce logement', 404);
+            }
+
+            $isnew = false;
+            $dataOccupant = $client->getOccupants(
+                $logement->Immeuble->PkImmeuble,
+                $logement->Occupant->PkOccupant,
+                $isnew
+            );
+
+            return $this->success([
+                'occupant' => $this->normalize($dataOccupant),
+            ]);
+        } catch (\Exception $e) {
+            return $this->error('Erreur lors de la récupération de l\'occupant: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
      * Update occupant information
      */
     #[Route("/{pkLogement}/occupant", name: "update_occupant", methods: ["PUT", "PATCH"])]

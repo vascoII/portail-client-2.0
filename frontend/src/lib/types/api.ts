@@ -148,6 +148,11 @@ export interface HousingDetailsResponse {
   occupant?: OccupantData;
 }
 
+// Détails occupant renvoyés par /logements/{pkLogement}/occupant/details
+export interface OccupantDetailsResponse {
+  occupant: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+}
+
 export interface Device {
   PkAppareil?: string;
   Numero?: string;
