@@ -5,3 +5,6 @@ ou
 CAS N 2 if logement.Immeuble.HasTelereleve == 1 and logement.Immeuble.HasNoteOccupant == 1 and ( logement.NbCompteursCET > 0 or logement.NbCompteursRepart > 0
 => possible de télécharger une note mensuelle CHAUFFAGE
 ⚠  ces 2 options sont aussi disponible quand connecté en tant que occupant sur la vue OCCUPANT du logement
+
+
+/occupant/2400866/releve_note/338286/CHAUFFAGE
