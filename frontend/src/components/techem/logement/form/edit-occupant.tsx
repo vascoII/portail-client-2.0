@@ -85,7 +85,7 @@ export default function EditOccupantForm({ pkLogement }: EditOccupantFormProps) 
   // Détails occupant (version "courante" via getOccupants(..., false))
   const {
     data: occupantDetailsData,
-  } = useOccupantDetailsQuery(pkLogement);
+  } = useOccupantDetailsQuery(pkLogement, false);
 
   // PkOccupant courant si disponible
   const pkOccupant =

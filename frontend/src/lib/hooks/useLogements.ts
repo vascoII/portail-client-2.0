@@ -413,12 +413,16 @@ export function useLogements() {
    * GET /api/logements/{pkLogement}/occupant/details
    * @param pkLogement - Logement ID
    */
-  const useOccupantDetailsQuery = (pkLogement: string | number) => {
+  const useOccupantDetailsQuery = (
+    pkLogement: string | number,
+    isNew: boolean
+  ) => {
     return useQuery({
-      queryKey: ["logements", pkLogement, "occupant-details"],
+      queryKey: ["logements", pkLogement, "occupant-details", { isNew }],
       queryFn: async (): Promise<OccupantDetailsResponse> => {
         const response = await api.get<OccupantDetailsResponse>(
-          `/logements/${pkLogement}/occupant/details`
+          `/logements/${pkLogement}/occupant/details`,
+          { params: { isNew } }
         );
         return extractApiData<OccupantDetailsResponse>(response);
       },

@@ -264,7 +264,8 @@ class LogementApiController extends AbstractApiController
                 return $this->error('Occupant introuvable pour ce logement', 404);
             }
 
-            $isnew = false;
+            $isNewParam = $request->query->get('isNew', 'false');
+            $isnew = filter_var($isNewParam, FILTER_VALIDATE_BOOLEAN);
             $dataOccupant = $client->getOccupants(
                 $logement->Immeuble->PkImmeuble,
                 $logement->Occupant->PkOccupant,

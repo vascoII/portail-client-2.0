@@ -67,20 +67,82 @@ export default function NewOccupantForm({ pkLogement }: NewOccupantFormProps) {
     },
   });
 
-  const { useLogementQuery, updateOccupant, isUpdatingOccupant, updateOccupantError } =
-    useLogements();
+  const {
+    useLogementQuery,
+    useOccupantDetailsQuery,
+    updateOccupant,
+    isUpdatingOccupant,
+    updateOccupantError,
+  } = useLogements();
 
   // Charger les données du logement pour récupérer pkImmeuble
   const { data: logementData } = useLogementQuery(pkLogement);
+
+  // Préchargement via getOccupants(..., true) pour proposer les valeurs issues du WS
+  const { data: occupantDetailsData } = useOccupantDetailsQuery(pkLogement, true);
 
   const pkImmeuble =
     logementData?.logement?.Immeuble?.PkImmeuble ??
     "";
 
-  // Définir la date d'arrivée par défaut à aujourd'hui
+  // Pré-remplir Email / Téléphone si disponibles depuis l'endpoint details
   useEffect(() => {
-    setValue("dateArrivee", new Date());
-  }, [setValue]);
+    const details = occupantDetailsData?.occupant ?? {};
+    const currentName = watch("nameOccupant");
+    const currentEmail = watch("email");
+    const currentPhone = watch("phone");
+    const currentCode = watch("CodeLogeGestio");
+    const currentBail = watch("numBail");
+    const currentDate = watch("dateArrivee");
+
+    const nameOccupant = details.newNom ?? details.Nom ?? "";
+
+    const email = details.newEmail ?? details.email ?? details.Email ?? "";
+
+    const phone =
+      details.newTelmobile ??
+      details.newTelMobile ??
+      details.telmobile ??
+      details.telfixe ??
+      details.newTelfixe ??
+      details.TelMobile ??
+      details.TelFixe ??
+      "";
+
+    const codeLogeGestio =
+      details.newCodeLogeGestio ??
+      details.CodeLogeGestio ??
+      "";
+
+    const numBail =
+      details.newNumbail ??
+      details.numbail ??
+      "";
+
+    const parseDate = (value: unknown): Date | null => {
+      if (!value || typeof value !== "string") return null;
+      // Le WS utilise parfois 0001-01-01T00:00:00 comme "vide"
+      if (value.startsWith("0001-01-01")) return null;
+      const d = new Date(value);
+      return Number.isNaN(d.getTime()) ? null : d;
+    };
+
+    const dateArrivee =
+      parseDate(details.newDateArrivee) ??
+      parseDate(details.DateArrivee) ??
+      null;
+
+    if (!currentName && nameOccupant) setValue("nameOccupant", nameOccupant);
+    if (!currentEmail && email) setValue("email", email);
+    if (!currentPhone && phone) setValue("phone", phone);
+    if (!currentCode && codeLogeGestio) setValue("CodeLogeGestio", codeLogeGestio);
+    if (!currentBail && numBail) setValue("numBail", numBail);
+
+    // Si aucune date n'est encore posée, on prend celle du WS sinon aujourd'hui
+    if (!currentDate) {
+      setValue("dateArrivee", dateArrivee ?? new Date());
+    }
+  }, [occupantDetailsData, setValue, watch]);
 
   /**
    * Soumission
