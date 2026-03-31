@@ -139,7 +139,7 @@ export default function LogementConsommationChartRepart({ pkLogement }: Logement
         throw new Error("Identifiant logement manquant pour l'export du relevé répartiteur.");
       }
 
-      const response = await api.get(`/logement/${pkLogement}/releve-repart`, {
+      const response = await api.get(`/logements/${pkLogement}/releve-repart`, {
         responseType: "blob",
       });
 
