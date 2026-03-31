@@ -76,13 +76,37 @@ export default function LogementConsommationChartEf({ pkLogement }: LogementCons
     error,
   } = useLogementQuery(pkLogement);
 
-  const { categories, values, pkOccupant } = useMemo(() => {
+  const { categories, values, pkOccupant, compteurNumero } = useMemo(() => {
     const logement = logementData?.logement as Record<string, unknown> | undefined;
 
     const logementEF =
       logement && typeof logement === "object" && "LogementEF" in logement
         ? (logement.LogementEF as Record<string, unknown> | undefined)
         : null;
+
+    const compteurNumero =
+      logementEF &&
+      typeof logementEF === "object" &&
+      "ListeInfosAppareils" in logementEF &&
+      (logementEF.ListeInfosAppareils as Record<string, unknown>) &&
+      typeof logementEF.ListeInfosAppareils === "object" &&
+      "infosAppareilEAU" in (logementEF.ListeInfosAppareils as Record<string, unknown>) &&
+      Array.isArray((logementEF.ListeInfosAppareils as Record<string, unknown>).infosAppareilEAU)
+        ? (
+            ((logementEF.ListeInfosAppareils as Record<string, unknown>).infosAppareilEAU as Array<Record<string, unknown>>).find(
+              (item) =>
+                item &&
+                typeof item === "object" &&
+                "Appareil" in item &&
+                item.Appareil &&
+                typeof item.Appareil === "object" &&
+                (("Fluide" in (item.Appareil as Record<string, unknown>) &&
+                  (item.Appareil as Record<string, unknown>).Fluide === "EF") ||
+                  ("TypeAppareil" in (item.Appareil as Record<string, unknown>) &&
+                    (item.Appareil as Record<string, unknown>).TypeAppareil === "EF"))
+            )?.Appareil as Record<string, unknown> | undefined
+          )?.Numero
+        : undefined;
 
     const consoPeriode =
       logementEF && typeof logementEF === "object" && "ConsoPeriode" in logementEF
@@ -102,6 +126,7 @@ export default function LogementConsommationChartEf({ pkLogement }: LogementCons
     return {
       ...parsed,
       pkOccupant: occupant?.PkOccupant,
+      compteurNumero: typeof compteurNumero === "string" ? compteurNumero : undefined,
     };
   }, [logementData]);
 
@@ -312,6 +337,11 @@ export default function LogementConsommationChartEf({ pkLogement }: LogementCons
           <p className="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
             Information consommation + variation entre deux relevés
           </p>
+          {compteurNumero && (
+            <p className="mt-0.5 text-gray-500 text-theme-xs dark:text-gray-400">
+              N° Compteur: {compteurNumero}
+            </p>
+          )}
         </div>
         {pkOccupant && (
           <button
