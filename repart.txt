@@ -1,16 +1,17 @@
 Données De la dernière répartition
 
-    Données de l’immeuble
-        Total des unités de répartition de l’immeuble : 643 409
-        Total tantièmes chauffage : 10 272
-        Prix unitaire du tantième : 2.60032 €
-        Prix de l'unité de répartition : 0.09686 €
 
-        Prix de l’abonnement : 4 557.29 €
-        Montant à répartir aux tantièmes : 26 709.28 €
-        Part répartie en fonction des consommations : 62 321.66 €
-        Coût total hors combustible : 11 679.96 €
+Total des unités de répartition de l’immeuble : 845040
+Total tantièmes chauffage : 7536
+Prix unitaire du tantième : 3.123081 €
+Prix de l'unité de répartition : 0.064987 €
 
-    Données du logement
-        Tantièmes logement : 83
-        Coût du chauffage : 852.34 €
+Prix de l’abonnement : 3722.3 €
+Montant à répartir aux tantièmes : 23535.54 €
+Part répartie en fonction des consommations : 54916.26 €
+Coût total hors combustible : 0 €
+
+/immeuble/report/338286/NOTE/CHAUFFAGE
+/immeuble/report/338286/repartition/REPART
+
+#[Route("/{pkImmeuble}/releve_pdf/{type}/{energie}
