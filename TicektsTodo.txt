@@ -7,4 +7,4 @@ CAS N 2 if logement.Immeuble.HasTelereleve == 1 and logement.Immeuble.HasNoteOcc
 ⚠  ces 2 options sont aussi disponible quand connecté en tant que occupant sur la vue OCCUPANT du logement
 
 
-/occupant/2400866/releve_note/338286/CHAUFFAGE
+http://techn5274:83/fr/logements/338286/logement/1567787/releve_repart
