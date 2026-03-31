@@ -1,3 +1,7 @@
-Dans la page Logement,
-sur la vision des index compteurs EF / EC / RFC, si il existe plusieurs compteurs alors les index sont soient en cumulé, soit selectionable par compteur. Cette vue manque sur le nouveau portail
-Visible sur le logement 75535 - M. ZANTOUT - (cmopte tch-lhazard@techem.fr/immeuble 032001
+telechargement d'un document est possible :
+CAS N 1 logement.Immeuble.HasTelereleve == 1 and logement.Immeuble.HasNoteOccupant == 1 and (logement.NbCompteursEC
+=> possible de télécharger une note mensuelle EAU
+ou
+CAS N 2 if logement.Immeuble.HasTelereleve == 1 and logement.Immeuble.HasNoteOccupant == 1 and ( logement.NbCompteursCET > 0 or logement.NbCompteursRepart > 0
+=> possible de télécharger une note mensuelle CHAUFFAGE
+⚠  ces 2 options sont aussi disponible quand connecté en tant que occupant sur la vue OCCUPANT du logement
