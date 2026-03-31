@@ -111,24 +111,40 @@ export default function EditOccupantForm({ pkLogement }: EditOccupantFormProps) 
     const changeOccupant = logementData.occupant ?? {};
     const details = occupantDetailsData?.occupant ?? {};
 
+    if (process.env.NODE_ENV !== "production") {
+      // eslint-disable-next-line no-console
+      console.debug("[EditOccupant] prefill sources", {
+        pkLogement,
+        currentOccupant,
+        changeOccupant,
+        occupantDetails: details,
+      });
+    }
+
     const nameOccupant =
       changeOccupant.newNom ??
       currentOccupant.Nom ??
       "";
 
     const email =
+      details.Email ??
+      details.newEmail ??
       changeOccupant.newEmail ??
       changeOccupant.email ??
       currentOccupant.Email ??
-      details.Email ??
-      details.newEmail ??
       "";
 
     const phone =
-      changeOccupant.newTelmobile ??
-      changeOccupant.telmobile ??
       currentOccupant.TelMobile ??
+      currentOccupant.TelFixe ??
       details.TelMobile ??
+      details.TelFixe ??
+      // selon le WS, la clé peut varier (camelCase vs lower)
+      details.newTelmobile ??
+      details.newTelMobile ??
+      changeOccupant.newTelmobile ??
+      changeOccupant.newTelMobile ??
+      changeOccupant.telmobile ??
       "";
 
     const codeLogeGestio = 
@@ -164,6 +180,18 @@ export default function EditOccupantForm({ pkLogement }: EditOccupantFormProps) 
       numBail,
       dateArrivee,
     });
+
+    if (process.env.NODE_ENV !== "production") {
+      // eslint-disable-next-line no-console
+      console.debug("[EditOccupant] prefill resolved", {
+        nameOccupant,
+        email,
+        phone,
+        codeLogeGestio,
+        numBail,
+        dateArrivee,
+      });
+    }
   }, [logementData, occupantDetailsData, reset]);
 
   /**
