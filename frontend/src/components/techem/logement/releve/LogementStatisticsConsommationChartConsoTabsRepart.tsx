@@ -28,13 +28,26 @@ interface RawChartObject {
 }
 
 interface ParsedChartPoint {
-  x: string;
+  x: string | number;
   y: number;
   meta: string;
 }
 
 const toNumber = (value: string | number) =>
   typeof value === "number" ? value : Number(String(value).replace(",", "."));
+
+const parseFrDateToMs = (value: string): number | null => {
+  const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value.trim());
+  if (!match) {
+    return null;
+  }
+  const day = Number(match[1]);
+  const month = Number(match[2]);
+  const year = Number(match[3]);
+  const date = new Date(year, month - 1, day);
+  const ms = date.getTime();
+  return Number.isNaN(ms) ? null : ms;
+};
 
 const formatDateLabel = (value?: string | number): string => {
   if (typeof value === "number") {
@@ -59,12 +72,11 @@ const formatDateLabel = (value?: string | number): string => {
   return "";
 };
 
-const parseLogementChartValues = (rawValues?: unknown): { categories: string[]; points: ParsedChartPoint[] } => {
+const parseLogementChartValues = (rawValues?: unknown): { points: ParsedChartPoint[] } => {
   if (!Array.isArray(rawValues)) {
-    return { categories: [], points: [] };
+    return { points: [] };
   }
 
-  const categories: string[] = [];
   const points: ParsedChartPoint[] = [];
 
   (rawValues as Array<RawChartEntry | RawChartObject>).forEach((entry) => {
@@ -80,9 +92,8 @@ const parseLogementChartValues = (rawValues?: unknown): { categories: string[]; 
       const hoverValue =
         typeof rawHover === "number" ? rawHover.toString() : String(rawHover ?? "");
       const label = formatDateLabel(rawDate);
-      categories.push(label);
       points.push({
-        x: label,
+        x: parseFrDateToMs(label) ?? label,
         y: numericValue,
         meta: hoverValue,
       });
@@ -112,26 +123,37 @@ const parseLogementChartValues = (rawValues?: unknown): { categories: string[]; 
       if (!formattedLabel) {
         return;
       }
-      categories.push(formattedLabel);
       points.push({
-        x: formattedLabel,
+        x: parseFrDateToMs(formattedLabel) ?? formattedLabel,
         y: numericValue,
         meta: hoverValue,
       });
     }
   });
 
-  return { categories, points };
+  return { points };
 };
 
 export default function LogementStatisticsConsommationChartConsoTabsRepart({ pkLogement }: LogementStatisticsChartProps) {
   const { useLogementQuery } = useLogements();
   const { data: logementData, isLoading, error } = useLogementQuery(pkLogement);
 
-  const { categories, points } = useMemo(() => {
+  const { points } = useMemo(() => {
     const rawValues = logementData?.consoTabs?.REPART?.EvolutionChartData?.data;
     return parseLogementChartValues(rawValues);
   }, [logementData]);
+
+  const chartRange = useMemo(() => {
+    const xs = points
+      .map((point) => (typeof point.x === "number" ? point.x : parseFrDateToMs(point.x)))
+      .filter((value): value is number => typeof value === "number" && Number.isFinite(value));
+    if (!xs.length) {
+      return { min: undefined, max: undefined };
+    }
+    const max = Math.max(...xs);
+    const min = max - 365 * 24 * 60 * 60 * 1000;
+    return { min, max };
+  }, [points]);
 
   const hasData = points.length > 0;
 
@@ -147,7 +169,20 @@ export default function LogementStatisticsConsommationChartConsoTabsRepart({ pkL
       height: 310,
       type: "line", // Set the chart type to 'line'
       toolbar: {
-        show: false, // Hide chart toolbar
+        show: true,
+        tools: {
+          download: false,
+          selection: true,
+          zoom: true,
+          zoomin: true,
+          zoomout: true,
+          pan: true,
+          reset: true,
+        },
+      },
+      zoom: {
+        enabled: true,
+        autoScaleYaxis: true,
       },
     },
     stroke: {
@@ -197,8 +232,9 @@ export default function LogementStatisticsConsommationChartConsoTabsRepart({ pkL
       },
     },
     xaxis: {
-      type: "category",
-      categories,
+      type: "datetime",
+      min: chartRange.min,
+      max: chartRange.max,
       axisBorder: {
         show: false, // Hide x-axis border
       },
@@ -223,7 +259,7 @@ export default function LogementStatisticsConsommationChartConsoTabsRepart({ pkL
         },
       },
     },
-  }), [categories]);
+  }), [chartRange.max, chartRange.min]);
 
   const series = useMemo(
     () => [

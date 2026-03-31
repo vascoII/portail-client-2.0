@@ -6,6 +6,7 @@ import { FaFaucet, FaFire, FaChartBar, FaBolt } from "react-icons/fa";
 import { useImmeubles } from "@/lib/hooks/useImmeubles";
 import { useExport } from "@/lib/hooks/useExport";
 import { useModal } from "@/hooks/useModal";
+import { api, handleApiError } from "@/lib/api/client";
 import Alert from "@/components/ui/alert/Alert";
 import { Modal } from "@/components/ui/modal";
 import { Table, TableHeader, TableBody, TableRow, TableCell } from "@/components/ui/table";
@@ -32,6 +33,74 @@ interface ReleveOption {
   pkReleve: number;
   dateReleve: string;
   formattedDate: string;
+}
+
+type ImmeubleRepartDisplayStats = {
+  totURepart: string;
+  totTantChauff: string;
+  puTant: string;
+  prixURepart: string;
+  prixAbonn: string;
+  montARepartTant: string;
+  partRepartConsos: string;
+  ctCombust: string;
+  tantLog: string;
+  ctChauffLog: string;
+};
+
+/** Champs ImmeubleRepart : Tot_URepart, PU_Tant, etc. (cf. immeuble.json) */
+function parseImmeubleRepartStats(
+  immeubleRepart: Record<string, unknown> | null | undefined
+): ImmeubleRepartDisplayStats | null {
+  if (!immeubleRepart || typeof immeubleRepart !== "object") {
+    return null;
+  }
+
+  const toNumber = (value: unknown): number | null => {
+    if (typeof value === "number") {
+      return Number.isFinite(value) ? value : null;
+    }
+    if (typeof value === "string") {
+      const parsed = Number(value.replace(/\s/g, "").replace(",", "."));
+      return Number.isFinite(parsed) ? parsed : null;
+    }
+    return null;
+  };
+
+  const totU = toNumber(immeubleRepart.Tot_URepart);
+  if (totU === null || totU < 0) {
+    return null;
+  }
+
+  const formatInteger = (value: unknown) => {
+    const numeric = toNumber(value);
+    if (numeric === null) return "—";
+    return Math.round(numeric).toLocaleString("fr-FR");
+  };
+
+  const formatEuro = (value: unknown, decimals = 2) => {
+    const numeric = toNumber(value);
+    if (numeric === null) return "—";
+    return `${numeric.toLocaleString("fr-FR", {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    })} €`;
+  };
+
+  const formatEuroUnit = (value: unknown, decimals = 5) => formatEuro(value, decimals);
+
+  return {
+    totURepart: formatInteger(immeubleRepart.Tot_URepart),
+    totTantChauff: formatInteger(immeubleRepart.Tot_TantChauff),
+    puTant: formatEuroUnit(immeubleRepart.PU_Tant),
+    prixURepart: formatEuroUnit(immeubleRepart.Prix_URepart),
+    prixAbonn: formatEuro(immeubleRepart.Prix_Abonn, 2),
+    montARepartTant: formatEuro(immeubleRepart.Mont_ARepartTant, 2),
+    partRepartConsos: formatEuro(immeubleRepart.Part_RepartConsos, 2),
+    ctCombust: formatEuro(immeubleRepart.CT_Combust, 2),
+    tantLog: formatInteger(immeubleRepart.TantLog),
+    ctChauffLog: formatEuro(immeubleRepart.CT_ChauffLog, 2),
+  };
 }
 
 export default function ImmeubleReleves({
@@ -140,6 +209,37 @@ export default function ImmeubleReleves({
       .sort((a, b) => new Date(b.dateReleve).getTime() - new Date(a.dateReleve).getTime()); // Sort by date descending (newest first)
   }, [immeubleData, selectedTab, formatDateToFrench]);
 
+  const immeubleRepartStats = useMemo(() => {
+    const immeuble = immeubleData?.immeuble;
+    if (!immeuble || typeof immeuble !== "object" || !("ImmeubleRepart" in immeuble)) {
+      return null;
+    }
+    const repart = (immeuble as { ImmeubleRepart?: Record<string, unknown> }).ImmeubleRepart;
+    return parseImmeubleRepartStats(repart);
+  }, [immeubleData]);
+
+  const latestRepartPkReleve = useMemo(() => {
+    const immeuble = immeubleData?.immeuble;
+    if (!immeuble || typeof immeuble !== "object" || !("ImmeubleRepart" in immeuble)) {
+      return null;
+    }
+    const repart = (immeuble as { ImmeubleRepart?: Record<string, unknown> }).ImmeubleRepart;
+    if (!repart || typeof repart !== "object" || !("ListeReleves" in repart)) {
+      return null;
+    }
+    const liste = repart.ListeReleves as
+      | { releve?: Array<{ PkReleve?: number; DateReleve?: string }> }
+      | undefined;
+    const releves = liste?.releve;
+    if (!Array.isArray(releves) || releves.length === 0) {
+      return null;
+    }
+    const sorted = [...releves]
+      .filter((r) => r.PkReleve && r.DateReleve)
+      .sort((a, b) => new Date(b.DateReleve!).getTime() - new Date(a.DateReleve!).getTime());
+    return sorted[0]?.PkReleve ?? null;
+  }, [immeubleData]);
+
   // Handle opening export modal
   const handleExportExcelClick = useCallback(() => {
     if (relevesOptions.length === 0) {
@@ -190,6 +290,72 @@ export default function ImmeubleReleves({
     error: exportExcelError, 
     clearError: clearExportExcelError 
   } = useExport(handleExportExcel, { errorTitle: "Erreur d'export Excel" });
+
+  const downloadNoteMensuelle = useCallback(async () => {
+    if (!latestRepartPkReleve) {
+      throw new Error("Aucun relevé répartiteur disponible pour cet export.");
+    }
+    try {
+      const response = await api.get(`/immeubles/${pkImmeuble}/releve_pdf/NOTE/CHAUFFAGE`, {
+        params: { pkReleve: latestRepartPkReleve },
+        responseType: "blob",
+      });
+      const blob = new Blob([response.data as unknown as BlobPart], {
+        type: "application/pdf",
+      });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `immeuble-${pkImmeuble}-note-mensuelle-${latestRepartPkReleve}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      const message = handleApiError(err);
+      throw new Error(message || "Erreur lors de l'export de la note mensuelle.");
+    }
+  }, [pkImmeuble, latestRepartPkReleve]);
+
+  const downloadDonneesRepartition = useCallback(async () => {
+    if (!latestRepartPkReleve) {
+      throw new Error("Aucun relevé répartiteur disponible pour cet export.");
+    }
+    try {
+      const response = await api.get(`/immeubles/${pkImmeuble}/releve_pdf/repartition/REPART`, {
+        params: { pkReleve: latestRepartPkReleve },
+        responseType: "blob",
+      });
+      const blob = new Blob([response.data as unknown as BlobPart], {
+        type: "application/pdf",
+      });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `immeuble-${pkImmeuble}-repartition-${latestRepartPkReleve}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      const message = handleApiError(err);
+      throw new Error(message || "Erreur lors de l'export des données de répartition.");
+    }
+  }, [pkImmeuble, latestRepartPkReleve]);
+
+  const {
+    handleExport: handleExportNoteMensuelle,
+    isExporting: isExportingNoteMensuelle,
+    error: noteMensuelleError,
+    clearError: clearNoteMensuelleError,
+  } = useExport(downloadNoteMensuelle, { errorTitle: "Erreur export note mensuelle" });
+
+  const {
+    handleExport: handleExportDonneesRepartition,
+    isExporting: isExportingDonneesRepartition,
+    error: donneesRepartitionError,
+    clearError: clearDonneesRepartitionError,
+  } = useExport(downloadDonneesRepartition, { errorTitle: "Erreur export données répartition" });
 
   // Handle modal validation
   const handleModalExportPdf = useCallback(() => {
@@ -437,6 +603,10 @@ export default function ImmeubleReleves({
   }), [currentTabColor]);
 
   const series = [currentData.percentage];
+
+  const showRepartLogementSection =
+    immeubleRepartStats !== null &&
+    (immeubleRepartStats.tantLog !== "—" || immeubleRepartStats.ctChauffLog !== "—");
 
   const getButtonClass = (tab: TabType) => {
     const baseClasses = "px-3 py-2 font-medium w-full rounded-md text-theme-sm transition-all duration-200 flex items-center justify-center gap-2";
@@ -735,6 +905,149 @@ export default function ImmeubleReleves({
             )}
           </div>
         </div>
+
+        {selectedTab === "repartiteur" && immeubleRepartStats && (
+          <div className="mt-8 rounded-xl border border-gray-200 bg-gray-50/60 p-4 dark:border-gray-800 dark:bg-white/[0.02]">
+            {(noteMensuelleError || donneesRepartitionError) && (
+              <div className="mb-4 space-y-3">
+                {noteMensuelleError && (
+                  <div>
+                    <Alert
+                      variant={noteMensuelleError.variant || "error"}
+                      title={noteMensuelleError.title}
+                      message={noteMensuelleError.message}
+                      showLink={false}
+                    />
+                    <button
+                      type="button"
+                      onClick={clearNoteMensuelleError}
+                      className="mt-1 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                    >
+                      Fermer
+                    </button>
+                  </div>
+                )}
+                {donneesRepartitionError && (
+                  <div>
+                    <Alert
+                      variant={donneesRepartitionError.variant || "error"}
+                      title={donneesRepartitionError.title}
+                      message={donneesRepartitionError.message}
+                      showLink={false}
+                    />
+                    <button
+                      type="button"
+                      onClick={clearDonneesRepartitionError}
+                      className="mt-1 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                    >
+                      Fermer
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <h4 className="text-sm font-semibold tracking-wide text-gray-800 dark:text-white/90">
+                DONNÉES DE LA DERNIÈRE RÉPARTITION
+              </h4>
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                <button
+                  type="button"
+                  onClick={handleExportNoteMensuelle}
+                  disabled={isExportingNoteMensuelle || !latestRepartPkReleve}
+                  className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-theme-xs transition hover:bg-gray-50 hover:text-gray-900 disabled:opacity-60 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-white/[0.05]"
+                >
+                  {isExportingNoteMensuelle ? "Export en cours..." : "Export Notre mensuelle"}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleExportDonneesRepartition}
+                  disabled={isExportingDonneesRepartition || !latestRepartPkReleve}
+                  className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-theme-xs transition hover:bg-gray-50 hover:text-gray-900 disabled:opacity-60 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-white/[0.05]"
+                >
+                  {isExportingDonneesRepartition ? "Export en cours..." : "Export Données répartition"}
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-2">
+              <div>
+                <h5 className="text-xs font-semibold uppercase tracking-wide text-gray-700 dark:text-gray-200">
+                  Données de l&apos;immeuble
+                </h5>
+                <div className="mt-3 grid grid-cols-1 gap-2 text-sm text-gray-700 dark:text-gray-200">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-gray-600 dark:text-gray-400">
+                      Total des unités de répartition de l&apos;immeuble
+                    </span>
+                    <span className="font-semibold">{immeubleRepartStats.totURepart}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-gray-600 dark:text-gray-400">Total tantièmes chauffage</span>
+                    <span className="font-semibold">{immeubleRepartStats.totTantChauff}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-gray-600 dark:text-gray-400">Prix unitaire du tantième</span>
+                    <span className="font-semibold">{immeubleRepartStats.puTant}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-gray-600 dark:text-gray-400">
+                      Prix de l&apos;unité de répartition
+                    </span>
+                    <span className="font-semibold">{immeubleRepartStats.prixURepart}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="lg:border-l lg:border-gray-200 lg:pl-6 dark:lg:border-gray-800">
+                <h5 className="text-xs font-semibold uppercase tracking-wide text-gray-700 dark:text-gray-200">
+                  &nbsp;
+                </h5>
+                <div className="mt-3 grid grid-cols-1 gap-2 text-sm text-gray-700 dark:text-gray-200">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-gray-600 dark:text-gray-400">Prix de l&apos;abonnement</span>
+                    <span className="font-semibold">{immeubleRepartStats.prixAbonn}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-gray-600 dark:text-gray-400">
+                      Montant à répartir aux tantièmes
+                    </span>
+                    <span className="font-semibold">{immeubleRepartStats.montARepartTant}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-gray-600 dark:text-gray-400">
+                      Part répartie en fonction des consommations
+                    </span>
+                    <span className="font-semibold">{immeubleRepartStats.partRepartConsos}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-gray-600 dark:text-gray-400">Coût total hors combustible</span>
+                    <span className="font-semibold">{immeubleRepartStats.ctCombust}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {showRepartLogementSection && (
+              <div className="mt-6 border-t border-gray-200 pt-4 dark:border-gray-800">
+                <h5 className="text-xs font-semibold uppercase tracking-wide text-gray-700 dark:text-gray-200">
+                  Données du logement
+                </h5>
+                <div className="mt-3 grid grid-cols-1 gap-2 text-sm text-gray-700 dark:text-gray-200 lg:grid-cols-2">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-gray-600 dark:text-gray-400">Tantièmes logement</span>
+                    <span className="font-semibold">{immeubleRepartStats.tantLog}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-3 lg:justify-end">
+                    <span className="text-gray-600 dark:text-gray-400">Coût du chauffage</span>
+                    <span className="font-semibold">{immeubleRepartStats.ctChauffLog}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="flex items-center justify-center gap-5 px-6 py-3.5 sm:gap-8 sm:py-5">
