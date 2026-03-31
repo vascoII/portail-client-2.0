@@ -104,7 +104,7 @@ export default function LogementConsommationChartRepart({ pkLogement }: Logement
     error,
   } = useLogementQuery(pkLogement);
 
-  const { categories, values } = useMemo(() => {
+  const { categories, values, lastRepart } = useMemo(() => {
     const logement = logementData?.logement as Record<string, unknown> | undefined;
     const logementRepart =
       logement && typeof logement === "object" && "LogementRepart" in logement
@@ -122,7 +122,10 @@ export default function LogementConsommationChartRepart({ pkLogement }: Logement
     const parsed = parseConsoPeriodeReadings(consoPeriode);
 
     if (parsed.categories.length && parsed.values.length) {
-      return parsed;
+      return {
+        ...parsed,
+        lastRepart: logementRepart,
+      };
     }
 
     const serieConsosDJU =
@@ -130,8 +133,61 @@ export default function LogementConsommationChartRepart({ pkLogement }: Logement
         ? (logementRepart.SerieConsosDJU as { ValeursXYL?: string } | undefined)
         : null;
     const rawSerie = serieConsosDJU?.ValeursXYL ?? "";
-    return parseSerieConsos(rawSerie);
+    const parsedSerie = parseSerieConsos(rawSerie);
+
+    return {
+      ...parsedSerie,
+      lastRepart: logementRepart,
+    };
   }, [logementData]);
+
+  const lastRepartStats = useMemo(() => {
+    const toNumber = (value: unknown) => {
+      if (typeof value === "number") return value;
+      if (typeof value === "string") {
+        const parsed = Number(value.replace(/\s/g, "").replace(",", "."));
+        return Number.isFinite(parsed) ? parsed : null;
+      }
+      return null;
+    };
+
+    const formatInteger = (value: unknown) => {
+      const numeric = toNumber(value);
+      if (numeric === null) return "—";
+      return Math.round(numeric).toLocaleString("fr-FR");
+    };
+
+    const formatEuro = (value: unknown, decimals = 2) => {
+      const numeric = toNumber(value);
+      if (numeric === null) return "—";
+      return `${numeric.toLocaleString("fr-FR", {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+      })} €`;
+    };
+
+    const formatEuroUnit = (value: unknown, decimals = 5) => formatEuro(value, decimals);
+
+    const source = lastRepart;
+    if (!source || typeof source !== "object") {
+      return null;
+    }
+
+    const repart = source as Record<string, unknown>;
+
+    return {
+      totURepart: formatInteger(repart.Tot_URepart),
+      totTantChauff: formatInteger(repart.Tot_TantChauff),
+      puTant: formatEuroUnit(repart.PU_Tant, 5),
+      prixURepart: formatEuroUnit(repart.Prix_URepart, 5),
+      prixAbonn: formatEuro(repart.Prix_Abonn, 2),
+      montARepartTant: formatEuro(repart.Mont_ARepartTant, 2),
+      partRepartConsos: formatEuro(repart.Part_RepartConsos, 2),
+      ctCombust: formatEuro(repart.CT_Combust, 2),
+      tantLog: formatInteger(repart.TantLog),
+      ctChauffLog: formatEuro(repart.CT_ChauffLog, 2),
+    };
+  }, [lastRepart]);
 
   const downloadReleveRepart = useCallback(async () => {
     try {
@@ -352,6 +408,86 @@ export default function LogementConsommationChartRepart({ pkLogement }: Logement
           </button>
         )}
       </div>
+
+      {lastRepartStats && (
+        <div className="mt-5 rounded-xl border border-gray-200 bg-gray-50/60 p-4 dark:border-gray-800 dark:bg-white/[0.02]">
+          <h4 className="text-sm font-semibold tracking-wide text-gray-800 dark:text-white/90">
+            DONNÉES DE LA DERNIÈRE RÉPARTITION
+          </h4>
+
+          <div className="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <div>
+              <h5 className="text-xs font-semibold uppercase tracking-wide text-gray-700 dark:text-gray-200">
+                Données de l&apos;immeuble
+              </h5>
+              <div className="mt-3 grid grid-cols-1 gap-2 text-sm text-gray-700 dark:text-gray-200">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Total des unités de répartition de l&apos;immeuble
+                  </span>
+                  <span className="font-semibold">{lastRepartStats.totURepart}</span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-gray-600 dark:text-gray-400">Total tantièmes chauffage</span>
+                  <span className="font-semibold">{lastRepartStats.totTantChauff}</span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-gray-600 dark:text-gray-400">Prix unitaire du tantième</span>
+                  <span className="font-semibold">{lastRepartStats.puTant}</span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-gray-600 dark:text-gray-400">Prix de l&apos;unité de répartition</span>
+                  <span className="font-semibold">{lastRepartStats.prixURepart}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:border-l lg:border-gray-200 lg:pl-6 dark:lg:border-gray-800">
+              <h5 className="text-xs font-semibold uppercase tracking-wide text-gray-700 dark:text-gray-200">
+                &nbsp;
+              </h5>
+              <div className="mt-3 grid grid-cols-1 gap-2 text-sm text-gray-700 dark:text-gray-200">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-gray-600 dark:text-gray-400">Prix de l&apos;abonnement</span>
+                  <span className="font-semibold">{lastRepartStats.prixAbonn}</span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Montant à répartir aux tantièmes
+                  </span>
+                  <span className="font-semibold">{lastRepartStats.montARepartTant}</span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Part répartie en fonction des consommations
+                  </span>
+                  <span className="font-semibold">{lastRepartStats.partRepartConsos}</span>
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-gray-600 dark:text-gray-400">Coût total hors combustible</span>
+                  <span className="font-semibold">{lastRepartStats.ctCombust}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 border-t border-gray-200 pt-4 dark:border-gray-800">
+            <h5 className="text-xs font-semibold uppercase tracking-wide text-gray-700 dark:text-gray-200">
+              Données du logement
+            </h5>
+            <div className="mt-3 grid grid-cols-1 gap-2 text-sm text-gray-700 dark:text-gray-200 lg:grid-cols-2">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-gray-600 dark:text-gray-400">Tantièmes logement</span>
+                <span className="font-semibold">{lastRepartStats.tantLog}</span>
+              </div>
+              <div className="flex items-center justify-between gap-3 lg:justify-end">
+                <span className="text-gray-600 dark:text-gray-400">Coût du chauffage</span>
+                <span className="font-semibold">{lastRepartStats.ctChauffLog}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="max-w-full overflow-x-auto custom-scrollbar">
         <div className="-ml-5 min-w-[650px] xl:min-w-full pl-2">
