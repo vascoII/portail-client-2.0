@@ -1456,7 +1456,9 @@ class Client extends BaseClient
             'occupants' => $listOccupant,
             'isNew'         => $IsNew,
         ];
-
+echo '<pre>';
+print_r($request);
+echo '</pre>';die;
         return $this->sendRequest('setOccupants4Chgt', $request, false, true);
     }
 

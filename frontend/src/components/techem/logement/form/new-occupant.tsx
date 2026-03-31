@@ -108,7 +108,7 @@ export default function NewOccupantForm({ pkLogement }: NewOccupantFormProps) {
       if (data.dateArrivee instanceof Date) {
         occupantData.dateArrivee = format(data.dateArrivee, "yyyy-MM-dd");
       }
-
+      occupantData.isNew = true;
       await updateOccupant(pkLogement, occupantData);
       setIsSuccess(true);
 

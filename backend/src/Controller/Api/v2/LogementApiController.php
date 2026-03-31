@@ -266,7 +266,7 @@ class LogementApiController extends AbstractApiController
 
         try {
             $logement = $client->getTableauBordLogement($pkLogement);
-            $isnew = false;
+            $isnew = $data['isNew'] ?? false;
             $occu = $client->setOccupants4Chgt($logement->Occupant->PkOccupant, $data, $isnew);
 
             return $this->success($this->normalize($occu), 'Occupant mis à jour avec succès');

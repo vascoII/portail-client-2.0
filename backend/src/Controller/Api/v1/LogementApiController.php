@@ -212,7 +212,7 @@ class LogementApiController extends AbstractApiController
             $nbTickets = $client->getNbTicketsInterByLogement($pkLogement);
             $consoTabs = $logementService->generateTabConsos($logement);
 
-            $isnew = true;
+            $isnew = false;
             $dataOccupant = $client->getOccupants($logement->Immeuble->PkImmeuble, $logement->Occupant->PkOccupant, $isnew);
             $changeinprogress = isset($dataOccupant['newNom']);
 
