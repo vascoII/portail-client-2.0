@@ -255,14 +255,29 @@ class LogementApiController extends AbstractApiController
 
         $data = json_decode($request->getContent(), true);
 
-        if (!$data) {
+        if (!is_array($data)) {
             return $this->error('Données JSON invalides', 400);
         }
 
         try {
-            $logement = $client->getTableauBordLogement($pkLogement);
             $isnew = false;
-            $occu = $client->setOccupants4Chgt($logement->Occupant->PkOccupant, $data, $isnew);
+
+            // Si le front fournit déjà le PkOccupant, on l'utilise directement
+            if (isset($data['PkOccupant']) && (int) $data['PkOccupant'] > 0) {
+                $pkOccupant = (int) $data['PkOccupant'];
+                unset($data['PkOccupant']);
+            } else {
+                // Rétrocompatibilité : on récupère le logement pour obtenir le PkOccupant
+                $logement = $client->getTableauBordLogement($pkLogement);
+
+                if (!isset($logement->Occupant) || !isset($logement->Occupant->PkOccupant)) {
+                    return $this->error('Occupant introuvable pour ce logement', 404);
+                }
+
+                $pkOccupant = (int) $logement->Occupant->PkOccupant;
+            }
+
+            $occu = $client->setOccupants4Chgt($pkOccupant, $data, $isnew);
 
             return $this->success($this->normalize($occu), 'Occupant mis à jour avec succès');
         } catch (\Exception $e) {

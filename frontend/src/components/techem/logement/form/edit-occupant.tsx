@@ -81,6 +81,12 @@ export default function EditOccupantForm({ pkLogement }: EditOccupantFormProps) 
     error: logementError,
   } = useLogementQuery(pkLogement);
 
+  // PkOccupant courant si disponible
+  const pkOccupant =
+    logementData?.logement?.Occupant?.PkOccupant ??
+    logementData?.occupant?.PkOccupant ??
+    undefined;
+
   // Récupérer pkImmeuble à partir des données du logement
   const pkImmeuble =
     logementData?.logement?.Immeuble?.PkImmeuble ??
@@ -129,6 +135,7 @@ export default function EditOccupantForm({ pkLogement }: EditOccupantFormProps) 
     try {
       // Préparer les données selon le format attendu par l'API
       const occupantData: any = { // eslint-disable-line @typescript-eslint/no-explicit-any
+        ...(pkOccupant ? { PkOccupant: pkOccupant } : {}),
         newNom: data.nameOccupant,
         newTelmobile: data.phone,
       };
