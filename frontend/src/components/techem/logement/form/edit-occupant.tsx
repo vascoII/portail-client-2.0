@@ -117,24 +117,36 @@ export default function EditOccupantForm({ pkLogement }: EditOccupantFormProps) 
       "";
 
     const email =
+      changeOccupant.newEmail ??
+      changeOccupant.email ??
+      currentOccupant.Email ??
       details.Email ??
       details.newEmail ??
-      changeOccupant.newEmail ??
-      currentOccupant.Email ??
       "";
 
     const phone =
-      details.TelMobile ??
-      details.TelFixe ??
       changeOccupant.newTelmobile ??
+      changeOccupant.telmobile ??
       currentOccupant.TelMobile ??
-      currentOccupant.TelFixe ??
+      details.TelMobile ??
       "";
 
-    const codeLogeGestio = changeOccupant.CodeLogeGestio ?? "";
-    const numBail = changeOccupant.numBail ?? "";
+    const codeLogeGestio = 
+      changeOccupant.newCodeLogeGestio ??
+      changeOccupant.CodeLogeGestio ?? 
+      currentOccupant.CodeLogeGestio ??
+      details.CodeLogeGestio ??
+      "";
+    
+    const numBail = 
+      changeOccupant.newNumBail ??
+      changeOccupant.numBail ?? 
+      currentOccupant.NumBail ??
+      details.numBail ??
+      "";
 
     const dateArriveeSource =
+      changeOccupant.newDateArrivee ??
       changeOccupant.dateArrivee ??
       currentOccupant.DateArrivee ??
       null;
@@ -439,4 +451,3 @@ export default function EditOccupantForm({ pkLogement }: EditOccupantFormProps) 
     </div>
   );
 }
-
