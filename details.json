@@ -1,0 +1,36 @@
+{
+    "success": true,
+    "status": 200,
+    "data": {
+        "occupant": {
+            "PkOccupant": "103965",
+            "Nom": "LEMAIGRE",
+            "CodeLogeGestio": "565 33",
+            "DateArrivee": "1972-07-15T00:00:00",
+            "email": "",
+            "telfixe": "",
+            "telmobile": "",
+            "numbail": "",
+            "idIMM": "032001",
+            "codegestioIMM": "",
+            "adresseIMM": "20 AVENUE MONTAIGNE/32 RUE JEAN GOUJON",
+            "cpIMM": "75008",
+            "villeIMM": "PARIS",
+            "numBAT": "1",
+            "adresseBAT": "20 AVE MONTAIGNE / 32 RUE JEAN GOUJON",
+            "numESC": "1",
+            "adresseESC": "",
+            "numetage": "0",
+            "numordre": "2",
+            "newPkOccupant": "-1",
+            "newNom": "",
+            "newCodeLogeGestio": "",
+            "newDateArrivee": "0001-01-01T00:00:00",
+            "newEmail": "reply@techem.fr",
+            "newTelfixe": "",
+            "newTelmobile": "0687654333",
+            "newNumbail": "",
+            "isNew": "false"
+        }
+    }
+}
