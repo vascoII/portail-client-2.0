@@ -1,0 +1,494 @@
+{
+    "success": true,
+    "status": 200,
+    "data": {
+        "immeuble": {
+            "Erreur": "",
+            "Info": "",
+            "Immeuble": {
+                "PkImmeuble": 338286,
+                "Nom": "D3001 - CORIOLIS",
+                "Numero": "017699",
+                "Ref": "D301",
+                "Adresse1": "1 SQUARES CHASLES ET CLAIRAULT",
+                "Adresse2": "1, 2 ET 4 SQUARES CORIOLIS",
+                "Adresse3": "",
+                "Cp": "77100",
+                "Ville": "MEAUX",
+                "HasTelereleve": true,
+                "FkClientTop": 36831,
+                "Actif": true,
+                "DateActivationClient": "0001-01-01T00:00:00",
+                "DateActivationOccupant": "2024-01-01T00:00:00",
+                "HasNoteOccupant": true,
+                "HasDecompteOccupant": true,
+                "HasFactures": false,
+                "HasChantiers": false
+            },
+            "NbLogements": 97,
+            "NbAppareils": 531,
+            "NbDepannages": 1,
+            "NbDepannagesTotal": 1,
+            "NbDysfonctionnements": 0,
+            "HasTelereleve": true,
+            "NbCompteursEC": 0,
+            "NbCompteursEF": 0,
+            "NbCompteursRepart": 531,
+            "NbCompteursCET": 0,
+            "NbCompteursCapteur": 0,
+            "NbCompteursElect": -1,
+            "NbCompteursGaz": -1,
+            "NbCompteursTelereveleTotal": 511,
+            "NbCompteursTelereveleOK": 444,
+            "HasTransfertFichiers": false,
+            "ImmeubleEC": {
+                "NbCompteursARelever": -1,
+                "NbCompteursReleves": -1,
+                "NbFuites": -1,
+                "NbAnomalies": -1,
+                "Chantier": {
+                    "PkChantier": -1,
+                    "PkDevis": -1,
+                    "PkImmeuble": -1,
+                    "DateEntreeChantier": "0001-01-01T00:00:00",
+                    "NbCompteursPoses": -1,
+                    "NbCompteursCommandes": -1
+                },
+                "TopConsos": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DateReleve": "0001-01-01T00:00:00",
+                    "consosGrandes": [],
+                    "consosPetites": []
+                },
+                "SerieConsos1": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": ""
+                },
+                "SerieConsos2": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": ""
+                },
+                "ListeReleves": []
+            },
+            "ImmeubleEF": {
+                "NbCompteursARelever": -1,
+                "NbCompteursReleves": -1,
+                "NbFuites": -1,
+                "NbAnomalies": -1,
+                "Chantier": {
+                    "PkChantier": -1,
+                    "PkDevis": -1,
+                    "PkImmeuble": -1,
+                    "DateEntreeChantier": "0001-01-01T00:00:00",
+                    "NbCompteursPoses": -1,
+                    "NbCompteursCommandes": -1
+                },
+                "TopConsos": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DateReleve": "0001-01-01T00:00:00",
+                    "consosGrandes": [],
+                    "consosPetites": []
+                },
+                "SerieConsos1": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": ""
+                },
+                "SerieConsos2": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": ""
+                },
+                "ListeReleves": []
+            },
+            "ImmeubleRepart": {
+                "NbCompteursARelever": 511,
+                "NbCompteursReleves": 447,
+                "Chantier": {
+                    "PkChantier": -1,
+                    "PkDevis": -1,
+                    "PkImmeuble": -1,
+                    "DateEntreeChantier": "0001-01-01T00:00:00",
+                    "NbCompteursPoses": -1,
+                    "NbCompteursCommandes": -1
+                },
+                "TopConsos": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DateReleve": "2025-12-31T00:00:00",
+                    "consosGrandes": {
+                        "conso": [
+                            {
+                                "PkLogement": 1567798,
+                                "NomOcc": "TRAORE MAHAMADOU",
+                                "RefOcc": "D301101030031",
+                                "Fluide": -1,
+                                "Conso": "9786"
+                            },
+                            {
+                                "PkLogement": 1567869,
+                                "NomOcc": "MME RIDOU SAADIA",
+                                "RefOcc": "D301501010012",
+                                "Fluide": -1,
+                                "Conso": "8390"
+                            },
+                            {
+                                "PkLogement": 1567868,
+                                "NomOcc": "MME BELADASSI OUAHIBA",
+                                "RefOcc": "D301501010011",
+                                "Fluide": -1,
+                                "Conso": "7192"
+                            },
+                            {
+                                "PkLogement": 1567876,
+                                "NomOcc": "SAU DIA MAZA ANDREA",
+                                "RefOcc": "D301501030031",
+                                "Fluide": -1,
+                                "Conso": "4269"
+                            },
+                            {
+                                "PkLogement": 1567810,
+                                "NomOcc": "ASS ARILE ETS GUILLAUME BRICONNET",
+                                "RefOcc": "D301201010011",
+                                "Fluide": -1,
+                                "Conso": "4269"
+                            }
+                        ]
+                    },
+                    "consosPetites": {
+                        "conso": [
+                            {
+                                "PkLogement": 1567875,
+                                "NomOcc": "MME DREPOBA KIAKOI MARIE VALERIE",
+                                "RefOcc": "D301501020024",
+                                "Fluide": -1,
+                                "Conso": "0"
+                            },
+                            {
+                                "PkLogement": 1567842,
+                                "NomOcc": "M. RAMIREZ EDAOUDI MOHAMED",
+                                "RefOcc": "D301301040042",
+                                "Fluide": -1,
+                                "Conso": "0"
+                            },
+                            {
+                                "PkLogement": 1567857,
+                                "NomOcc": "M. MORALES SERRANO MIGUEL",
+                                "RefOcc": "D301401030032",
+                                "Fluide": -1,
+                                "Conso": "0"
+                            },
+                            {
+                                "PkLogement": 1567797,
+                                "NomOcc": "DRAME SILIMAN",
+                                "RefOcc": "D301101020024",
+                                "Fluide": -1,
+                                "Conso": "0"
+                            },
+                            {
+                                "PkLogement": 1567816,
+                                "NomOcc": "MME TIMERA SALIMATA",
+                                "RefOcc": "D301201020023",
+                                "Fluide": -1,
+                                "Conso": "0"
+                            }
+                        ]
+                    }
+                },
+                "SerieConsos": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": ""
+                },
+                "ListeReleves": {
+                    "releve": [
+                        {
+                            "PkReleve": 1582007,
+                            "DateReleve": "2025-12-31T00:00:00",
+                            "TypeERC": "REPARTITEUR"
+                        },
+                        {
+                            "PkReleve": 1492651,
+                            "DateReleve": "2024-12-31T00:00:00",
+                            "TypeERC": "REPARTITEUR"
+                        },
+                        {
+                            "PkReleve": 1409633,
+                            "DateReleve": "2023-12-31T00:00:00",
+                            "TypeERC": "REPARTITEUR"
+                        }
+                    ]
+                },
+                "Tot_URepart": "845040",
+                "Tot_TantChauff": "7536",
+                "PU_Tant": "3.123081",
+                "Prix_URepart": "0.064987",
+                "Prix_Abonn": "3722.3",
+                "Mont_ARepartTant": "23535.54",
+                "Part_RepartConsos": "54916.26",
+                "CT_Combust": "0",
+                "SerieConsosTotale1": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 455,
+                    "ValeursXYL": "15/01|66396|66396|VIRTUAL=N;31/01|138866|138866|VIRTUAL=N;15/02|209588|209588|VIRTUAL=N;28/02|260248|260248|VIRTUAL=N;15/03|312773|312773|VIRTUAL=N;31/03|359335|359335|VIRTUAL=N;15/04|0|388167|VIRTUAL=O;30/04|0|418233|VIRTUAL=O;15/05|0|440168|VIRTUAL=O;31/05|0|462171|VIRTUAL=O;15/06|0|467468|VIRTUAL=O;30/06|0|467468|VIRTUAL=O;15/07|0|465921|VIRTUAL=O;31/07|0|463568|VIRTUAL=O;15/08|0|463568|VIRTUAL=O;31/08|0|461652|VIRTUAL=O;15/09|0|461652|VIRTUAL=O;30/09|0|459942|VIRTUAL=O;15/10|0|483121|VIRTUAL=O;31/10|0|522993|VIRTUAL=O;15/11|0|561770|VIRTUAL=O;30/11|0|611831|VIRTUAL=O;15/12|0|660772|VIRTUAL=O;31/12|0|727300|VIRTUAL=O;15/01|63407|63407|VIRTUAL=N;31/01|125373|125373|VIRTUAL=N;15/02|178267|178267|VIRTUAL=N;28/02|218253|218253|VIRTUAL=N;15/03|258564|258564|VIRTUAL=N;31/03|204391|204391|VIRTUAL=N",
+                    "Annee": "2026"
+                },
+                "SerieConsosTotale2": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 366,
+                    "ValeursXYL": "15/01|73355|73355|VIRTUAL=N;31/01|101871|101871|VIRTUAL=N;15/02|142994|142994|VIRTUAL=N;29/02|178942|178942|VIRTUAL=N;15/03|217746|217746|VIRTUAL=N;31/03|245370|245370|VIRTUAL=N;15/04|0|356900|VIRTUAL=O;30/04|0|409677|VIRTUAL=O;15/05|0|420651|VIRTUAL=O;31/05|0|433794|VIRTUAL=O;15/06|0|431837|VIRTUAL=O;30/06|0|436326|VIRTUAL=O;15/07|0|436677|VIRTUAL=O;31/07|0|437774|VIRTUAL=O;15/08|0|428489|VIRTUAL=O;31/08|0|432787|VIRTUAL=O;15/09|0|435981|VIRTUAL=O;30/09|0|429115|VIRTUAL=O;15/10|0|438301|VIRTUAL=O;31/10|0|519493|VIRTUAL=O;15/11|0|562609|VIRTUAL=O;30/11|49722|616985|VIRTUAL=N;15/12|62511|679496|VIRTUAL=N;31/12|67350|746846|VIRTUAL=N",
+                    "Annee": "2024"
+                },
+                "SerieConsosDJU": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 366,
+                    "ValeursXYL": "15/01|73355|73355|VIRTUAL=N;31/01|101871|101871|VIRTUAL=N;15/02|142994|142994|VIRTUAL=N;29/02|178942|178942|VIRTUAL=N;15/03|217746|217746|VIRTUAL=N;31/03|245370|245370|VIRTUAL=N;15/04|0|356900|VIRTUAL=O;30/04|0|409677|VIRTUAL=O;15/05|0|420651|VIRTUAL=O;31/05|0|433794|VIRTUAL=O;15/06|0|431837|VIRTUAL=O;30/06|0|436326|VIRTUAL=O;15/07|0|436677|VIRTUAL=O;31/07|0|437774|VIRTUAL=O;15/08|0|428489|VIRTUAL=O;31/08|0|432787|VIRTUAL=O;15/09|0|435981|VIRTUAL=O;30/09|0|429115|VIRTUAL=O;15/10|0|438301|VIRTUAL=O;31/10|0|519493|VIRTUAL=O;15/11|0|562609|VIRTUAL=O;30/11|49722|616985|VIRTUAL=N;15/12|62511|679496|VIRTUAL=N;31/12|67350|746846|VIRTUAL=N",
+                    "Annee": "2024"
+                }
+            },
+            "ImmeubleCET": {
+                "NbCompteursARelever": -1,
+                "NbCompteursReleves": -1,
+                "Chantier": {
+                    "PkChantier": -1,
+                    "PkDevis": -1,
+                    "PkImmeuble": -1,
+                    "DateEntreeChantier": "0001-01-01T00:00:00",
+                    "NbCompteursPoses": -1,
+                    "NbCompteursCommandes": -1
+                },
+                "TopConsos": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DateReleve": "0001-01-01T00:00:00",
+                    "consosGrandes": [],
+                    "consosPetites": []
+                },
+                "SerieConsos": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": ""
+                },
+                "ListeReleves": [],
+                "Tot_URepart": "-1",
+                "Tot_TantChauff": "-1",
+                "PU_Tant": "-1",
+                "Prix_URepart": "-1",
+                "Prix_Abonn": "-1",
+                "Mont_ARepartTant": "-1",
+                "Part_RepartConsos": "-1",
+                "CT_Combust": "-1",
+                "SerieConsosTotale1": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": ""
+                },
+                "SerieConsosTotale2": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": ""
+                },
+                "SerieConsosDJU": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": ""
+                }
+            },
+            "ImmeubleCapteur": {
+                "IndexRecapTemperature": {
+                    "Date": "0001-01-01T00:00:00",
+                    "Moy": "-1",
+                    "Max": "-1",
+                    "Min": "-1"
+                },
+                "IndexRecapHumidite": {
+                    "Date": "0001-01-01T00:00:00",
+                    "Moy": "-1",
+                    "Max": "-1",
+                    "Min": "-1"
+                },
+                "SerieConsosTemperature": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": ""
+                },
+                "SerieConsosHumidite": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DefaultIntervalle": 365,
+                    "ValeursXYL": "",
+                    "Annee": ""
+                }
+            },
+            "ImmeubleElect": {
+                "NbCompteursARelever": -1,
+                "NbCompteursReleves": -1,
+                "Chantier": {
+                    "PkChantier": -1,
+                    "PkDevis": -1,
+                    "PkImmeuble": -1,
+                    "DateEntreeChantier": "0001-01-01T00:00:00",
+                    "NbCompteursPoses": -1,
+                    "NbCompteursCommandes": -1
+                },
+                "TopConsos": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DateReleve": "0001-01-01T00:00:00",
+                    "consosGrandes": [],
+                    "consosPetites": []
+                },
+                "ListeReleves": []
+            },
+            "ImmeubleGaz": {
+                "NbCompteursARelever": -1,
+                "NbCompteursReleves": -1,
+                "Chantier": {
+                    "PkChantier": -1,
+                    "PkDevis": -1,
+                    "PkImmeuble": -1,
+                    "DateEntreeChantier": "0001-01-01T00:00:00",
+                    "NbCompteursPoses": -1,
+                    "NbCompteursCommandes": -1
+                },
+                "TopConsos": {
+                    "Erreur": "",
+                    "Info": "",
+                    "DateReleve": "0001-01-01T00:00:00",
+                    "consosGrandes": [],
+                    "consosPetites": []
+                },
+                "ListeReleves": []
+            },
+            "SerieConsosEAU": {
+                "Erreur": "",
+                "Info": "",
+                "DefaultIntervalle": 365,
+                "ValeursXYL": "",
+                "Annee": ""
+            },
+            "SerieConsosCompteurGeneral": {
+                "Erreur": "",
+                "Info": "",
+                "DefaultIntervalle": 365,
+                "ValeursXYL": "",
+                "Annee": ""
+            },
+            "SerieConsosECValues": [],
+            "SerieConsosEFValues": [],
+            "SerieConsosEAUValues": [],
+            "SerieConsosRepartValues": [],
+            "SerieConsosEnergieValues": [],
+            "SerieConsosElectValues": [],
+            "SerieConsosGazValues": [],
+            "SerieConsosCompteurGeneralValues": [],
+            "PcCompteursTelereveleOK": 100,
+            "RatioNbDepannages": 0.0018832391713747645,
+            "RatioNbDysfonctionnements": 0,
+            "HasTopConsosEF": false,
+            "TopConsosEFClasses": "",
+            "HasTopConsosEC": false,
+            "TopConsosECClasses": "",
+            "HasTopConsosRepart": false,
+            "TopConsosRepartClasses": "",
+            "HasTopConsosEnergie": false,
+            "TopConsosEnergieClasses": "",
+            "HasTopConsosElect": false,
+            "TopConsosElectClasses": "",
+            "HasTopConsosGaz": false,
+            "TopConsosGazClasses": "",
+            "HasSerieConsosEAU": true,
+            "SerieConsosEAUClasses": " active ",
+            "HasSerieConsosCompteurGeneral": true,
+            "SerieConsosCompteurGeneralClasses": "",
+            "HasSerieConsosRepart": false,
+            "SerieConsosRepartClasses": "",
+            "HasSerieConsosEnergie": false,
+            "SerieConsosEnergieClasses": "",
+            "HasSerieConsosElect": false,
+            "SerieConsosElectClasses": "",
+            "HasSerieConsosGaz": false,
+            "SerieConsosGazClasses": ""
+        },
+        "evolution_charts": {
+            "evo-consos-coldw": {
+                "options": {
+                    "series": [
+                        {
+                            "color": "#bae2f0"
+                        }
+                    ],
+                    "intervalle": 365
+                },
+                "data": []
+            },
+            "evo-consos-gen": {
+                "options": {
+                    "series": [
+                        {
+                            "color": "#bae2f0"
+                        }
+                    ],
+                    "intervalle": 365
+                },
+                "data": []
+            }
+        },
+        "comparative_chart": {
+            "options": {
+                "SerieConsosCompteurGeneral": true
+            },
+            "data": []
+        },
+        "tabs_top_consos": [],
+        "tabs_evo_consos": {
+            "SerieConsosEAU": {
+                "label": "Eau",
+                "id": "evo-consos-coldw",
+                "classes": " active ",
+                "serieColor": "#bae2f0"
+            },
+            "SerieConsosCompteurGeneral": {
+                "label": "Eau",
+                "id": "evo-consos-gen",
+                "classes": "",
+                "serieColor": "#bae2f0"
+            }
+        },
+        "chantier": {
+            "installed": -1,
+            "installed_percent": 100,
+            "remaining": 0,
+            "remaining_percent": 0,
+            "total": -1,
+            "date": "01/01/0001"
+        }
+    }
+}
