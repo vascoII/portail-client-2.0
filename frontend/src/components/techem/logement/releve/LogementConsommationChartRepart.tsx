@@ -411,9 +411,28 @@ export default function LogementConsommationChartRepart({ pkLogement }: Logement
 
       {lastRepartStats && (
         <div className="mt-5 rounded-xl border border-gray-200 bg-gray-50/60 p-4 dark:border-gray-800 dark:bg-white/[0.02]">
-          <h4 className="text-sm font-semibold tracking-wide text-gray-800 dark:text-white/90">
-            DONNÉES DE LA DERNIÈRE RÉPARTITION
-          </h4>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <h4 className="text-sm font-semibold tracking-wide text-gray-800 dark:text-white/90">
+              DONNÉES DE LA DERNIÈRE RÉPARTITION
+            </h4>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+              <button
+                type="button"
+                onClick={handleReleveExport}
+                disabled={isReleveExporting}
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-theme-xs transition hover:bg-gray-50 hover:text-gray-900 disabled:opacity-60 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-white/[0.05]"
+              >
+                {isReleveExporting ? "Export en cours..." : "Export Décompte"}
+              </button>
+              <a
+                href="/guideoccupant.pdf"
+                download
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-theme-xs transition hover:bg-gray-50 hover:text-gray-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-white/[0.05]"
+              >
+                Export Guide Occupant
+              </a>
+            </div>
+          </div>
 
           <div className="mt-4 grid grid-cols-1 gap-6 lg:grid-cols-2">
             <div>
