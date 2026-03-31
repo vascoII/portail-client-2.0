@@ -1,5 +1,5 @@
 "use client";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 import { useLogements } from "@/lib/hooks/useLogements";
@@ -124,14 +124,116 @@ const parseLogementChartValues = (rawValues?: unknown): { categories: string[]; 
   return { categories, points };
 };
 
+const parseValeursXYLIndexValues = (rawSerie?: string): { categories: string[]; points: ParsedChartPoint[] } => {
+  if (!rawSerie || typeof rawSerie !== "string") {
+    return { categories: [], points: [] };
+  }
+
+  const categories: string[] = [];
+  const points: ParsedChartPoint[] = [];
+
+  rawSerie
+    .split(";")
+    .map((segment) => segment.trim())
+    .filter(Boolean)
+    .forEach((segment) => {
+      const [dateRaw, consoRaw, indexRaw] = segment.split("|").map((value) => value?.trim() ?? "");
+      if (!dateRaw || !indexRaw) {
+        return;
+      }
+
+      const numericIndex = toNumber(indexRaw);
+      if (Number.isNaN(numericIndex)) {
+        return;
+      }
+
+      const label = formatDateLabel(dateRaw);
+      if (!label) {
+        return;
+      }
+
+      categories.push(label);
+      points.push({
+        x: label,
+        y: numericIndex,
+        meta: consoRaw || indexRaw,
+      });
+    });
+
+  return { categories, points };
+};
+
 export default function LogementStatisticsConsommationChartConsoTabsEf({ pkLogement }: LogementStatisticsChartProps) {
   const { useLogementQuery } = useLogements();
   const { data: logementData, isLoading, error } = useLogementQuery(pkLogement);
 
+  const meters = useMemo(() => {
+    const logement = logementData?.logement as Record<string, unknown> | undefined;
+    const logementEF =
+      logement && typeof logement === "object" && "LogementEF" in logement
+        ? (logement.LogementEF as Record<string, unknown> | undefined)
+        : null;
+
+    const infos =
+      logementEF &&
+      typeof logementEF === "object" &&
+      "ListeInfosAppareils" in logementEF &&
+      logementEF.ListeInfosAppareils &&
+      typeof logementEF.ListeInfosAppareils === "object" &&
+      "infosAppareilEAU" in (logementEF.ListeInfosAppareils as Record<string, unknown>) &&
+      Array.isArray((logementEF.ListeInfosAppareils as Record<string, unknown>).infosAppareilEAU)
+        ? ((logementEF.ListeInfosAppareils as Record<string, unknown>).infosAppareilEAU as Array<Record<string, unknown>>)
+        : [];
+
+    return infos
+      .map((item) => {
+        const appareil = (item?.Appareil ?? null) as Record<string, unknown> | null;
+        const numero = typeof appareil?.Numero === "string" ? appareil.Numero : "";
+        const emplacement = typeof appareil?.Emplacement === "string" ? appareil.Emplacement : "";
+        const fluide = typeof appareil?.Fluide === "string" ? appareil.Fluide : "";
+        const typeAppareil = typeof appareil?.TypeAppareil === "string" ? appareil.TypeAppareil : "";
+        const serieConsos = (item?.SerieConsos ?? null) as Record<string, unknown> | null;
+        const valeursXYL = typeof serieConsos?.ValeursXYL === "string" ? serieConsos.ValeursXYL : "";
+
+        const isEf = fluide === "EF" || typeAppareil === "EF";
+        if (!isEf || !numero) {
+          return null;
+        }
+
+        return {
+          id: numero,
+          label: emplacement ? `${emplacement} - ${numero}` : numero,
+          valeursXYL,
+        };
+      })
+      .filter(Boolean) as Array<{ id: string; label: string; valeursXYL: string }>;
+  }, [logementData]);
+
+  const [selectedMeterId, setSelectedMeterId] = useState<string>("");
+
+  useEffect(() => {
+    if (!meters.length) {
+      if (selectedMeterId) {
+        setSelectedMeterId("");
+      }
+      return;
+    }
+
+    const exists = meters.some((meter) => meter.id === selectedMeterId);
+    if (!exists) {
+      setSelectedMeterId(meters[0].id);
+    }
+  }, [meters, selectedMeterId]);
+
   const { categories, points } = useMemo(() => {
+    const selectedMeter = selectedMeterId ? meters.find((m) => m.id === selectedMeterId) : undefined;
+    if (selectedMeter?.valeursXYL) {
+      return parseValeursXYLIndexValues(selectedMeter.valeursXYL);
+    }
+
     const rawValues = logementData?.consoTabs?.EF?.EvolutionChartData?.data;
     return parseLogementChartValues(rawValues);
-  }, [logementData]);
+  }, [logementData, meters, selectedMeterId]);
 
   const hasData = points.length > 0;
 
@@ -277,10 +379,25 @@ export default function LogementStatisticsConsommationChartConsoTabsEf({ pkLogem
   return (
     <div className="rounded-2xl border border-gray-200 bg-white px-5 pb-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
       <div className="flex flex-col gap-5 mb-6 sm:flex-row sm:justify-between">
-        <div className="w-full">
+        <div className="w-full flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
             Evolution des index Compteur Eau froide Conso
           </h3>
+          {meters.length > 1 && (
+            <div className="sm:max-w-[320px]">
+              <select
+                value={selectedMeterId}
+                onChange={(e) => setSelectedMeterId(e.target.value)}
+                className="h-9 w-full rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-theme-xs transition focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:focus:border-brand-800"
+              >
+                {meters.map((meter) => (
+                  <option key={meter.id} value={meter.id}>
+                    {meter.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
       </div>
 
