@@ -1,10 +1,12 @@
 "use client";
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import { ApexOptions } from "apexcharts";
 import dynamic from "next/dynamic";
 import { useLogements } from "@/lib/hooks/useLogements";
 import { LoadingChart } from "@/components/ui/loading";
 import Alert from "@/components/ui/alert/Alert";
+import { api, handleApiError } from "@/lib/api/client";
+import { useExport } from "@/lib/hooks/useExport";
 
 // Dynamically import the ReactApexChart component
 const ReactApexChart = dynamic(() => import("react-apexcharts"), {
@@ -131,6 +133,41 @@ export default function LogementConsommationChartRepart({ pkLogement }: Logement
     return parseSerieConsos(rawSerie);
   }, [logementData]);
 
+  const downloadReleveRepart = useCallback(async () => {
+    try {
+      if (!pkLogement) {
+        throw new Error("Identifiant logement manquant pour l'export du relevé répartiteur.");
+      }
+
+      const response = await api.get(`/logement/${pkLogement}/releve-repart`, {
+        responseType: "blob",
+      });
+
+      const blob = new Blob([response.data as unknown as BlobPart], {
+        type: "application/pdf",
+      });
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `logement-${pkLogement}-releve-repart.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      const message = handleApiError(err);
+      throw new Error(message || "Erreur lors de l'export du relevé répartiteur.");
+    }
+  }, [pkLogement]);
+
+  const {
+    handleExport: handleReleveExport,
+    isExporting: isReleveExporting,
+    error: releveError,
+    clearError: clearReleveError,
+  } = useExport(downloadReleveRepart, { errorTitle: "Erreur export relevé répartiteur" });
+
   const hasData = values.length > 0 && categories.length > 0;
 
   const options: ApexOptions = useMemo(() => {
@@ -247,6 +284,23 @@ export default function LogementConsommationChartRepart({ pkLogement }: Logement
   if (!hasData) {
     return (
       <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
+        {releveError && (
+          <div className="mb-3">
+            <Alert
+              variant={releveError.variant || "error"}
+              title={releveError.title}
+              message={releveError.message}
+              showLink={false}
+            />
+            <button
+              type="button"
+              onClick={clearReleveError}
+              className="mt-1 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+            >
+              Fermer
+            </button>
+          </div>
+        )}
         <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
           Compteur Répartiteur
         </h3>
@@ -261,13 +315,42 @@ export default function LogementConsommationChartRepart({ pkLogement }: Logement
 
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
-      <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
-          Compteur Répartiteur
-        </h3>
-        <p className="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
-          Information consommation + variation entre deux relevés
-        </p>
+      {releveError && (
+        <div className="mb-3">
+          <Alert
+            variant={releveError.variant || "error"}
+            title={releveError.title}
+            message={releveError.message}
+            showLink={false}
+          />
+          <button
+            type="button"
+            onClick={clearReleveError}
+            className="mt-1 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+          >
+            Fermer
+          </button>
+        </div>
+      )}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
+            Compteur Répartiteur
+          </h3>
+          <p className="mt-1 text-gray-500 text-theme-sm dark:text-gray-400">
+            Information consommation + variation entre deux relevés
+          </p>
+        </div>
+        {pkLogement && (
+          <button
+            type="button"
+            onClick={handleReleveExport}
+            disabled={isReleveExporting}
+            className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-theme-xs transition hover:bg-gray-50 hover:text-gray-900 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-white/[0.05]"
+          >
+            <span>{isReleveExporting ? "Export en cours..." : "Export PDF"}</span>
+          </button>
+        )}
       </div>
 
       <div className="max-w-full overflow-x-auto custom-scrollbar">
